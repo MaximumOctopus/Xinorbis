@@ -1,0 +1,120 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{E10A0C4F-894B-4707-B596-6046431EAD58}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="x8.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\NLD\x8_NLD.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\ENG\x8_ENG.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\FRA\x8_FRA.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\DEU\x8_DEU.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\HUN\x8_HUN.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\ITA\x8_ITA.bdsproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="code\languages\ESP\x8_ESP.bdsproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="x8">
+        <MSBuild Projects="x8.dproj"/>
+    </Target>
+    <Target Name="x8:Clean">
+        <MSBuild Projects="x8.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8:Make">
+        <MSBuild Projects="x8.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_NLD">
+        <MSBuild Projects="code\languages\NLD\x8_NLD.bdsproj"/>
+    </Target>
+    <Target Name="x8_NLD:Clean">
+        <MSBuild Projects="code\languages\NLD\x8_NLD.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_NLD:Make">
+        <MSBuild Projects="code\languages\NLD\x8_NLD.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_ENG">
+        <MSBuild Projects="code\languages\ENG\x8_ENG.bdsproj"/>
+    </Target>
+    <Target Name="x8_ENG:Clean">
+        <MSBuild Projects="code\languages\ENG\x8_ENG.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_ENG:Make">
+        <MSBuild Projects="code\languages\ENG\x8_ENG.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_FRA">
+        <MSBuild Projects="code\languages\FRA\x8_FRA.bdsproj"/>
+    </Target>
+    <Target Name="x8_FRA:Clean">
+        <MSBuild Projects="code\languages\FRA\x8_FRA.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_FRA:Make">
+        <MSBuild Projects="code\languages\FRA\x8_FRA.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_DEU">
+        <MSBuild Projects="code\languages\DEU\x8_DEU.bdsproj"/>
+    </Target>
+    <Target Name="x8_DEU:Clean">
+        <MSBuild Projects="code\languages\DEU\x8_DEU.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_DEU:Make">
+        <MSBuild Projects="code\languages\DEU\x8_DEU.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_HUN">
+        <MSBuild Projects="code\languages\HUN\x8_HUN.bdsproj"/>
+    </Target>
+    <Target Name="x8_HUN:Clean">
+        <MSBuild Projects="code\languages\HUN\x8_HUN.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_HUN:Make">
+        <MSBuild Projects="code\languages\HUN\x8_HUN.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_ITA">
+        <MSBuild Projects="code\languages\ITA\x8_ITA.bdsproj"/>
+    </Target>
+    <Target Name="x8_ITA:Clean">
+        <MSBuild Projects="code\languages\ITA\x8_ITA.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_ITA:Make">
+        <MSBuild Projects="code\languages\ITA\x8_ITA.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="x8_ESP">
+        <MSBuild Projects="code\languages\ESP\x8_ESP.bdsproj"/>
+    </Target>
+    <Target Name="x8_ESP:Clean">
+        <MSBuild Projects="code\languages\ESP\x8_ESP.bdsproj" Targets="Clean"/>
+    </Target>
+    <Target Name="x8_ESP:Make">
+        <MSBuild Projects="code\languages\ESP\x8_ESP.bdsproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="x8;x8_NLD;x8_ENG;x8_FRA;x8_DEU;x8_HUN;x8_ITA;x8_ESP"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="x8:Clean;x8_NLD:Clean;x8_ENG:Clean;x8_FRA:Clean;x8_DEU:Clean;x8_HUN:Clean;x8_ITA:Clean;x8_ESP:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="x8:Make;x8_NLD:Make;x8_ENG:Make;x8_FRA:Make;x8_DEU:Make;x8_HUN:Make;x8_ITA:Make;x8_ESP:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

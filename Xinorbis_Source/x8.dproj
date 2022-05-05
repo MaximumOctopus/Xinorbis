@@ -1,0 +1,904 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{b3da1d4c-c636-40aa-8ece-4ad49f981b3c}</ProjectGuid>
+        <MainSource>x8.dpr</MainSource>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <DCC_DependencyCheckOutputName>x7.exe</DCC_DependencyCheckOutputName>
+        <FrameworkType>VCL</FrameworkType>
+        <ProjectVersion>18.2</ProjectVersion>
+        <Base>True</Base>
+        <Config Condition="'$(Config)'==''">Release</Config>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <TargetedPlatforms>3</TargetedPlatforms>
+        <AppType>Application</AppType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
+        <Cfg_1_Win64>true</Cfg_1_Win64>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug_Release' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Free' or '$(Cfg_3)'!=''">
+        <Cfg_3>true</Cfg_3>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_3)'=='true') or '$(Cfg_3_Win32)'!=''">
+        <Cfg_3_Win32>true</Cfg_3_Win32>
+        <CfgParent>Cfg_3</CfgParent>
+        <Cfg_3>true</Cfg_3>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_3)'=='true') or '$(Cfg_3_Win64)'!=''">
+        <Cfg_3_Win64>true</Cfg_3_Win64>
+        <CfgParent>Cfg_3</CfgParent>
+        <Cfg_3>true</Cfg_3>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug_Free' or '$(Cfg_4)'!=''">
+        <Cfg_4>true</Cfg_4>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_4)'=='true') or '$(Cfg_4_Win32)'!=''">
+        <Cfg_4_Win32>true</Cfg_4_Win32>
+        <CfgParent>Cfg_4</CfgParent>
+        <Cfg_4>true</Cfg_4>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_4)'=='true') or '$(Cfg_4_Win64)'!=''">
+        <Cfg_4_Win64>true</Cfg_4_Win64>
+        <CfgParent>Cfg_4</CfgParent>
+        <Cfg_4>true</Cfg_4>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_OutputDRCFile>true</DCC_OutputDRCFile>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <SanitizedProjectName>x8</SanitizedProjectName>
+        <VerInfo_Release>14</VerInfo_Release>
+        <DCC_UnitSearchPath>E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\classes;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\forms;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\threads;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\units;E:\Software Development\Delphi 10.1\Components\ZipMaster;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\frames;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\components;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\dialogs;E:\Software Development\Delphi 10.1\Projects\XinorbisX\code\splash;E:\Software Development\Delphi 10.1\Components\FastMM4;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <VerInfo_Locale>2057</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=www.MaximumOctopus.com;FileDescription=;FileVersion=8.0.14.0;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductName=;ProductVersion=8.0.0.0;Comments=www.xinorbis.com;SpecialBuild=</VerInfo_Keys>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_MajorVer>8</VerInfo_MajorVer>
+        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
+        <Custom_Styles>Carbon|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Carbon.vsf</Custom_Styles>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <OutputExt>32.exe</OutputExt>
+        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=8.0.0.0;Comments=www.xinorbis.com;ProgramID=;FileDescription=;ProductName=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <Icon_MainIcon>x7_Icon3.ico</Icon_MainIcon>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <OutputExt>64.exe</OutputExt>
+        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=8.0.0.0;Comments=www.xinorbis.com;ProgramID=;FileDescription=;ProductName=</VerInfo_Keys>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <Icon_MainIcon>x7_Icon3.ico</Icon_MainIcon>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+        <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <Version>7.0</Version>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_Define>RELEASE;NOT;$(DCC_Define)</DCC_Define>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+        <DCC_RangeChecking>True</DCC_RangeChecking>
+        <DCC_ResourcePath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <DCC_ObjPath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;$(DCC_ObjPath)</DCC_ObjPath>
+        <DCC_IncludePath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;$(DCC_IncludePath)</DCC_IncludePath>
+        <VerInfo_Keys>CompanyName=www.MaximumOctopus.com;FileDescription=Xinorbis;FileVersion=8.0.14.0;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductName=Xinorbis;ProductVersion=8.0.0.0;Comments=www.xinorbis.com;SpecialBuild=</VerInfo_Keys>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Pro\x32\</DCC_ExeOutput>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=www.MaximumOctopus.com;FileVersion=1.0.16.137;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductVersion=8.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=32 bit Pro;ProductName=Xinorbis</VerInfo_Keys>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <VerInfo_Build>137</VerInfo_Build>
+        <VerInfo_Release>16</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Pro\x64\</DCC_ExeOutput>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=www.MaximumOctopus.com;FileVersion=8.0.15.82;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductVersion=8.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=64 bit Pro;ProductName=Xinorbis</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Build>82</VerInfo_Build>
+        <VerInfo_Release>15</VerInfo_Release>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
+        <Version>7.0</Version>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+        <DCC_ResourcePath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\threads\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\FastMM4\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\SQlite\;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <DCC_ObjPath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\threads\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\FastMM4\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\SQlite\;$(DCC_ObjPath)</DCC_ObjPath>
+        <DCC_IncludePath>E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\forms\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\units\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\classes;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\threads\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\FastMM4\;E:\Software Development\Delphi 2007\projects\Xinorbis7.0\code\SQlite\;$(DCC_IncludePath)</DCC_IncludePath>
+        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+        <DCC_TYPEINFO_IMPLICITLY_ADDED>False</DCC_TYPEINFO_IMPLICITLY_ADDED>
+        <DCC_RangeChecking>True</DCC_RangeChecking>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <OutputExt>32debug.exe</OutputExt>
+        <VerInfo_Release>0</VerInfo_Release>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.11;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Pro\x32\</DCC_ExeOutput>
+        <VerInfo_Build>11</VerInfo_Build>
+        <BT_BuildType>Debug</BT_BuildType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <OutputExt>64debug.exe</OutputExt>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.37;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <AppEnableHighDPI>true</AppEnableHighDPI>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Build>37</VerInfo_Build>
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Pro\x64\</DCC_ExeOutput>
+        <BT_BuildType>Debug</BT_BuildType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_3)'!=''">
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_Define>Trial;$(DCC_Define)</DCC_Define>
+        <VerInfo_Debug>true</VerInfo_Debug>
+        <VerInfo_Keys>CompanyName=www.MaximumOctopus.com;FileDescription=Xinorbis;FileVersion=8.0.14.0;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductName=Xinorbis;ProductVersion=8.0.0.0;Comments=www.xinorbis.com;SpecialBuild=</VerInfo_Keys>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_3_Win32)'!=''">
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Free\x32\</DCC_ExeOutput>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <VerInfo_Keys>CompanyName=Maximum Octopus Limited;FileVersion=8.0.15.22;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductVersion=8.0.0.0;Comments=;ProgramID=Xinorbis;FileDescription=32 bit Free;ProductName=Xinorbis</VerInfo_Keys>
+        <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Debug>false</VerInfo_Debug>
+        <VerInfo_Build>22</VerInfo_Build>
+        <VerInfo_Release>15</VerInfo_Release>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_3_Win64)'!=''">
+        <DCC_ExeOutput>E:\Software Development\Delphi 10.1\Projects\XinorbisX\bin\Free\x64\</DCC_ExeOutput>
+        <BT_BuildType>Debug</BT_BuildType>
+        <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=Maximum Octopus Limited;FileVersion=8.0.15.16;InternalName=;LegalCopyright=(c) Paul Alan Freshney 2017;LegalTrademarks=Maximum Octopus Limited;OriginalFilename=;ProductVersion=8.0.0.0;Comments=;ProgramID=Xinorbis;FileDescription=64 bit Free;ProductName=Xinorbis</VerInfo_Keys>
+        <VerInfo_Debug>false</VerInfo_Debug>
+        <VerInfo_Build>16</VerInfo_Build>
+        <VerInfo_Release>15</VerInfo_Release>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_4)'!=''">
+        <DCC_Define>DEBUG;Trial;$(DCC_Define)</DCC_Define>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_4_Win32)'!=''">
+        <OutputExt>32debug.exe</OutputExt>
+        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_4_Win64)'!=''">
+        <OutputExt>64debug.exe</OutputExt>
+        <VerInfo_Release>0</VerInfo_Release>
+        <VerInfo_MajorVer>1</VerInfo_MajorVer>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
+    </PropertyGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Parameters>
+                    <Parameters Name="UseLauncher">False</Parameters>
+                    <Parameters Name="LoadAllSymbols">True</Parameters>
+                    <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                    <Parameters Name="RunParams">/debug</Parameters>
+                </Parameters>
+                <VersionInfo>
+                    <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+                    <VersionInfo Name="AutoIncBuild">True</VersionInfo>
+                    <VersionInfo Name="MajorVer">7</VersionInfo>
+                    <VersionInfo Name="MinorVer">0</VersionInfo>
+                    <VersionInfo Name="Release">1</VersionInfo>
+                    <VersionInfo Name="Build">3</VersionInfo>
+                    <VersionInfo Name="Debug">False</VersionInfo>
+                    <VersionInfo Name="PreRelease">False</VersionInfo>
+                    <VersionInfo Name="Special">False</VersionInfo>
+                    <VersionInfo Name="Private">False</VersionInfo>
+                    <VersionInfo Name="DLL">False</VersionInfo>
+                    <VersionInfo Name="Locale">2057</VersionInfo>
+                    <VersionInfo Name="CodePage">1252</VersionInfo>
+                </VersionInfo>
+                <VersionInfoKeys>
+                    <VersionInfoKeys Name="CompanyName">www.MaximumOctopus.com</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileDescription">Xinorbis</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileVersion">7.0.1.3</VersionInfoKeys>
+                    <VersionInfoKeys Name="InternalName"/>
+                    <VersionInfoKeys Name="LegalCopyright">(c) Paul Alan Freshney 2016</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalTrademarks"/>
+                    <VersionInfoKeys Name="OriginalFilename"/>
+                    <VersionInfoKeys Name="ProductName">Xinorbis</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductVersion">7.0.1.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="Comments">www.xinorbis.com</VersionInfoKeys>
+                    <VersionInfoKeys Name="SpecialBuild">7.0 beta 2b</VersionInfoKeys>
+                </VersionInfoKeys>
+                <Source>
+                    <Source Name="MainSource">x8.dpr</Source>
+                </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
+                <Language>
+                    <Language Name="ProjectLang">$00000809</Language>
+                    <Language Name="ActiveLang">ITA</Language>
+                </Language>
+                <Resource_DLL_Projects>
+                    <Resource_DLL_Projects Name="Item0">English (United Kingdom)*$00000809*ENG*code\languages\ENG</Resource_DLL_Projects>
+                </Resource_DLL_Projects>
+                <RDP_Source_Files>
+                    <RDP_Source_Files Name="Item0">code\forms\X.Form.About.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item1">code\forms\X.Form.CatColours.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item2">code\forms\X.Form.ChartOptions.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item3">code\splash\X.Splash.App.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item4">code\splash\X.Splash.Buy.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item5">code\splash\X.Splash.CheckUpdate.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item6">code\splash\X.Splash.Print.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item7">code\splash\X.Splash.Progress.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item8">code\splash\X.Splash.Zip.dfm</RDP_Source_Files>
+                    <RDP_Source_Files Name="Item9">x8.drc</RDP_Source_Files>
+                </RDP_Source_Files>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">True</Platform>
+            </Platforms>
+            <Deployment Version="3">
+                <DeployFile LocalName="x8.32.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\Pro\x32\x8.32.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="x8.32.exe" Configuration="Trial" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\Pro\x64\x8.64.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="x8.64.exe" Configuration="Trial" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\Free\x32\x8.32.exe" Configuration="Free" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bin\Pro\x64\x8.64debug.exe" Configuration="Debug_Release" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>x8.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployClass Name="AdditionalDebugSymbols">
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <RemoteDir>Contents\MacOS</RemoteDir>
+                        <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidClassesDexFile">
+                    <Platform Name="Android">
+                        <RemoteDir>classes</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidGDBServer">
+                    <Platform Name="Android">
+                        <RemoteDir>library\lib\armeabi-v7a</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidLibnativeArmeabiFile">
+                    <Platform Name="Android">
+                        <RemoteDir>library\lib\armeabi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidLibnativeMipsFile">
+                    <Platform Name="Android">
+                        <RemoteDir>library\lib\mips</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidServiceOutput">
+                    <Platform Name="Android">
+                        <RemoteDir>library\lib\armeabi-v7a</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidSplashImageDef">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidSplashStyles">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_DefaultAppIcon">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon144">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xxhdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon36">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-ldpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-mdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-hdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon96">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xhdpi</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_SplashImage426">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-small</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-normal</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_SplashImage640">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-large</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-xlarge</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="DebugSymbols">
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="DependencyFramework">
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.framework</Extensions>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Required="true" Name="DependencyPackage">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.bpl</Extensions>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="File">
+                    <Platform Name="Android">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch1024">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch1536">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch2048">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPad_Launch768">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch320">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch640">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="iPhone_Launch640x1136">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectAndroidManifest">
+                    <Platform Name="Android">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceDebug">
+                    <Platform Name="iOSDevice32">
+                        <RemoteDir>..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <RemoteDir>..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="ProjectiOSEntitlements"/>
+                <DeployClass Name="ProjectiOSInfoPList"/>
+                <DeployClass Name="ProjectiOSResource">
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectOSXEntitlements"/>
+                <DeployClass Name="ProjectOSXInfoPList"/>
+                <DeployClass Name="ProjectOSXResource">
+                    <Platform Name="OSX32">
+                        <RemoteDir>Contents\Resources</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Required="true" Name="ProjectOutput">
+                    <Platform Name="Android">
+                        <RemoteDir>library\lib\armeabi-v7a</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSDevice64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="iOSSimulator">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Linux64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="ProjectUWPManifest">
+                    <Platform Name="Win32">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="UWP_DelphiLogo150">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="UWP_DelphiLogo44">
+                    <Platform Name="Win32">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
+            </Deployment>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="code\units\X.GuiUtil.pas"/>
+        <DCCReference Include="code\dialogs\X.Dialogs.Colour.pas"/>
+        <DCCReference Include="code\units\X.ScanAnalysis.pas"/>
+        <DCCReference Include="code\units\X.MD5.pas"/>
+        <DCCReference Include="code\database\X.Database.Sqlite.pas"/>
+        <DCCReference Include="code\database\X.Database.ODBC.pas"/>
+        <DCCReference Include="code\units\X.SearchUtility.pas"/>
+        <DCCReference Include="code\units\X.ScanDetails.pas"/>
+        <DCCReference Include="code\forms\X.Form.About.pas">
+            <Form>frmAbout</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.CatColours.pas">
+            <Form>frmCategoryColours</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.ChartOptions.pas">
+            <Form>frmChartOptions</Form>
+        </DCCReference>
+        <DCCReference Include="code\classes\X.CCSVDataFormat.pas"/>
+        <DCCReference Include="code\units\X.Windows.pas"/>
+        <DCCReference Include="code\classes\X.CSizeOfFolder.pas"/>
+        <DCCReference Include="code\classes\X.CTableDetails.pas"/>
+        <DCCReference Include="code\database\X.Database.pas"/>
+        <DCCReference Include="code\splash\X.Splash.App.pas">
+            <Form>frmSplash</Form>
+        </DCCReference>
+        <DCCReference Include="code\splash\X.Splash.Buy.pas">
+            <Form>frmDonate</Form>
+        </DCCReference>
+        <DCCReference Include="code\splash\X.Splash.Progress.pas">
+            <Form>frmProgress</Form>
+        </DCCReference>
+        <DCCReference Include="code\splash\X.Splash.Zip.pas">
+            <Form>frmZipDisplay</Form>
+        </DCCReference>
+        <DCCReference Include="code\units\X.LanguageHandler.pas"/>
+        <DCCReference Include="code\units\X.ChartUtility.pas"/>
+        <DCCReference Include="code\units\X.Conversions.pas"/>
+        <DCCReference Include="code\units\X.DisplayUtility.pas"/>
+        <DCCReference Include="code\units\X.ErrorHandler.pas"/>
+        <DCCReference Include="code\units\X.FileExtensionsObject.pas"/>
+        <DCCReference Include="code\units\X.Formatting.pas"/>
+        <DCCReference Include="code\units\X.GlobalObjects.pas"/>
+        <DCCReference Include="code\units\X.GridUtility.pas"/>
+        <DCCReference Include="code\units\X.GuiLogic.pas"/>
+        <DCCReference Include="code\units\X.Settings.pas"/>
+        <DCCReference Include="code\forms\X.Form.SelectLanguage.pas">
+            <Form>frmSetLanguage</Form>
+        </DCCReference>
+        <DCCReference Include="code\classes\X.CQuickMenuHandler.pas"/>
+        <DCCReference Include="code\forms\X.Form.QuickMenuBuilder.pas">
+            <Form>frmQuickMenuBuilder</Form>
+        </DCCReference>
+        <DCCReference Include="code\units\X.SystemGlobal.pas"/>
+        <DCCReference Include="code\frames\X.Frame.FileHistory.pas">
+            <Form>FrameFolderHistory</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Navigation.pas">
+            <Form>FrameNavigation</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Reports.pas">
+            <Form>FrameReports</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Search.pas">
+            <Form>FrameSearch</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Summary.pas">
+            <Form>frameSummary</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.WebReports.pas">
+            <Form>FrameWebReports</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Map.pas">
+            <Form>FrameMap</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.DatabaseInfo.pas">
+            <Form>frmDatabaseInfo</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.DBSelectedFolder.pas">
+            <Form>frmDBSelectedFolder</Form>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Select.pas">
+            <Form>FrameSelect</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.EditCSVReport.pas">
+            <Form>frmEditCSVReport</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.EditTreeReport.pas">
+            <Form>frmEditTreeReport</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.EditXmlReport.pas">
+            <Form>frmEditXMLReport</Form>
+        </DCCReference>
+        <DCCReference Include="code\classes\X.CReportOptions.pas"/>
+        <DCCReference Include="code\forms\X.Form.FileAges.pas">
+            <Form>frmFileAges</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.FileSpread.pas">
+            <Form>frmSpread</Form>
+        </DCCReference>
+        <DCCReference Include="code\units\X.Help.pas"/>
+        <DCCReference Include="code\forms\X.Form.EditHTMLReport.pas">
+            <Form>frmEditHTMLReport</Form>
+        </DCCReference>
+        <DCCReference Include="code\classes\X.CHTMLPreview.pas"/>
+        <DCCReference Include="code\classes\X.CReportColours.pas"/>
+        <DCCReference Include="code\classes\X.CHTMLReports.pas"/>
+        <DCCReference Include="code\classes\X.CTextReports.pas"/>
+        <DCCReference Include="code\classes\X.CXMLReports.pas"/>
+        <DCCReference Include="code\units\X.ReportUtility.pas"/>
+        <DCCReference Include="code\classes\X.CXinorbisReports.pas"/>
+        <DCCReference Include="code\classes\X.CCSVReports.pas"/>
+        <DCCReference Include="code\classes\X.CTreeReports.pas"/>
+        <DCCReference Include="code\classes\X.CSummaryReports.pas"/>
+        <DCCReference Include="code\classes\X.CReportInfo.pas"/>
+        <DCCReference Include="code\classes\X.CFolderHistoryUtility.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.FileAssociations.pas">
+            <Form>frmFileAssociations</Form>
+        </DCCReference>
+        <DCCReference Include="code\frames\X.Frame.Exploder.pas">
+            <Form>FrameExploder</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="code\forms\X.Form.ReportOptions.pas">
+            <Form>Form1</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="code\units\X.ThemeHelper.pas"/>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug_Free">
+            <Key>Cfg_4</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug_Release">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Free">
+            <Key>Cfg_3</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+    <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+    <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
+</Project>
