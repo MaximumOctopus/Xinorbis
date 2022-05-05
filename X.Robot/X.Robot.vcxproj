@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{614DCE41-AF04-4C70-A6BB-203D5B71FA86}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-DUNICODE %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Convert.h" />
+    <ClInclude Include="DatabaseHandler.h" />
+    <ClInclude Include="DatabaseODBC.h" />
+    <ClInclude Include="DatabaseSQlite.h" />
+    <ClInclude Include="ErrorConstants.h" />
+    <ClInclude Include="Errors.h" />
+    <ClInclude Include="ExtensionSearch.h" />
+    <ClInclude Include="FileDateObject.h" />
+    <ClInclude Include="FileExtension.h" />
+    <ClInclude Include="FileExtensionHandler.h" />
+    <ClInclude Include="FileObject.h" />
+    <ClInclude Include="FolderHistory.h" />
+    <ClInclude Include="FolderHistoryHandler.h" />
+    <ClInclude Include="Formatting.h" />
+    <ClInclude Include="GlobalObjects.h" />
+    <ClInclude Include="Ini.h" />
+    <ClInclude Include="MD5.h" />
+    <ClInclude Include="ParameterDetails.h" />
+    <ClInclude Include="Registry.h" />
+    <ClInclude Include="ReportCSVReportOptions.h" />
+    <ClInclude Include="ReportHTML.h" />
+    <ClInclude Include="ReportHTMLReportOptions.h" />
+    <ClInclude Include="ReportTextReportOptions.h" />
+    <ClInclude Include="Help.h" />
+    <ClInclude Include="LanguageHandler.h" />
+    <ClInclude Include="ParameterHandler.h" />
+    <ClInclude Include="ReportCSV.h" />
+    <ClInclude Include="ReportHandler.h" />
+    <ClInclude Include="ReportSummary.h" />
+    <ClInclude Include="ReportText.h" />
+    <ClInclude Include="ReportXinorbis.h" />
+    <ClInclude Include="ReportXinorbisReportOptions.h" />
+    <ClInclude Include="ReportXML.h" />
+    <ClInclude Include="ReportXMLReportOptions.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="RootFolder.h" />
+    <ClInclude Include="ScanDetails.h" />
+    <ClInclude Include="ScanHistoryObject.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="sqlite3.h" />
+    <ClInclude Include="SystemGlobal.h" />
+    <ClInclude Include="Test.h" />
+    <ClInclude Include="UserData.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="VersionCheck.h" />
+    <ClInclude Include="WindowsUtility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DatabaseHandler.cpp" />
+    <ClCompile Include="DatabaseODBC.cpp" />
+    <ClCompile Include="DatabaseSQlite.cpp" />
+    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="FileDateObject.cpp" />
+    <ClCompile Include="FileExtension.cpp" />
+    <ClCompile Include="FileExtensionHander.cpp" />
+    <ClCompile Include="FileObject.cpp" />
+    <ClCompile Include="FolderHistoryHandler.cpp" />
+    <ClCompile Include="Formatting.cpp" />
+    <ClCompile Include="GlobalObjects.cpp" />
+    <ClCompile Include="Help.cpp" />
+    <ClCompile Include="Ini.cpp" />
+    <ClCompile Include="LanguageHandler.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MD5.cpp" />
+    <ClCompile Include="ParameterHandler.cpp" />
+    <ClCompile Include="Registry.cpp" />
+    <ClCompile Include="ReportCSV.cpp" />
+    <ClCompile Include="ReportHandler.cpp" />
+    <ClCompile Include="ReportHTML.cpp" />
+    <ClCompile Include="ReportSummary.cpp" />
+    <ClCompile Include="ReportText.cpp" />
+    <ClCompile Include="ReportXinorbis.cpp" />
+    <ClCompile Include="ReportXML.cpp" />
+    <ClCompile Include="ScanDetails.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="SystemGlobal.cpp" />
+    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="UserData.cpp" />
+    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="VersionCheck.cpp" />
+    <ClCompile Include="WindowsUtility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="sqlite3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="X.Robot.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="X.Robot.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

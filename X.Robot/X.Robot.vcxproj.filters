@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ReportHandler.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="FileExtension.cpp">
+      <Filter>FileExtension</Filter>
+    </ClCompile>
+    <ClCompile Include="FileExtensionHander.cpp">
+      <Filter>FileExtension</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderHistoryHandler.cpp">
+      <Filter>FolderHistory</Filter>
+    </ClCompile>
+    <ClCompile Include="MD5.cpp">
+      <Filter>MD5</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterHandler.cpp">
+      <Filter>ParameterHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="Help.cpp">
+      <Filter>Help</Filter>
+    </ClCompile>
+    <ClCompile Include="Errors.cpp">
+      <Filter>Help</Filter>
+    </ClCompile>
+    <ClCompile Include="Convert.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Formatting.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsUtility.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Ini.cpp">
+      <Filter>Ini</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanDetails.cpp">
+      <Filter>Scan</Filter>
+    </ClCompile>
+    <ClCompile Include="UserData.cpp">
+      <Filter>Scan</Filter>
+    </ClCompile>
+    <ClCompile Include="FileObject.cpp">
+      <Filter>Scan</Filter>
+    </ClCompile>
+    <ClCompile Include="VersionCheck.cpp">
+      <Filter>Utility\VersionCheck</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseHandler.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseSQlite.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageHandler.cpp">
+      <Filter>Language</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalObjects.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemGlobal.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>System\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseODBC.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="FileDateObject.cpp">
+      <Filter>Scan</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportCSV.cpp">
+      <Filter>Reports\CSV</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportHTML.cpp">
+      <Filter>Reports\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportText.cpp">
+      <Filter>Reports\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportXML.cpp">
+      <Filter>Reports\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportSummary.cpp">
+      <Filter>Reports\Summary</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportXinorbis.cpp">
+      <Filter>Reports\Xinorbis</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="ReportHandler.h">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="FileExtension.h">
+      <Filter>FileExtension</Filter>
+    </ClInclude>
+    <ClInclude Include="FileExtensionHandler.h">
+      <Filter>FileExtension</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderHistory.h">
+      <Filter>FolderHistory</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderHistoryHandler.h">
+      <Filter>FolderHistory</Filter>
+    </ClInclude>
+    <ClInclude Include="MD5.h">
+      <Filter>MD5</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite3.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterHandler.h">
+      <Filter>ParameterHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="Help.h">
+      <Filter>Help</Filter>
+    </ClInclude>
+    <ClInclude Include="Errors.h">
+      <Filter>Help</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorConstants.h">
+      <Filter>Help</Filter>
+    </ClInclude>
+    <ClInclude Include="Convert.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Formatting.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsUtility.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Ini.h">
+      <Filter>Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="FileObject.h">
+      <Filter>Scan</Filter>
+    </ClInclude>
+    <ClInclude Include="RootFolder.h">
+      <Filter>Scan</Filter>
+    </ClInclude>
+    <ClInclude Include="ScanDetails.h">
+      <Filter>Scan</Filter>
+    </ClInclude>
+    <ClInclude Include="UserData.h">
+      <Filter>Scan</Filter>
+    </ClInclude>
+    <ClInclude Include="VersionCheck.h">
+      <Filter>Utility\VersionCheck</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseHandler.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseSQlite.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ScanHistoryObject.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageHandler.h">
+      <Filter>Language</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalObjects.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemGlobal.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>System\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseODBC.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterDetails.h">
+      <Filter>ParameterHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtensionSearch.h">
+      <Filter>FileExtension</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDateObject.h">
+      <Filter>Scan</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportCSV.h">
+      <Filter>Reports\CSV</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportCSVReportOptions.h">
+      <Filter>Reports\CSV</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportHTML.h">
+      <Filter>Reports\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportHTMLReportOptions.h">
+      <Filter>Reports\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportText.h">
+      <Filter>Reports\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportTextReportOptions.h">
+      <Filter>Reports\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportXML.h">
+      <Filter>Reports\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportXMLReportOptions.h">
+      <Filter>Reports\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportSummary.h">
+      <Filter>Reports\Summary</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportXinorbis.h">
+      <Filter>Reports\Xinorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportXinorbisReportOptions.h">
+      <Filter>Reports\Xinorbis</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Reports">
+      <UniqueIdentifier>{f2b3e630-4b20-43d2-9ecd-7a5f25efb065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileExtension">
+      <UniqueIdentifier>{ac9a7d58-e2d6-4aeb-aef6-7ef514ccabfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FolderHistory">
+      <UniqueIdentifier>{79e162ce-3d2f-4c6c-bab5-c0247694be5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MD5">
+      <UniqueIdentifier>{6d91908f-d200-43a3-895d-7668298b5305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{172b0f1e-29b2-4327-8b50-3d2673e3c29d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParameterHandler">
+      <UniqueIdentifier>{2c787741-589d-48af-80b1-225ee8637086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Help">
+      <UniqueIdentifier>{a6291c8f-b856-4760-a2a5-f1e9c8465b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{8cc1ecf6-7164-4c61-8b18-0d9e15540e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ini">
+      <UniqueIdentifier>{47e4ed5f-40fa-444a-a21d-08883d767874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scan">
+      <UniqueIdentifier>{91a8ddee-3700-440d-be43-26c58a5a3683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{a87664c9-78d7-4e37-8e0a-1aa41b5182c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{1cba1386-812e-4f1f-a017-906b0f247544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Test">
+      <UniqueIdentifier>{a8fb538a-30be-4a26-aed5-793bff07ad1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\VersionCheck">
+      <UniqueIdentifier>{f1a6b648-8a2e-475b-83ee-3c936e901336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Language">
+      <UniqueIdentifier>{5bca7c25-63a4-4247-bd90-586785d55da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\CSV">
+      <UniqueIdentifier>{89aeb5fb-17b5-4679-8af6-dc473cdfbf66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\HTML">
+      <UniqueIdentifier>{40b34425-0d5e-4bdb-8a08-7ab883538415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\XML">
+      <UniqueIdentifier>{0d696f69-7501-48df-9394-fc6e25bc5b78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\Text">
+      <UniqueIdentifier>{215bd08c-83f6-4474-8e1c-26a364a13ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\Summary">
+      <UniqueIdentifier>{fea385eb-72e7-47f1-bc5f-8b8b82df70be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\Xinorbis">
+      <UniqueIdentifier>{b2ce8e6b-5159-45f4-b0ce-9961da20a289}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="sqlite3.lib">
+      <Filter>Database</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="X.Robot.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="X.Robot.ico" />
+  </ItemGroup>
+</Project>
