@@ -1,0 +1,141 @@
+// =====================================================================================
+// X.Database 1.1 beta
+//
+// June 5th 2018
+// (c) Paul Alan Freshney
+//
+// www.xinorbis.com
+// www.maximumoctopus.com
+//
+// =====================================================================================
+
+X.Database is designed for more advanced users, though obviously anyone is welcome to
+use it! It's an easy way to gain access to the raw data that Xinorbis stores in its
+Folder History database.
+
+Currently X.Database only supports accessing data from SQlite databases. Support for
+ODBC strorage will come late. Anyone who uses MS SQL or mySQL with Xinorbis already has
+access to native database management tools, so X.Database will be less useful.
+
+Click "Select" and a list of scanned folders will in the Available Scan Paths drop 
+down list.
+
+Selecting an item from this list will populate the Available Scan Dates drop down list
+with the dates that the selected path was scanned.
+
+// =====================================================================================
+// Simple Filter
+// =====================================================================================
+
+Apply a simple filter to the data.
+
+    All
+	Show all fields (columns)
+	
+	Sizes
+	Show only FilePath, FileName, FileSize and FileSizeDisk.
+	
+	Dates
+	Show only FilePath, FileName, Directory, FileDateC, FileDateA, FileDateM.
+	
+	Attributes
+	Show only FilePath, FileName, Directory, Readonly, Hidden, System, Archive, and Temp.
+	
+	Other
+	Show only FilePath, FileName, Directory, Category, and Owner.
+	
+Filter with SQL (WHERE)
+	
+By default, all records are returned.
+
+An extra filter can be applied here that becomes the WHERE part of the SQL query. 
+	
+	Category = 5
+	
+	To find only sound files.
+	
+// =====================================================================================
+// SQL Query
+// =====================================================================================	
+	
+SELECT  Customise the Select part of the SQL query.
+WHERE   Customise the Where part of the SQL query.
+
+See below for a list of valid Field/Column names.
+	
+// =====================================================================================
+// =====================================================================================	
+
+Available Field names:
+
+	ID
+	Unique record identifier (automatically set by the database engine).
+
+	FilePath
+	Full path to folder.
+	
+	FilePathIdx
+	Used internally by Xinorbis. Each unique path is given a separate value.
+	
+	FileName
+	File or Folder name.
+	
+	FileSize
+	Size of file in bytes.
+	-1 for folders
+	
+	FileSizeDisk
+	Space used by the file (based on cluster size of the file system)
+	-1 for folders
+	
+	FileDateC
+	Created date: yyyymmdd
+		
+	FileDateA
+	Last accessed date: yyyymmdd
+	
+	FileDateM
+	Last modified date: yyyymmdd
+	
+	Category
+	Xinorbis category:  1 Programs
+						2 System
+						3 Graphics
+						4 Movie
+						5 Sound
+						6 Office
+						7 Programming
+						8 Compressed
+						9 Other
+					   10 Custom 1	
+					   11 Custom 2
+					   12 Custom 3
+					   13 Custom 4
+					   14 Custom 5
+					   15 Custom 6
+					   16 Custom 7
+					   17 Custom 8
+					   18 Custom 9
+					   19 Custom 10
+
+	Directory
+	0 fiile
+	1 folder
+	
+	Readonly / Hidden / System / Archive / Temp
+	0 No
+	1 Yes
+	
+	Owner
+	Name of the file system user that owns the file.
+	"NOT SPECIFIED" if the user name wasn't retrieved.
+	
+// =====================================================================================
+// =====================================================================================
+
+1.0 beta ()
+
+First public release.
+
+// =====================================================================================
+// =====================================================================================
