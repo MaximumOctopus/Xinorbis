@@ -1,0 +1,398 @@
+object frmChartOptions: TfrmChartOptions
+  Left = 545
+  Top = 358
+  BorderStyle = bsDialog
+  ClientHeight = 628
+  ClientWidth = 664
+  Color = 3355443
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  Scaled = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Bevel2: TBevel
+    Left = 8
+    Top = 303
+    Width = 649
+    Height = 289
+    Shape = bsFrame
+  end
+  object Label1: TLabel
+    Left = 30
+    Top = 317
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object Label2: TLabel
+    Left = 30
+    Top = 373
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object lZoom: TLabel
+    Left = 362
+    Top = 342
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object lExplodeBiggest: TLabel
+    Left = 362
+    Top = 400
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object Label3: TLabel
+    Left = 54
+    Top = 480
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object sLabelColour: TShape
+    Left = 54
+    Top = 496
+    Width = 49
+    Height = 18
+    Cursor = crHandPoint
+    OnMouseDown = sLabelColourMouseDown
+  end
+  object lTitleColour: TLabel
+    Left = 31
+    Top = 564
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object sTitleColour: TShape
+    Left = 110
+    Top = 560
+    Width = 49
+    Height = 21
+    Cursor = crHandPoint
+    OnMouseDown = sTitleColourMouseDown
+  end
+  object Shape1: TShape
+    Left = 582
+    Top = 336
+    Width = 49
+    Height = 18
+    Cursor = crHandPoint
+    OnMouseDown = Shape1MouseDown
+  end
+  object Shape2: TShape
+    Left = 582
+    Top = 373
+    Width = 49
+    Height = 18
+    Cursor = crHandPoint
+    OnMouseDown = Shape2MouseDown
+  end
+  object lGradientFrom: TLabel
+    Left = 440
+    Top = 336
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object lGradientTo: TLabel
+    Left = 440
+    Top = 373
+    Width = 3
+    Height = 13
+    Caption = '.'
+  end
+  object bSave: TBitBtn
+    Left = 440
+    Top = 598
+    Width = 128
+    Height = 25
+    Glyph.Data = {
+      36040000424D3604000000000000360000002800000010000000100000000100
+      20000000000000040000120B0000120B00000000000000000000FF00FF00CD95
+      7000BD734200B7683500B5683500B4673400B2663400B0653300AE643300AC63
+      3200AA623200A9613200A8603100A7613200AB693C00BC866100C37D4F00EBC6
+      AD00EAC5AD00FEFBF800FEFBF800FEFBF800FEFBF800FEFBF800FEFBF800FEFB
+      F800FEFBF800FEFBF800FEFBF800C89A7C00C7987900AD6B4000BA6C3800EDCA
+      B300E0A27A00FEFAF70062C0880062C0880062C0880062C0880062C0880062C0
+      880062C0880062C08800FDF9F600CA8D6500C99B7C00A7613200BB6C3800EECC
+      B600E1A27A00FEFAF700BFDCC200BFDCC200BFDCC200BFDCC200BFDCC200BFDC
+      C200BFDCC200BFDCC200FDF9F600CD906800CC9E8100A8613200BB6B3800EFCE
+      B800E1A27900FEFAF70062C0880062C0880062C0880062C0880062C0880062C0
+      880062C0880062C08800FDF9F600CF936A00CEA38400AA613200BA6A3600EFD0
+      BB00E2A27A00FEFBF800FEFBF800FEFBF800FEFBF800FEFBF800FEFBF800FEFB
+      F800FEFBF800FEFBF800FEFBF800D3966D00D2A78A00AB623200BB6A3600F0D2
+      BE00E2A37A00E2A37A00E1A37A00E2A37B00E1A37B00E0A17800DE9F7700DD9F
+      7600DC9D7400D99B7200D8997100D6997000D5AB8E00AD633300BB6A3600F2D5
+      C200E3A37A00E3A37A00E2A37B00E2A37B00E2A47B00E1A27900E0A17800DEA0
+      7700DE9E7500DC9D7400DA9B7300D99B7300DAB09500AF643300BB6A3600F2D8
+      C500E3A47B00E3A37A00E3A47A00E2A47B00E2A37B00E1A37B00E1A27900DFA0
+      7700DE9F7600DD9E7400DB9C7200DC9D7400DDB59A00B1653400BB6B3600F4D9
+      C700E6A67D00C88C6400C98D6500C98E6700CB926C00CB926D00CA906900C88C
+      6500C88C6400C88C6400C88C6400DA9C7400E1BA9F00B3663400BB6C3700F4DC
+      C900E7A77D00F9ECE100F9ECE100F9EDE300FCF4EE00FDFAF700FDF7F300FAED
+      E500F7E7DB00F7E5D900F6E5D800DEA07700E4BEA400B4673400BD6E3A00F5DD
+      CC00E7A87E00FAF0E800FAF0E800C98D6600FAF0E900FDF8F300FEFAF800FCF4
+      EF00F9E9DF00F7E7DB00F7E5D900E0A27800E7C2A900B6683500C0744200F6DF
+      D000E8A87E00FCF6F100FCF6F100C88C6400FAF1E900FBF4EE00FDFAF700FDF9
+      F600FAF0E800F8E8DD00F7E6DB00E1A37A00EFD5C300B76A3600C6825500F6DF
+      D100E9AA8000FEFAF600FDFAF600C88C6400FBF3EE00FBF1EA00FCF6F200FEFB
+      F800FCF6F100F9ECE200F8E7DB00EED0BA00ECD0BD00BD744300D6A58500F6E0
+      D100F7E0D100FEFBF800FEFBF700FDF9F600FCF5F000FAF0EA00FBF2ED00FDF9
+      F600FDFAF700FBF1EB00F8E9DF00ECD1BE00CD926A00FF00FF00E1BDA600D9AB
+      8D00C9895E00C0754300BD6E3A00BB6C3700BB6B3600BB6A3600BB6A3600BC6C
+      3900BD6E3B00BB6D3A00BF744400C98D6500FF00FF00FF00FF00}
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object bCancel: TBitBtn
+    Left = 574
+    Top = 598
+    Width = 83
+    Height = 25
+    Glyph.Data = {
+      36030000424D3603000000000000360000002800000010000000100000000100
+      18000000000000030000C21E0000C21E00000000000000000000FFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1313F20000F10000F100
+      00F10000EF0000EF0000ED1212EEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFF1313F61A20F53C4CF93A49F83847F83545F83443F73242F7141BF11717
+      EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1313F81D23F94453FA2429F91212F70F
+      0FF60C0CF50909F5161BF53343F7141BF11717EFFFFFFFFFFFFFFFFFFF1313F9
+      1F25FA4A58FB4247FBC9C9FD3B3BF91313F71010F63333F7C5C5FD3035F73444
+      F7141BF21717EFFFFFFFFFFFFF0000FB4F5DFD3237FBCBCBFEF2F2FFEBEBFE3B
+      3BF93939F8EAEAFEF1F1FEC5C5FD181DF63343F70000EFFFFFFFFFFFFF0000FD
+      525FFD2828FC4747FCECECFFF2F2FFECECFFECECFEF1F1FFEAEAFE3434F70B0B
+      F53545F80000EFFFFFFFFFFFFF0000FD5562FE2C2CFD2929FC4848FCEDEDFFF2
+      F2FFF2F2FFECECFE3A3AF91212F70F0FF63848F80000F1FFFFFFFFFFFF0000FD
+      5764FE3030FD2D2DFD4B4BFCEDEDFFF2F2FFF2F2FFECECFF3D3DF91616F81313
+      F73C4BF80000F1FFFFFFFFFFFF0000FF5A67FE3333FE5050FDEDEDFFF3F3FFED
+      EDFFEDEDFFF2F2FFECECFE3E3EFA1717F83F4EF90000F1FFFFFFFFFFFF0000FF
+      5B68FF4347FECFCFFFF3F3FFEDEDFF4C4CFC4A4AFCECECFFF2F2FFCACAFE2A2F
+      FA4251FA0000F3FFFFFFFFFFFF1414FF262BFF5D6AFF585BFFCFCFFF5252FE2F
+      2FFD2C2CFD4B4BFCCCCCFE484CFB4957FB1D23F91414F6FFFFFFFFFFFFFFFFFF
+      1414FF262BFF5D6AFF4347FF3434FE3232FE3030FD2D2DFD383CFC4F5DFC1F25
+      FA1414F8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1414FF262BFF5C69FF5B68FF5A
+      67FE5865FE5663FE5461FE2227FC0D0DFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFF1313FF0000FF0000FF0000FF0000FD0000FD0000FD1313FDFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object vtcOptions: TChart
+    Tag = 2
+    Left = 8
+    Top = 8
+    Width = 649
+    Height = 289
+    AllowPanning = pmNone
+    BackWall.Brush.Style = bsClear
+    BackWall.Pen.Visible = False
+    Gradient.Direction = gdBottomTop
+    Gradient.EndColor = 15987699
+    LeftWall.Color = clGray
+    Legend.Alignment = laLeft
+    Legend.TextStyle = ltsPlain
+    MarginBottom = 0
+    MarginLeft = 1
+    MarginRight = 1
+    MarginTop = 0
+    Title.Font.Color = clWhite
+    Title.Font.Style = [fsItalic]
+    Title.Text.Strings = (
+      'xinorbis')
+    BottomAxis.Title.Font.Color = clWhite
+    ClipPoints = False
+    Frame.Visible = False
+    LeftAxis.Grid.DrawEvery = 2
+    LeftAxis.GridCentered = True
+    LeftAxis.Title.Font.Color = clWhite
+    RightAxis.Title.Font.Color = clWhite
+    TopAxis.Title.Font.Color = clWhite
+    View3DOptions.Elevation = 315
+    View3DOptions.Orthogonal = False
+    View3DOptions.Perspective = 0
+    View3DOptions.Rotation = 360
+    View3DWalls = False
+    Zoom.Allow = False
+    BevelOuter = bvLowered
+    Color = 3355443
+    TabOrder = 2
+    DefaultCanvas = 'TGDIPlusCanvas'
+    PrintMargins = (
+      15
+      27
+      15
+      27)
+    ColorPaletteIndex = 13
+    object Series1: TPieSeries
+      Marks.BackColor = clWhite
+      Marks.Color = clWhite
+      XValues.Order = loAscending
+      YValues.Name = 'Pie'
+      YValues.Order = loNone
+      Frame.InnerBrush.BackColor = clRed
+      Frame.InnerBrush.Gradient.EndColor = clGray
+      Frame.InnerBrush.Gradient.MidColor = clWhite
+      Frame.InnerBrush.Gradient.StartColor = 4210752
+      Frame.InnerBrush.Gradient.Visible = True
+      Frame.MiddleBrush.BackColor = clYellow
+      Frame.MiddleBrush.Gradient.EndColor = 8553090
+      Frame.MiddleBrush.Gradient.MidColor = clWhite
+      Frame.MiddleBrush.Gradient.StartColor = clGray
+      Frame.MiddleBrush.Gradient.Visible = True
+      Frame.OuterBrush.BackColor = clGreen
+      Frame.OuterBrush.Gradient.EndColor = 4210752
+      Frame.OuterBrush.Gradient.MidColor = clWhite
+      Frame.OuterBrush.Gradient.StartColor = clSilver
+      Frame.OuterBrush.Gradient.Visible = True
+      Frame.Width = 4
+      Gradient.Balance = 10
+      Gradient.Direction = gdDiagonalUp
+      Gradient.EndColor = 6519581
+      Gradient.StartColor = 6519581
+      Gradient.Visible = True
+      OtherSlice.Legend.Visible = False
+      OtherSlice.Text = 'Other'
+      PiePen.Visible = False
+    end
+  end
+  object bHelp: TBitBtn
+    Left = 8
+    Top = 598
+    Width = 107
+    Height = 25
+    Glyph.Data = {
+      36030000424D3603000000000000360000002800000010000000100000000100
+      18000000000000030000120B0000120B00000000000000000000FF00FFFF00FF
+      FF00FFFF00FFFF00FFA393839D7753A3703EA2703F9D7855A39385FF00FFFF00
+      FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFA39282AB6D31AD6C2DAD6C2DAD
+      6C2DAD6C2DAD6C2DAD6C2DAB6E33A49688FF00FFFF00FFFF00FFFF00FFFF00FF
+      9C7F62AD6C2DAD6C2DAD6C2DAD6C2DBB8751B8824CAD6C2DAD6C2DAD6C2DAD6C
+      2D9D8369FF00FFFF00FFFF00FFA29181AD6C2DAD6C2DAD6C2DAD6C2DB3793FFF
+      FFFFFFFFFFAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DA49688FF00FFFF00FFAB6D31
+      AD6C2DAD6C2DAD6C2DAD6C2DB07237FFFFFFFFFFFFAD6C2DAD6C2DAD6C2DAD6C
+      2DAD6C2DA96C32FF00FFA1907FAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAE6E30AD
+      6C2DAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DA395869E764FAD6C2D
+      AD6C2DAD6C2DAD6C2DAD6C2DAE6F31FCFBF8FFFFFFB3773DAD6C2DAD6C2DAD6C
+      2DAD6C2DAD6C2D9D7955A66F3AAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DDE
+      C5AEFFFFFFFFFFFFB8814BAD6C2DAD6C2DAD6C2DAD6C2DA27140A56E39AD6C2D
+      AD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAF6F32E4D0BCFFFFFFFFFFFFB57C44AD6C
+      2DAD6C2DAD6C2DA370409E754DAD6C2DAD6C2DAD6C2DC08F5ECFAA87B67E47AD
+      6C2DAD6D2EE5D1BEFFFFFFD6B698AD6C2DAD6C2DAD6C2D9D7752A08D7AAD6C2D
+      AD6C2DAD6C2DDCC2A8FFFFFFDEC5ADAD6C2DAD6C2DE0C8B1FFFFFFD9BCA0AD6C
+      2DAD6C2DAD6C2DA29281FF00FFAC6D2FAD6C2DAD6C2DBB8753FFFFFFFFFFFFF0
+      E4D8F1E6DBFFFFFFFFFFFFBC8854AD6C2DAD6C2DAB6D31FF00FFFF00FF9F8B78
+      AD6C2DAD6C2DAD6C2DBF8E5DEADACBFFFFFFFFFFFFEADACBC19162AD6C2DAD6C
+      2DAD6C2DA29080FF00FFFF00FFFF00FF9C7B59AD6C2DAD6C2DAD6C2DAD6C2DAD
+      6C2EAD6C2DAD6C2DAD6C2DAD6C2DAD6C2D9B7D5FFF00FFFF00FFFF00FFFF00FF
+      FF00FF9F8A75AC6C2FAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAD6C2DAC6D2F9F8C
+      79FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF9F8A75A17347A9
+      6D33A86D349F73489F8B78FF00FFFF00FFFF00FFFF00FFFF00FF}
+    TabOrder = 3
+    OnClick = bHelpClick
+  end
+  object tbZoom: TTrackBar
+    Left = 23
+    Top = 336
+    Width = 338
+    Height = 25
+    Max = 150
+    TabOrder = 4
+    OnChange = tbZoomChange
+  end
+  object tbExplodeBiggest: TTrackBar
+    Left = 23
+    Top = 392
+    Width = 338
+    Height = 25
+    Max = 150
+    TabOrder = 5
+    OnChange = tbExplodeBiggestChange
+  end
+  object cbShowLegend: TAdvOfficeCheckBox
+    Left = 32
+    Top = 431
+    Width = 232
+    Height = 20
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
+    OnClick = cbShowLegendClick
+    Alignment = taLeftJustify
+    Caption = '.'
+    ReturnIsTab = False
+    Version = '1.5.0.9'
+  end
+  object cbShowLabels: TAdvOfficeCheckBox
+    Left = 32
+    Top = 457
+    Width = 120
+    Height = 20
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 7
+    OnClick = cbShowLabelsClick
+    Alignment = taLeftJustify
+    Caption = '.'
+    ReturnIsTab = False
+    Version = '1.5.0.9'
+  end
+  object cbLabelOptions: TComboBox
+    Left = 109
+    Top = 520
+    Width = 154
+    Height = 21
+    Style = csDropDownList
+    TabOrder = 8
+  end
+  object cbMarksType: TComboBox
+    Left = 110
+    Top = 493
+    Width = 154
+    Height = 21
+    Style = csDropDownList
+    TabOrder = 9
+  end
+  object cbShowGradient: TAdvOfficeCheckBox
+    Left = 542
+    Top = 397
+    Width = 89
+    Height = 20
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 10
+    OnClick = cbShowGradientClick
+    Alignment = taLeftJustify
+    Caption = '.'
+    ReturnIsTab = False
+    Version = '1.5.0.9'
+  end
+  object cdMain: TColorDialog
+    Left = 128
+    Top = 601
+  end
+end
