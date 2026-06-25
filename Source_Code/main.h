@@ -15,6 +15,10 @@
 #include <Vcl.Graphics.hpp>
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
+#include <VCLTee.Chart.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -49,23 +53,59 @@ __published:	// IDE-managed Components
 	TLabel *lWelcomeScan;
 	TLabel *lWelcomeFolderHistory;
 	TLabel *lDataSource;
-	TToolBar *ToolBar1;
-	TPanel *Panel2;
-	TPanel *Panel3;
-	TToolButton *ToolButton1;
-	TToolButton *ToolButton2;
-	TToolButton *ToolButton3;
+	TToolBar *tbMain;
+	TPanel *pReports;
+	TPanel *pMainCanvas;
+	TToolButton *tbSaveReports;
+	TToolButton *tbOpen;
+	TToolButton *tbSettings;
 	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
 	TToolButton *ToolButton6;
 	TToolButton *ToolButton7;
 	TToolButton *ToolButton8;
-	TToolButton *ToolButton9;
-	TToolButton *ToolButton10;
+	TToolButton *tbWizard;
+	TToolButton *tbRefresh;
 	TToolButton *ToolButton11;
-	TToolButton *ToolButton12;
+	TToolButton *tbAbout;
 	TImageList *ImageList1;
-private:	// User declarations
+	TMainMenu *MainMenu1;
+	TMenuItem *File1;
+	TMenuItem *File2;
+	TMenuItem *About1;
+	TMenuItem *Exit1;
+	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall FormDestroy(TObject *Sender);
+	void __fastcall lTaskID1Click(TObject *Sender);
+	void __fastcall tbSaveReportsClick(TObject *Sender);
+	void __fastcall tbOpenClick(TObject *Sender);
+	void __fastcall tbSettingsClick(TObject *Sender);
+	void __fastcall tbWizardClick(TObject *Sender);
+	void __fastcall tbRefreshClick(TObject *Sender);
+	void __fastcall tbAboutClick(TObject *Sender);
+private:
+
+	int PanelInFront = -1;
+	int PanelSource = -1;
+
+	// Application init
+	void CreateFrames();
+    void SetLanguageText();
+
+	// post scan
+    void PostScan();
+
+	// Frame_Events
+	void __fastcall OnNewScan(const std::wstring);
+
+	// GUI control
+    void ToggleSoftwareStatus(bool);
+	void SetSidePanelDisplay(int, int, int, bool);
+	void SetWelcomeDisplay(int);
+    void HandleResizing(int);
+	void DoWelcome(int);
+	void DoTask(int, int);
+
 public:		// User declarations
 	__fastcall TForm1(TComponent* Owner);
 };
