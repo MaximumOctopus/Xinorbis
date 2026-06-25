@@ -10,28 +10,53 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.FileCtrl.hpp>
+#include <Vcl.Menus.hpp>
 //---------------------------------------------------------------------------
-class TFrame1 : public TFrame
+class TFrameSelect : public TFrame
 {
 __published:	// IDE-managed Components
 	TPageControl *PageControl1;
-	TTabSheet *TabSheet1;
+	TTabSheet *tsSelectFolder;
 	TTabSheet *TabSheet2;
-	TBitBtn *BitBtn1;
-	TDriveComboBox *DriveComboBox1;
-	TDirectoryListBox *DirectoryListBox1;
-	TBitBtn *BitBtn2;
-	TBitBtn *BitBtn3;
-	TBitBtn *BitBtn4;
-	TBitBtn *BitBtn5;
-	TBitBtn *BitBtn6;
-	TBitBtn *BitBtn7;
-	TEdit *Edit1;
-private:	// User declarations
-public:		// User declarations
-	__fastcall TFrame1(TComponent* Owner);
+	TBitBtn *bScanNow;
+	TDriveComboBox *dcbSelect;
+	TDirectoryListBox *dlbSelect;
+	TBitBtn *bSelect;
+	TBitBtn *bExcludeFiles;
+	TBitBtn *bExcludeFolders;
+	TBitBtn *bCombine;
+	TBitBtn *bFavourites;
+	TBitBtn *bExplore;
+	TEdit *eScanPath;
+	TPopupMenu *puScanHistory;
+	TMenuItem *miExploreFromScanHistory;
+	TMenuItem *N20;
+	TMenuItem *miShowInFolderHistory;
+	TMenuItem *N1;
+	TMenuItem *miSaveAs;
+	TPopupMenu *puQuickFolder;
+	TMenuItem *miQFTitle;
+	TMenuItem *N16;
+	TMenuItem *miQFAdd;
+	TMenuItem *N17;
+	void __fastcall bScanNowClick(TObject *Sender);
+	void __fastcall bExploreClick(TObject *Sender);
+	void __fastcall bSelectClick(TObject *Sender);
+	void __fastcall bFavouritesClick(TObject *Sender);
+	void __fastcall bExcludeFoldersClick(TObject *Sender);
+	void __fastcall bExcludeFilesClick(TObject *Sender);
+	void __fastcall bCombineClick(TObject *Sender);
+	void __fastcall dlbSelectChange(TObject *Sender);
+private:
+
+	void Init();
+
+public:
+	__fastcall TFrameSelect(TComponent* Owner);
+
+    std::function<void(const std::wstring)> OnNewScan;
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame1 *Frame1;
+extern PACKAGE TFrameSelect *FrameSelect;
 //---------------------------------------------------------------------------
 #endif

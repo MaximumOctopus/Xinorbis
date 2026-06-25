@@ -7,15 +7,60 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.Buttons.hpp>
+#include <Vcl.ComCtrls.hpp>
 //---------------------------------------------------------------------------
-class TFrame2 : public TFrame
+class TFrameSummary : public TFrame
 {
 __published:	// IDE-managed Components
-private:	// User declarations
-public:		// User declarations
-	__fastcall TFrame2(TComponent* Owner);
+	TPageControl *PageControl1;
+	TTabSheet *tsSummary;
+	TTabSheet *TabSheet2;
+	TSpeedButton *SpeedButton1;
+	TLabel *lSNoF;
+	TLabel *lSNoD;
+	TLabel *lSNoFX;
+	TLabel *lSNoDX;
+	TLabel *lSSoF;
+	TLabel *lSoFX;
+	TLabel *lSSoFoD;
+	TLabel *lSSoFODX;
+	TLabel *lSAFF;
+	TLabel *lSAFSX;
+	TLabel *lSAFS;
+	TLabel *lSAFFX;
+	TLabel *lSLF;
+	TLabel *lSLFSoF;
+	TLabel *lSULSSoF;
+	TLabel *lSEDX;
+	TLabel *lSED;
+	TLabel *lSEF;
+	TLabel *lSEFX;
+	TLabel *lProcessTime;
+	TLabel *lSummaryByQuantity;
+	TLabel *lSummaryBySize;
+	TLabel *lSLFSoFX;
+	TLabel *lSLFNoF;
+	TLabel *lSLFNoFX;
+	TLabel *lSULSNoF;
+	TLabel *lScanPath;
+	TLabel *lSULSNoFX;
+	TLabel *lSLFX;
+	TLabel *lSULSSoFX;
+private:
+
+	void Init();
+    void BuildPreamble();
+	void BuildSummaryLabels();
+	void BuildGauges();
+
+public:
+	__fastcall TFrameSummary(TComponent* Owner);
+
+    void Update();
+
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame2 *Frame2;
+extern PACKAGE TFrameSummary *FrameSummary;
 //---------------------------------------------------------------------------
 #endif
