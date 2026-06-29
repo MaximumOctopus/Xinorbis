@@ -4,7 +4,7 @@ I'll be uploading the code reguarly (at least once a week) as I work through the
 
 I'm adding raw functionality first, then once that's working, I'll start tidying and adding the remainder of the missing features.
 
-I don't expect a feature-complete version until the end of 2026.
+I don't expect a feature-complete version until the end of 2026. There won't be a stable release until around August/September, but as of late June some functionality is available (though it's going to be buggy and missing major functions for a while...).
 
 There's over 45k lines of code to rewrite (and I'm redesigning how a lot of it works), so it'll take some time.
 
