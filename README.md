@@ -10,4 +10,8 @@ There's over 45k lines of code to rewrite (and I'm redesigning how a lot of it w
 
 Database functions are not going to be part of the initial release.
 
+2026/07/04
+
+We have some very, very basic functionality. There is a *lot* of code left to rewrite and a lot of "to do" comments where I've rewritten the majority but there's still some code to add. I have done very little testing.
+
 PAF
