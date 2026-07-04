@@ -7,15 +7,21 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.Buttons.hpp>
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
-class TFrame5 : public TFrame
+class TFrameExploder : public TFrame
 {
 __published:	// IDE-managed Components
+	TPanel *pExploderTop;
+	TLabel *lExploderFolder;
+	TShape *shapeExploder;
+	TBitBtn *bEBack;
 private:	// User declarations
 public:		// User declarations
-	__fastcall TFrame5(TComponent* Owner);
+	__fastcall TFrameExploder(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame5 *Frame5;
+extern PACKAGE TFrameExploder *FrameExploder;
 //---------------------------------------------------------------------------
 #endif

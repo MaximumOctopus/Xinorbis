@@ -16,6 +16,7 @@
 #include <string>
 
 #include "ConstantsData.h"
+#include "Convert.h"
 #include "LanguageHandler.h"
 #include "MD5.h"
 #include "SystemGlobal.h"
@@ -420,12 +421,20 @@ namespace Utility
 
     std::wstring SplitFilename(const std::wstring &str)
     {
-        size_t found;
+		size_t found;
 
         found = str.rfind(L"\\");
 
-        return str.substr(0, found);
-    }
+		return str.substr(0, found);
+	}
+
+
+	std::wstring GetDefaultFileName(const std::wstring extension, const std::wstring prefix)
+	{
+		std::wstring file_name = prefix + L"_" + std::to_wstring(Convert::DateToYYYYMMDDI(Now())) + L"_" + Convert::TimeToString(Now(), false) + extension;
+
+		return Convert::ToReportFileName(file_name);
+	}
 
 
 	std::wstring BoolToString(bool input)
@@ -486,6 +495,20 @@ namespace Utility
 		}
 
 		return false;
+	}
+
+
+	bool IsNumber(const std::wstring input)
+	{
+		for (wchar_t c : input)
+		{
+			if (!isdigit(c))
+			{
+				return false;
+            }
+		}
+
+		return true;
 	}
 
 

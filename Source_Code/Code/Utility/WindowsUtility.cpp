@@ -381,3 +381,22 @@ DriveDetails WindowsUtility::GetDriveDetails(const std::wstring& drive_root)
 
 	return dd;
 }
+
+
+void WindowsUtility::ExecuteFile(const std::wstring path, const std::wstring parameters)
+{
+	if (parameters.empty())
+	{
+		ShellExecute(0, L"open", path.c_str(), 0, 0 , SW_SHOW );
+	}
+	else
+	{
+		ShellExecute(0, L"open", path.c_str(), parameters.c_str(), 0 , SW_SHOW );
+	}
+}
+
+
+bool WindowsUtility::SendToRecycleBin(const std::wstring file_name)
+{
+    return false;
+}

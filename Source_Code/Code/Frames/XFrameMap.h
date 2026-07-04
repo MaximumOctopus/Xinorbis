@@ -7,15 +7,21 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
-class TFrame6 : public TFrame
+class TFrameMap : public TFrame
 {
 __published:	// IDE-managed Components
+	TPanel *Panel1;
+	TLabel *lMapFolder;
+	TLabel *lMapSize;
+	TShape *shapeMap;
+	TComboBox *cbMapSizeSelect;
 private:	// User declarations
 public:		// User declarations
-	__fastcall TFrame6(TComponent* Owner);
+	__fastcall TFrameMap(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame6 *Frame6;
+extern PACKAGE TFrameMap *FrameMap;
 //---------------------------------------------------------------------------
 #endif

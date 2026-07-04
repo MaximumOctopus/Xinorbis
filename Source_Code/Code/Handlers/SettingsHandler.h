@@ -14,15 +14,19 @@
 
 #include <Windows.h>
 
+#include "ChartOptions.h"
 #include "ConstantsData.h"
 #include "ConstantsLanguage.h"
+#include "FormDetails.h"
 #include "Ini.h"
 #include "ConstantsParameters.h"
 #include "ConstantsReports.h"
 #include "ReportHTMLOptions.h"
+#include "Setting.h"
 
 
 enum class SettingsSource { None = 0, ConfigIni = 1, Registry = 2 };
+
 
 struct CustomSettings
 {
@@ -32,14 +36,24 @@ struct CustomSettings
 };
 
 
+struct DatabaseSettings
+{
+	bool Enabled = false;
+
+	bool UseODBC = false;
+};
+
+
 struct GeneralSettings
 {
-    int DateFormat = 2; // 0: dd/mm/yyyy 1: mm/dd/yyyy 2: yyyy/mm/dd
+	int DateFormat = 2; // 0: dd/mm/yyyy 1: mm/dd/yyyy 2: yyyy/mm/dd
 
 	std::wstring DecimalSeparator = L".";
 
     bool ShowStatusOutput = true;
-    bool ShowProgress = true;
+	bool ShowProgress = true;
+
+    std::wstring CustomViewer = L"";
 };
 
 
@@ -81,9 +95,19 @@ struct SystemSettings
 };
 
 
+struct TabDisplayOptions
+{
+	Setting Option[22];
+};
+
+
+struct TabInternalOptions
+{
+	int TreeViewChartIndex = 0;
+};
+
 class SettingsHandler
 {
-
     HKEY hKey;
 
 	Ini* __iniFile;
@@ -91,18 +115,31 @@ class SettingsHandler
 	bool OpenSettings(bool);
 	bool CloseSettings();
 
+    bool ClearFormDetails(int);
+
 	bool LoadBasic();
 	bool LoadCustomSettings();
 	bool LoadLanguage();
 
-	std::wstring ReadStringFromSettings(const std::wstring, const std::wstring, std::wstring);
-	int ReadIntegerFromSettings(const std::wstring, const std::wstring, int, int);
-	int ReadIntegerFromSettingsInputCheck(const std::wstring, const std::wstring, int, int, int);
-	bool ReadBoolFromSettings(const std::wstring, const std::wstring, bool);
+	int LanguageToInt(LanguageType);
+
+	std::wstring ReadString(const std::wstring, const std::wstring, std::wstring);
+	int ReadInteger(const std::wstring, const std::wstring, int, int);
+	int ReadIntegerInputCheck(const std::wstring, const std::wstring, int, int, int);
+	bool ReadBool(const std::wstring, const std::wstring, bool);
+
+	void WriteString(const std::wstring, const std::wstring, std::wstring);
+	void WriteInteger(const std::wstring, const std::wstring, int);
+	void WriteBool(const std::wstring, const std::wstring, bool);
 
 public:
 
+	ChartOptions Chart;
+	TabDisplayOptions TabDisplay[4];
+	TabInternalOptions TabInternal;
+
 	CustomSettings Custom;
+    DatabaseSettings Database;
 	GeneralSettings General;
 	OptimisationSettings Optimisations;
 	ReportSettings Reports;
@@ -113,6 +150,11 @@ public:
 	void ProcessProcessingSetting(ParameterOption);
 
 	void SetDefaults();
+
+	FormDetails LoadFormDetails(int);
+	void SaveFormDetails(FormDetails &);
+
+	bool SaveDefaults();
 
 	SettingsHandler();
 };

@@ -50,16 +50,16 @@ void TFrameSummary::Init()
 //  lSVolMax.Caption     := FormatForScreen(DriveReport[1]);
 //  lSVolFree.Caption    := FormatForScreen(DriveReport[2]);
 
-//  if lSThisFolder.Canvas.TextWidth(XText[rsFolder]) < 80 then
-//    lSThisFolder.Left := gSThisFolder.Left + (Round((80 - lSThisFolder.Canvas.TextWidth(XText[rsFolder])) / 2));
-//  lSThisFolder.Caption := XText[rsFolder];
+//  if lSThisFolder.Canvas.TextWidth(XText[kFolder]) < 80 then
+//    lSThisFolder.Left := gSThisFolder.Left + (Round((80 - lSThisFolder.Canvas.TextWidth(XText[kFolder])) / 2));
+//  lSThisFolder.Caption := XText[kFolder];
 
-//  if lSDSpaceUsed.Canvas.TextWidth(XText[rsUsedSpace]) < 80 then
-//    lSDSpaceUsed.Left := gSFS.Left + (Round((80 - lSDSpaceUsed.Canvas.TextWidth(XText[rsUsedSpace])) / 2));
-//  lSDSpaceUsed.Caption := XText[rsUsedSpace];
+//  if lSDSpaceUsed.Canvas.TextWidth(XText[kUsedSpace]) < 80 then
+//    lSDSpaceUsed.Left := gSFS.Left + (Round((80 - lSDSpaceUsed.Canvas.TextWidth(XText[kUsedSpace])) / 2));
+//  lSDSpaceUsed.Caption := XText[kUsedSpace];
 
 	tsSummary->Caption = GLanguageHandler->Text[kSummary].c_str();
-//  tsImportFromFile.Caption := XText[rsORIReport9];
+//  tsImportFromFile.Caption := XText[kORIReport9];
 }
 
 
@@ -75,7 +75,7 @@ void TFrameSummary::Update()
 void TFrameSummary::BuildPreamble()
 {
 //	if XSettings.LastScanMultiple then begin
-//	lSScanPath.Caption := XText[rsMultipleFolders];
+//	lSScanPath.Caption := XText[kMultipleFolders];
 //	lSScanPath.Hint    := '';
 
 //	for t := 0 to GScanDetails[FSource].MultipleList.Count - 1 do begin

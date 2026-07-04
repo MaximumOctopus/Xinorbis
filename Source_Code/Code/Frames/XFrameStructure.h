@@ -7,15 +7,21 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
-class TFrame4 : public TFrame
+class TFrameStructure : public TFrame
 {
 __published:	// IDE-managed Components
+	TPanel *pLeftSide;
+	TPanel *Panel2;
+	TSplitter *Splitter1;
+	TPanel *pRightSide;
+	TPanel *Panel4;
 private:	// User declarations
 public:		// User declarations
-	__fastcall TFrame4(TComponent* Owner);
+	__fastcall TFrameStructure(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame4 *Frame4;
+extern PACKAGE TFrameStructure *FrameStructure;
 //---------------------------------------------------------------------------
 #endif

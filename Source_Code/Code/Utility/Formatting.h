@@ -32,6 +32,6 @@ namespace Formatting
 
 	[[nodiscard]] std::wstring StringOfCharacters(int, std::wstring);
 
-	[[nodiscard]] std::string to_utf8(const std::wstring&);
-	[[nodiscard]] std::string to_utf8x(const wchar_t*, int);
+	std::string to_utf8(const std::wstring& str);
+	std::string to_utf8x(const wchar_t* buffer, int len);
 }

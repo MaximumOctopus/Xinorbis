@@ -104,7 +104,6 @@ object FrameSelect: TFrameSelect
         Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 9
-        Text = 'eScanPath'
       end
     end
     object TabSheet2: TTabSheet
@@ -113,6 +112,7 @@ object FrameSelect: TFrameSelect
     end
   end
   object puScanHistory: TPopupMenu
+    OnPopup = puScanHistoryPopup
     Left = 674
     Top = 296
     object miExploreFromScanHistory: TMenuItem

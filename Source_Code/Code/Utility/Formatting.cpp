@@ -14,7 +14,8 @@
 #include <string>
 #include <windows.h>
 
-#include "Formatting.h"
+#include "Convert.h"
+#include "Utility.h"
 
 
 namespace Formatting
@@ -191,13 +192,6 @@ namespace Formatting
 	}
 
 
-	// utf8 output magic
-	std::string to_utf8(const std::wstring& str)
-	{
-		return to_utf8x(str.c_str(), (int)str.size());
-	}
-
-
 	std::string to_utf8x(const wchar_t* buffer, int len)
 	{
 		int nChars = ::WideCharToMultiByte(
@@ -219,11 +213,17 @@ namespace Formatting
 			0,
 			buffer,
 			len,
-			const_cast<char*>(newbuffer.c_str()),
-			nChars,
-			NULL,
-			NULL);
+            const_cast<char*>(newbuffer.c_str()),
+            nChars,
+            NULL,
+            NULL);
 
-		return newbuffer;
+        return newbuffer;
 	}
+
+	// utf8 output magic
+	std::string to_utf8(const std::wstring& str)
+    {
+		return to_utf8x(str.c_str(), (int)str.size());
+    }
 }

@@ -471,7 +471,7 @@ namespace SearchUtility
         else
         {
             sco.Type = SearchType::Error;
-            //sco.error = XText[rsInvalidInput] + ' "' + Copy(aInput, aFrom, length(aInput) - aTo) + '"'; to do
+            //sco.error = XText[kInvalidInput] + ' "' + Copy(aInput, aFrom, length(aInput) - aTo) + '"'; to do
         }
     }
 

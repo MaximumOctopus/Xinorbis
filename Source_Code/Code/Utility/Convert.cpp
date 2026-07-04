@@ -16,6 +16,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <System.SysUtils.hpp>
 
 #include "ConstantsData.h"
 #include "Convert.h"
@@ -90,6 +91,39 @@ namespace Convert
 
 			return L"TO DO";//std::format(L"{0:.2f}TB", size);
 		}
+	}
+
+
+	std::wstring ConvertToStaticUnit(unsigned __int64 x, UnitConversion unit)
+	{
+		std::wstring value = L"";
+		std::wstring units = L"";
+
+		switch (unit)
+		{
+		case UnitConversion::kUnitKB:
+			value = FloatToStrF((x/1024),                 ffFixed, 7, 2).c_str();
+			units = GLanguageHandler->Units[kUnitKB];
+			break;
+		case UnitConversion::kUnitMB:
+			value = FloatToStrF((x/(1024 * 1024)),        ffFixed, 7, 2).c_str();
+			units = GLanguageHandler->Units[kUnitMB];
+			break;
+		case UnitConversion::kUnitGB:
+			value = FloatToStrF((x/(1024 * 1024 * 1024)), ffFixed, 7, 2).c_str();
+			units = GLanguageHandler->Units[kUnitGB];
+			break;
+		case UnitConversion::kUnitTB:
+			value = FloatToStrF((x/(1099511627776)),      ffFixed, 7, 2).c_str();
+			units = GLanguageHandler->Units[kUnitTB];
+			break;
+
+		default:
+			value = FloatToStrF((x/(1024 * 1024)),        ffFixed, 7, 2).c_str();
+			units = GLanguageHandler->Units[kUnitMB];
+		}
+
+		return value + units;
 	}
 
 
@@ -315,6 +349,18 @@ namespace Convert
 	}
 
 
+	int DateToYYYYMMDDI(TDateTime dt)
+	{
+		unsigned short yy = 0;
+		unsigned short mm = 0;
+		unsigned short dd = 0;
+
+		dt.DecodeDate(&yy, &mm, &dd);
+
+		return (yy * 10000) + (mm * 100) + dd;
+    }
+
+
 	// +/- day count
 	int TodayPlusDaysToYYYYMMDD(int days)
 	{
@@ -487,6 +533,45 @@ namespace Convert
 		return 1200;
 	}
 
+
+	std::wstring TimeToString(TDateTime dt, bool separator)
+	{
+		unsigned short hh = 0;
+		unsigned short mm = 0;
+		unsigned short ss = 0;
+		unsigned short sss = 0;
+
+		dt.DecodeTime(&hh, &mm, &ss, &sss);
+
+		std::wstring s = L"";
+
+		if (hh < 10)
+		{
+			s = L"0" + std::to_wstring(hh);
+		}
+		else
+		{
+			s = std::to_wstring(hh);
+		}
+
+		if (separator)
+		{
+			s += L":";
+		}
+
+		if (mm < 10)
+		{
+			s += L"0" + std::to_wstring(mm);
+		}
+		else
+		{
+			s += std::to_wstring(mm);
+		}
+
+		return s;
+    }
+
+
 	std::wstring YYYYMMDDToMonthDayYear(int date)
 	{
 		std::wstring yyyymmdd = std::to_wstring(date);
@@ -520,5 +605,15 @@ namespace Convert
 		std::wstring blue  = IntToHex((colour & 0x0000FF), 2);
 
 		return blue + green + red;
+	}
+
+
+	std::wstring ToReportFileName(const std::wstring file_name)
+	{
+		std::wstring output = Utility::ReplaceString(file_name, L" ", L"_");
+
+		std::transform(output.begin(), output.end(), output.begin(), ::tolower);
+
+		return output;
 	}
 };

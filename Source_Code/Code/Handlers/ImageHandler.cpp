@@ -50,3 +50,17 @@ void ImageHandler::LoadIcons(const std::wstring folder)
 		bmft->Free();
 	}
 }
+
+
+void ImageHandler::LoadFlags(const std::wstring folder)
+{
+	for (int t = 0; t < 11; t++)
+	{
+		TBitmap* flag = new TBitmap();
+		flag->LoadFromFile((folder + FlagFiles[t]).c_str());
+
+		Flags.push_back(flag);
+
+		delete flag;
+	}
+}

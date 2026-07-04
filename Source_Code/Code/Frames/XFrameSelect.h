@@ -47,6 +47,7 @@ __published:	// IDE-managed Components
 	void __fastcall bExcludeFilesClick(TObject *Sender);
 	void __fastcall bCombineClick(TObject *Sender);
 	void __fastcall dlbSelectChange(TObject *Sender);
+	void __fastcall puScanHistoryPopup(TObject *Sender);
 private:
 
 	void Init();
@@ -54,7 +55,8 @@ private:
 public:
 	__fastcall TFrameSelect(TComponent* Owner);
 
-    std::function<void(const std::wstring)> OnNewScan;
+	std::function<void(const std::wstring)> OnNewScan;
+    std::function<void(int)> OnScanWithMultiple;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSelect *FrameSelect;

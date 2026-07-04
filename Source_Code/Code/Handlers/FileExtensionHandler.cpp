@@ -44,15 +44,12 @@ bool FileExtensionHandler::LoadDefaultFileExtensions(const std::wstring folder)
 
 			while (std::getline(file, s))
 			{
-				FileExtension file_extension;
-
 				if (s.find('\n') != std::string::npos)
 				{
 					s.erase(std::remove(s.begin(), s.end(), '\n'), s.begin()); // to do, does it contain \n? do we need it?!
 				}
 
-				file_extension.Name     = s;
-				file_extension.Category = t;
+				FileExtension *file_extension = new FileExtension(s, t);
 
 				Extensions.push_back(file_extension);
 			}
@@ -91,12 +88,12 @@ ExtensionSearch FileExtensionHandler::GetExtensionCategoryID(const std::wstring 
 	ExtensionSearch extension_search;
 
 	auto pos = std::find_if(Extensions.begin(), Extensions.end(),
-						    [extension](const FileExtension& fx) { return fx.Name == extension; });
+							[extension](const FileExtension *fx) { return fx->Name == extension; });
 
 	if (pos != Extensions.end())
 	{
 		extension_search.Found = true;
-		extension_search.Category = pos->Category;
+		extension_search.Category = (*pos)->Category;
 		extension_search.Extension = std::distance(std::begin(Extensions), pos);
 
 		return extension_search;
@@ -109,11 +106,11 @@ ExtensionSearch FileExtensionHandler::GetExtensionCategoryID(const std::wstring 
 int FileExtensionHandler::GetExtensionCategory(const std::wstring extension)
 {
 	auto pos = std::find_if(Extensions.begin(), Extensions.end(),
-							[extension](const FileExtension& fx) { return fx.Name == extension; });
+							[extension](const FileExtension* fx) { return fx->Name == extension; });
 
 	if (pos != Extensions.end())
 	{
-		return pos->Category;
+		return (*pos)->Category;
 	}
 
 	return __FileCategoriesOther;
@@ -128,9 +125,9 @@ void FileExtensionHandler::ReportDuplicates()
 	{
 		int index = z + 1;
 
-		while (index < Extensions.size() && Extensions[index].Name == Extensions[z].Name)
+		while (index < Extensions.size() && Extensions[index]->Name == Extensions[z]->Name)
 		{
-			std::wcout << L"Duplicate extension: " << Extensions[z].Name << L" : " << __FileExtensionFileName[Extensions[z].Category] << L" & " << __FileExtensionFileName[Extensions[index].Category] << "\n";
+			std::wcout << L"Duplicate extension: " << Extensions[z]->Name << L" : " << __FileExtensionFileName[Extensions[z]->Category] << L" & " << __FileExtensionFileName[Extensions[index]->Category] << "\n";
 
 			index++;
 

@@ -41,4 +41,8 @@ namespace WindowsUtility
 	[[nodiscard]] std::wstring GetDataFolder();
 
 	[[nodiscard]] std::wstring GetEnvVariable(std::wstring);
+
+	void ExecuteFile(const std::wstring, const std::wstring);
+
+	bool SendToRecycleBin(const std::wstring);
 }

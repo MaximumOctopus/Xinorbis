@@ -14,16 +14,20 @@
 
 #include <VCLTee.Chart.hpp>
 
-enum class ChartType { kUnknown = 0, kPie, kBar, kHorizontal };
+#include "ChartOptions.h"
 
 
 namespace ChartUtility
 {
+	void SetAdvancedOptions(TChart*, ChartOptions);
+
 	void SaveChartToPNG(TChart*, const std::wstring);
 
 	void ChangeChartToPie(TChart*);
 
-	void ChangeChartToBar(TChart*, bool);
+	void ChangeChartToHorizontalBar(TChart*, bool);
 
 	ChartType GetChartType(TChart *);
+
+    void CopyChartToClipboard(TChart*);
 }

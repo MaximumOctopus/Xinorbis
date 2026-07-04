@@ -34,9 +34,13 @@ namespace Utility
 	[[nodiscard]] std::wstring SplitFilename(const std::wstring&);
 	[[nodiscard]] std::wstring WebFileLink(const std::wstring);
 
+	[[nodiscard]] std::wstring GetDefaultFileName(const std::wstring, const std::wstring);
+
 	[[nodiscard]] std::wstring BoolToString(bool);
 	[[nodiscard]] bool StringToBool(wchar_t);
 	[[nodiscard]] int OptionToInt(wchar_t);
+
+    [[nodiscard]] bool IsNumber(const std::wstring);
 
 	[[nodiscard]] bool IsTestCharacter(wchar_t);
 
