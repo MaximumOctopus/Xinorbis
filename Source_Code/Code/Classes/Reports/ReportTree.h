@@ -13,10 +13,12 @@
 #pragma once
 
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
+#include "ReportTreeOptions.h"
 
-static const std::wstring __XDate    = L"July 4th 2026";
+
+namespace ReportTree
+{
+	void Generate(TreeReportOptions);
+
+	int GetIndent(const std::wstring);
+}

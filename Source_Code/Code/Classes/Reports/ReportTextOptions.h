@@ -12,11 +12,16 @@
 
 #pragma once
 
+#include <string>
+#include "ConstantsReports.h"
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
 
-static const std::wstring __XDate    = L"July 4th 2026";
+struct TextReportOptions
+{
+	std::wstring FileName = L"";
+
+	bool Layout[__TextReportOptionsCount] = { false };
+	bool CategoryList[__FileCategoriesCount] = { false };
+
+	bool DeepScan = false;
+};

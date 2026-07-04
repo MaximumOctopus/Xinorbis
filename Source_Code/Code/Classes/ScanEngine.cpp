@@ -53,6 +53,10 @@ ScanEngine* GScanEngine;
 bool static sortBySize(const FileObject &lhs, const FileObject &rhs) { return lhs.Size < rhs.Size; }
 bool static sortByDate(const FileObject &lhs, const FileObject &rhs) { return lhs.DateCreated < rhs.DateCreated; }
 
+bool static sortByCreatedDate(const FileObject &lhs, const FileObject &rhs) { return lhs.DateCreated < rhs.DateCreated; }
+bool static sortByAccessedDate(const FileObject &lhs, const FileObject &rhs) { return lhs.DateAccessed < rhs.DateAccessed; }
+bool static sortByModifiedDate(const FileObject &lhs, const FileObject &rhs) { return lhs.DateModified < rhs.DateModified; }
+
 bool static sortRootBySize(const RootFolder& lhs, const RootFolder& rhs) { return lhs.Size > rhs.Size; }
 
 bool static sortRootByLength(const RootFolder& lhs, const RootFolder& rhs) { return lhs.Name.length() > rhs.Name.length(); }
@@ -60,6 +64,7 @@ bool static sortRootByLength(const RootFolder& lhs, const RootFolder& rhs) { ret
 
 ScanEngine::ScanEngine()
 {
+	Init();
 	InitLanguage();
 
 	TodayAsInteger     = DateUtility::TodayAsInteger();
@@ -116,6 +121,24 @@ ScanEngine::ScanEngine()
 }
 
 
+void ScanEngine::Init()
+{
+	for (int t = 0; t < 280; t++)
+	{
+		if (t != 279)
+		{
+			Data.Lengths[t].Name = std::to_wstring(t + 1);
+		}
+		else
+		{
+            Data.Lengths[t].Name = L">=280";
+		}
+
+        Data.Lengths[t].Ordinal = t + 1;
+	}
+}
+
+
 void ScanEngine::InitLanguage()
 {
 	for (int t = 0; t < __FileCategoriesCount; t++)
@@ -127,60 +150,29 @@ void ScanEngine::InitLanguage()
 
 void ScanEngine::ClearData()
 {
-	Data.FileCount   = 0;
-	Data.FolderCount = 0;
-	Data.TotalSize   = 0;
-	Data.TotalSizeOD = 0;
+	Data.Clear();
 
 	DiskStats.DriveSpaceTotal = 0;
 	DiskStats.DriveSpaceFree = 0;
 	DiskStats.DriveSpaceUsed = 0;
-
-	for (int t = 0; t < __MagnitudesCount; t++)
-	{
-		Data.Magnitude[t].Count = 0;
-		Data.Magnitude[t].Size = 0;
-	}
-
-	for (int t = 0; t < __AttributesCount; t++)
-	{
-		Data.FileAttributes[t].Count = 0;
-		Data.FileAttributes[t].Size = 0;
-	}
-
-	for (int t = 0; t < __FileCategoriesCount; t++)
-	{
-		Data.ExtensionSpread[t].Count = 0;
-		Data.ExtensionSpread[t].Size = 0;
-	}
-
-	RootFolder rfd;
-
-	rfd.Name        = L"\\ (root)";
-	rfd.Attributes  = 0;
-	rfd.Size        = 0;
-	rfd.Count       = 0;
-	rfd.FilesInRoot = true;
-
-	Data.RootFolders.push_back(rfd);
 }
 
 
 void ScanEngine::AddToExcludeList(const std::wstring exclude)
 {
-	ExcludeFolders.push_back(exclude);
+	ExcludedFolders.push_back(exclude);
 }
 
 
 int ScanEngine::ExcludeCount()
 {
-	return ExcludeFolders.size();
+	return ExcludedFolders.size();
 }
 
 
 std::wstring ScanEngine::GetExcludeItem(int index)
 {
-	return ExcludeFolders[index];
+	return ExcludedFolders[index];
 }
 
 
@@ -259,9 +251,14 @@ bool ScanEngine::Scan(bool process_data, bool process_top_100_size, bool process
 	{
 		PopulateDiskStat();
 
-		if (ExcludeFolders.size() != 0)
+		if (ExcludedFolders.size() != 0)
 		{
 			Path.ExcludeFolders = true;
+		}
+
+		if (ExcludedFiles.size() != 0)
+		{
+			Path.ExcludeFiles = true;
 		}
 
 		if (Path.ExcludeFolders)
@@ -629,11 +626,11 @@ bool ScanEngine::Analyse()
 
 				while ((!found) && (z < GFileExtensionHandler->Extensions.size()))
 				{
-					FileExtension tfx = GFileExtensionHandler->Extensions[z];
+					FileExtension *tfx = GFileExtensionHandler->Extensions[z];
 
-					if (tfx.Category == __Category_Temp)
+					if (tfx->Category == __Category_Temp)
 					{
-						std::wstring tx = tfx.Name;
+						std::wstring tx = tfx->Name;
 
 						std::transform(tx.begin(), tx.end(), tx.begin(), ::toupper);
 
@@ -687,8 +684,8 @@ bool ScanEngine::Analyse()
 				{
 					Data.TemporaryFiles.push_back(Data.Folders[file.FilePathIndex] + file.Name);
 
-					GFileExtensionHandler->Extensions[__Category_Temp].Quantity++;
-					GFileExtensionHandler->Extensions[__Category_Temp].Size += file.Size;
+					GFileExtensionHandler->Extensions[__Category_Temp]->Count++;
+					GFileExtensionHandler->Extensions[__Category_Temp]->Size += file.Size;
 				}
 
 				file.Temp = found;
@@ -975,12 +972,10 @@ void ScanEngine::ScanFolder(const std::wstring &folder)
 					Data.ExtensionSpread[__FileCategoriesOther].Count++;
 					Data.ExtensionSpread[__FileCategoriesOther].Size += file_object.Size;
 
-					FileExtension tfx;
+					FileExtension *tfx = new FileExtension(ext, __Category_Other);
 
-					tfx.Name = ext;
-					tfx.Category = __Category_Other;
-					tfx.Quantity = 1;
-					tfx.Size = file_object.Size;
+					tfx->Count = 1;
+					tfx->Size = file_object.Size;
 
 					GFileExtensionHandler->Extensions.push_back(tfx);
 				}
@@ -994,8 +989,8 @@ void ScanEngine::ScanFolder(const std::wstring &folder)
 					Data.ExtensionSpread[exi.Category].Count++;
 					Data.ExtensionSpread[exi.Category].Size += file_object.Size;
 
-					GFileExtensionHandler->Extensions[exi.Extension].Quantity++;
-					GFileExtensionHandler->Extensions[exi.Extension].Size += file_object.Size;
+					GFileExtensionHandler->Extensions[exi.Extension]->Count++;
+					GFileExtensionHandler->Extensions[exi.Extension]->Size += file_object.Size;
 				}
 
 				// ============================================================================
@@ -1136,9 +1131,9 @@ void ScanEngine::ScanFolderExt(const std::wstring& folder)
 
 				std::transform(f.begin(), f.end(), f.begin(), ::tolower);
 
-				for (int i = 0; i < ExcludeFolders.size(); i++)
+				for (int i = 0; i < ExcludedFolders.size(); i++)
 				{
-					if (f.find(ExcludeFolders[i]) != std::wstring::npos)
+					if (f.find(ExcludedFolders[i]) != std::wstring::npos)
 					{
 						skip = true;
 
@@ -1190,12 +1185,10 @@ void ScanEngine::ScanFolderExt(const std::wstring& folder)
 					Data.ExtensionSpread[__FileCategoriesOther].Count++;
 					Data.ExtensionSpread[__FileCategoriesOther].Size += file_object.Size;
 
-					FileExtension tfx;
+					FileExtension *tfx = new FileExtension(ext, __Category_Other);
 
-					tfx.Name = ext;
-					tfx.Category = __Category_Other;
-					tfx.Quantity = 1;
-					tfx.Size = file_object.Size;
+					tfx->Count = 1;
+					tfx->Size = file_object.Size;
 
 					GFileExtensionHandler->Extensions.push_back(tfx);
 				}
@@ -1209,8 +1202,8 @@ void ScanEngine::ScanFolderExt(const std::wstring& folder)
 					Data.ExtensionSpread[exi.Category].Count++;
 					Data.ExtensionSpread[exi.Category].Size += file_object.Size;
 
-					GFileExtensionHandler->Extensions[exi.Extension].Quantity++;
-					GFileExtensionHandler->Extensions[exi.Extension].Size += file_object.Size;
+					GFileExtensionHandler->Extensions[exi.Extension]->Count++;
+					GFileExtensionHandler->Extensions[exi.Extension]->Size += file_object.Size;
 				}
 
 				// ============================================================================
@@ -1481,9 +1474,26 @@ void ScanEngine::SortRootBySize()
 }
 
 
+void ScanEngine::SortByProperty(int property)
+{
+	switch (property)
+	{
+	case 0:
+		std::sort(Data.Files.begin(), Data.Files.end(), sortByCreatedDate);
+		break;
+	case 1:
+		std::sort(Data.Files.begin(), Data.Files.end(), sortByAccessedDate);
+		break;
+	case 2:
+		std::sort(Data.Files.begin(), Data.Files.end(), sortByModifiedDate);
+		break;
+	}
+}
+
+
 void ScanEngine::SaveSearchResults(Command command)
 {
-	if (SearchData.Files.size() != 0)
+	if (DataSearch.Files.size() != 0)
 	{
 		std::wstring FileName(command.secondary);
 
@@ -1522,7 +1532,7 @@ void ScanEngine::SaveSearchResults(Command command)
 
 			std::transform(ucFolder.begin(), ucFolder.end(), ucFolder.begin(), ::toupper);
 
-			for (FileObject search : SearchData.Files)
+			for (FileObject search : DataSearch.Files)
 			{
 				std::wstring output;
 
@@ -1628,959 +1638,6 @@ void ScanEngine::Search(Command command)
 	{
 		// to do std::wcout << std::format(L"\nFound {0} matching files\n", count);
 	}
-}
-
-
-int ScanEngine::Filter(Command command)
-{
-	std::wstring UserSearchTerms(command.secondary);
-
-	FileObject file_object;
-
-	bool CategorySearchFound = false;
-	bool UserSearchFound = false;
-	bool ExcludeFolderSearchFound = false;
-	bool IncludeFolderSearchFound = false;
-	int CategorySearchCount = 0;
-	int UserSearchCount = 0;
-	int ExcludeFolderSearchCount = 0;
-	int IncludeFolderSearchCount = 0;
-
-	bool Found = false;
-	int FoundCount = 0;
-
-	SearchCriteriaObject tsco;
-
-	std::vector<SearchCriteriaObject> SearchCriteria;
-	std::vector<std::wstring> SearchTerms;
-	std::vector<std::wstring> QuickTerms;
-	std::vector<std::wstring> FoundTerms;
-
-	auto AddThisKeyword = [&SearchCriteria](const std::wstring s)
-	{
-		SearchCriteriaObject sco = SearchUtility::ProcessSearchTerm(s);
-
-		if (sco.Type != SearchType::None)
-		{
-			SearchCriteria.push_back(sco);
-
-			return false;
-		}
-
-		return true;
-	};
-
-	auto ProcessQuickTerms = [&QuickTerms](std::wstring s)
-	{
-		std::wstring output = L"";
-		bool inside = false;
-
-		QuickTerms.clear();
-
-		for (int i = 0; i < s.length(); i++)
-		{
-			if (s[i] == L'"')
-			{
-				// do nothing
-			}
-			else if (s[i] == L'(')
-			{
-				inside = true;
-			}
-			else if (s[i] == L')')
-			{
-				inside = false;
-			}
-			else if (s[i] == L' ' && !inside)
-			{
-				QuickTerms.push_back(output);
-
-				output.clear();
-			}
-			else
-			{
-				output += s[i];
-			}
-		}
-
-		if (!output.empty())
-		{
-			QuickTerms.push_back(output);
-		}
-	};
-
-	// getsearchterms
-	std::wstring s = L"";
-	bool reading = false;
-	bool inside = false;
-
-	for (int i = 0; i < UserSearchTerms.length(); i++)
-	{
-		if (UserSearchTerms[i] == L'"')
-		{
-			reading = !reading;
-
-			std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-
-			if (AddThisKeyword(s))
-			{
-				SearchTerms.push_back(L'"' + s + L'"');
-			}
-
-			s.clear();
-		}
-		else if (UserSearchTerms[i] == L'(')
-		{
-			inside = true;
-		}
-		else if (UserSearchTerms[i] == L')')
-		{
-			inside = false;
-		}
-		else if (UserSearchTerms[i] == L' ' && !inside)
-		{
-			if (reading)
-			{
-				s += L' ';
-			}
-			else
-			{
-				if (!s.empty())
-				{
-					std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-
-					if (AddThisKeyword(s)) // not a bracketted search function, must
-					{
-						// be a text AND or single string search
-						SearchTerms.push_back(s);
-					}
-
-					s.clear();
-				}
-			}
-		}
-		else
-		{
-			s += UserSearchTerms[i];
-		}
-	}
-
-	if (!s.empty())
-	{
-		std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-
-		if (AddThisKeyword(s))
-		{
-			SearchTerms.push_back(s);
-		}
-	}
-
-	// -------------------------------------------------------------------------
-
-	try
-	{
-		SearchData.Clear();
-
-		// -------------------------------------------------------------------------
-
-		for (int z = 0; z < SearchCriteria.size(); z++)
-		{
-			tsco = SearchCriteria[z];
-
-			switch (tsco.Type)
-			{
-			case SearchType::Category:
-				CategorySearchCount++;
-				break;
-			case SearchType::NotCategory:
-				CategorySearchCount++;
-				break;
-			case SearchType::UserName:
-				UserSearchCount++;
-				break;
-			case SearchType::NotUserName:
-				UserSearchCount++;
-				break;
-			case SearchType::FolderExclude:
-				ExcludeFolderSearchCount++;
-				break;
-			case SearchType::FolderInclude:
-				IncludeFolderSearchCount++;
-				break;
-			}
-
-			#ifdef _DEBUG
-			std::wcout << "  " << tsco.Debug() << "\n";
-			#endif
-		}
-
-		if (CategorySearchCount == 0)
-		{
-			CategorySearchFound = true;
-		}
-		else
-		{
-			CategorySearchFound = false;
-		}
-
-		if (UserSearchCount == 0)
-		{
-			UserSearchFound = true;
-		}
-		else
-		{
-			UserSearchFound = false;
-		}
-
-		if (ExcludeFolderSearchCount == 0)
-		{
-			ExcludeFolderSearchFound = true;
-		}
-		else
-		{
-			ExcludeFolderSearchFound = false;
-		}
-
-		if (IncludeFolderSearchCount == 0)
-		{
-			IncludeFolderSearchFound = true;
-		}
-		else
-		{
-			IncludeFolderSearchFound = false;
-		}
-
-		// =========================================================================
-		// =========================================================================
-
-		for (FileObject file : Data.Files)
-		{
-			Found = false;
-
-			// search for each search term -------------------------------------------
-			for (int x = 0; x < SearchTerms.size(); x++)
-			{
-				if (SearchTerms[x][0] == '"')  // this is an AND search...
-				{
-					ProcessQuickTerms(SearchTerms[x]);
-
-					FoundTerms.clear();
-
-					for (std::wstring term : QuickTerms)
-					{
-						std::wstring filename(Data.Folders[file.FilePathIndex] + file.Name);
-
-						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
-
-						if (term.find(filename) != std::wstring::npos)
-						{
-							if (std::find(FoundTerms.begin(), FoundTerms.end(), term) != FoundTerms.end())
-							{
-								FoundTerms.push_back(term);
-							}
-						}
-					}
-
-					if (FoundTerms.size() == QuickTerms.size())
-					{
-						Found = true;
-					}
-				}
-				else
-				{
-					auto z = SearchTerms[x].find(L'*');
-
-					if (z != std::wstring::npos)
-					{
-						if (!(file.Attributes & FILE_ATTRIBUTE_DIRECTORY))
-						{
-							std::wstring filename(file.Name);
-							std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
-
-							if (z == 0)
-							{
-								std::wstring parameter(SearchTerms[x].substr(1));
-
-								if (parameter.find(filename) == filename.length() - SearchTerms[x].length() + 2) // to do check!
-
-								{
-									Found = true;
-								}
-							}
-							else if (z == SearchTerms[x].length() - 1)
-							{
-								std::wstring parameter(SearchTerms[x].substr(0, SearchTerms[x].length() - 1));
-
-								if (parameter.find(filename) == 0) // to do check!
-								{
-									Found = true;
-								}
-							}
-						}
-					}
-					else
-					{
-						std::wstring filename(Data.Folders[file.FilePathIndex] + file.Name);
-						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
-
-						if (SearchTerms[x].find(filename) != std::wstring::npos)
-						{
-							Found = true;
-						}
-					}
-				}
-			}
-
-			// if there are no search terms, but search criteria then we set found to
-			// true in order that we check every item for the criteria
-			if (SearchTerms.size() == 0 && SearchCriteria.size() > 0)
-			{
-				Found = true;
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			// == process any special search criteria ================================
-			if (Found && SearchCriteria.size() != 0)
-			{
-				for (int z = 0; z < SearchCriteria.size(); z++)
-				{
-					tsco = SearchCriteria[z];
-
-					switch (tsco.Type)
-					{
-					case SearchType::SizeLess:   // size <
-						if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes))
-						{
-							if (file_object.Size > tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::SizeEqual:   // size =
-						if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes))
-						{
-							if (!(file_object.Size != tsco.IntegerValue))
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::SizeMore:  // size >
-						if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes))
-						{
-							if (file_object.Size < tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::DateLess:  // date <
-						if (file_object.DateCreated != 0)
-						{
-							if (file_object.DateCreated > tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::DateMore:  // date >
-						if (file_object.DateCreated != 0)
-						{
-							if (file_object.DateCreated < tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::DateEqual:  // date =
-						if (file_object.DateCreated != 0)
-						{
-							if (file_object.DateCreated != tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::ATimeLess:
-						if (file_object.TimeAccessed > tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::ATimeMore:
-						if (file_object.TimeAccessed < tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::ATimeEqual:
-						if (file_object.TimeAccessed != tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MTimeLess:
-						if (file_object.TimeModified > tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MTimeMore:
-						if (file_object.TimeModified < tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MTimeEqual:
-						if (file_object.TimeModified != tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::TimeLess:
-						if (file_object.TimeCreated > tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::TimeMore:
-						if (file_object.TimeCreated < tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::TimeEqual:
-						if (file_object.TimeCreated != tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::FileType:  // hidden and system etc.
-						switch (tsco.IntegerValue)
-						{
-						case __FileType_Hidden:
-							if ((FILE_ATTRIBUTE_HIDDEN & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_System:
-							if ((FILE_ATTRIBUTE_SYSTEM & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_Archive:
-							if ((FILE_ATTRIBUTE_ARCHIVE & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_Null:
-							if (file_object.Size != 0) Found = false;
-							break;
-						case __FileType_ReadOnly:
-							if ((FILE_ATTRIBUTE_READONLY & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_Compressed:
-							if ((FILE_ATTRIBUTE_COMPRESSED & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_Encrypted:
-							if ((FILE_ATTRIBUTE_ENCRYPTED & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_RecallOnOpen:
-							if ((FILE_ATTRIBUTE_RECALL_ON_OPEN & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_RecallOnDataAccess:
-							if ((FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_Offline:
-							if ((FILE_ATTRIBUTE_OFFLINE & file_object.Attributes) == 0) Found = false;
-							break;
-						case __FileType_CreatedToday:
-							if (file_object.DateCreated != TodayAsInteger) Found = false;
-							break;
-						case __FileType_AccessedToday:
-							if (file_object.DateAccessed != TodayAsInteger) Found = false;
-							break;
-						case __FileType_ModifiedToday:
-							if (file_object.DateModified != TodayAsInteger) Found = false;
-							break;
-						case __FileType_Temp:
-							if (!file_object.Temp) Found = false;
-							break;
-						case __FileType_Folder:
-							if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes)) Found = false;
-							break;
-						case __FileType_File:
-							if (FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes) Found = false;
-							break;
-						case __FileType_NoExtension:
-							if (Utility::GetFileExtension(file_object.Name) != L"") Found = false;
-							break;
-						case __FileType_SparseFile:
-							if (!(FILE_ATTRIBUTE_SPARSE_FILE & file_object.Attributes)) Found = false;
-							break;
-						case __FileType_Reparsepoint:
-							if (!(FILE_ATTRIBUTE_REPARSE_POINT & file_object.Attributes)) Found = false;
-							break;
-						case __FileType_NotContentI:
-							if (!(FILE_ATTRIBUTE_NOT_CONTENT_INDEXED & file_object.Attributes)) Found = false;
-							break;
-
-						case __FileType_Virtual:
-							if (!(FILE_ATTRIBUTE_RECALL_ON_OPEN & file_object.Attributes) &&
-								!(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS & file_object.Attributes) &&
-								!(FILE_ATTRIBUTE_OFFLINE & file_object.Attributes)) Found = false;
-							break;
-						}
-						break;
-					case SearchType::NotFileType:  // hidden and system etc.
-						switch (tsco.IntegerValue)
-						{
-						case __FileType_Hidden:
-							if (FILE_ATTRIBUTE_HIDDEN & file_object.Attributes) Found = false;
-							break;
-						case __FileType_System:
-							if (FILE_ATTRIBUTE_SYSTEM & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Archive:
-							if (FILE_ATTRIBUTE_ARCHIVE & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Null:
-							if (file_object.Size == 0) Found = false;
-							break;
-						case __FileType_ReadOnly:
-							if (FILE_ATTRIBUTE_READONLY & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Compressed:
-							if (FILE_ATTRIBUTE_COMPRESSED & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Encrypted:
-							if (FILE_ATTRIBUTE_ENCRYPTED & file_object.Attributes) Found = false;
-							break;
-						case __FileType_RecallOnOpen:
-							if (FILE_ATTRIBUTE_RECALL_ON_OPEN & file_object.Attributes) Found = false;
-							break;
-						case __FileType_RecallOnDataAccess:
-							if (FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Offline:
-							if (FILE_ATTRIBUTE_OFFLINE & file_object.Attributes) Found = false;
-							break;
-						case __FileType_CreatedToday:
-							if (file_object.DateCreated == TodayAsInteger) Found = false;
-							break;
-						case __FileType_AccessedToday:
-							if (file_object.DateAccessed == TodayAsInteger) Found = false;
-							break;
-						case __FileType_ModifiedToday:
-							if (file_object.DateModified == TodayAsInteger) Found = false;
-							break;
-						case __FileType_Temp:
-							if (file_object.Temp) Found = false;
-							break;
-						case __FileType_Folder:
-							if (FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes) Found = false;
-							break;
-						case __FileType_File:
-							if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes)) Found = false;
-							break;
-						case __FileType_NoExtension:
-							if (Utility::GetFileExtension(file_object.Name) != L"") Found = false;
-							break;
-						case __FileType_SparseFile:
-							if (FILE_ATTRIBUTE_SPARSE_FILE & file_object.Attributes) Found = false;
-							break;
-						case __FileType_Reparsepoint:
-							if (FILE_ATTRIBUTE_REPARSE_POINT & file_object.Attributes) Found = false;
-							break;
-						case __FileType_NotContentI:
-							if (FILE_ATTRIBUTE_NOT_CONTENT_INDEXED & file_object.Attributes) Found = false;
-							break;
-
-						case __FileType_Virtual: if ((FILE_ATTRIBUTE_RECALL_ON_OPEN & file_object.Attributes)  ||
-							(FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS & file_object.Attributes) ||
-							(FILE_ATTRIBUTE_OFFLINE & file_object.Attributes)) Found = false;
-							break;
-						}
-						break;
-					case SearchType::ADateLess: // adate <
-						if (file_object.DateAccessed != 0)
-						{
-							if (file_object.DateAccessed > tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::ADateMore: // adate >
-						if (file_object.DateAccessed != 0)
-						{
-							if (file_object.DateAccessed < tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::ADateEqual:  // adate =
-						if (file_object.DateAccessed != 0)
-						{
-							if (file_object.DateAccessed != tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MDateLess:  // mdate <
-						if (file_object.DateModified != 0)
-						{
-							if (file_object.DateModified > tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MDateMore:  // mdate >
-						if (file_object.DateModified != 0)
-						{
-							if (file_object.DateModified < tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::MDateEqual:  // mdate =
-						if (file_object.DateModified != 0)
-						{
-							if (file_object.DateModified != tsco.IntegerValue)
-							{
-								Found = false;
-							}
-						}
-						else
-						{
-							Found = false;
-						}
-						break;
-					case SearchType::FileNameLengthEqual:
-						if (file_object.Name.length() != tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FileNameLengthLess:
-						if (file_object.Name.length() > tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FilenameLengthMore:
-						if (file_object.Name.length() < tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FilePathLengthEqual:
-						if (Data.Folders[file_object.FilePathIndex].length() + file_object.Name.length() != tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FilePathLengthLess:
-						if (Data.Folders[file_object.FilePathIndex].length() + file_object.Name.length() > tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FilePathLengthMore:
-						if (Data.Folders[file_object.FilePathIndex].length() + file_object.Name.length() < tsco.IntegerValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-						break;
-					case SearchType::FileExtensionEqual:
-					{
-						std::wstring ext(Utility::GetFileExtension(file_object.Name));
-
-						std::transform(ext.begin(), ext.end(), ext.begin(), ::toupper);
-
-						if (ext != tsco.StringValue)
-						{
-							Found = false;
-						}
-						else
-						{
-							Found = true;
-						}
-
-						break;
-					}
-					}
-				}
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			if (CategorySearchCount > 0)
-			{
-				CategorySearchFound = false;
-
-				for (int z = 0; z < SearchCriteria.size(); z++)
-				{
-					tsco = SearchCriteria[z];
-
-					switch (tsco.Type)
-					{
-					case SearchType::Category: // category
-						if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes))
-						{
-							if (tsco.IntegerValue == __Category_Custom_All)
-							{
-								if (file_object.Category >= __Category_Custom_1)
-								{
-									CategorySearchFound = true;
-								}
-							}
-							else
-							{
-								if (file_object.Category == tsco.IntegerValue)
-								{
-									CategorySearchFound = true;
-								}
-							}
-						}
-						break;
-
-					case SearchType::NotCategory: // category
-						if (!(FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes))
-						{
-							if (tsco.IntegerValue == __Category_Custom_All)
-							{
-								if (file_object.Category < __Category_Custom_1)
-								{
-									CategorySearchFound = true;
-								}
-							}
-							else
-							{
-								if (file_object.Category != tsco.IntegerValue)
-								{
-									CategorySearchFound = true;
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			if (UserSearchCount > 0)
-			{
-				UserSearchFound = true;
-
-				for (int z = 0; z < SearchCriteria.size(); z++)
-				{
-					tsco = SearchCriteria[z];
-
-					std::wstring username(Data.Users[file_object.Owner].Name);
-
-					std::transform(username.begin(), username.end(), username.begin(), ::toupper);
-
-					switch (tsco.Type)
-					{
-					case SearchType::UserName:
-						if (username != tsco.StringValue)
-						{
-							UserSearchFound = false;
-						}
-						break;
-					case SearchType::NotUserName:
-						if (username == tsco.StringValue)
-						{
-							UserSearchFound = false;
-						}
-						break;
-					case SearchType::UserNameContains:
-						if (tsco.StringValue.find(username) == std::wstring::npos)
-						{
-							UserSearchFound = false;
-						}
-						break;
-					case SearchType::UserNameNotContains:
-						if (tsco.StringValue.find(username) != std::wstring::npos)
-						{
-							UserSearchFound = false;
-						}
-						break;
-					}
-				}
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			if (ExcludeFolderSearchCount > 0)
-			{
-				ExcludeFolderSearchFound = true;
-
-				for (int z = 0; z < SearchCriteria.size(); z++)
-				{
-					tsco = SearchCriteria[z];
-
-					switch (tsco.Type)
-					{
-					case SearchType::FolderExclude:
-					{
-						std::wstring folder(Data.Folders[file_object.FilePathIndex]);
-
-						std::transform(folder.begin(), folder.end(), folder.begin(), ::toupper);
-
-						if (tsco.StringValue.find(folder) != std::wstring::npos)
-						{
-							ExcludeFolderSearchFound = false;
-						}
-						break;
-					}
-					}
-				}
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			if (IncludeFolderSearchCount > 0)
-			{
-				IncludeFolderSearchFound = false;
-
-				for (int z = 0; z < SearchCriteria.size(); z++)
-				{
-					tsco = SearchCriteria[z];
-
-					switch (tsco.Type)
-					{
-					case SearchType::FolderInclude:
-					{
-						std::wstring folder(Data.Folders[file_object.FilePathIndex]);
-
-						std::transform(folder.begin(), folder.end(), folder.begin(), ::toupper);
-
-						if (tsco.StringValue.find(folder) != std::wstring::npos)
-						{
-							IncludeFolderSearchFound = true;
-						}
-
-						break;
-					}
-					}
-				}
-			}
-
-			// =======================================================================
-			// =======================================================================
-
-			Found = (Found && CategorySearchFound && UserSearchFound && ExcludeFolderSearchFound && IncludeFolderSearchFound);
-
-			// =======================================================================
-			// =======================================================================
-
-			if (Found)
-			{
-				if (FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes)
-				{
-					SearchData.FolderCount++;
-				}
-				else
-				{
-					SearchData.FileCount++;
-				}
-
-				SearchData.TotalSize += file_object.Size;
-
-				// to do std::wcout << std::format(L"{0}  {1}{2}\n", Formatting::AddLeadingSpace(Convert::ConvertToUsefulUnit(file_object.Size), 8), Data.Folders[file_object.FilePathIndex], file_object.Name);
-
-				FoundCount++;
-
-				// ===================================================================
-
-				SearchData.Files.push_back(file_object);
-
-				// ===================================================================
-			}
-		}
-	}
-	catch(...)
-	{
-
-	}
-
-	return FoundCount;
 }
 
 

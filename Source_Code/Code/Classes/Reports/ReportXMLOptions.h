@@ -12,11 +12,14 @@
 
 #pragma once
 
+#include <string>
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
 
-static const std::wstring __XDate    = L"July 4th 2026";
+static const int XMLReportOptionsCount = 11;
+
+
+struct XMLReportOptions
+{
+	std::wstring FileName = L"";
+	bool Layout[XMLReportOptionsCount] = { false };
+};

@@ -13,10 +13,18 @@
 #pragma once
 
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
+class XExploderDataObject
+{
+public:
 
-static const std::wstring __XDate    = L"July 4th 2026";
+	std::wstring FolderName = L"";
+	int FolderID = 0;
+
+	int FileCount = 0;
+	unsigned __int64 FileSize = 0;
+
+	int Colour = 0;
+
+	double PieSize = 0;
+	double PieQuantity = 0;
+};

@@ -28,12 +28,10 @@
 #include "FileObjectSorted.h"
 #include "ConstantsReports.h"
 #include "RootFolder.h"
+#include "ScanData.h"
 #include "ScanEngine.h"
 #include "SizeOfFolder.h"
 #include "UserData.h"
-
-
-enum class ScanSource { None = 0, LiveScan = 1, CSVImport = 2 };
 
 
 struct Disk
@@ -74,45 +72,6 @@ struct SearchData
 };
 
 
-struct ScanData
-{
-	int RootFolderIndex = 0;
-
-	ScanSource Source = ScanSource::None;
-
-	int FileCount = 0;
-	int FolderCount = 0;
-	unsigned __int64 TotalSize = 0;
-	unsigned __int64 TotalSizeOD = 0;
-	unsigned __int64 AverageFileSize = 0;
-	float AverageFilesPerFolder = 0;
-
-	ConsolidatedData Magnitude[__MagnitudesCount];
-	ConsolidatedData FileAttributes[__AttributesCount];
-	ConsolidatedData ExtensionSpread[__FileCategoriesCount];
-
-	std::vector<FileObject> Files;
-	std::vector<std::wstring> Folders;
-
-	std::vector<std::wstring> TemporaryFiles;
-
-	std::vector<std::wstring> NullFiles;
-	std::vector<std::wstring> NullFolders;
-
-	std::vector<FileObject> Top100Large;
-	std::vector<FileObject> Top100Small;
-	std::vector<FileObject> Top100Newest;
-	std::vector<FileObject> Top100Oldest;
-
-	std::vector<FileDateObject> FileDates;
-
-	std::vector<UserData> Users;
-
-	std::vector<FileObject> RootFiles;
-	std::vector<RootFolder> RootFolders;
-};
-
-
 struct ScanPath
 {
 	std::wstring CSVSource = L"";
@@ -125,6 +84,11 @@ struct ScanPath
 
 	bool ExcludeFolders = false;
 	int ExcludedFolderCount = 0;
+
+	bool ExcludeFiles = false;
+	int ExcludedFilesCount = 0;
+
+    bool LastScanMultiple = false;
 
 	void Update(const std::wstring folder)
 	{
@@ -147,14 +111,11 @@ class ScanEngine
 {
 private:
 
-	std::vector<std::wstring> ExcludeFolders;
-
 	int CurrentFolderIndex = 0;
 	std::wstring CurrentFolder = L"";
 
+    void Init();
 	void InitLanguage();
-
-	int TodayAsInteger;
 
 	void PopulateDiskStat();
 
@@ -183,12 +144,17 @@ private:
 
 public:
 
+	std::vector<std::wstring> ExcludedFolders;
+	std::vector<std::wstring> ExcludedFiles;
+
 	std::set<FileObjectSorted> SortedFiles;
+
+	int TodayAsInteger = 0;
 
 	int FilterCategory = -1;
 
 	ScanData Data;
-	SearchData SearchData;
+	SearchData DataSearch;
 
 	ScanPath Path;
 
@@ -219,6 +185,7 @@ public:
 	[[nodiscard]] int GetFolderIndex(const std::wstring);
 
 	void SortRootBySize();
+    void SortByProperty(int);
 
 	void AddToExcludeList(const std::wstring);
 	std::wstring GetExcludeItem(int);

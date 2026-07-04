@@ -13,10 +13,24 @@
 #include "FileExtension.h"
 
 
-FileExtension::FileExtension()
+FileExtension::FileExtension(const std::wstring name, int category)
 {
-	Name     = L"";
-    Category = 0;
-    Quantity = 0;
-    Size     = 0;
+	Name = name;
+    Category = category;
+}
+
+
+void FileExtension::PostProcess(int total_count, unsigned __int64 total_size)
+{
+	PercentCount = (double)Count / (double)total_count;
+	PercentSize = (double)Size / (double)total_size;
+
+	PercentCountString = Convert::DoubleToPercent(PercentCount);
+	PercentSizeString = Convert::DoubleToPercent(PercentSize);
+}
+
+
+void FileExtension::Clear()
+{
+// to do
 }

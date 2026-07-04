@@ -17,6 +17,7 @@ enum class LanguageType {
 	kES = 7, kSW = 8, kCZ = 9, kHU = 10, kUS = 11, kRU = 12, kCAT = 13
 };
 
+
 static const int kUnitB = 0;
 static const int kUnitKB = 1;
 static const int kUnitMB = 2;

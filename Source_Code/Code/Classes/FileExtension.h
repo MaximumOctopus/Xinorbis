@@ -12,19 +12,31 @@
 
 #pragma once
 
-
 #include <string>
+
+#include "Convert.h"
 
 
 class FileExtension
 {
 public:
-    std::wstring Name = L"";
+	std::wstring Name = L"";
+    std::wstring Description = L"";
 
     int Category = 0;
-    int Quantity = 0;
+    int Count = 0;
 	
 	unsigned __int64 Size = 0;
 
-    FileExtension();
+	double PercentCount = 0;
+	double PercentSize = 0;
+
+	std::wstring PercentCountString = L"";
+	std::wstring PercentSizeString = L"";
+
+	FileExtension(const std::wstring, int);
+
+	void PostProcess(int, unsigned __int64);
+
+	void Clear();
 };

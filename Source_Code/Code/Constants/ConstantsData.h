@@ -12,11 +12,31 @@
 
 #pragma once
 
+
 enum class DateTimeFormat { Display = 0, File = 1, YYYYMMDD = 2, Slash = 3, HHMM = 4};
 
 static const int kAttributesToDisplayCount = 13;    // number of file attributes
 static const int kAttributesTotalCount     = 21;
 static const int kMagnitudesCount          = 13;
+
+static const int kHTMLColoursCount = 11;
+static const int kReportTypesCount =  5;
+static const int kQuickFolderCount = 20;
+static const int kChartCount       = 19;
+static const int kFTPOptionsCount  =  6;
+
+static const int kAutoSaveItemCount = 6;
+
+// extra file attribute constants
+
+static const int faSparseFile         = 512;
+static const int faReparsePoint       = 1024;
+//static const int faCompressed         = 2048;
+static const int faOffline            = 4096;
+static const int faNotContentI        = 8192;
+//static const int faEncrypted          = 16384;
+static const int faRecallOnOpen       = 262144;
+static const int faRecallOnDataAccess = 4194304;
 
 // ===========================================================================
 // == Categories =============================================================

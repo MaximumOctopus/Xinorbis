@@ -13,10 +13,9 @@
 #pragma once
 
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
+namespace ReportJSON
+{
+	void DetailedFileList(const std::wstring);
 
-static const std::wstring __XDate    = L"July 4th 2026";
+	void SimpleFileList(const std::wstring);
+}

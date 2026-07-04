@@ -13,10 +13,19 @@
 #pragma once
 
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
+class FormDetails
+{
+public:
 
-static const std::wstring __XDate    = L"July 4th 2026";
+	int FormId = -1;
+	int X = -1;
+	int Y = -1;
+	int Width = -1;
+	int Height = -1;
+	int P1 = -1;
+	int P2 = -1;
+	int P3 = -1;
+	int P4 = -1;
+
+	FormDetails(int, int, int, int, int);
+};

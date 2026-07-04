@@ -12,11 +12,14 @@
 
 #pragma once
 
+#include <string>
 
-#ifdef DEBUG
-static const std::wstring __XVersion = L"10.0 (debug)";
-#else
-static const std::wstring __XVersion = L"10.0";
-#endif
 
-static const std::wstring __XDate    = L"July 4th 2026";
+class Setting
+{
+public:
+
+	std::wstring Name = L"";
+
+	int Value = 0;
+};
