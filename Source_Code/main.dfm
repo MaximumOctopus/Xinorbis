@@ -1,9 +1,9 @@
-object Form1: TForm1
+object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'Form1'
-  ClientHeight = 600
-  ClientWidth = 1159
+  Caption = 'FormMain'
+  ClientHeight = 872
+  ClientWidth = 1552
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,9 +16,9 @@ object Form1: TForm1
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 61
+    Top = 68
     Width = 216
-    Height = 539
+    Height = 785
     Align = alLeft
     BevelOuter = bvNone
     Caption = 'Panel1'
@@ -30,7 +30,7 @@ object Form1: TForm1
       Left = 0
       Top = 187
       Width = 216
-      Height = 352
+      Height = 598
       Align = alClient
       Color = 3355443
       ParentBackground = False
@@ -141,6 +141,7 @@ object Form1: TForm1
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         ParentFont = False
+        OnClick = miDFileAgeClick
       end
       object lAdvID2: TLabel
         Tag = 3
@@ -206,6 +207,7 @@ object Form1: TForm1
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         ParentFont = False
+        OnClick = miDFileSizeSpreadClick
       end
       object Image12: TImage
         Left = 12
@@ -297,7 +299,7 @@ object Form1: TForm1
       object lTaskID3: TLabel
         Tag = 2
         Left = 22
-        Top = 85
+        Top = 84
         Width = 3
         Height = 13
         Cursor = crHandPoint
@@ -513,7 +515,7 @@ object Form1: TForm1
   object tbMain: TToolBar
     Left = 0
     Top = 0
-    Width = 1159
+    Width = 1552
     Height = 41
     ButtonHeight = 38
     ButtonWidth = 39
@@ -609,20 +611,159 @@ object Form1: TForm1
   object pReports: TPanel
     Left = 0
     Top = 41
-    Width = 1159
-    Height = 20
+    Width = 1552
+    Height = 27
     Align = alTop
     TabOrder = 2
+    object sbHome: TSpeedButton
+      Left = 4
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbHomeClick
+    end
+    object sbNavigatePrevious: TSpeedButton
+      Left = 43
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbNavigatePreviousClick
+    end
+    object sbNavigateNext: TSpeedButton
+      Left = 72
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbNavigateNextClick
+    end
+    object SpeedButton4: TSpeedButton
+      Left = 111
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = SpeedButton4Click
+    end
+    object SpeedButton5: TSpeedButton
+      Left = 150
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = SpeedButton5Click
+    end
+    object sbReportSummary: TSpeedButton
+      Left = 179
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportSummaryClick
+    end
+    object sbReportCSV: TSpeedButton
+      Left = 208
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportCSVClick
+    end
+    object sbReportHTML: TSpeedButton
+      Left = 237
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportHTMLClick
+    end
+    object sbReportText: TSpeedButton
+      Left = 266
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportTextClick
+    end
+    object sbReportTree: TSpeedButton
+      Left = 295
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportTreeClick
+    end
+    object sbReportXML: TSpeedButton
+      Left = 324
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportXMLClick
+    end
+    object sbReportSettings: TSpeedButton
+      Left = 363
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportSettingsClick
+    end
+    object Bevel1: TBevel
+      Left = 33
+      Top = 1
+      Width = 4
+      Height = 50
+      ParentShowHint = False
+      Shape = bsLeftLine
+      ShowHint = True
+    end
+    object Bevel2: TBevel
+      Left = 101
+      Top = 1
+      Width = 4
+      Height = 50
+      ParentShowHint = False
+      Shape = bsLeftLine
+      ShowHint = True
+    end
+    object Bevel3: TBevel
+      Left = 140
+      Top = 1
+      Width = 4
+      Height = 50
+      ParentShowHint = False
+      Shape = bsLeftLine
+      ShowHint = True
+    end
+    object Bevel4: TBevel
+      Left = 353
+      Top = 1
+      Width = 4
+      Height = 50
+      ParentShowHint = False
+      Shape = bsLeftLine
+      ShowHint = True
+    end
   end
   object pMainCanvas: TPanel
     Left = 216
-    Top = 61
-    Width = 943
-    Height = 539
+    Top = 68
+    Width = 1336
+    Height = 785
     Align = alClient
     Color = 3355443
     ParentBackground = False
     TabOrder = 3
+  end
+  object sbMain: TStatusBar
+    Left = 0
+    Top = 853
+    Width = 1552
+    Height = 19
+    Panels = <>
   end
   object ImageList1: TImageList
     Height = 32
@@ -1698,15 +1839,328 @@ object Form1: TForm1
     Top = 109
     object File1: TMenuItem
       Caption = 'File'
-      object Exit1: TMenuItem
+      object miFScan: TMenuItem
+        Caption = '.'
+        OnClick = miFScanClick
+      end
+      object N11: TMenuItem
+        Caption = '-'
+      end
+      object miFSaveReports: TMenuItem
+        Caption = '.'
+        OnClick = miFSaveReportsClick
+      end
+      object N13: TMenuItem
+        Caption = '-'
+      end
+      object miFExit: TMenuItem
         Caption = 'Exit'
+        OnClick = miFExitClick
+      end
+    end
+    object Edit1: TMenuItem
+      Caption = 'Edit'
+      object miESettings: TMenuItem
+        Caption = '.'
+        OnClick = miESettingsClick
+      end
+      object miEReportOptions: TMenuItem
+        Caption = '.'
+        OnClick = miEReportOptionsClick
+      end
+      object miEFileTypes: TMenuItem
+        Caption = '.'
+        OnClick = miEFileTypesClick
+      end
+      object N8: TMenuItem
+        Caption = '-'
+      end
+      object miECustomiseQuickFolder: TMenuItem
+        Caption = '.'
+        OnClick = miECustomiseQuickFolderClick
+      end
+    end
+    object Search1: TMenuItem
+      Caption = 'Search'
+      object miSSearch: TMenuItem
+        Caption = '.'
+        OnClick = miSSearchClick
+      end
+      object miSWizard: TMenuItem
+        Caption = '.'
+        OnClick = miSWizardClick
+      end
+      object N42: TMenuItem
+        Caption = '-'
+      end
+      object miSSearchSyntax: TMenuItem
+        Caption = '.'
+        OnClick = miSSearchSyntaxClick
+      end
+    end
+    object View1: TMenuItem
+      Caption = 'View'
+      object miVOpenLastReport: TMenuItem
+        Caption = '.'
+        OnClick = miVOpenLastReportClick
+      end
+      object miVCopyLastReportToClipboard: TMenuItem
+        Caption = '.'
+        OnClick = miVCopyLastReportToClipboardClick
+      end
+      object N52: TMenuItem
+        Caption = '-'
+      end
+      object miVFolderProperties: TMenuItem
+        Caption = '.'
+        object miTabTable: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabTree: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabOther: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabFolders: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabMagnitude: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabFileDates: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabHistory: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabTop101: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabNullFiles: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabUsers: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabTemp: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+        object miTabNameLength: TMenuItem
+          Caption = '.'
+          OnClick = miTabTableClick
+        end
+      end
+      object N54: TMenuItem
+        Caption = '-'
+      end
+      object miVCategoryColours: TMenuItem
+        Caption = '.'
+        OnClick = miVCategoryColoursClick
+      end
+      object N56: TMenuItem
+        Caption = '-'
+      end
+      object miVLogs: TMenuItem
+        Caption = '.'
+        OnClick = miVLogsClick
+      end
+    end
+    object Report1: TMenuItem
+      Caption = 'Report'
+      object miRNew: TMenuItem
+        Caption = '.'
+        object miCSVReport: TMenuItem
+          Caption = '.'
+          OnClick = miHTMLReportClick
+        end
+        object miHTMLReport: TMenuItem
+          Caption = '.'
+          OnClick = miHTMLReportClick
+        end
+        object miTextReport: TMenuItem
+          Caption = '.'
+          OnClick = miHTMLReportClick
+        end
+        object miTreeReport: TMenuItem
+          Caption = '.'
+          OnClick = miHTMLReportClick
+        end
+        object miXMLReport: TMenuItem
+          Caption = '.'
+          OnClick = miHTMLReportClick
+        end
+      end
+      object N30: TMenuItem
+        Caption = '-'
+      end
+      object miRCustomiseCSVReport: TMenuItem
+        Caption = '.'
+        OnClick = miRCustomiseCSVReportClick
+      end
+      object miRCustomiseHTMLReport: TMenuItem
+        Caption = '.'
+        OnClick = miRCustomiseHTMLReportClick
+      end
+      object miRCustomiseTextReport: TMenuItem
+        Caption = '.'
+        OnClick = miRCustomiseTextReportClick
+      end
+      object miRCustomiseTreeReport: TMenuItem
+        Caption = '.'
+        OnClick = miRCustomiseTreeReportClick
+      end
+      object miRCustomiseXMLReport: TMenuItem
+        Caption = '.'
+        OnClick = miRCustomiseXMLReportClick
+      end
+      object N36: TMenuItem
+        Caption = '-'
+      end
+      object miRReportOptions: TMenuItem
+        Caption = '.'
+        OnClick = miRReportOptionsClick
+      end
+      object N38: TMenuItem
+        Caption = '-'
+      end
+      object miRReportBrowser: TMenuItem
+        Caption = '.'
+        OnClick = miRReportBrowserClick
+      end
+    end
+    object ools1: TMenuItem
+      Caption = 'Tools'
+      object miTFolderHistoryInfo: TMenuItem
+        Caption = '.'
+        OnClick = miTFolderHistoryInfoClick
+      end
+      object miTBackupXinorbis: TMenuItem
+        Caption = '.'
+        OnClick = miTBackupXinorbisClick
+      end
+      object N46: TMenuItem
+        Caption = '-'
+      end
+      object miTLanguage: TMenuItem
+        Caption = '.'
+      end
+      object N47: TMenuItem
+        Caption = '-'
+      end
+      object miTAddToContextMenu: TMenuItem
+        Caption = '.'
+        OnClick = miTAddToContextMenuClick
+      end
+    end
+    object Detail1: TMenuItem
+      Caption = 'Detail'
+      object miDFileSizeSpread: TMenuItem
+        Caption = '.'
+        OnClick = miDFileSizeSpreadClick
+      end
+      object miDDuplicatesFileName: TMenuItem
+        Caption = '.'
+        OnClick = miDDuplicatesFileNameClick
+      end
+      object miDDuplicatesFileSize: TMenuItem
+        Caption = '.'
+        OnClick = miDDuplicatesFileSizeClick
+      end
+      object miDFolderDetail: TMenuItem
+        Caption = '.'
+        OnClick = miDFolderDetailClick
+      end
+      object miDFileAge: TMenuItem
+        Caption = '.'
+        OnClick = miDFileAgeClick
       end
     end
     object File2: TMenuItem
       Caption = 'Help'
-      object About1: TMenuItem
-        Caption = 'About...'
+      object miHTutorial: TMenuItem
+        Caption = '.'
+        OnClick = miHTutorialClick
       end
+      object N15: TMenuItem
+        Caption = '-'
+      end
+      object miHHelpCats: TMenuItem
+        Caption = '.'
+        OnClick = miHHelpCatsClick
+      end
+      object N17: TMenuItem
+        Caption = '-'
+      end
+      object miHHelp: TMenuItem
+        Caption = '.'
+        OnClick = miHHelpClick
+      end
+      object miHContextHelp: TMenuItem
+        Caption = '.'
+        OnClick = miHContextHelpClick
+      end
+      object miHUserManual: TMenuItem
+        Caption = '.'
+        OnClick = miHUserManualClick
+      end
+      object miHReference: TMenuItem
+        Caption = '.'
+        OnClick = miHReferenceClick
+      end
+      object miHFAQs: TMenuItem
+        Caption = '.'
+        OnClick = miHFAQsClick
+      end
+      object N23: TMenuItem
+        Caption = '-'
+      end
+      object miHXinorbisHome: TMenuItem
+        Caption = '.'
+        OnClick = miHXinorbisHomeClick
+      end
+      object miHReportBug: TMenuItem
+        Caption = '.'
+        OnClick = miHReportBugClick
+      end
+      object N26: TMenuItem
+        Caption = '-'
+      end
+      object miHCheckForUpdates: TMenuItem
+        Caption = '.'
+        OnClick = miHCheckForUpdatesClick
+      end
+      object N28: TMenuItem
+        Caption = '-'
+      end
+      object miHAbout: TMenuItem
+        Caption = 'About...'
+        OnClick = tbAboutClick
+      end
+    end
+  end
+  object puCustomReport: TPopupMenu
+    Left = 497
+    Top = 110
+    object miCustomReport: TMenuItem
+      Caption = '.'
+    end
+    object N25: TMenuItem
+      Caption = '-'
+    end
+    object miOpenCustomReport: TMenuItem
+      Caption = '.'
     end
   end
 end
