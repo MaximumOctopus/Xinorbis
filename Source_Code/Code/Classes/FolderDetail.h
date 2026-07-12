@@ -13,8 +13,11 @@
 #pragma once
 
 
-static const int kPostScanNothing      = 0;
-static const int kPostScanSummary      = 1;
-static const int kPostScanInformation  = 2;
-static const int kPostScanStructure    = 3;
+class FolderDetail
+{
+public:
 
+	std::wstring Name = L"";
+	unsigned __int64 Size = 0;
+	int	Count = 0;
+};

@@ -14,13 +14,14 @@
 
 
 enum class DateTimeFormat { Display = 0, File = 1, YYYYMMDD = 2, Slash = 3, HHMM = 4};
+enum class DateFormat { kSlashDDMMYYYY = 0, kSlashMMDDYYYY, kSlashYYYYMMDD, kHyphenDDMMYYYY, kHyphenMMDDYYYY };
 
 static const int kAttributesToDisplayCount = 13;    // number of file attributes
 static const int kAttributesTotalCount     = 21;
 static const int kMagnitudesCount          = 13;
 
 static const int kHTMLColoursCount = 11;
-static const int kReportTypesCount =  5;
+static const int kReportTypeCount  =  6;
 static const int kQuickFolderCount = 20;
 static const int kChartCount       = 19;
 static const int kFTPOptionsCount  =  6;

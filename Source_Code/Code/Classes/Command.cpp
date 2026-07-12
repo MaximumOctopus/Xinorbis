@@ -14,8 +14,6 @@
 
 #include "Command.h"
 
-#include <iostream>
-
 
 std::wstring Command::GetFullCommand()
 {
@@ -25,9 +23,9 @@ std::wstring Command::GetFullCommand()
 
 void Command::Print()
 {
-	std::wcout << "  Primary      :" << primarystr << "\n";
-	std::wcout << "  Secondary    :" << secondary << "\n";
-	std::wcout << "  Tertiary     :" << tertiary << "\n";
-	std::wcout << "  Quaternary   :" << quaternary << "\n";
-	std::wcout << "  Full Command :" << fullcommandstr << "\n";
+	//GLog->Add( "  Primary      :" << primarystr << "\n";
+	//GLog->Add( "  Secondary    :" << secondary << "\n";
+	//GLog->Add( "  Tertiary     :" << tertiary << "\n";
+	//GLog->Add( "  Quaternary   :" << quaternary << "\n";
+	//GLog->Add( "  Full Command :" << fullcommandstr << "\n";
 }

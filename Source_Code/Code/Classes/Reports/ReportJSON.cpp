@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include "Formatting.h"
@@ -30,7 +29,7 @@ namespace ReportJSON
 {
 	void DetailedFileList(const std::wstring file_name)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] + L" (JSON, Detailed):\n\n";
+		//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (JSON, Detailed):\n\n";
 
 		std::ofstream ofile(file_name);
 
@@ -66,7 +65,7 @@ namespace ReportJSON
 
 	void SimpleFileList(const std::wstring file_name)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] + L" (JSON, Simple):\n\n";
+	   //GLog->Add( << GLanguageHandler->Text[kSavingReports] + L" (JSON, Simple):\n\n";
 
 		std::ofstream ofile(file_name);
 

@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <Windows.h>
 
 #include "Convert.h"
@@ -56,8 +55,8 @@ namespace ReportTree
         {
             std::sort(GScanEngine->Data.Files.begin(), GScanEngine->Data.Files.end(), sortByPath);
 
-            std::wcout << GLanguageHandler->Text[kSavingReports] + L" (Tree):\n";
-            std::wcout << L"    " << options.FileName << "\n\n";
+			//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (Tree):\n";
+			//GLog->Add( L"    " << options.FileName << "\n\n";
 
             std::wstring OldPath = L"";
             std::wstring Optional = L"";
@@ -129,8 +128,8 @@ namespace ReportTree
         }
         else
         {
-			std::wcout << GLanguageHandler->Text[kErrorSaving] + L" (Tree):\n";
-            std::wcout << L"    " << options.FileName << "\n\n";
+			//GLog->Add( GLanguageHandler->Text[kErrorSaving] + L" (Tree):\n";
+			//GLog->Add( L"    " << options.FileName << "\n\n";
         }
     }
 

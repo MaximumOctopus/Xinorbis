@@ -19,11 +19,27 @@
 
 class XExploder
 {
-	std::vector<XExploderDataObject> ExploderData;
+	std::vector<XExploderDataObject*> ExploderData;
 
-	int Mode = 0;
+	std::wstring CurrentFolder = L"";
+	int CentreX = 0;
+	int CentreY = 0;
+	double SliceAngle = 0;
+	int MaxRadius = 0;
+	int SelectedSlice = 0;
+	int SelectedOldSlice = 0;
+	int HubRadius = 0;
+	double SliceForText = 28;
 
-	void Resize();
+	bool Busy = false;
+	bool HasData = false;
+
+	int DataSource = 0;
+
+	unsigned __int64 LargestSize = 0;
+	int LargestQuantity = 0;
+
+	TPaintBox* pbExploder;
 
 	void ClearDisplay();
 
@@ -37,12 +53,17 @@ class XExploder
 	void __fastcall PaintBoxMouseDown(TObject *, TMouseButton, TShiftState, int, int);
 	void __fastcall PaintBoxMouseMove(TObject *, TShiftState, int, int);
 
-	int GetExploderItemFrom(int, int);
-	XExploderDataObject GetExploderItem(int);
+	int GetItemFrom(int, int);
 
 	void CalculatePies();
 
+	double DegToRad(double);
+
 public:
+
+	enum class DisplayMode { kSize = 0, kQuantity };
+
+   	DisplayMode Mode = DisplayMode::kSize;
 
 	int FolderTotalCount = 0;
 	unsigned __int64 FolderTotalSize = 0;
@@ -55,16 +76,18 @@ public:
 	std::function<void(int)> OnMouseOver;
 	std::function<void()> OnGoBack;
 
-	XExploder();
+	XExploder(TComponent*, TWinControl*);
 	~XExploder();
 
 	void Clear();
 
-	void SetMode(int);
+	void Resize();
+
+	void SetMode(DisplayMode);
 
 	void BeginData(const std::wstring);
 	void AddData(const std::wstring, int, int, unsigned __int64, int);
 	void EndData();
 
-	XExploderDataObject GetItem(int);
+   	XExploderDataObject* GetItem(int);
 };

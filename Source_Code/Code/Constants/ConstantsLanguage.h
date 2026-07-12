@@ -17,6 +17,9 @@ enum class LanguageType {
 	kES = 7, kSW = 8, kCZ = 9, kHU = 10, kUS = 11, kRU = 12, kCAT = 13
 };
 
+static const int kDateDD                           = 0;
+static const int kDateMM                           = 1;
+static const int kDateYYYY                         = 2;
 
 static const int kUnitB = 0;
 static const int kUnitKB = 1;
@@ -81,7 +84,7 @@ const static int kAudio                           = 51;
 const static int kAutomaticallyCheckForUpdates    = 52;
 const static int kAutoOpen                        = 53;
 const static int kAutoRefresh                     = 54;
-const static int kAutosave                        = 55;
+const static int kAutoSave                        = 55;
 const static int kAutoSaveFolderReports           = 56;
 const static int kAutosaveOptions                 = 57;
 const static int kAutoSaveReports                 = 58;

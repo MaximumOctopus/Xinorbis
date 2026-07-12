@@ -13,6 +13,8 @@
 #pragma once
 
 #include "Consolidated.h"
+#include "ConstantsData.h"
+#include "SizeOfFolder.h"
 #include "UserData.h"
 
 
@@ -123,5 +125,45 @@ public:
 		rfd.FilesInRoot = true;
 
 		RootFolders.push_back(rfd);
+	}
+
+
+	// folder_name must terminate with "\"
+	SizeOfFolder GetSizeOfFolder(const std::wstring folder_name)
+	{
+		SizeOfFolder sof;
+
+		for (FileObject file : Files)
+		{
+			if (file.Category != __FileCategoryDirectory)
+			{
+				std::wstring full_path = Folders[file.FilePathIndex];
+
+				if (full_path.compare(0, folder_name.size(), folder_name))
+				{
+					sof.Size += file.Size;
+					sof.SizeOnDisk += file.SizeOnDisk;
+
+					sof.FileCount++;
+				}
+			}
+		}
+
+		return sof;
+	}
+
+
+	// folder_name must terminate with "\"
+	int GetFullFolderIndex(const std::wstring folder_name)
+	{
+		for (int t = 0; t < Folders.size(); t++)
+		{
+			if (Folders[t] == folder_name)
+			{
+				return t;
+			}
+		}
+
+        return -1;
 	}
 };

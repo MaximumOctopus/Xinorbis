@@ -17,6 +17,10 @@ static const int __AttributesCount = 21;
 static const int __MagnitudesCount = 13;
 
 static const int __HTMLColoursCount = 11;
+static const int __HTMLItemsCount = 17;
+
+static const int __TextItemsCount = 16;
+static const int __XMLItemsCount = 17;
 
 static const int __rsTableWidth = 0;
 static const int __rsBarGraph = 1;

@@ -31,27 +31,27 @@ static const int kMainExploderPanelIndex    = 10;
 static const int kLogPanelIndex             = 99;
 
 
-static const int __kDBSelectedFolder   = 0;
+static const int kDBSelectedFolder   = 0;
 
-static const int __kFormFileSpread     = 1;
-static const int __kFormReference      = 2;
-static const int __kFormReport         = 3;
-static const int __kFormInfoDatabase   = 4;
-static const int __kFormExplore        = 5;
-static const int __kFormFileAges       = 6;
-static const int __kFormCombine        = 7;
-static const int __kFormDeplicates     = 8;
-static const int __kFormDuplicates     = 9;
-static const int __kFormReportsList    = 10;
-static const int __kFormSearchSyntax   = 11;
+static const int kFormFileSpread     = 1;
+static const int kFormReference      = 2;
+static const int kFormReport         = 3;
+static const int kFormInfoDatabase   = 4;
+static const int kFormExplore        = 5;
+static const int kFormFileAges       = 6;
+static const int kFormCombine        = 7;
+static const int kFormDeplicates     = 8;
+static const int kFormDuplicates     = 9;
+static const int kFormReportsList    = 10;
+static const int kFormSearchSyntax   = 11;
 
-static const int __kFormEditHTMLReport = 20;
-static const int __kFormEditTextReport = 21;
-static const int __kFormEditTreeReport = 22;
-static const int __kFormEditXMLReport  = 23;
-static const int __kFormEditCSVReport  = 24;
+static const int kFormEditHTMLReport = 20;
+static const int kFormEditTextReport = 21;
+static const int kFormEditTreeReport = 22;
+static const int kFormEditXMLReport  = 23;
+static const int kFormEditCSVReport  = 24;
 
-static const int __kPostScanNothing     = 0;
-static const int __kPostScanSummary     = 1;
-static const int __kPostScanInformation = 2;
-static const int __kPostScanStructure   = 3;
+static const int kPostScanNothing     = 0;
+static const int kPostScanSummary     = 1;
+static const int kPostScanInformation = 2;
+static const int kPostScanStructure   = 3;

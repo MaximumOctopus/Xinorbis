@@ -20,6 +20,30 @@ struct TreeReportOptions
 {
 	std::wstring FileName = L"";
 
+	std::wstring Layout = L"";
+
 	bool IncludeSize = true;
 	bool IncludeAttributes = true;
+
+	bool CategoryList[__FileCategoriesCount] = { 0 };
+
+	bool AutoOpen = false;
+
+	void LoadCategoryList(const std::wstring input)
+	{
+		for (int i = 0; i < input.size(); i++)
+		{
+			if (i < __FileCategoriesCount)
+			{
+				if (input[i])
+				{
+					CategoryList[i] = true;
+				}
+				else
+				{
+					CategoryList[i] = false;
+				}
+			}
+		}
+	}
 };

@@ -14,6 +14,7 @@
 
 
 #include "ConstantsData.h"
+#include "ConstantsReports.h"
 #include <string>
 
 
@@ -25,10 +26,31 @@ struct HTMLReportOptions
 	std::wstring FileName = L"";
 	int Units = 0;
 	std::wstring Align = L"";
-	bool Layout[__HTMLLayoutOptionsCount] = { false };
+	std::wstring Layout = L"";
 	int LayoutSize = 2;						 // 0 = 800x600, 1 = 1024x768, 2 = 1280x960
-	bool CategoryList[20] = { 0 };
+	bool CategoryList[__FileCategoriesCount] = { 0 };
 	bool AutoOpen = false;
 
+    int HTMLColours[11];
+	int HTMLMonoBargraph = 0;
+
 	bool DeepScan = false;
+
+	void LoadCategoryList(const std::wstring input)
+	{
+		for (int i = 0; i < input.size(); i++)
+		{
+			if (i < __FileCategoriesCount)
+			{
+				if (input[i])
+				{
+					CategoryList[i] = true;
+				}
+				else
+				{
+					CategoryList[i] = false;
+				}
+			}
+		}
+	}
 };

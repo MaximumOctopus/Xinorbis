@@ -20,4 +20,6 @@ struct XinorbisReportOptions
 {
 	std::wstring FileName = L"";
 	int Layout = 0;
+
+    bool AutoOpen = false;
 };

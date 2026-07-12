@@ -19,51 +19,59 @@
 
 class XMap
 {
-	std::vector<XMapDataObject> MapData;
-	/*
-	bool HighlightMode = false;
-	int BlocksSize
-	int BlocksGap
-	int Mode
+	std::vector<XMapDataObject*> MapData;
 
-	procedure PaintBoxUpdateQuantity(Sender: TObject);
-	procedure PaintBoxUpdateSize(Sender: TObject);
-	procedure PaintBoxMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-	procedure PaintBoxMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+	bool Busy = false;
+	bool HasData = false;
+	int DataSource = 0;
 
-	function  GetMapItemFrom(x, y : integer): integer;
+	int BlocksPixel = 5;
 
-	function  GetMapItem(aIndex : integer): TXMapDataObject;
+	int BlocksX = 1;
+	int BlocksY = 1;
 
-	procedure SetBlocksSize(aBlocksSize : integer);
-	procedure SetBlocksGap(aBlocksGap : integer);
-	procedure SetHighlightMode(aHighlightMode : boolean);
-	procedure SetMode(aMode : integer);
+	int Selected = -1;
+	bool HighlightMode = true;
 
-	function  ColourToBW(aColour : integer): integer; */
+	TPaintBox *pbMap;
+
+	void __fastcall PaintBoxUpdateSize(TObject*);
+	void __fastcall PaintBoxUpdateQuantity(TObject*);
+	void __fastcall PaintBoxMouseMove(TObject*, TShiftState, int, int);
+	void __fastcall PaintBoxMouseDown(TObject*, TMouseButton, TShiftState, int, int);
+
+	int ColourToBW(int);
 
 public:
-/*
+
+	enum class DisplayMode { kSize = 0, kQuantity };
+
+	DisplayMode Mode = DisplayMode::kSize;
+
+	int BlocksSize = 4;
+	int BlocksGap = 1;
+
 	int FolderTotalCount = 0;
 	unsigned __int64 FolderTotalSize = 0;
 
 	std::function<void(int)> OnMouseClick;
 	std::function<void(int)> OnMouseOver;
 
-	XMap();
+	XMap(TComponent* owner, TWinControl* Zig);
 	~XMap();
 
-	procedure Clear;
+	void Clear();
 
-	procedure BeginData;
-	procedure AddData(const aFolderName : string; aFileCount : integer; aFileSize : int64; aColour : integer);
-	procedure EndData;
+	void BeginData();
+	void AddData(const std::wstring, int, unsigned __int64, int);
+	void EndData();
 
-	XMapDataObject GetItem(int);
+	int GetItemFrom(int, int);
+	XMapDataObject* GetItem(int);
 
-procedure TXMap.SetBlocksGap(aBlocksGap : integer);
-procedure TXMap.SetHighlightMode(aHighlightMode : boolean);
-procedure TXMap.SetMode(aMode : integer);
+	void SetMode(DisplayMode);
+	void SetBlocksSize(int);
+	void SetBlocksGap(int);
+	void SetHighlightMode(bool);
 
-                                              */
 };

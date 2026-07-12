@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <Windows.h>
@@ -315,7 +314,7 @@ bool ScanEngine::Import(bool process_data, bool process_top_100_size, bool proce
 
 	if (!success)
 	{
-		std::wcout << L"  Unable to import from \"" << Path.CSVSource << L"\".\n";
+		//GLog->Add( L"  Unable to import from \"" << Path.CSVSource << L"\".\n";
 
 		return false;
 	}
@@ -1385,8 +1384,6 @@ void ScanEngine::BuildTop100DateLists()
 
 void ScanEngine::ListRoot() const
 {
-	std::wcout << L"\n  Listing root files/folders:\n\n";
-
 	std::wstring tmp = Path.String + L"*";
 
 	WIN32_FIND_DATAW file;
@@ -1405,22 +1402,20 @@ void ScanEngine::ListRoot() const
 				if ((!lstrcmpW(file.cFileName, L".")) || (!lstrcmpW(file.cFileName, L"..")))
 					continue;
 
-				std::wcout << L"    " << Path.String << file.cFileName << L"\\ \n";
+				//GLog->Add( L"    " << Path.String << file.cFileName << L"\\ \n";
 			}
 			else
 			// =======================================================================================================
 			// Files
 			// =======================================================================================================
 			{
-				std::wcout << L"    " << Path.String << file.cFileName << L"\n";
+				//GLog->Add( L"    " << Path.String << file.cFileName << L"\n";
 			}
 
 		} while (FindNextFileW(search_handle, &file));
 
 		FindClose(search_handle);
 	}
-
-	std::wcout << L"\n";
 }
 
 
@@ -1600,16 +1595,16 @@ void ScanEngine::SaveSearchResults(Command command)
 
 			ofile.close();
 
-			std::wcout << L"    Saved ok.\n";
+			//GLog->Add( L"    Saved ok.\n";
 		}
 		else
 		{
-			std::wcout << L"    Error: unable to save file.\n";
+			//GLog->Add( L"    Error: unable to save file.\n";
 		}
 	}
 	else
 	{
-		std::wcout << L" No search results to save :(\n";
+		//GLog->Add( L" No search results to save :(\n";
 	}
 }
 
@@ -1628,7 +1623,7 @@ void ScanEngine::Search(Command command)
 	{
 		if (file.Name.find(term) != std::wstring::npos)
 		{
-			// to do std::wcout << std::format(L"{0}  {1}{2}\n", Formatting::AddLeadingSpace(Convert::ConvertToUsefulUnit(file.Size), 8), Data.Folders[file.FilePathIndex], file.Name);
+			// //GLog->Add( std::format(L"{0}  {1}{2}\n", Formatting::AddLeadingSpace(Convert::ConvertToUsefulUnit(file.Size), 8), Data.Folders[file.FilePathIndex], file.Name);
 
 			count++;
 		}
@@ -1636,7 +1631,7 @@ void ScanEngine::Search(Command command)
 
 	if (count != 0)
 	{
-		// to do std::wcout << std::format(L"\nFound {0} matching files\n", count);
+		//GLog->Add( << std::format(L"\nFound {0} matching files\n", count);
 	}
 }
 
@@ -1851,7 +1846,7 @@ bool ScanEngine::ImportFromCSV(const std::wstring file_name)
 			RowCount++;
 		}
 
-		std::wcout << L"Imported " << Data.Files.size() << L" items from " << RowCount << L" rows.\n";
+		//GLog->Add( L"Imported " << Data.Files.size() << L" items from " << RowCount << L" rows.\n";
 
 		if (!GSettingsHandler->Optimisations.GetUserDetails)
 		{

@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include "Convert.h"
@@ -41,8 +40,8 @@ namespace ReportText
 
 		if (ofile)
 		{
-			std::wcout << GLanguageHandler->Text[kSavingReports] + L" (Text):\n";
-			std::wcout << L"    " << options.FileName << "\n\n";
+			//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (Text):\n";
+			//GLog->Add( L"    " << options.FileName << "\n\n";
 
 			for (int t = 0; t < __TextReportOptionsCount; t++)
 			{
@@ -102,8 +101,8 @@ namespace ReportText
 		}
 		else
 		{
-			std::wcout << GLanguageHandler->Text[kErrorSaving] + L" (Text):\n";
-			std::wcout << L"    " << options.FileName << "\n\n";
+			//GLog->Add( GLanguageHandler->Text[kErrorSaving] + L" (Text):\n";
+			//GLog->Add( L"    " << options.FileName << "\n\n";
 		}
 	}
 
@@ -173,7 +172,7 @@ namespace ReportText
 			}
 			else
 			{
-				std::wcout << " Error: cannot find folder \"" << folder << "\"\n";
+				//GLog->Add( " Error: cannot find folder \"" << folder << "\"\n";
 			}
 		}
 	}

@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include "Convert.h"
@@ -60,7 +59,7 @@ void ReportDates::Day(DateReportOptions options)
 
 	if (ofile)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] << L" (Dates::Day):\n\n";
+	   //GLog->Add( << GLanguageHandler->Text[kSavingReports] << L" (Dates::Day):\n\n";
 
 		if (GScanEngine->Data.Files.size() != 0)
 		{
@@ -114,7 +113,7 @@ void ReportDates::Day(DateReportOptions options)
 
 		ofile.close();
 
-		std::wcout << GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
+	   //GLog->Add( GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
 	}
 }
 
@@ -125,7 +124,7 @@ void ReportDates::Month(DateReportOptions options)
 
 	if (ofile)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] << L" (Dates::Month):\n\n";
+	   //GLog->Add( GLanguageHandler->Text[kSavingReports] << L" (Dates::Month):\n\n";
 
 		if (GScanEngine->Data.Files.size() != 0)
 		{
@@ -187,7 +186,7 @@ void ReportDates::Month(DateReportOptions options)
 
 		ofile.close();
 
-		std::wcout << GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
+	//GLog->Add( GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
 	}
 }
 
@@ -198,7 +197,7 @@ void ReportDates::Year(DateReportOptions options)
 
 	if (ofile)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] << L" (Dates::Year):\n\n";
+		//GLog->Add( GLanguageHandler->Text[kSavingReports] << L" (Dates::Year):\n\n";
 
 		if (GScanEngine->Data.Files.size() != 0)
 		{
@@ -260,6 +259,6 @@ void ReportDates::Year(DateReportOptions options)
 
 		ofile.close();
 
-		std::wcout << GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
+		//GLog->Add( GLanguageHandler->Text[kTextReportSavedAs] << L" " << options.FileName << L"\n\n";
 	}
 }

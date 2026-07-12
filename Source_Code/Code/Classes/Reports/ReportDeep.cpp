@@ -10,8 +10,6 @@
 // 
 // =====================================================================
 
-#include <iostream>
-
 #include "ReportDeep.h"
 #include "ScanEngine.h"
 #include "SizeOfFolder.h"
@@ -40,13 +38,13 @@ bool ReportDeep::ProcessFolder(int folder_index)
     largestSize = 0;
     largestCount = 0;
 
-    for (int f = 0; f < GScanEngine->Data.Files.size(); f++)
+	for (int f = 0; f < GScanEngine->Data.Files.size(); f++)
     {
-        if (GScanEngine->Data.Files[f].FilePathIndex == folder_index)
+		if (GScanEngine->Data.Files[f].FilePathIndex == folder_index)
         {
             if (GScanEngine->Data.Files[f].Category == __FileCategoryDirectory)
             {
-			    //std::wcout << L"      " << GScanDetails->Folders[GScanDetails->Files[f].FilePathIndex] + GScanDetails->Files[f].FileName << "\n";
+			    //GLog->Add( L"      " << GScanDetails->Folders[GScanDetails->Files[f].FilePathIndex] + GScanDetails->Files[f].FileName << "\n";
 
                 SizeOfFolder sof = GScanEngine->GetSizeOfFolder(GScanEngine->Data.Folders[GScanEngine->Data.Files[f].FilePathIndex] + GScanEngine->Data.Files[f].Name,
                                                                 GScanEngine->Data.Files[f].Name);

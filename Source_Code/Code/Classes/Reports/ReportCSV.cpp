@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <string>
 
 #include "Convert.h"
@@ -31,7 +30,7 @@ namespace ReportCSV
 {
 	void Summary(CSVReportOptions options)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] + L" (CSV):\n\n";
+		//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (CSV):\n\n";
 
 		std::ofstream ofile(options.FileName);
 
@@ -88,8 +87,8 @@ namespace ReportCSV
 
 	void FullList(CSVReportOptions options)
 	{
-		std::wcout << GLanguageHandler->Text[kSavingReports] + L" (CSV):\n";
-		std::wcout << L"    " << options.FileName << "\n\n";
+		//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (CSV):\n";
+		//GLog->Add( L"    " << options.FileName << "\n\n";
 
 		std::ofstream ofile(options.FileName);
 

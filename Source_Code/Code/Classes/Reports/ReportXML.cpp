@@ -12,7 +12,6 @@
 
 #include <cmath>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <Windows.h>
 
@@ -47,8 +46,8 @@ namespace ReportXML
 
 		if (ofile)
 		{
-			std::wcout << GLanguageHandler->Text[kSavingReports] + L" (XML):\n";
-			std::wcout << options.FileName << "\n\n";
+			//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (XML):\n";
+			//GLog->Add( options.FileName << "\n\n";
 
 			ofile << Formatting::to_utf8(L"<?xml version=\"1.0\"?>\n");
 			ofile << Formatting::to_utf8(L"<!-- generated with FolderScanUltra " + __XVersion + L" - " + __XDate + L" -->\n");
@@ -107,9 +106,7 @@ namespace ReportXML
 		}
 		else
 		{
-			std::wcout << "\n";
-			std::wcout << GLanguageHandler->Text[kErrorSaving] + L" \"" + options.FileName + L"\".\n";
-			std::wcout << "\n";
+			//GLog->Add( GLanguageHandler->Text[kErrorSaving] + L" \"" + options.FileName + L"\".\n";
 		}
 	}
 
@@ -560,8 +557,7 @@ namespace ReportXML
 
 		if (ofile)
 		{
-			std::wcout << GLanguageHandler->Text[kSavingReports] + L" (XML Full List):\n";
-			std::wcout << "\n";
+			//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (XML Full List):\n";
 
 			ofile << Formatting::to_utf8(L"<?xml version=\"1.0\"?>\n");
 			ofile << Formatting::to_utf8(L"<!--  -->\n");

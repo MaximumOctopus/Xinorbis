@@ -12,9 +12,14 @@
 
 #pragma once
 
+#include "ConstantsReports.h"
 
-static const int kPostScanNothing      = 0;
-static const int kPostScanSummary      = 1;
-static const int kPostScanInformation  = 2;
-static const int kPostScanStructure    = 3;
 
+class HTMLColours
+{
+public:
+
+	int Colour[__HTMLColoursCount];
+
+	bool MonoBargraph = false;
+};
