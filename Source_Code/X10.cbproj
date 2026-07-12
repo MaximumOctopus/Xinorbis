@@ -87,15 +87,15 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
         <ProjectType>CppVCLApplication</ProjectType>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;vclwinx.lib;bindengine.lib;vclie.lib;vcledge.lib</AllPackageLibs>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <Multithreaded>true</Multithreaded>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
         <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
         <Custom_Styles>Carbon|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Carbon.vsf</Custom_Styles>
-        <IncludePath>Code\Classes\Settings\;Code\Components\;Code\Frames\UI\;Code\Forms\System\;Code\Processes\;Code\Forms\Splash\;Code\Utility\Dialogs\;Code\Forms\Data\;Code\Forms\Editing\;Code\Classes\Reports\;Code\Utility\;Code\Constants\;Code\Handlers\;Code\Classes\;Code\Forms\;Code\Frames\;Xinorbis10\;$(IncludePath)</IncludePath>
-        <ILINK_LibraryPath>Code\Classes\Settings\;Code\Components\;Code\Frames\UI\;Code\Forms\System\;Code\Processes\;Code\Forms\Splash\;Code\Utility\Dialogs\;Code\Forms\Data\;Code\Forms\Editing\;Code\Classes\Reports\;Code\Utility\;Code\Constants\;Code\Handlers\;Code\Classes\;Code\Forms\;Code\Frames\;Xinorbis10\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <IncludePath>Code\Utility\Reports\;Code\Classes\Settings\;Code\Components\;Code\Frames\UI\;Code\Forms\System\;Code\Processes\;Code\Forms\Splash\;Code\Utility\Dialogs\;Code\Forms\Data\;Code\Forms\Editing\;Code\Classes\Reports\;Code\Utility\;Code\Constants\;Code\Handlers\;Code\Classes\;Code\Forms\;Code\Frames\;Xinorbis10\;$(IncludePath)</IncludePath>
+        <ILINK_LibraryPath>Code\Utility\Reports\;Code\Classes\Settings\;Code\Components\;Code\Frames\UI\;Code\Forms\System\;Code\Processes\;Code\Forms\Splash\;Code\Utility\Dialogs\;Code\Forms\Data\;Code\Forms\Editing\;Code\Classes\Reports\;Code\Utility\;Code\Constants\;Code\Handlers\;Code\Classes\;Code\Forms\;Code\Frames\;Xinorbis10\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <SanitizedProjectName>X10</SanitizedProjectName>
         <VerInfo_Locale>2057</VerInfo_Locale>
     </PropertyGroup>
@@ -163,7 +163,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi</LinkPackageImports>
+        <LinkPackageImports>rtl.bpi;vcl.bpi;vclx.bpi;vclimg.bpi;Tee.bpi;IndySystem.bpi;IndyProtocols.bpi;IndyCore.bpi;vclwinx.bpi;bindengine.bpi;vclie.bpi;vcledge.bpi</LinkPackageImports>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>X10_Icon.ico</Icon_MainIcon>
@@ -251,6 +251,10 @@
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
             <BuildOrder>58</BuildOrder>
         </None>
+        <None Include="Code\Classes\FolderDetail.h">
+            <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
+            <BuildOrder>165</BuildOrder>
+        </None>
         <CppCompile Include="Code\Classes\FormDetails.cpp">
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
             <BuildOrder>95</BuildOrder>
@@ -258,6 +262,10 @@
         <None Include="Code\Classes\FormDetails.h">
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
             <BuildOrder>95</BuildOrder>
+        </None>
+        <None Include="Code\Classes\Reports\HTMLColours.h">
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>180</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportCSV.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -268,12 +276,12 @@
             <BuildOrder>137</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportCSVOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>138</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportDateOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>139</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportDates.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -300,8 +308,8 @@
             <BuildOrder>145</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportHTMLOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>146</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportJSON.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -328,8 +336,8 @@
             <BuildOrder>152</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportTextOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>153</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportTree.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -340,8 +348,8 @@
             <BuildOrder>155</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportTreeOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>156</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportXinorbis.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -352,8 +360,8 @@
             <BuildOrder>160</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportXinorbisOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>161</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <CppCompile Include="Code\Classes\Reports\ReportXML.cpp">
             <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
@@ -364,8 +372,8 @@
             <BuildOrder>163</BuildOrder>
         </None>
         <None Include="Code\Classes\Reports\ReportXMLOptions.h">
-            <VirtualFolder>{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}</VirtualFolder>
-            <BuildOrder>164</BuildOrder>
+            <VirtualFolder>{47FE3030-674E-4D27-A393-FB210EFF766D}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
         </None>
         <None Include="Code\Classes\RootFolder.h">
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
@@ -480,35 +488,35 @@
         </CppCompile>
         <CppCompile Include="Code\Forms\Editing\XFormEditCSVReport.cpp">
             <VirtualFolder>{3162625D-E614-43BC-9893-937BE01F27F9}</VirtualFolder>
-            <Form>Form13</Form>
+            <Form>FormEditCSVReport</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Editing\XFormEditCSVReport.h</DependentOn>
             <BuildOrder>82</BuildOrder>
         </CppCompile>
         <CppCompile Include="Code\Forms\Editing\XFormEditHTMLReport.cpp">
             <VirtualFolder>{3162625D-E614-43BC-9893-937BE01F27F9}</VirtualFolder>
-            <Form>Form22</Form>
+            <Form>FormEditHTMLReport</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Editing\XFormEditHTMLReport.h</DependentOn>
             <BuildOrder>91</BuildOrder>
         </CppCompile>
         <CppCompile Include="Code\Forms\Editing\XFormEditTextReport.cpp">
             <VirtualFolder>{3162625D-E614-43BC-9893-937BE01F27F9}</VirtualFolder>
-            <Form>Form21</Form>
+            <Form>FormEditTextReport</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Editing\XFormEditTextReport.h</DependentOn>
             <BuildOrder>90</BuildOrder>
         </CppCompile>
         <CppCompile Include="Code\Forms\Editing\XFormEditTreeReport.cpp">
             <VirtualFolder>{3162625D-E614-43BC-9893-937BE01F27F9}</VirtualFolder>
-            <Form>Form19</Form>
+            <Form>FormEditTreeReport</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Editing\XFormEditTreeReport.h</DependentOn>
             <BuildOrder>88</BuildOrder>
         </CppCompile>
         <CppCompile Include="Code\Forms\Editing\XFormEditXmlReport.cpp">
             <VirtualFolder>{3162625D-E614-43BC-9893-937BE01F27F9}</VirtualFolder>
-            <Form>Form20</Form>
+            <Form>FormEditXmlReport</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Editing\XFormEditXmlReport.h</DependentOn>
             <BuildOrder>89</BuildOrder>
@@ -527,6 +535,13 @@
             <DependentOn>Code\Forms\Splash\XFormSplash.h</DependentOn>
             <BuildOrder>100</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Code\Forms\System\XFormLog.cpp">
+            <VirtualFolder>{B863A731-C1EE-4463-B02E-20322F3DED1E}</VirtualFolder>
+            <Form>FormLog</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>Code\Forms\System\XFormLog.h</DependentOn>
+            <BuildOrder>183</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Code\Forms\System\XFormSelectLanguage.cpp">
             <VirtualFolder>{B863A731-C1EE-4463-B02E-20322F3DED1E}</VirtualFolder>
             <Form>Form3</Form>
@@ -536,7 +551,7 @@
         </CppCompile>
         <CppCompile Include="Code\Forms\System\XFormSettings.cpp">
             <VirtualFolder>{B863A731-C1EE-4463-B02E-20322F3DED1E}</VirtualFolder>
-            <Form>Form23</Form>
+            <Form>FormSettings</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\System\XFormSettings.h</DependentOn>
             <BuildOrder>108</BuildOrder>
@@ -780,6 +795,14 @@
             <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
             <BuildOrder>36</BuildOrder>
         </None>
+        <CppCompile Include="Code\Handlers\Help.cpp">
+            <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
+            <BuildOrder>181</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Handlers\Help.h">
+            <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
+            <BuildOrder>182</BuildOrder>
+        </None>
         <CppCompile Include="Code\Handlers\ImageHandler.cpp">
             <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
             <BuildOrder>28</BuildOrder>
@@ -804,6 +827,14 @@
             <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
             <BuildOrder>20</BuildOrder>
         </None>
+        <CppCompile Include="Code\Handlers\Log.cpp">
+            <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
+            <BuildOrder>163</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Handlers\Log.h">
+            <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
+            <BuildOrder>164</BuildOrder>
+        </None>
         <CppCompile Include="Code\Handlers\SettingsHandler.cpp">
             <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
             <BuildOrder>50</BuildOrder>
@@ -819,6 +850,46 @@
         <None Include="Code\Handlers\SystemGlobal.h">
             <VirtualFolder>{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}</VirtualFolder>
             <BuildOrder>27</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Processes\CompareFolderLeftSide.cpp">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>171</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Processes\CompareFolderLeftSide.h">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>175</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Processes\CompareFolderRightSide.cpp">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>166</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Processes\CompareFolderRightSide.h">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>168</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Processes\CompareLeftSide.cpp">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>173</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Processes\CompareLeftSide.h">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>169</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Processes\CompareRightSide.cpp">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>172</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Processes\CompareRightSide.h">
+            <VirtualFolder>{8840B781-5490-4750-B741-034BD7D73318}</VirtualFolder>
+            <BuildOrder>167</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Processes\NavigateRightSide.cpp">
+            <VirtualFolder>{26E35750-A756-4A6C-9E1D-EDD7A6CE5245}</VirtualFolder>
+            <BuildOrder>174</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Processes\NavigateRightSide.h">
+            <VirtualFolder>{26E35750-A756-4A6C-9E1D-EDD7A6CE5245}</VirtualFolder>
+            <BuildOrder>170</BuildOrder>
         </None>
         <CppCompile Include="Code\Processes\ProcessSearch.cpp">
             <VirtualFolder>{26E35750-A756-4A6C-9E1D-EDD7A6CE5245}</VirtualFolder>
@@ -908,6 +979,22 @@
             <VirtualFolder>{A7D44666-5A49-4B98-93CC-0C367DC15709}</VirtualFolder>
             <BuildOrder>73</BuildOrder>
         </None>
+        <CppCompile Include="Code\Utility\Reports\CSVPreview.cpp">
+            <VirtualFolder>{FD0B71E3-8AAE-4452-8C5A-5EF509AD6E8B}</VirtualFolder>
+            <BuildOrder>176</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Utility\Reports\CSVPreview.h">
+            <VirtualFolder>{FD0B71E3-8AAE-4452-8C5A-5EF509AD6E8B}</VirtualFolder>
+            <BuildOrder>177</BuildOrder>
+        </None>
+        <CppCompile Include="Code\Utility\Reports\HTMLPreview.cpp">
+            <VirtualFolder>{FD0B71E3-8AAE-4452-8C5A-5EF509AD6E8B}</VirtualFolder>
+            <BuildOrder>178</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Utility\Reports\HTMLPreview.h">
+            <VirtualFolder>{FD0B71E3-8AAE-4452-8C5A-5EF509AD6E8B}</VirtualFolder>
+            <BuildOrder>179</BuildOrder>
+        </None>
         <CppCompile Include="Code\Utility\SearchUtility.cpp">
             <VirtualFolder>{A7D44666-5A49-4B98-93CC-0C367DC15709}</VirtualFolder>
             <BuildOrder>61</BuildOrder>
@@ -953,41 +1040,42 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
-        <FormResources Include="Code\Frames\XFrameExploder.dfm"/>
-        <FormResources Include="Code\Frames\XFrameSummary.dfm"/>
-        <FormResources Include="Code\Frames\XFrameMap.dfm"/>
         <FormResources Include="Code\Frames\XFrameProperties.dfm"/>
         <FormResources Include="Code\Frames\XFrameSearch.dfm"/>
         <FormResources Include="Code\Frames\XFrameSelect.dfm"/>
         <FormResources Include="Code\Frames\XFrameStructure.dfm"/>
-        <FormResources Include="Code\Forms\XFormExplore.dfm"/>
-        <FormResources Include="Code\Forms\XFormFileAges.dfm"/>
-        <FormResources Include="Code\Forms\XFormFileSpread.dfm"/>
-        <FormResources Include="Code\Forms\XFormGetDate.dfm"/>
-        <FormResources Include="Code\Forms\XFormGetDateBetween.dfm"/>
-        <FormResources Include="Code\Forms\XFormAbout.dfm"/>
-        <FormResources Include="Code\Forms\XFormCategoryColours.dfm"/>
-        <FormResources Include="Code\Forms\XFormChartOptions.dfm"/>
-        <FormResources Include="Code\Forms\XFormExcludeFiles.dfm"/>
-        <FormResources Include="Code\Forms\XFormExcludeFolders.dfm"/>
+        <FormResources Include="Code\Frames\XFrameSummary.dfm"/>
+        <FormResources Include="Code\Frames\XFrameMap.dfm"/>
         <FormResources Include="Code\Forms\XFormSearchWizard.dfm"/>
+        <FormResources Include="Code\Forms\XFormSearchSyntax.dfm"/>
+        <FormResources Include="Code\Forms\XFormGetDateBetween.dfm"/>
         <FormResources Include="Code\Forms\XFormGetSizeBetween.dfm"/>
         <FormResources Include="Code\Forms\XFormLanguageSelect.dfm"/>
         <FormResources Include="Code\Forms\XFormMoreDetail.dfm"/>
         <FormResources Include="Code\Forms\XFormReportOptions.dfm"/>
-        <FormResources Include="Code\Forms\XFormSearchSyntax.dfm"/>
+        <FormResources Include="Code\Frames\XFrameExploder.dfm"/>
         <FormResources Include="main.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormXinorbisDialog.dfm"/>
+        <FormResources Include="Code\Forms\XFormGetDate.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditTextReport.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditTreeReport.dfm"/>
         <FormResources Include="Code\Forms\Editing\XFormEditXmlReport.dfm"/>
         <FormResources Include="Code\Forms\Splash\XFormProgress.dfm"/>
         <FormResources Include="Code\Forms\Splash\XFormSplash.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormSelectLanguage.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormSettings.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditHTMLReport.dfm"/>
         <FormResources Include="Code\Forms\Data\XFormImportFromCSV.dfm"/>
         <FormResources Include="Code\Forms\Editing\XFormEditCSVReport.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditHTMLReport.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditTextReport.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditTreeReport.dfm"/>
+        <FormResources Include="Code\Forms\XFormExcludeFiles.dfm"/>
+        <FormResources Include="Code\Forms\XFormExcludeFolders.dfm"/>
+        <FormResources Include="Code\Forms\XFormExplore.dfm"/>
+        <FormResources Include="Code\Forms\XFormFileAges.dfm"/>
+        <FormResources Include="Code\Forms\XFormFileSpread.dfm"/>
+        <FormResources Include="Code\Forms\XFormChartOptions.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormSelectLanguage.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormSettings.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormXinorbisDialog.dfm"/>
+        <FormResources Include="Code\Forms\XFormAbout.dfm"/>
+        <FormResources Include="Code\Forms\XFormCategoryColours.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormLog.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1051,11 +1139,14 @@
                     <VFOLDER ID="{C75B8EC6-A49B-4EE2-9CAC-7188791D90CE}" name="Handlers">
                         <VFOLDER ID="{471FE109-EF89-4933-B7EB-221962C118C5}" name="FileIO"/>
                     </VFOLDER>
-                    <VFOLDER ID="{26E35750-A756-4A6C-9E1D-EDD7A6CE5245}" name="Processes"/>
+                    <VFOLDER ID="{26E35750-A756-4A6C-9E1D-EDD7A6CE5245}" name="Processes">
+                        <VFOLDER ID="{8840B781-5490-4750-B741-034BD7D73318}" name="Comparison"/>
+                    </VFOLDER>
                     <VFOLDER ID="{6CADE002-91C9-4004-88FF-2E06FF4F0B8A}" name="Reports"/>
                     <VFOLDER ID="{A7D44666-5A49-4B98-93CC-0C367DC15709}" name="Utility">
                         <VFOLDER ID="{5B35DB45-C1D6-427A-B7C8-42241FC27B4F}" name="Dialogs"/>
                         <VFOLDER ID="{DA1B64E3-4156-41C3-9808-2DD1CB1839F1}" name="Gui"/>
+                        <VFOLDER ID="{FD0B71E3-8AAE-4452-8C5A-5EF509AD6E8B}" name="Reports"/>
                     </VFOLDER>
                 </VFOLDERS>
             </CPlusPlusBuilder.Personality>

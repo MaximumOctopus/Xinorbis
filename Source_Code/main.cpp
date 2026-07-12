@@ -14,6 +14,14 @@
 #include "XFormAbout.h"
 #include "XFormFileAges.h"
 #include "XFormFileSpread.h"
+#include "XFormLog.h"
+#include "XFormSettings.h"
+
+#include "XFormEditCSVReport.h"
+#include "XFormEditHTMLReport.h"
+#include "XFormEditTextReport.h"
+#include "XFormEditTreeReport.h"
+#include "XFormEditXmlReport.h"
 
 #include "XFrameExploder.h"
 #include "XFrameMap.h"
@@ -237,13 +245,6 @@ void __fastcall TFormMain::tbOpenClick(TObject *Sender)
 {
 //
 }
-
-
-void __fastcall TFormMain::tbSettingsClick(TObject *Sender)
-{
-//
-}
-
 
 void __fastcall TFormMain::tbWizardClick(TObject *Sender)
 {
@@ -685,7 +686,7 @@ void __fastcall TFormMain::miFExitClick(TObject *Sender)
 #pragma region Menu_Edit
 void __fastcall TFormMain::miESettingsClick(TObject *Sender)
 {
-//
+	OpenSettings(-1);
 }
 
 
@@ -749,7 +750,9 @@ void __fastcall TFormMain::miVCategoryColoursClick(TObject *Sender)
 
 void __fastcall TFormMain::miVLogsClick(TObject *Sender)
 {
-//
+	FormLog->Visible = !FormLog->Visible;
+
+    miVLogs->Checked = FormLog->Visible;
 }
 
 
@@ -763,31 +766,31 @@ void __fastcall TFormMain::miTabTableClick(TObject *Sender)
 #pragma region Menu_Reports
 void __fastcall TFormMain::miRCustomiseCSVReportClick(TObject *Sender)
 {
-//
+	CSVReportOptions csvro = OpenCSVReportOptions(0, false);
 }
 
 
 void __fastcall TFormMain::miRCustomiseHTMLReportClick(TObject *Sender)
 {
-//
+	HTMLReportOptions htmlro = OpenHTMLReportOptions(0, false);
 }
 
 
 void __fastcall TFormMain::miRCustomiseTextReportClick(TObject *Sender)
 {
-//
+	TextReportOptions textro = OpenTextReportOptions(0, false);
 }
 
 
 void __fastcall TFormMain::miRCustomiseTreeReportClick(TObject *Sender)
 {
-//
+	TreeReportOptions treero = OpenTreeReportOptions(0, false);
 }
 
 
 void __fastcall TFormMain::miRCustomiseXMLReportClick(TObject *Sender)
 {
-//
+	XMLReportOptions xmlro = OpenXMLReportOptions(0, false);
 }
 
 
@@ -932,3 +935,4 @@ void __fastcall TFormMain::miHCheckForUpdatesClick(TObject *Sender)
 //
 }
 #pragma end_region
+

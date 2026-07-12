@@ -536,20 +536,20 @@ object FormMain: TFormMain
       ImageIndex = 1
       OnClick = tbOpenClick
     end
-    object ToolButton4: TToolButton
+    object tbSettings: TToolButton
       Left = 78
+      Top = 0
+      Caption = 'tbSettings'
+      ImageIndex = 2
+      OnClick = miESettingsClick
+    end
+    object ToolButton4: TToolButton
+      Left = 117
       Top = 0
       Width = 8
       Caption = 'ToolButton4'
       ImageIndex = 3
       Style = tbsSeparator
-    end
-    object tbSettings: TToolButton
-      Left = 86
-      Top = 0
-      Caption = 'tbSettings'
-      ImageIndex = 2
-      OnClick = tbSettingsClick
     end
     object ToolButton5: TToolButton
       Left = 125
@@ -672,7 +672,7 @@ object FormMain: TFormMain
       OnClick = sbReportCSVClick
     end
     object sbReportHTML: TSpeedButton
-      Left = 237
+      Left = 266
       Top = 1
       Width = 23
       Height = 22
@@ -680,7 +680,7 @@ object FormMain: TFormMain
       OnClick = sbReportHTMLClick
     end
     object sbReportText: TSpeedButton
-      Left = 266
+      Left = 295
       Top = 1
       Width = 23
       Height = 22
@@ -688,7 +688,7 @@ object FormMain: TFormMain
       OnClick = sbReportTextClick
     end
     object sbReportTree: TSpeedButton
-      Left = 295
+      Left = 324
       Top = 1
       Width = 23
       Height = 22
@@ -696,7 +696,7 @@ object FormMain: TFormMain
       OnClick = sbReportTreeClick
     end
     object sbReportXML: TSpeedButton
-      Left = 324
+      Left = 353
       Top = 1
       Width = 23
       Height = 22
@@ -704,7 +704,7 @@ object FormMain: TFormMain
       OnClick = sbReportXMLClick
     end
     object sbReportSettings: TSpeedButton
-      Left = 363
+      Left = 392
       Top = 1
       Width = 23
       Height = 22
@@ -739,13 +739,21 @@ object FormMain: TFormMain
       ShowHint = True
     end
     object Bevel4: TBevel
-      Left = 353
+      Left = 382
       Top = 1
       Width = 4
       Height = 50
       ParentShowHint = False
       Shape = bsLeftLine
       ShowHint = True
+    end
+    object SpeedButton1: TSpeedButton
+      Left = 237
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportCSVClick
     end
   end
   object pMainCanvas: TPanel
@@ -1974,6 +1982,7 @@ object FormMain: TFormMain
       end
       object miVLogs: TMenuItem
         Caption = '.'
+        Default = True
         OnClick = miVLogsClick
       end
     end
@@ -2147,6 +2156,13 @@ object FormMain: TFormMain
       object miHAbout: TMenuItem
         Caption = 'About...'
         OnClick = tbAboutClick
+      end
+    end
+    object Dbug1: TMenuItem
+      Caption = 'Debug'
+      Visible = False
+      object Debug1: TMenuItem
+        Caption = 'Debug'
       end
     end
   end

@@ -177,12 +177,14 @@ __published:	// IDE-managed Components
 	TMenuItem *miCustomReport;
 	TMenuItem *N25;
 	TMenuItem *miOpenCustomReport;
+	TSpeedButton *SpeedButton1;
+	TMenuItem *Dbug1;
+	TMenuItem *Debug1;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
 	void __fastcall tbSaveReportsClick(TObject *Sender);
 	void __fastcall tbOpenClick(TObject *Sender);
-	void __fastcall tbSettingsClick(TObject *Sender);
 	void __fastcall tbWizardClick(TObject *Sender);
 	void __fastcall tbRefreshClick(TObject *Sender);
 	void __fastcall tbAboutClick(TObject *Sender);
