@@ -192,7 +192,7 @@ namespace Utility
 
 		std::strcpy(y, str.c_str());
 
-		std::wstring MD5 = MD5::GetMD5HashString(y);
+		std::wstring MD5 = MD5::Generate(y);
 
 		delete[] y;
 

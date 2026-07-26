@@ -20,7 +20,7 @@
 
 namespace WindowsUtility
 {
-	[[nodiscard]] bool AddToContextMenu(std::wstring path);
+	[[nodiscard]] bool AddToContextMenu(const std::wstring);
 	[[nodiscard]] bool RemoveFromContextMenu();
 	
 	[[nodiscard]] bool CreateFolder(const std::wstring&);
@@ -43,6 +43,8 @@ namespace WindowsUtility
 	[[nodiscard]] std::wstring GetEnvVariable(std::wstring);
 
 	void ExecuteFile(const std::wstring, const std::wstring);
+
+    std::wstring GetSpecialFolder(int);
 
 	bool SendToRecycleBin(const std::wstring);
 }

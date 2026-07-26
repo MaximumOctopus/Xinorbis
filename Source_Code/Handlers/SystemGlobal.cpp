@@ -12,15 +12,17 @@
 
 #include "FileExtensionHandler.h"
 #include "LanguageHandler.h"
+#include "ReportHandler.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
 #include "WindowsUtility.h"
 
-extern FileExtensionHandler* GFileExtensionHandler;
-extern LanguageHandler* GLanguageHandler;
-extern ScanEngine* GScanEngine;
-extern SettingsHandler* GSettingsHandler;
+extern FileExtensionHandler *GFileExtensionHandler;
+extern LanguageHandler *GLanguageHandler;
+extern ReportHandler *GReportHandler;
+extern ScanEngine *GScanEngine;
+extern SettingsHandler *GSettingsHandler;
 
 SystemGlobal *GSystemGlobal;
 
@@ -66,4 +68,6 @@ void SystemGlobal::CreateObjects()
 	GLanguageHandler->InitLanguage(ExePath, LanguageType::kUK);
 
 	GScanEngine = new ScanEngine();
+
+    GReportHandler = new ReportHandler();
 }

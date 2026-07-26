@@ -148,6 +148,51 @@ namespace Formatting
 	}
 
 
+	std::wstring MakeFileNameCompatible(const std::wstring file_name)
+	{
+		std::wstring output = file_name;
+
+		if (file_name.find(L'\\') != std::wstring::npos)
+		{
+			 output = Utility::ReplaceString(file_name, L"\\\\", L"__");
+			 output = Utility::ReplaceString(file_name, L"\\", L"_");
+
+             return output;
+		}
+		else
+		{
+			if (file_name.size() != 0)
+			{
+				output = file_name[0]; // get drive letter
+
+				// now get the last folder name
+				int idx = -1;
+
+				for (int t = 1; t < file_name.size(); t++)
+				{
+					if (file_name[t] == L'\\') idx = t;
+				}
+
+				if (idx != -1)
+				{
+					std::wstring ts = L"";
+
+					for (int t = idx + 1; t < file_name.size(); t++)
+					{
+						ts += file_name[t];
+					}
+
+					output += L"_" + ts;
+				}
+
+				return output;
+			}
+		}
+
+       	return file_name;
+	}
+
+
 	std::wstring GetAttributeAsString(int attributes)
 	{
 		std::wstring output = L"....";

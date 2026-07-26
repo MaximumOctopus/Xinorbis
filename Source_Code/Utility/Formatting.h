@@ -28,6 +28,8 @@ namespace Formatting
 	[[nodiscard]] std::wstring ReplaceEntitiesForXML(std::wstring);
 	[[nodiscard]] std::wstring TrimFileNameForOutput(const std::wstring);
 
+    std::wstring MakeFileNameCompatible(const std::wstring);
+
 	[[nodiscard]] std::wstring ReplaceForJSON(std::wstring);
 
 	[[nodiscard]] std::wstring GetAttributeAsString(int);

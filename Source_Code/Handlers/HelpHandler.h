@@ -12,13 +12,12 @@
 
 #pragma once
 
-#include <string>
-#include <Windows.h>
-#include <wincrypt.h>
-#include <windef.h>
 
-
-namespace MD5
+class HelpHandler
 {
-	[[nodiscard]] std::wstring Generate(char* pcValue);
-}
+public:
+
+	void OpenContextHelpPage(const std::wstring, int, int, int);
+	void OpenHelpPage(const std::wstring);
+	void OpenSearchManual();
+};

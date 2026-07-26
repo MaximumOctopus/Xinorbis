@@ -9,6 +9,7 @@
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
+
 #pragma once
 
 
@@ -22,15 +23,22 @@ namespace SearchUtility
     void ProcessSearchTermSize(SearchCriteriaObject&, std::wstring);
     void ProcessSearchTermTime(SearchCriteriaObject&, std::wstring);
     void ProcessSearchTermDate(SearchCriteriaObject&, std::wstring);
-    void ProcessSearchTermUser(SearchCriteriaObject&, std::wstring);
-    void ProcessSearchTermFNL(SearchCriteriaObject&, std::wstring);
-    void ProcessSearchTermCategory(SearchCriteriaObject&, std::wstring);
-    void ProcessSearchTermTypes(SearchCriteriaObject&, std::wstring);
-    void ProcessExtensions(SearchCriteriaObject&, std::wstring);
-    void ProcessExcludeFolder(SearchCriteriaObject&, std::wstring);
-    void ProcessIncludeFolder(SearchCriteriaObject&, std::wstring);
-        
-    void IntegerValueHelper(SearchCriteriaObject&, std::wstring, int, int, SearchType);
+	void ProcessSearchTermUser(SearchCriteriaObject&, std::wstring);
+	void ProcessSearchTermFNL(SearchCriteriaObject&, std::wstring);
+	void ProcessSearchTermCategory(SearchCriteriaObject&, std::wstring);
+	void ProcessSearchTermTypes(SearchCriteriaObject&, std::wstring);
+	void ProcessExtensions(SearchCriteriaObject&, std::wstring);
+	void ProcessExcludeFolder(SearchCriteriaObject&, std::wstring);
+	void ProcessIncludeFolder(SearchCriteriaObject&, std::wstring);
 
-    [[nodiscard]] SearchCriteriaObject ProcessSearchTerm(const std::wstring);
+	void IntegerValueHelper(SearchCriteriaObject&, std::wstring, int, int, SearchType);
+
+	[[nodiscard]] SearchCriteriaObject ProcessSearchTerm(const std::wstring);
+
+	std::wstring GetSearchText(int);
+	std::wstring GetSearchAttribute(int);
+	std::wstring GetSearchSize(int, int, int, int);
+
+	std::wstring XinorbisSearchToSQL(const std::wstring, const std::wstring, const std::wstring, const std::wstring, int, int, bool);
+	std::wstring XinorbisSearchAllToSQL(const std::wstring, const std::wstring, const std::wstring, bool);
 }

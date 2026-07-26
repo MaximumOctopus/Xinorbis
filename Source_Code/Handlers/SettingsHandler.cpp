@@ -255,9 +255,9 @@ bool SettingsHandler::SaveDefaults()
 		WriteBool(L"Prefs", L"Prefs_HistorySettings_FullLogging", True);
 		WriteBool(L"Prefs", L"Prefs_HistorySettings_SQLinSearch", False);
 
-		for (int t = 0; t < __FileCategoriesCount; t++)
+		for (int t = 0; t < kFileCategoriesCount; t++)
 		{
-			WriteInteger(L"Prefs", L"ChartColour" + std::to_wstring(t + 1), __DefaultDisplayColours[t]);
+			WriteInteger(L"Prefs", L"ChartColour" + std::to_wstring(t + 1), kDefaultDisplayColours[t]);
 		}
 
 		// ===========================================================================
@@ -621,8 +621,8 @@ begin
     Optimisations.JustInTimeDisplay       = ReadBoolFromSettings(L"Prefs", L"JustInTimeDisplay", True);
     Optimisations.ProgressUpdate          = ReadIntegerFromSettingsInputCheck(L"Prefs", L"ProgressUpdate", 1, 0, 5);
 
-    ProgressPercentage                    = ProgressUpdates[Optimisations.ProgressUpdate, 1];
-    ProgressFileCount                     = ProgressUpdates[Optimisations.ProgressUpdate, 2];
+	ProgressPercentage                    = ProgressUpdates[Optimisations.ProgressUpdate, 0];
+    ProgressFileCount                     = ProgressUpdates[Optimisations.ProgressUpdate, 1];
 
     Optimisations.AddToDate               = ReadBoolFromSettings(L"Prefs", L"AddToDate", False);
     Optimisations.AddToDateLimit          = ReadBoolFromSettings(L"Prefs", L"AddToDateLimit", False);
@@ -831,9 +831,9 @@ begin
 
 		FileCategoryColors[0]  = 0x00FFFFFF; // for folders
 
-		for (int t = 1; t < __FileCategoriesCount; t++)
+		for (int t = 1; t < kFileCategoriesCount; t++)
 		{
-			FileCategoryColors[t] = ReadInteger(L"Prefs", L"Chart Colour" + std::to_wstring(t), __DefaultDisplayColours[t], -1);
+			FileCategoryColors[t] = ReadInteger(L"Prefs", L"Chart Colour" + std::to_wstring(t), kDefaultDisplayColours[t], -1);
 		}
 
 		// ===========================================================================

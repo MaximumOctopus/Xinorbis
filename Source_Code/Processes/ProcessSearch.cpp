@@ -30,7 +30,8 @@ int ProcessSearch::Filter(Command command)
 {
 	std::wstring UserSearchTerms(command.secondary);
 
-	FileObject file_object;
+	DataSource = command.Source;
+	DataTarget = command.Target;
 
 	bool CategorySearchFound = false;
 	bool UserSearchFound = false;
@@ -174,7 +175,7 @@ int ProcessSearch::Filter(Command command)
 
 	try
 	{
-		GScanEngine->DataSearch.Clear();
+		GScanEngine->Data[DataTarget].Clear();
 
 		// -------------------------------------------------------------------------
 
@@ -244,7 +245,7 @@ int ProcessSearch::Filter(Command command)
 		// =========================================================================
 		// =========================================================================
 
-		for (FileObject file : GScanEngine->Data.Files)
+		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
 			Found = false;
 
@@ -259,7 +260,7 @@ int ProcessSearch::Filter(Command command)
 
 					for (std::wstring term : QuickTerms)
 					{
-						std::wstring filename(GScanEngine->Data.Folders[file.FilePathIndex] + file.Name);
+						std::wstring filename(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name);
 
 						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
@@ -283,9 +284,9 @@ int ProcessSearch::Filter(Command command)
 
 					if (z != std::wstring::npos)
 					{
-						if (!(file.Attributes & FILE_ATTRIBUTE_DIRECTORY))
+						if (!(file->Attributes & FILE_ATTRIBUTE_DIRECTORY))
 						{
-							std::wstring filename(file.Name);
+							std::wstring filename(file->Name);
 							std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
 							if (z == 0)
@@ -311,7 +312,7 @@ int ProcessSearch::Filter(Command command)
 					}
 					else
 					{
-						std::wstring filename(GScanEngine->Data.Folders[file.FilePathIndex] + file.Name);
+						std::wstring filename(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name);
 						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
 						if (SearchTerms[x].find(filename) != std::wstring::npos)
@@ -388,7 +389,7 @@ int ProcessSearch::Filter(Command command)
 					{
 					case SearchType::FolderExclude:
 					{
-						std::wstring folder(GScanEngine->Data.Folders[file_object.FilePathIndex]);
+						std::wstring folder(GScanEngine->Data[DataSource].Folders[file->FilePathIndex]);
 
 						std::transform(folder.begin(), folder.end(), folder.begin(), ::toupper);
 
@@ -417,7 +418,7 @@ int ProcessSearch::Filter(Command command)
 					{
 					case SearchType::FolderInclude:
 					{
-						std::wstring folder(GScanEngine->Data.Folders[file_object.FilePathIndex]);
+						std::wstring folder(GScanEngine->Data[DataSource].Folders[file->FilePathIndex]);
 
 						std::transform(folder.begin(), folder.end(), folder.begin(), ::toupper);
 
@@ -442,24 +443,24 @@ int ProcessSearch::Filter(Command command)
 
 			if (Found)
 			{
-				if (FILE_ATTRIBUTE_DIRECTORY & file_object.Attributes)
+				if (FILE_ATTRIBUTE_DIRECTORY & file->Attributes)
 				{
-					GScanEngine->DataSearch.FolderCount++;
+					GScanEngine->Data[DataTarget].FolderCount++;
 				}
 				else
 				{
-					GScanEngine->DataSearch.FileCount++;
+					GScanEngine->Data[DataTarget].FileCount++;
 				}
 
-				GScanEngine->DataSearch.TotalSize += file_object.Size;
+				GScanEngine->Data[DataTarget].TotalSize += file->Size;
 
-				//GLog->Add( std::format(L"{0}  {1}{2}\n", Formatting::AddLeadingSpace(Convert::ConvertToUsefulUnit(file_object.Size), 8), Data.Folders[file_object.FilePathIndex], file_object.Name);
+				//GLog->Add( std::format(L"{0}  {1}{2}\n", Formatting::AddLeadingSpace(Convert::ConvertToUsefulUnit(file->Size), 8), Data.Folders[file_object.FilePathIndex], file_object.Name);
 
 				FoundCount++;
 
 				// ===================================================================
 
-				GScanEngine->DataSearch.Files.push_back(file_object);
+				GScanEngine->Data[DataTarget].Files.push_back(file);
 
 				// ===================================================================
 			}
@@ -474,14 +475,14 @@ int ProcessSearch::Filter(Command command)
 }
 
 
-bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObject &tfo)
+bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObject *tfo)
 {
 	switch (sco.Type)
 	{
 	case SearchType::SizeLess: // size <
-		if (!(faDirectory & tfo.Attributes))
+		if (!(faDirectory & tfo->Attributes))
 		{
-			if (tfo.Size > sco.IntegerValue)
+			if (tfo->Size > sco.IntegerValue)
 			{
 				return false;
 			}
@@ -492,9 +493,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::SizeEqual: // size =
-		if (!(faDirectory & tfo.Attributes))
+		if (!(faDirectory & tfo->Attributes))
 		{
-			if (tfo.Size == sco.IntegerValue)
+			if (tfo->Size == sco.IntegerValue)
 			{
 				return false;
 			}
@@ -505,9 +506,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::SizeMore: // size >
-		if (!(faDirectory & tfo.Attributes))
+		if (!(faDirectory & tfo->Attributes))
 		{
-			if (tfo.Size < sco.IntegerValue)
+			if (tfo->Size < sco.IntegerValue)
 			{
 				   return false;
 			}
@@ -518,9 +519,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::DateLess: // date <
-		if (tfo.DateCreated != 0)
+		if (tfo->DateCreated != 0)
 		{
-			if (tfo.DateCreated > sco.IntegerValue)
+			if (tfo->DateCreated > sco.IntegerValue)
 			{
 				return false;
 			}
@@ -531,9 +532,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::DateMore: // date >
-		if (tfo.DateCreated != 0)
+		if (tfo->DateCreated != 0)
 		{
-			if (tfo.DateCreated < sco.IntegerValue)
+			if (tfo->DateCreated < sco.IntegerValue)
 			{
 				return false;
 			}
@@ -544,9 +545,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::DateEqual: // date =
-		if (tfo.DateCreated != 0)
+		if (tfo->DateCreated != 0)
 		{
-			if (tfo.DateCreated != sco.IntegerValue)
+			if (tfo->DateCreated != sco.IntegerValue)
 			{
 				return false;
 			}
@@ -557,55 +558,55 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::ATimeLess:
-		if (tfo.TimeAccessed > sco.IntegerValue)
+		if (tfo->TimeAccessed > sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::ATimeMore :
-		if (tfo.TimeAccessed < sco.IntegerValue)
+		if (tfo->TimeAccessed < sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::ATimeEqual:
-		if (tfo.TimeAccessed != sco.IntegerValue)
+		if (tfo->TimeAccessed != sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::MTimeLess :
-		if (tfo.TimeModified > sco.IntegerValue)
+		if (tfo->TimeModified > sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::MTimeMore:
-		if (tfo.TimeModified < sco.IntegerValue)
+		if (tfo->TimeModified < sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::MTimeEqual:
-		if (tfo.TimeModified != sco.IntegerValue)
+		if (tfo->TimeModified != sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::TimeLess:
-		if (tfo.TimeCreated > sco.IntegerValue)
+		if (tfo->TimeCreated > sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::TimeMore:
-		if (tfo.TimeCreated < sco.IntegerValue)
+		if (tfo->TimeCreated < sco.IntegerValue)
 		{
 			return false;
 		}
 		break;
 	case SearchType::TimeEqual:
-		if (tfo.TimeCreated != sco.IntegerValue)
+		if (tfo->TimeCreated != sco.IntegerValue)
 		{
 			return false;
 		}
@@ -613,65 +614,65 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 	case SearchType::FileType: // hidden and system etc.
 		switch (sco.IntegerValue)
 		{
-		case __FileType_Hidden            : if (!(faHidden & tfo.Attributes))                    return false;
-		case __FileType_System            : if (!(faSysFile & tfo.Attributes))                   return false;
-		case __FileType_Archive           : if (!(faArchive & tfo.Attributes))                   return false;
-		case __FileType_Null              : if (tfo.Size != 0)                                   return false;
-		case __FileType_ReadOnly          : if (!(faReadOnly & tfo.Attributes))                  return false;
-		case __FileType_Compressed        : if (!(faCompressed & tfo.Attributes))                return false;
-		case __FileType_Encrypted         : if (!(faEncrypted & tfo.Attributes))                 return false;
-		case __FileType_RecallOnOpen      : if (!(faRecallOnOpen & tfo.Attributes))              return false;
-		case __FileType_RecallOnDataAccess: if (!(faRecallOnDataAccess & tfo.Attributes))        return false;
-		case __FileType_Offline           : if (!(faOffline & tfo.Attributes))                   return false;
-		case __FileType_CreatedToday      : if (tfo.DateCreated != GScanEngine->TodayAsInteger)  return false;
-		case __FileType_AccessedToday     : if (tfo.DateAccessed != GScanEngine->TodayAsInteger) return false;
-		case __FileType_ModifiedToday     : if (tfo.DateModified != GScanEngine->TodayAsInteger) return false;
-		case __FileType_Temp              : if (!tfo.Temp)                                       return false;
-		case __FileType_Folder            : if (!(faDirectory & tfo.Attributes))                 return false;
-		case __FileType_File              : if (faDirectory & tfo.Attributes)         		     return false;
-		case __FileType_NoExtension       : if (ExtractFileExt(tfo.Name.c_str()) != L"")         return false;
-			case __FileType_SparseFile        : if (!(faSparseFile & tfo.Attributes))            return false;
-			case __FileType_Reparsepoint      : if (!(faReparsePoint & tfo.Attributes))          return false;
-			case __FileType_NotContentI       : if (!(faNotContentI & tfo.Attributes))           return false;
+		case kFileType_Hidden            : if (!(faHidden & tfo->Attributes))                   return false;
+		case kFileType_System            : if (!(faSysFile & tfo->Attributes))                  return false;
+		case kFileType_Archive           : if (!(faArchive & tfo->Attributes))                  return false;
+		case kFileType_Null              : if (tfo->Size != 0)                                  return false;
+		case kFileType_ReadOnly          : if (!(faReadOnly & tfo->Attributes))                  return false;
+		case kFileType_Compressed        : if (!(faCompressed & tfo->Attributes))                return false;
+		case kFileType_Encrypted         : if (!(faEncrypted & tfo->Attributes))                 return false;
+		case kFileType_RecallOnOpen      : if (!(faRecallOnOpen & tfo->Attributes))              return false;
+		case kFileType_RecallOnDataAccess: if (!(faRecallOnDataAccess & tfo->Attributes))        return false;
+		case kFileType_Offline           : if (!(faOffline & tfo->Attributes))                   return false;
+		case kFileType_CreatedToday      : if (tfo->DateCreated != GScanEngine->TodayAsInteger)  return false;
+		case kFileType_AccessedToday     : if (tfo->DateAccessed != GScanEngine->TodayAsInteger) return false;
+		case kFileType_ModifiedToday     : if (tfo->DateModified != GScanEngine->TodayAsInteger) return false;
+		case kFileType_Temp              : if (!tfo->Temp)                                       return false;
+		case kFileType_Folder            : if (!(faDirectory & tfo->Attributes))                 return false;
+		case kFileType_File              : if (faDirectory & tfo->Attributes)         		     return false;
+		case kFileType_NoExtension       : if (ExtractFileExt(tfo->Name.c_str()) != L"")         return false;
+		case kFileType_SparseFile        : if (!(faSparseFile & tfo->Attributes))            	return false;
+		case kFileType_Reparsepoint      : if (!(faReparsePoint & tfo->Attributes))          	return false;
+		case kFileType_NotContentI       : if (!(faNotContentI & tfo->Attributes))           	return false;
 
-		case __FileType_Virtual           : if (!(faRecallOnOpen & tfo.Attributes) &&
-												!(faRecallOnDataAccess & tfo.Attributes) &&
-												!(faOffline & tfo.Attributes))                   return false;
+		case kFileType_Virtual           : if (!(faRecallOnOpen & tfo->Attributes) &&
+												!(faRecallOnDataAccess & tfo->Attributes) &&
+												!(faOffline & tfo->Attributes))                   return false;
 		}
 		break;
 	case SearchType::NotFileType: // hidden and system etc.
 		switch (sco.IntegerValue)
 		{
-		case __FileType_Hidden            : if (faHidden & tfo.Attributes)                       return false;
-		case __FileType_System            : if (faSysFile & tfo.Attributes)                      return false;
-		case __FileType_Archive           : if (faArchive & tfo.Attributes)                      return false;
-		case __FileType_Null              : if (tfo.Size == 0)                                   return false;
-		case __FileType_ReadOnly          : if (faReadOnly & tfo.Attributes)                     return false;
-		case __FileType_Compressed        : if (faCompressed & tfo.Attributes)                   return false;
-		case __FileType_Encrypted         : if (faEncrypted & tfo.Attributes)                    return false;
-		case __FileType_RecallOnOpen      : if (faRecallOnOpen & tfo.Attributes)                 return false;
-		case __FileType_RecallOnDataAccess: if (faRecallOnDataAccess & tfo.Attributes)           return false;
-		case __FileType_Offline           : if (faOffline & tfo.Attributes)                      return false;
-		case __FileType_CreatedToday      : if (tfo.DateCreated == GScanEngine->TodayAsInteger)  return false;
-		case __FileType_AccessedToday     : if (tfo.DateAccessed == GScanEngine->TodayAsInteger) return false;
-		case __FileType_ModifiedToday     : if (tfo.DateModified == GScanEngine->TodayAsInteger) return false;
-		case __FileType_Temp              : if (tfo.Temp)                                        return false;
-		case __FileType_Folder            : if (faDirectory & tfo.Attributes)                    return false;
-		case __FileType_File              : if (!(faDirectory & tfo.Attributes))                 return false;
-		case __FileType_NoExtension       : if (ExtractFileExt(tfo.Name.c_str()) != L"")         return false;
-		case __FileType_SparseFile        : if (faSparseFile & tfo.Attributes)                   return false;
-		case __FileType_Reparsepoint      : if (faReparsePoint & tfo.Attributes)                 return false;
-		case __FileType_NotContentI       : if (faNotContentI & tfo.Attributes)                  return false;
+		case kFileType_Hidden            : if (faHidden & tfo->Attributes)                       return false;
+		case kFileType_System            : if (faSysFile & tfo->Attributes)                      return false;
+		case kFileType_Archive           : if (faArchive & tfo->Attributes)                      return false;
+		case kFileType_Null              : if (tfo->Size == 0)                                   return false;
+		case kFileType_ReadOnly          : if (faReadOnly & tfo->Attributes)                     return false;
+		case kFileType_Compressed        : if (faCompressed & tfo->Attributes)                   return false;
+		case kFileType_Encrypted         : if (faEncrypted & tfo->Attributes)                    return false;
+		case kFileType_RecallOnOpen      : if (faRecallOnOpen & tfo->Attributes)                 return false;
+		case kFileType_RecallOnDataAccess: if (faRecallOnDataAccess & tfo->Attributes)           return false;
+		case kFileType_Offline           : if (faOffline & tfo->Attributes)                      return false;
+		case kFileType_CreatedToday      : if (tfo->DateCreated == GScanEngine->TodayAsInteger)  return false;
+		case kFileType_AccessedToday     : if (tfo->DateAccessed == GScanEngine->TodayAsInteger) return false;
+		case kFileType_ModifiedToday     : if (tfo->DateModified == GScanEngine->TodayAsInteger) return false;
+		case kFileType_Temp              : if (tfo->Temp)                                        return false;
+		case kFileType_Folder            : if (faDirectory & tfo->Attributes)                    return false;
+		case kFileType_File              : if (!(faDirectory & tfo->Attributes))                 return false;
+		case kFileType_NoExtension       : if (ExtractFileExt(tfo->Name.c_str()) != L"")         return false;
+		case kFileType_SparseFile        : if (faSparseFile & tfo->Attributes)                   return false;
+		case kFileType_Reparsepoint      : if (faReparsePoint & tfo->Attributes)                 return false;
+		case kFileType_NotContentI       : if (faNotContentI & tfo->Attributes)                  return false;
 
-		case __FileType_Virtual           : if ((faRecallOnOpen & tfo.Attributes) ||
-												(faRecallOnDataAccess & tfo.Attributes) ||
-											    (faOffline & tfo.Attributes))                    return false;
+		case kFileType_Virtual           : if ((faRecallOnOpen & tfo->Attributes) ||
+												(faRecallOnDataAccess & tfo->Attributes) ||
+												(faOffline & tfo->Attributes))                    return false;
 		}
 		break;
 	case SearchType::ADateLess: // adate <
-		if (tfo.DateAccessed != 0)
+		if (tfo->DateAccessed != 0)
 		{
-			if (tfo.DateAccessed > sco.IntegerValue)
+			if (tfo->DateAccessed > sco.IntegerValue)
 			{
 				return false;
 			}
@@ -682,9 +683,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::ADateMore: // adate >
-		if (tfo.DateAccessed != 0)
+		if (tfo->DateAccessed != 0)
 		{
-			if (tfo.DateAccessed < sco.IntegerValue)
+			if (tfo->DateAccessed < sco.IntegerValue)
 			{
 				return false;;
 			}
@@ -695,9 +696,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::ADateEqual: // adate =
-		if (tfo.DateAccessed != 0)
+		if (tfo->DateAccessed != 0)
 		{
-			if (tfo.DateAccessed != sco.IntegerValue)
+			if (tfo->DateAccessed != sco.IntegerValue)
 			{
 				return false;
 			}
@@ -708,9 +709,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::MDateLess: // mdate <
-		if (tfo.DateModified != 0)
+		if (tfo->DateModified != 0)
 		{
-			if (tfo.DateModified > sco.IntegerValue)
+			if (tfo->DateModified > sco.IntegerValue)
 			{
 				return false;;
 			}
@@ -721,9 +722,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::MDateMore: // mdate >
-		if (tfo.DateModified != 0)
+		if (tfo->DateModified != 0)
 		{
-			if (tfo.DateModified < sco.IntegerValue)
+			if (tfo->DateModified < sco.IntegerValue)
 			{
 				return false;
 			}
@@ -734,9 +735,9 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::MDateEqual: // mdate =
-		if (tfo.DateModified != 0)
+		if (tfo->DateModified != 0)
 		{
-			if (tfo.DateModified != sco.IntegerValue)
+			if (tfo->DateModified != sco.IntegerValue)
 			{
 				return false;
 			}
@@ -747,7 +748,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FileNameLengthEqual:
-		if (tfo.Name.size() != sco.IntegerValue)
+		if (tfo->Name.size() != sco.IntegerValue)
 		{
 			return false;
 		}
@@ -757,7 +758,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FileNameLengthLess:
-		if (tfo.Name.size() > sco.IntegerValue)
+		if (tfo->Name.size() > sco.IntegerValue)
 		{
 			return false;
 		}
@@ -767,7 +768,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FilenameLengthMore:
-		if (tfo.Name.size() < sco.IntegerValue)
+		if (tfo->Name.size() < sco.IntegerValue)
 		{
 			return false;
 		}
@@ -777,7 +778,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FilePathLengthEqual:
-		if (GScanEngine->Data.Folders[tfo.FilePathIndex].size() + tfo.Name.size() != sco.IntegerValue)
+		if (GScanEngine->Data[DataSource].Folders[tfo->FilePathIndex].size() + tfo->Name.size() != sco.IntegerValue)
 		{
 			return false;
 		}
@@ -787,7 +788,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FilePathLengthLess:
-		if (GScanEngine->Data.Folders[tfo.FilePathIndex].size() + tfo.Name.size() > sco.IntegerValue)
+		if (GScanEngine->Data[DataSource].Folders[tfo->FilePathIndex].size() + tfo->Name.size() > sco.IntegerValue)
 		{
 			return false;
 		}
@@ -797,7 +798,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		}
 		break;
 	case SearchType::FilePathLengthMore:
-		if (GScanEngine->Data.Folders[tfo.FilePathIndex].size() + tfo.Name.size() < sco.IntegerValue)
+		if (GScanEngine->Data[DataSource].Folders[tfo->FilePathIndex].size() + tfo->Name.size() < sco.IntegerValue)
 		{
 			return false;
 		}
@@ -808,7 +809,7 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 		break;
 	case SearchType::FileExtensionEqual:
 	{
-		std::wstring ext = ExtractFileExt(tfo.Name.c_str()).c_str();
+		std::wstring ext = ExtractFileExt(tfo->Name.c_str()).c_str();
 
 		std::transform(ext.begin(), ext.end(), ext.begin(), ::toupper);
 
@@ -828,16 +829,16 @@ bool ProcessSearch::FindSpecial(bool found, SearchCriteriaObject &sco, FileObjec
 }
 
 
-bool ProcessSearch::FindCategory(bool found, SearchCriteriaObject &sco, FileObject &tfo)
+bool ProcessSearch::FindCategory(bool found, SearchCriteriaObject &sco, FileObject *tfo)
 {
 	switch (sco.Type)
 	{
 	case SearchType::Category: // category
-		if (!(faDirectory & tfo.Attributes))
+		if (!(faDirectory & tfo->Attributes))
 		{
-			if (sco.IntegerValue == __Category_Custom_All)
+			if (sco.IntegerValue == kCategory_Custom_All)
 			{
-				if (tfo.Category >= __Category_Custom_1)
+				if (tfo->Category >= kCategory_Custom_1)
 				{
 					return true;
 				}
@@ -845,18 +846,18 @@ bool ProcessSearch::FindCategory(bool found, SearchCriteriaObject &sco, FileObje
 		}
 		else
 		{
-			if (tfo.Category == sco.IntegerValue)
+			if (tfo->Category == sco.IntegerValue)
 			{
 				return true;
 			}
 		}
 		break;
 	case SearchType::NotCategory: // category
-		if (!(faDirectory & tfo.Attributes))
+		if (!(faDirectory & tfo->Attributes))
 		{
-			if (sco.IntegerValue == __Category_Custom_All)
+			if (sco.IntegerValue == kCategory_Custom_All)
 			{
-				if (tfo.Category < __Category_Custom_1)
+				if (tfo->Category < kCategory_Custom_1)
 				{
 					return true;
 				}
@@ -864,7 +865,7 @@ bool ProcessSearch::FindCategory(bool found, SearchCriteriaObject &sco, FileObje
 		}
 		else
 		{
-			if (tfo.Category != sco.IntegerValue)
+			if (tfo->Category != sco.IntegerValue)
 			{
 				return true;
 			}
@@ -876,9 +877,9 @@ bool ProcessSearch::FindCategory(bool found, SearchCriteriaObject &sco, FileObje
 }
 
 
-bool ProcessSearch::FindUserName(bool found, SearchCriteriaObject &sco, FileObject &tfo)
+bool ProcessSearch::FindUserName(bool found, SearchCriteriaObject &sco, FileObject *tfo)
 {
-	std::wstring name = GScanEngine->Data.Users[tfo.Owner].Name;
+	std::wstring name = GScanEngine->Data[DataSource].Users[tfo->Owner]->Name;
 
 	std::transform(name.begin(), name.end(), name.begin(), ::toupper);
 

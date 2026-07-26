@@ -216,6 +216,8 @@ namespace DateUtility
 			return dddd + L"-" + mmmm + L"-" + yyyy;   // dd-mm-yyyy
 		case DateFormat::kHyphenMMDDYYYY:
 			return mmmm + L"-" + dddd + L"-" + yyyy;   // mm-dd-yyyy
+		case DateFormat::kYYYYMMDD:
+            return yyyy + mmmm + dddd;
 		}
 
 		return dddd + L"//" + mmmm + L"//" + yyyy;   // dd/mm/yyyy

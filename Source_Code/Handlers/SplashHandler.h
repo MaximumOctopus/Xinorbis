@@ -12,13 +12,17 @@
 
 #pragma once
 
-#include <string>
-#include <Windows.h>
-#include <wincrypt.h>
-#include <windef.h>
 
-
-namespace MD5
+class SplashHandler
 {
-	[[nodiscard]] std::wstring Generate(char* pcValue);
-}
+public:
+
+	bool ProcessWindowsVisible();
+
+	void ShowProcessWindow();
+	void HideProcessWindow();
+	void SetProgressBar(int);
+
+	void ShowZipWindow();
+	void HideZipWindow();
+};

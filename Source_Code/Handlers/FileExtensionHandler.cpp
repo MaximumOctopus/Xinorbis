@@ -31,9 +31,9 @@ FileExtensionHandler::FileExtensionHandler(const std::wstring folder)
 
 bool FileExtensionHandler::LoadDefaultFileExtensions(const std::wstring folder)
 {
-	for (int t = 0; t < __FileCategoriesCount; t++)
+	for (int t = 0; t < kFileCategoriesCount; t++)
 	{
-		std::wstring fileName = folder + L"system\\config\\DefaultExtensions\\" + __FileExtensionFileName[t] + L".txt";
+		std::wstring fileName = folder + L"system\\config\\DefaultExtensions\\" + kFileExtensionFileName[t] + L".txt";
 
 		std::wifstream file(fileName);
 
@@ -78,7 +78,7 @@ int FileExtensionHandler::GetExtensionCategoryIDFromName(const std::wstring file
 		return exi.Category;
 	}
 
-	return __FileCategoriesOther;
+	return kFileCategoriesOther;
 }
 
 
@@ -112,7 +112,7 @@ int FileExtensionHandler::GetExtensionCategory(const std::wstring extension)
 		return (*pos)->Category;
 	}
 
-	return __FileCategoriesOther;
+	return kFileCategoriesOther;
 }
 
 

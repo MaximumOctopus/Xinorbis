@@ -50,7 +50,7 @@ void CSVPreview::Get(CSVReportOptions csvro, std::vector<std::wstring> &output)
 							 L"\"" + GLanguageHandler->Text[kSize] + L" " + GLanguageHandler->Text[kAsPercent] + L"\"");
 		}
 
-		for (int t = 0; t < __FileCategoriesCount; t++)
+		for (int t = 0; t < kFileCategoriesCount; t++)
 		{
 			std::wstring s = L"\"" + GLanguageHandler->TypeDescriptions[t] + L"\"" + separator;
 
@@ -98,10 +98,10 @@ void CSVPreview::Get(CSVReportOptions csvro, std::vector<std::wstring> &output)
 							 L"\"" + GLanguageHandler->Text[kCategory]                                  + L"\"" + separator +
 							 L"\"" + GLanguageHandler->Text[kCategory] + L" ID"                          + L"\"" + separator +
 							 L"\"" + GLanguageHandler->Text[kOwner]                                     + L"\"" + separator +
-							 L"\"" + GLanguageHandler->LanguageTypes[__FileType_ReadOnly]                   + L"\"" + separator +
-							 L"\"" + GLanguageHandler->LanguageTypes[__FileType_Hidden]                     + L"\"" + separator +
-							 L"\"" + GLanguageHandler->LanguageTypes[__FileType_System]                     + L"\"" + separator +
-							 L"\"" + GLanguageHandler->LanguageTypes[__FileType_Archive]                    + L"\"" + separator +
+							 L"\"" + GLanguageHandler->LanguageTypes[kFileType_ReadOnly]                   + L"\"" + separator +
+							 L"\"" + GLanguageHandler->LanguageTypes[kFileType_Hidden]                     + L"\"" + separator +
+							 L"\"" + GLanguageHandler->LanguageTypes[kFileType_System]                     + L"\"" + separator +
+							 L"\"" + GLanguageHandler->LanguageTypes[kFileType_Archive]                    + L"\"" + separator +
 							 L"\"" + GLanguageHandler->Text[kTemporary] + L"\"");
 		}
 

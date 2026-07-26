@@ -12,13 +12,11 @@
 
 #pragma once
 
-#include <string>
-#include <Windows.h>
-#include <wincrypt.h>
-#include <windef.h>
 
+#ifdef DEBUG
+static const std::wstring __XVersion = L"10.0 (debug)";
+#else
+static const std::wstring __XVersion = L"10.0";
+#endif
 
-namespace MD5
-{
-	[[nodiscard]] std::wstring Generate(char* pcValue);
-}
+static const std::wstring __XDate    = L"July 4th 2026";

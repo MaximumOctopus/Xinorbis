@@ -52,4 +52,6 @@ namespace Convert
 	[[nodiscard]] int StrToIntDef(std::wstring, int);
 
 	[[nodiscard]] std::wstring ToReportFileName(const std::wstring);
+
+	std::wstring CreateTableName(const std::wstring, const std::wstring, const std::wstring);
 };

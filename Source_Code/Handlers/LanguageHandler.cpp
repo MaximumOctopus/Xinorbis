@@ -253,8 +253,8 @@ void LanguageHandler::InitXDates()
 
 std::wstring LanguageHandler::GetLanguageSymbol(LanguageType language_type)
 {
-    switch (language_type)
-    {
+	switch (language_type)
+	{
 		case LanguageType::kUK:
 			return L"uk";
 		case LanguageType::kNL:
@@ -285,6 +285,42 @@ std::wstring LanguageHandler::GetLanguageSymbol(LanguageType language_type)
 		default:
 			return L"uk";
 	}
+}
+
+
+LanguageType LanguageHandler::OrdinalToLanguageSymbol(int ordinal)
+{
+	switch (ordinal)
+	{
+		case 1:
+			return LanguageType::kUK;
+		case 2:
+			return LanguageType::kNL;
+		case 3:
+			return LanguageType::kFR;
+		case 4:
+			return LanguageType::kDE;
+		case 5:
+			return LanguageType::kIT;
+		case 6:
+			return LanguageType::kPT;
+		case 7:
+			return LanguageType::kES;
+		case 8:
+			return LanguageType::kSW;
+		case 9:
+			return LanguageType::kCZ;
+		case 10:
+			return LanguageType::kHU;
+		case 11:
+			return LanguageType::kUS;
+		case 12:
+			return LanguageType::kRU;
+		case 13:
+			return LanguageType::kCAT;
+	}
+
+	return LanguageType::kUK;
 }
 
 
@@ -355,4 +391,22 @@ std::wstring LanguageHandler::FormatForScreen(const std::wstring s)
 	std::remove(output.begin(), output.end(), L' ');
 
 	return output;
+}
+
+
+std::wstring LanguageHandler::GetUnit(int unit)
+{
+	switch (unit)
+	{
+	case kUnitB:
+		return L"";
+	case kUnitKB:
+		return Units[kUnitKB];
+	case kUnitMB:
+		return Units[kUnitMB];
+	case kUnitGB:
+		return Units[kUnitGB];
+	}
+
+	return L"?";
 }

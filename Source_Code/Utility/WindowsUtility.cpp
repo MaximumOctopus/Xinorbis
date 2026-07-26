@@ -33,14 +33,14 @@
 extern LanguageHandler* GLanguageHandler;
 
 
-bool WindowsUtility::AddToContextMenu(std::wstring path)
+bool WindowsUtility::AddToContextMenu(const std::wstring path)
 {
 	try
 	{
 		HKEY hKey;
 
 		LONG dwRet = RegOpenKeyEx(HKEY_CLASSES_ROOT,
-			L"\\software\\maximumoctopus\\FolderScanUltra",
+			L"\\software\\maximumoctopus\\Xinorbis",
 			NULL,
 			KEY_SET_VALUE,
 			&hKey);
@@ -50,19 +50,19 @@ bool WindowsUtility::AddToContextMenu(std::wstring path)
 			return false;
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\FolderScanUltra", L"Examine this folder with FolderScanUltra"))
+		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis", L"Examine this folder with Xinorbis"))
 		{
-			//GLog->Add( << L"Unable to add \"\\directory\\shell\\FolderScanUltra\" to registry.\n";
+			//GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\" to registry.\n";
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\FolderScanUltra\\Command", L"\"" + path + L"\" \"%1\" \"/pause\""))
+		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis\\Command", L"\"" + path + L"\" \"%1\""))
 		{
-		   //	GLog->Add( << L"Unable to add \"\\directory\\shell\\FolderScanUltra\\Command\" to registry.\n";
+		   //	GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\\Command\" to registry.\n";
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\FolderScanUltra\\DefaultIcon", L"\"" + path + L", 0\""))
+		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis\\DefaultIcon", L"\"" + path + L", 0\""))
 		{
-			//GLog->Add( << L"Unable to add \"\\directory\\shell\\FolderScanUltra\\DefaultIcon\" to registry.\n";
+			//GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\\DefaultIcon\" to registry.\n";
 		}
 	}
 	catch(...)
@@ -392,6 +392,12 @@ void WindowsUtility::ExecuteFile(const std::wstring path, const std::wstring par
 	{
 		ShellExecute(0, L"open", path.c_str(), parameters.c_str(), 0 , SW_SHOW );
 	}
+}
+
+
+std::wstring WindowsUtility::GetSpecialFolder(int folder)
+{
+    return L"to do";
 }
 
 

@@ -12,13 +12,6 @@
 
 #pragma once
 
-#include <string>
-#include <Windows.h>
-#include <wincrypt.h>
-#include <windef.h>
 
-
-namespace MD5
-{
-	[[nodiscard]] std::wstring Generate(char* pcValue);
-}
+const static int kButtonImagesCount = 10;
+const static int kFileTypeImagesCount = 67;

@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "ConstantsData.h"
+#include "ConstantsReports.h"
 #include "ConstantsLanguage.h"
 
 
@@ -26,9 +27,6 @@ class LanguageHandler
 
 	void InitReportText();
 	void InitXDates();
-
-	std::wstring GetLanguageSymbol(LanguageType);
-    std::wstring GetLanguageSymbol(void);
 
 public:
 
@@ -45,7 +43,7 @@ public:
 	std::wstring TypeDescriptionsSmall[20];
 
 	std::wstring LanguageTabs[12];
-	std::wstring LanguageTypes[kAttributesTotalCount];
+	std::wstring LanguageTypes[kAttributesCount];
 
 	std::wstring TextReport[19];
 	std::wstring SummaryReport[15];
@@ -69,7 +67,13 @@ public:
 
 	bool InitLanguage(const std::wstring, LanguageType);
 
+    std::wstring GetUnit(int);
+
 	std::wstring UpperCaseText(int);
 	std::wstring UpperCaseUnit(int);
-    std::wstring FormatForScreen(const std::wstring);
+	std::wstring FormatForScreen(const std::wstring);
+
+	std::wstring GetLanguageSymbol(LanguageType);
+	std::wstring GetLanguageSymbol(void);
+	LanguageType OrdinalToLanguageSymbol(int);
 };

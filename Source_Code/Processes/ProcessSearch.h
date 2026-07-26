@@ -22,10 +22,12 @@
 
 class ProcessSearch
 {
+	int DataSource = 0;	// ScanEngine->Data[x] to search
+	int DataTarget = 1; // ScanEngine->Data[y] to write to
 
-	bool FindSpecial(bool, SearchCriteriaObject&, FileObject&);
-	bool FindCategory(bool, SearchCriteriaObject&, FileObject&);
-	bool FindUserName(bool, SearchCriteriaObject&, FileObject&);
+	bool FindSpecial(bool, SearchCriteriaObject&, FileObject*);
+	bool FindCategory(bool, SearchCriteriaObject&, FileObject*);
+	bool FindUserName(bool, SearchCriteriaObject&, FileObject*);
 
 public:
 

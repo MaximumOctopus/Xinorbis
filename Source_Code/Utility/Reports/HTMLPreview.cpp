@@ -208,7 +208,7 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		output.push_back(L"</tr>");
 
 		//build the file category table
-		for (int t = 0; t <__AttributesToDisplayCount; t++)
+		for (int t = 0; t < kAttributesToDisplayCount; t++)
 		{
 			if (t % 2)
 			{
@@ -258,7 +258,7 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		output.push_back(L"</tr>");
 
 		//build the file category table
-		for (int t = 0; t < __FileCategoriesCount; t++)
+		for (int t = 0; t < kFileCategoriesCount; t++)
 		{
 			if (t % 2)
 			{
@@ -314,7 +314,7 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 			}
 			else
 			{
-				table_colour = __SpectrumColours[t % __SpectrumMod];
+				table_colour = kSpectrumColours[t % kSpectrumMod];
 			}
 
 			if (t & 2)
@@ -357,7 +357,7 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		output.push_back(L"</tr>");
 
 		//build the file category table
-		for (int t = 0; t < __MagnitudesCount; t++)
+		for (int t = 0; t < kMagnitudesCount; t++)
 		{
 			if (t % 2)
 			{
@@ -368,18 +368,18 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
 			}
 
-			output.push_back(   L"<td width=\"100\" class=\"C4G\"><div align=\"left\">" + __MagnitudeLabelsShort[t] + L"</div></td>");
+			output.push_back(   L"<td width=\"100\" class=\"C4G\"><div align=\"left\">" + kMagnitudeLabelsShort[t] + L"</div></td>");
 			output.push_back(   L"<td width=\"64\" class=\"C4G\"><div align=\"center\">" + std::to_wstring(Random(20)) + L"</div></td>");
 			output.push_back(   L"<td width=\"64\" class=\"C4G\"><div align=\"center\">" + std::to_wstring(Random(20)) + L"%</div></td>");
 			output.push_back(   L"<td width=\"160\">");
-			output.push_back(     L"<table width=\"" + std::to_wstring(2 + Random(130)) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(__MagnitudeColour[t]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">");
+			output.push_back(     L"<table width=\"" + std::to_wstring(2 + Random(130)) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(kMagnitudeColour[t]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">");
 			output.push_back(     L"<tr><td></td></tr>");
 			output.push_back(     L"</table>");
 			output.push_back(   L"</td>");
 			output.push_back(   L"<td width=\"85\" class=\"C4G\"><div align=\"" + align + L"\">" + Convert::GetSizeString(HTMLUnits, 1024 * Random(1024) * Random(1024)) + L"</div></td>");
 			output.push_back(   L"<td width=\"67\" class=\"C4G\"><div align=\"center\">" + std::to_wstring(Random(20)) + L"</div></td>");
 			output.push_back(   L"<td width=\"160\">");
-			output.push_back(     L"<table width=\"" + std::to_wstring(2 + Random(130)) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(__MagnitudeColour[t]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">");
+			output.push_back(     L"<table width=\"" + std::to_wstring(2 + Random(130)) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(kMagnitudeColour[t]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">");
 			output.push_back(     L"<tr><td></td></tr>");
 			output.push_back(     L"</table>");
 			output.push_back(   L"</td>");

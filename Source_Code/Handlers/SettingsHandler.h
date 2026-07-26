@@ -21,6 +21,7 @@
 #include "Ini.h"
 #include "ConstantsParameters.h"
 #include "ConstantsReports.h"
+#include "ConstantsSettings.h"
 #include "ReportCSVOptions.h"
 #include "ReportDateOptions.h"
 #include "ReportHTMLOptions.h"
@@ -50,6 +51,12 @@ struct DatabaseSettings
 };
 
 
+struct FTPSettings
+{
+	std::wstring Options[kFTPOptionsCount];
+};
+
+
 struct GeneralSettings
 {
     bool AutoCheckUpdate = false;
@@ -67,6 +74,12 @@ struct GeneralSettings
 	int PostScanIPPage = 0;
 
 	std::wstring CustomViewer = L"";
+};
+
+
+struct HistorySettings
+{
+	bool Enabled = false;
 };
 
 
@@ -110,7 +123,7 @@ struct ReportSettings
 
 	bool AutoSaveMode = false;
 	bool AutoSaveOrganise = false;
-//	AutoSaveItem         : array[1..6] of boolean;
+	bool AutoSaveItem[6];
 };
 
 
@@ -130,6 +143,8 @@ struct SystemSettings
 
 	LanguageType CurrentLanguage = LanguageType::kUndefined;
 	int HandleMultipleExt = 0;
+
+    bool Tutorial = false;
 
 	bool Debug = false;
 };
@@ -178,17 +193,22 @@ public:
 	TabDisplayOptions TabDisplay[4];
 	TabInternalOptions TabInternal;
 
-    AppearanceSettings Appearance;
+	AppearanceSettings Appearance;
 	CustomSettings Custom;
 	DatabaseSettings Database;
+    HistorySettings History;
 	GeneralSettings General;
 	OptimisationSettings Optimisations;
 	ReportSettings Reports;
 	SystemSettings System;
+	FTPSettings FTP;
+
+	int ProgressPercentage = 10;
+	int ProgressFileCount = 10000;
 
     std::wstring QuickFolders[kQuickFolderCount];
 
-	int FileCategoryColors[__FileCategoriesCount]; // 0 is a hack for "folders"
+	int FileCategoryColors[kFileCategoriesCount]; // 0 is a hack for "folders"
 
 	void ProcessProcessingSetting(ParameterOption);
 

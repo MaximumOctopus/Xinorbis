@@ -35,4 +35,6 @@ namespace DateUtility
 	std::wstring DateToString(TDateTime, DateFormat);
 
 	TDateTime YYYYMMDDToDate(int);
+
+    TDateTime IntegerDateTo(int);
 }
