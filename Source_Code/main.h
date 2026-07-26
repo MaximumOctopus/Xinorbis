@@ -177,9 +177,23 @@ __published:	// IDE-managed Components
 	TMenuItem *miCustomReport;
 	TMenuItem *N25;
 	TMenuItem *miOpenCustomReport;
-	TSpeedButton *SpeedButton1;
+	TSpeedButton *sbReportDate;
 	TMenuItem *Dbug1;
 	TMenuItem *Debug1;
+	TSpeedButton *sbReportJSON;
+	TMenuItem *miLang1;
+	TMenuItem *miLang3;
+	TMenuItem *miLang4;
+	TMenuItem *miLang5;
+	TMenuItem *miLang6;
+	TMenuItem *miLang7;
+	TMenuItem *miLang8;
+	TMenuItem *miLang9;
+	TMenuItem *miLang10;
+	TMenuItem *miLang2;
+	TMenuItem *miLang12;
+	TMenuItem *miLang13;
+	TMenuItem *miLang11;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
@@ -235,13 +249,34 @@ __published:	// IDE-managed Components
 	void __fastcall sbReportCSVClick(TObject *Sender);
 	void __fastcall sbReportHTMLClick(TObject *Sender);
 	void __fastcall sbReportTextClick(TObject *Sender);
-	void __fastcall sbReportTreeClick(TObject *Sender);
-	void __fastcall sbReportXMLClick(TObject *Sender);
 	void __fastcall sbReportSettingsClick(TObject *Sender);
 	void __fastcall miSSearchClick(TObject *Sender);
 	void __fastcall miSWizardClick(TObject *Sender);
 	void __fastcall miSSearchSyntaxClick(TObject *Sender);
+	void __fastcall sbReportTreeMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportXMLMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall lWelcomeScanClick(TObject *Sender);
+	void __fastcall sbReportDateClick(TObject *Sender);
+	void __fastcall sbReportJSONClick(TObject *Sender);
+	void __fastcall miLang1Click(TObject *Sender);
 private:
+
+	constexpr static int kSideMenuWelcomeCount  = 2;
+	constexpr static int kSideMenuTasksCount    = 8;
+	constexpr static int kSideMenuAdvancedCount = 3;
+
+	std::vector<std::wstring> NavigationHistory;
+	std::vector<std::wstring> MenuStrings;
+
+	TMenuItem *LanguageMenus[13];
+
+	TLabel *WelcomeOptions[kSideMenuWelcomeCount];
+	TLabel *TaskOptions[kSideMenuTasksCount];
+	TLabel *AdvancedOptions[kSideMenuAdvancedCount];
+
+    int DataSource = 0;
 
 	int PanelInFront = -1;
 	int PanelSource = -1;
@@ -249,21 +284,55 @@ private:
 	// Application init
 	void CreateFrames();
 	void SetLanguageText();
-    void SetMenuLanguageText();
+	void SetMenuLanguageText();
+	void ConfigureObjects();
+
+	void UpdateMainMenu();
+
+	void ToggleSoftwareStatus(int, bool);
+
+	void LoadMenu(TPopupMenu *, const std::wstring);
+
+	void DoNavigationHistoryAction(const std::wstring);
 
 	// post scan
-    void PostScan();
+	void PostScan();
 
 	// Frame_Events
 	void __fastcall OnNewScan(const std::wstring);
 
 	// GUI control
-    void ToggleSoftwareStatus(bool);
+	void ToggleSoftwareStatus(bool);
 	void SetSidePanelDisplay(int, int, int, bool);
 	void SetWelcomeDisplay(int);
-    void HandleResizing(int);
+	void HandleResizing(int);
 	void DoWelcome(int);
 	void DoTask(int, int);
+
+	void AddToPageNavigationHistory(const std::wstring);
+
+	void UpdateFrameExploder();
+	void UpdateFrameMap();
+
+    void DoPreferenceChanges();
+
+	// hooks
+	void OnOpenSettingsTab(int);
+	void OnNewReport();
+	void OnJustInTime(int);
+	void OnBuildInformationDisplay(int);
+	void OnStatusBarChange(const std::wstring);
+	void OnReportsChange(int);
+	void OnTutorialBarChange(const std::wstring);
+	void OnResetDisplay(int);
+	void OnMenuChange(const std::wstring, int, int);
+	void OnProcessWindowStatusChange(int, int);
+	void OnFormClose(int);
+	void OnExtSetSidePanelDisplay(int, int, int, int);
+	void OnProcessWindowProgressChange(int);
+	void OnUpdateHistoryFinished();
+	void OnChartsHaveChanged();
+	void OnOpenSearchWizard(int);
 
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);

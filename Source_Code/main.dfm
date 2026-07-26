@@ -1,7 +1,6 @@
 object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'FormMain'
   ClientHeight = 872
   ClientWidth = 1552
   Color = clBtnFace
@@ -478,6 +477,7 @@ object FormMain: TFormMain
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
         ParentFont = False
+        OnClick = lWelcomeScanClick
       end
       object lWelcomeFolderHistory: TLabel
         Tag = 2
@@ -656,7 +656,7 @@ object FormMain: TFormMain
       OnClick = SpeedButton5Click
     end
     object sbReportSummary: TSpeedButton
-      Left = 179
+      Left = 214
       Top = 1
       Width = 23
       Height = 22
@@ -664,7 +664,7 @@ object FormMain: TFormMain
       OnClick = sbReportSummaryClick
     end
     object sbReportCSV: TSpeedButton
-      Left = 208
+      Left = 243
       Top = 1
       Width = 23
       Height = 22
@@ -672,7 +672,7 @@ object FormMain: TFormMain
       OnClick = sbReportCSVClick
     end
     object sbReportHTML: TSpeedButton
-      Left = 266
+      Left = 301
       Top = 1
       Width = 23
       Height = 22
@@ -680,7 +680,7 @@ object FormMain: TFormMain
       OnClick = sbReportHTMLClick
     end
     object sbReportText: TSpeedButton
-      Left = 295
+      Left = 359
       Top = 1
       Width = 23
       Height = 22
@@ -688,23 +688,23 @@ object FormMain: TFormMain
       OnClick = sbReportTextClick
     end
     object sbReportTree: TSpeedButton
-      Left = 324
+      Left = 388
       Top = 1
       Width = 23
       Height = 22
       Flat = True
-      OnClick = sbReportTreeClick
+      OnMouseDown = sbReportTreeMouseDown
     end
     object sbReportXML: TSpeedButton
-      Left = 353
+      Left = 417
       Top = 1
       Width = 23
       Height = 22
       Flat = True
-      OnClick = sbReportXMLClick
+      OnMouseDown = sbReportXMLMouseDown
     end
     object sbReportSettings: TSpeedButton
-      Left = 392
+      Left = 456
       Top = 1
       Width = 23
       Height = 22
@@ -739,21 +739,29 @@ object FormMain: TFormMain
       ShowHint = True
     end
     object Bevel4: TBevel
-      Left = 382
-      Top = 1
+      Left = 411
+      Top = 6
       Width = 4
       Height = 50
       ParentShowHint = False
       Shape = bsLeftLine
       ShowHint = True
     end
-    object SpeedButton1: TSpeedButton
-      Left = 237
+    object sbReportDate: TSpeedButton
+      Left = 272
       Top = 1
       Width = 23
       Height = 22
       Flat = True
-      OnClick = sbReportCSVClick
+      OnClick = sbReportDateClick
+    end
+    object sbReportJSON: TSpeedButton
+      Left = 330
+      Top = 1
+      Width = 23
+      Height = 22
+      Flat = True
+      OnClick = sbReportJSONClick
     end
   end
   object pMainCanvas: TPanel
@@ -771,7 +779,14 @@ object FormMain: TFormMain
     Top = 853
     Width = 1552
     Height = 19
-    Panels = <>
+    Panels = <
+      item
+        Width = 50
+      end
+      item
+        Width = 50
+      end>
+    ExplicitTop = 859
   end
   object ImageList1: TImageList
     Height = 32
@@ -1844,7 +1859,7 @@ object FormMain: TFormMain
   end
   object MainMenu1: TMainMenu
     Left = 672
-    Top = 109
+    Top = 117
     object File1: TMenuItem
       Caption = 'File'
       object miFScan: TMenuItem
@@ -2064,6 +2079,71 @@ object FormMain: TFormMain
       end
       object miTLanguage: TMenuItem
         Caption = '.'
+        object miLang1: TMenuItem
+          Tag = 1
+          Caption = 'English (UK)'
+          OnClick = miLang1Click
+        end
+        object miLang2: TMenuItem
+          Tag = 9
+          Caption = #269'e'#353'tina'
+          OnClick = miLang1Click
+        end
+        object miLang3: TMenuItem
+          Tag = 4
+          Caption = 'Deutsch'
+          OnClick = miLang1Click
+        end
+        object miLang4: TMenuItem
+          Tag = 11
+          Caption = 'English (US)'
+          OnClick = miLang1Click
+        end
+        object miLang5: TMenuItem
+          Tag = 7
+          Caption = 'Espa'#241'ol'
+          OnClick = miLang1Click
+        end
+        object miLang6: TMenuItem
+          Tag = 3
+          Caption = 'Fran'#231'ais'
+          OnClick = miLang1Click
+        end
+        object miLang7: TMenuItem
+          Tag = 5
+          Caption = 'Italiano'
+          OnClick = miLang1Click
+        end
+        object miLang8: TMenuItem
+          Tag = 13
+          Caption = 'LOLCat'
+          OnClick = miLang1Click
+        end
+        object miLang9: TMenuItem
+          Tag = 10
+          Caption = 'Magyar'
+          OnClick = miLang1Click
+        end
+        object miLang10: TMenuItem
+          Tag = 2
+          Caption = 'Nederlands'
+          OnClick = miLang1Click
+        end
+        object miLang11: TMenuItem
+          Tag = 12
+          Caption = #1088#1091#1089#1089#1082#1080#1081
+          OnClick = miLang1Click
+        end
+        object miLang12: TMenuItem
+          Tag = 6
+          Caption = 'Portuguese'
+          OnClick = miLang1Click
+        end
+        object miLang13: TMenuItem
+          Tag = 8
+          Caption = 'Svenska'
+          OnClick = miLang1Click
+        end
       end
       object N47: TMenuItem
         Caption = '-'

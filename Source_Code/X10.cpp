@@ -6,42 +6,49 @@
 //---------------------------------------------------------------------------
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
-USEFORM("Code\Frames\XFrameProperties.cpp", FrameProperties); /* TFrame: File Type */
-USEFORM("Code\Frames\XFrameSearch.cpp", FrameSearch); /* TFrame: File Type */
-USEFORM("Code\Frames\XFrameSelect.cpp", FrameSelect); /* TFrame: File Type */
-USEFORM("Code\Frames\XFrameStructure.cpp", FrameStructure); /* TFrame: File Type */
 USEFORM("Code\Frames\XFrameSummary.cpp", FrameSummary); /* TFrame: File Type */
+USEFORM("Code\Frames\XFrameStructure.cpp", FrameStructure); /* TFrame: File Type */
+USEFORM("Code\Frames\XFrameProperties.cpp", FrameProperties); /* TFrame: File Type */
 USEFORM("Code\Frames\XFrameMap.cpp", FrameMap); /* TFrame: File Type */
-USEFORM("Code\Forms\XFormSearchWizard.cpp", Form11);
-USEFORM("Code\Forms\XFormSearchSyntax.cpp", Form12);
-USEFORM("Code\Forms\XFormGetDateBetween.cpp", Form6);
-USEFORM("Code\Forms\XFormGetSizeBetween.cpp", Form5);
-USEFORM("Code\Forms\XFormLanguageSelect.cpp", Form10);
-USEFORM("Code\Forms\XFormMoreDetail.cpp", Form16);
-USEFORM("Code\Forms\XFormReportOptions.cpp", Form8);
 USEFORM("Code\Frames\XFrameExploder.cpp", FrameExploder); /* TFrame: File Type */
-USEFORM("main.cpp", FormMain);
+USEFORM("Code\Frames\XFrameSelect.cpp", FrameSelect); /* TFrame: File Type */
+USEFORM("Code\Frames\XFrameSearch.cpp", FrameSearch); /* TFrame: File Type */
+USEFORM("Code\Frames\XFrameReports.cpp", Frame1); /* TFrame: File Type */
+USEFORM("Code\Forms\XFormSearchSyntax.cpp", FormSearchSyntax);
+USEFORM("Code\Forms\XFormReportSave.cpp", Form13);
+USEFORM("Code\Forms\XFormReportOptions.cpp", Form8);
+USEFORM("Code\Forms\XFormSearchWizard.cpp", Form11);
+USEFORM("Code\Forms\XFormGetSizeBetween.cpp", Form5);
+USEFORM("Code\Forms\XFormGetDateBetween.cpp", Form6);
 USEFORM("Code\Forms\XFormGetDate.cpp", Form7);
-USEFORM("Code\Forms\Editing\XFormEditTextReport.cpp", FormEditTextReport);
-USEFORM("Code\Forms\Editing\XFormEditTreeReport.cpp", FormEditTreeReport);
-USEFORM("Code\Forms\Editing\XFormEditXmlReport.cpp", FormEditXmlReport);
+USEFORM("Code\Forms\XFormQuickMenuBuilder.cpp", Form9);
+USEFORM("Code\Forms\XFormMoreDetail.cpp", Form16);
+USEFORM("Code\Forms\XFormLanguageSelect.cpp", Form10);
+USEFORM("Code\Frames\XFrameDuplicates.cpp", Frame2); /* TFrame: File Type */
+USEFORM("main.cpp", FormMain);
 USEFORM("Code\Forms\Splash\XFormProgress.cpp", Form18);
-USEFORM("Code\Forms\Splash\XFormSplash.cpp", FormProgress);
-USEFORM("Code\Forms\Editing\XFormEditHTMLReport.cpp", FormEditHTMLReport);
-USEFORM("Code\Forms\Data\XFormImportFromCSV.cpp", FormImportCSV);
-USEFORM("Code\Forms\Editing\XFormEditCSVReport.cpp", FormEditCSVReport);
-USEFORM("Code\Forms\XFormExcludeFiles.cpp", Form14);
-USEFORM("Code\Forms\XFormExcludeFolders.cpp", Form15);
-USEFORM("Code\Forms\XFormExplore.cpp", Form4);
-USEFORM("Code\Forms\XFormFileAges.cpp", FormFileAges);
-USEFORM("Code\Forms\XFormFileSpread.cpp", FormFileSpread);
-USEFORM("Code\Forms\XFormChartOptions.cpp", Form17);
-USEFORM("Code\Forms\System\XFormSelectLanguage.cpp", Form3);
-USEFORM("Code\Forms\System\XFormSettings.cpp", FormSettings);
-USEFORM("Code\Forms\System\XFormXinorbisDialog.cpp", FormXDialog);
-USEFORM("Code\Forms\XFormAbout.cpp", FormAbout);
-USEFORM("Code\Forms\XFormCategoryColours.cpp", Form2);
+USEFORM("Code\Forms\Editing\XFormEditXmlReport.cpp", FormEditXmlReport);
+USEFORM("Code\Forms\Editing\XFormEditTreeReport.cpp", FormEditTreeReport);
 USEFORM("Code\Forms\System\XFormLog.cpp", FormLog);
+USEFORM("Code\Forms\System\XFormHelp.cpp", Form1);
+USEFORM("Code\Forms\Splash\XFormSplash.cpp", FormProgress);
+USEFORM("Code\Forms\Data\XFormImportFromCSV.cpp", FormImportCSV);
+USEFORM("Code\Forms\Editing\XFormEditTextReport.cpp", FormEditTextReport);
+USEFORM("Code\Forms\Editing\XFormEditHTMLReport.cpp", FormEditHTMLReport);
+USEFORM("Code\Forms\Editing\XFormEditCSVReport.cpp", FormEditCSVReport);
+USEFORM("Code\Forms\System\XFormSelectLanguage.cpp", Form3);
+USEFORM("Code\Forms\XFormFileAges.cpp", FormFileAges);
+USEFORM("Code\Forms\XFormExplore.cpp", Form4);
+USEFORM("Code\Forms\XFormExcludeFolders.cpp", Form15);
+USEFORM("Code\Forms\XFormGetCopyMove.cpp", FormGetCopyMove);
+USEFORM("Code\Forms\XFormFileSpread.cpp", FormFileSpread);
+USEFORM("Code\Forms\XFormFileAssociations.cpp", FormFileAssociations);
+USEFORM("Code\Forms\XFormAbout.cpp", FormAbout);
+USEFORM("Code\Forms\System\XFormXinorbisDialog.cpp", FormXDialog);
+USEFORM("Code\Forms\System\XFormSettings.cpp", FormSettings);
+USEFORM("Code\Forms\XFormExcludeFiles.cpp", Form14);
+USEFORM("Code\Forms\XFormChartOptions.cpp", Form17);
+USEFORM("Code\Forms\XFormCategoryColours.cpp", FormCategoryColours);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -52,6 +59,11 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TFormMain), &FormMain);
 		Application->CreateForm(__classid(TFormAbout), &FormAbout);
 		Application->CreateForm(__classid(TFormLog), &FormLog);
+		Application->CreateForm(__classid(TFormGetCopyMove), &FormGetCopyMove);
+		Application->CreateForm(__classid(TFormFileAssociations), &FormFileAssociations);
+		Application->CreateForm(__classid(TForm9), &Form9);
+		Application->CreateForm(__classid(TForm13), &Form13);
+		Application->CreateForm(__classid(TForm1), &Form1);
 		TStyleManager::TrySetStyle("Carbon");
 		Application->Run();
 	}
