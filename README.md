@@ -10,6 +10,14 @@ There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logi
 
 Database functions are not going to be part of the initial release.
 
+2026/07/26
+
+Still making good progress through the code, but still a few thousand lines of code to rewrite (and much to add). I've rewritten the scan and report engines, and there are still things I want to refactor, but this will come later.
+
+A few more menus and forms are working, but I'm going to leave testing until I have more of the code rewritten (there's not point testing at the moment as although the code is rewritten, the forms and code aren't fully connected to each other).
+
+The GUI will take a lot of time to finalise as the previous version(s) used several commercial components that are not availble in my open source remake. Advanced String Grids and the TMS CategoryBar are the most important missing components. I will be able to add most of the important grid functionality to the default C++ Builder VCL grid, but I'm going to write my own CategoryBar (called IceCream in the code, as it reminds me of a neopolitan ice cream :).
+
 2026/07/12
 
 A lot of changes since the last update. Many of the Report-based forms and code are converted, though not finished. Much of the code behind the analysis displays has been rewritten but remains untested and not yet connected to the Propeties Frame. Still a long way away from a stable build, but getting closer each day. I'm starting to connect up the main menu and popup menus, but many remain untouched.
