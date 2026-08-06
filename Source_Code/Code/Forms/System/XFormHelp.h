@@ -15,6 +15,10 @@
 #include <Vcl.ImgList.hpp>
 #include <Vcl.OleCtrls.hpp>
 #include <Vcl.ToolWin.hpp>
+
+#include <vector>
+
+#include "HelpIndexItem.h"
 //---------------------------------------------------------------------------
 class TForm1 : public TForm
 {
@@ -52,8 +56,13 @@ __published:	// IDE-managed Components
 	void __fastcall sbSearchClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
-private:	// User declarations
-public:		// User declarations
+private:
+
+	std::vector<HelpIndexItem*> IndexCache;
+
+    bool LoadCache(const std::wstring);
+
+public:
 	__fastcall TForm1(TComponent* Owner);
 };
 

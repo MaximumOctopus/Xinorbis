@@ -103,6 +103,8 @@ public:
 
 	TextReportOptions InternalReport;
 
+    int DataSource = 0;
+
    	bool OneOffCustom = false;
 };
 

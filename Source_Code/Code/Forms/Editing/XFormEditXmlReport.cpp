@@ -7,6 +7,7 @@
 
 #include "ConstantsGui.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "SettingsHandler.h"
 
@@ -194,7 +195,7 @@ void __fastcall TFormEditXmlReport::sbEditXMLLayoutClick(TObject *Sender)
 
 void __fastcall TFormEditXmlReport::SpeedButton1Click(TObject *Sender)
 {
-	//THelp.OpenHelpPage("report_xml.htm");
+	HelpHandler::OpenHelpPage(L"report_xml.htm");
 }
 
 

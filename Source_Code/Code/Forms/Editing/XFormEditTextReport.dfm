@@ -817,6 +817,5 @@ object FormEditTextReport: TFormEditTextReport
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 1
-    ExplicitWidth = 458
   end
 end

@@ -97,19 +97,19 @@ void TForm18::SetProcessBar(int position)
 //  pbProcess.Invalidate;
 }
 
-/*
-procedure TfrmProgress.sbStopClick(Sender: TObject);
-begin
+
+void TForm18::SetAbort()
+{
+	//lAbortStatus.Visible := True;
+	//lAbortStatus.Invalidate;
+}
+
+
+void __fastcall TForm18::sbStopClick(TObject *Sender)
+{
 // stopscan := True;
 
 //  ffMain.Abort;
 
 //  XSettings.ProgressForm.SetAbort;
-end;
-
-procedure TfrmProgress.SetAbort;
- begin
-  lAbortStatus.Visible := True;
-  lAbortStatus.Invalidate;
-end;
-*/
+}

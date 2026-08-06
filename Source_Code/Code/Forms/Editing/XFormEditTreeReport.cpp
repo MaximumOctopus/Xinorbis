@@ -8,7 +8,9 @@
 #include "ConstantsGui.h"
 #include "Convert.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
+#include "ReportTree.h"
 #include "ReportTreeOptions.h"
 #include "SettingsHandler.h"
 
@@ -220,24 +222,24 @@ void __fastcall TFormEditTreeReport::sbEditTreeLayoutClick(TObject *Sender)
 
 void __fastcall TFormEditTreeReport::sbPreviewClick(TObject *Sender)
 {
-	std::vector<std::wstring> ReportOutput;
+	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	BuildReport(InternalReport);
 
-	// to do GReportTree.GenerateTreeReport(ReportOutput, InternalReport);
+	ReportTree::Generate(InternalReport, data, DataSource);
 
 	Memo1->Clear();
 
-	for (int t = 0; t < ReportOutput.size(); t++)
+	for (std::wstring s : *data)
 	{
-		Memo1->Lines->Add(ReportOutput[t].c_str());
+		Memo1->Lines->Add(s.c_str());
 	}
 }
 
 
 void __fastcall TFormEditTreeReport::SpeedButton1Click(TObject *Sender)
 {
-	//THelp.OpenHelpPage("report_tree.htm");
+	HelpHandler::OpenHelpPage(L"report_tree.htm");
 }
 
 

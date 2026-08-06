@@ -8,6 +8,7 @@
 #include "ConstantsGui.h"
 #include "Convert.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "SaveDialogs.h"
@@ -257,7 +258,7 @@ void __fastcall TFormEditHTMLReport::SpeedButton2Click(TObject *Sender)
 
 void __fastcall TFormEditHTMLReport::SpeedButton3Click(TObject *Sender)
 {
-//	THelp.OpenHelpPage("report_html.htm");
+	HelpHandler::OpenHelpPage(L"report_html.htm");
 }
 
 
@@ -372,7 +373,7 @@ void __fastcall TFormEditHTMLReport::sbPreviewClick(TObject *Sender)
 	}
 	catch(...)
 	{
-	//TMSLogger.Error("Error writing out preview HTML file.");
+		GLog->AddError(L"Error writing out preview HTML file.");
 	} */
 }
 

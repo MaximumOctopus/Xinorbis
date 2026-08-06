@@ -141,6 +141,8 @@ public:		// User declarations
 
 	HTMLReportOptions InternalReport;
 
+    int DataSource = 0;
+
 	bool OneOffCustom = false;
 };
 

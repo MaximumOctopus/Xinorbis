@@ -3,11 +3,23 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <fstream>
+
 #include "XFormHelp.h"
 
 #include "SystemGlobal.h"
 
 extern SystemGlobal *GSystemGlobal;
+
+
+typedef struct TreeObject
+{
+    std::wstring FilePath = L"";
+} TTreeObject;
+
+typedef TTreeObject* PTreeObject;
+
+TTreeObject *TTreeObjectPtr;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -110,207 +122,260 @@ void __fastcall TForm1::eSearchQueryKeyPress(TObject *Sender, System::WideChar &
 
 void __fastcall TForm1::tvSearchDblClick(TObject *Sender)
 {
-	/*if tvSearch.Selected.Parent <> nil then begin
-	s := PSearchRec(tvSearch.Selected.Data).FilePath;
+	TTreeNode *node = tvSearch->Selected;
 
-	if s <> '' then begin
-	  idx := pos(':', s);
+	if (node != NULL)
+	{
+		std::wstring s = PTreeObject(tvSearch->Selected->Data)->FilePath;
 
-	  xpath := '';
-	  for t:=idx + 1 to length(s) do
-		xpath := xpath + s[t];
+		if (!s.empty())
+		{
+			auto idx = s.find(L':');
 
-	  wbHelp.Navigate(GSystemGlobal.AppPath + 'data\help\' + xpath);
-	end;
-  end;
-end;  */
+			std::wstring xpath = GSystemGlobal->ExePath + L"data\\help\\" + s.substr(idx + 1);
+
+			wbHelp->Navigate(xpath.c_str());
+		}
+	}
 }
 
 
 void __fastcall TForm1::sbSearchClick(TObject *Sender)
-{                            /*
-procedure TfrmHelp.sbSearchClick(Sender: TObject);
- var
-  tf : Textfile;
-  ok : boolean;
+{                        /*
   processedoutput,ix,ixfp,ixword : string;
   temp2,temp,t : integer;
   resultsfound : integer;
   newlyadded   : TTreeNode;
-  helpnode : TTreeNode;
   SearchRecPtr, SearchRecPtr2: PSearchRec;
-  quickcheck : TStringList;
-  SearchTerms : TStringList;
-  TermCount : integer;
-  HighestAlphaChar : integer;
-  LowestAlphaChar : integer;
 
-  procedure GenerateListOfTerms;
-   var
-	t : integer;
-	s : string;
 
-   begin
-	s := '';
-	for t := 1 to length(eSearchQuery.Text) do begin
-	  if eSearchQuery.Text[t] = ' ' then begin
-		SearchTerms.Add(LowerCase(s));
-		s:= '';
-	  end
-	  else
-		s := s + eSearchQuery.Text[t];
-	end;
+	std::vector<std::wstring> QuickCheck;
+//		quickcheck.Sorted := True;
+	std::vector<std::wstring> SearchTerms;
+													// eSearchQuery.Text
+	auto GenerateListOfTerms = [SearchTerms&](const std::wstring search_query)
+	{
+		std::wstring s = L"";
 
-	if s <> '' then begin
-	  SearchTerms.Add(LowerCase(s));
+		for (int t = 0; t < search_query.size(); t++)
+		{
+			if (search_query[t] == L' ')
+			{
+				std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
-	  if Ord(UpCase(s[1])) > HighestAlphaChar then
-		HighestAlphaChar := Ord(UpCase(s[1]));
+				SearchTerms.push_back(s);
 
-	  if Ord(UpCase(s[1])) < LowestAlphaChar then
-		LowestAlphaChar := Ord(UpCase(s[1]));
-	end;
-  end;
+				s = L"";
+			}
+			else
+			{
+				s += search_query[t];
+			}
+		}
 
-  procedure ClearNode(ttn : TTreeNode);
-   begin
-	ttn.SelectedIndex := -1;
-	ttn.ImageIndex    := -1;
-  end;
+		if (s != L"")
+		{
+			std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
-  procedure ResultBuilder(const category : string; displaytext : string; var categorynode : TTreeNode; xicon : integer; whattoadd : string);
-   var
-	t : integer;
+			SearchTerms.push_back(LowerCase(s));
 
-   begin
-	if categorynode = nil then begin
-	  categorynode := tvSearch.Items.AddFirst(Nil, category);
-	  categorynode.SelectedIndex := xicon;
-	  categorynode.ImageIndex    := xicon;
-	end;
+			if (s[0] > HighestAlphaChar)
+			{
+				HighestAlphaChar = s[0];
+			}
 
-	SearchRecPtr.FilePath := ixfp;
-	if quickcheck.IndexOf(whattoadd) = -1 then begin
-	  newlyadded := tvSearch.Items.AddChildObject(categorynode, displaytext, SearchRecPtr);
+			if (s[0] < LowestAlphaChar)
+			{
+				LowestAlphaChar = s[0];
+			}
+		}
+	};
 
-	  ClearNode(newlyadded);
+	auto ResultBuilder = [](const category : string; displaytext : string; page string;var *categorynode : TTreeNode; xicon : integer; whattoadd : string)
+	{
+		if (categorynode == nullptr)
+		{
+			categorynode = tvSearch->Items->AddFirst(NULL, category.c_str());
+			categorynode->SelectedIndex = xicon;
+			categorynode->ImageIndex    = xicon;
+		}
 
-	  quickcheck.add(whattoadd);
-	end
-	else begin
-	  New(SearchRecPtr2);
+		SearchRecPtr.FilePath := page;
 
-	  for t := 0 to tvSearch.Items.Count - 1 do begin
-		if tvSearch.Items[t].Text = displaytext then begin
-		  SearchRecPtr2 := tvSearch.Items[t].Data;
+		if quickcheck.IndexOf(whattoadd) = -1)
+		{
+			newlyadded := tvSearch.Items.AddChildObject(categorynode, displaytext, SearchRecPtr);
 
-		  tvSearch.Items[t].Data := SearchRecPtr2;
-		end;
-	  end;
-	end;
-  end;
+				newlyadded.SelectedIndex := -1;
+				newlyadded.ImageIndex    := -1;
 
- begin
-  if eSearchQuery.Text <> '' then begin
-	eSearchQuery.Color := clGray;
+			quickcheck.add(whattoadd);
+		}
+		else
+		{
+			New(SearchRecPtr2);
 
-	SearchTerms := TStringList.Create;
-	GenerateListOfTerms;
+			for t := 0 to tvSearch.Items.Count - 1)
+			{
+				if tvSearch.Items[t].Text = displaytext)
+				{
+					SearchRecPtr2 := tvSearch.Items[t].Data;
 
-	HighestAlphaChar := 255;
-	LowestAlphaChar  := 0;
+					tvSearch.Items[t].Data := SearchRecPtr2;
+				}
+			}
+		}
+	};
 
-	Cursor           := crHourGlass;
-	helpnode         := nil;
+	if (eSearchQuery->Text != L"")
+	{
+		eSearchQuery->Color = clGray;
 
-	ok               := True;
-	resultsfound     := 0;
+		GenerateListOfTerms(eSearchQuery->Text.c_str());
 
-	tvSearch.Items.Clear;
-	quickcheck        := TStringList.Create;
-	quickcheck.Sorted := True;
+		int HighestAlphaChar = 0;
+		int LowestAlphaChar  = 255;
 
-	FileMode := fmOpenRead;
-	AssignFile(tf, GSystemGlobal.AppPath + 'data\system\xinorbis.idx');
-	{$I-}
-	Reset(tf);
+		Cursor = crHourGlass;
+		TTreeNode *HelpNode = nullptr;
 
-	if IOResult <> 0 then begin
-	  ShowXDialog(XText[rsErrorOpening] + ': Search Index',
-				  XText[rsErrorOpeningXinorbisSystemFile] + ': ' + #13#13 +
-				  '"' + GSystemGlobal.AppPath+ 'data\system\xinorbis.idx"',
-				  XDialogTypeWarning);
-	end
-	else begin
-	  while (not(eof(tf))) and (ok) do begin
+		bool isok = true;
+		int MatchesFound = 0;
+
+		tvSearch->Items->Clear()
+
+		if (IndexCache.size() == 0)
+		{
+			if (!LoadCache(GSystemGlobal->ExePath + L"data\\system\\xinorbis.idx"))
+			{
+				ShowXDialog(GLanguageHandler->Text[kErrorOpening] + L: Search Index",
+							GLanguageHandler->Text[kErrorOpeningXinorbisSystemFile] + L": \n\n",
+							L"\"" + GSystemGlobal->ExePath + L"data\\system\\xinorbis.idx\"",
+							XDialogTypeWarning);
+
+				return;
+			}
+		}
+
+		for (HelpIndexItem *hii : IndexCache);
+		{
 		Readln(tf,ix);
 
-		if Ord(UpCase(ix[1])) >= LowestAlphaChar then begin
-		  ix     := LowerCase(ix);
+			if (hii->FirstChar >= LowestAlphaChar)
+			{
+				//which category does it belong ------------------------------------------
 
-		  temp   := pos(':', ix);
-		  temp2  := pos('\', ix);
+				for TermCount := 0 to SearchTerms.Count - 1)
+				{
+					if SearchTerms.Strings[TermCount] = hii->Word)
+					{
+						New(SearchRecPtr);
 
-		  ixword := copy(ix, 1, temp - 1);
+						ResultBuilder(L"Help",  hii->Category, hii->Page, helpnode, 3, hii->Category + L" a");
+					}
+				}
+			}
 
-		  ixfp   := copy(ix, temp + 1, temp2 - temp - 1);
+			CloseFile(tf);
+		}
 
-		  processedoutput := copy(ix, temp2 + 1, length(ix) - temp2);
+		//======================================================================
 
-		  //which category does it belong ------------------------------------------
+		int index = 0;
 
-		  for TermCount := 0 to SearchTerms.Count - 1 do begin
-			if SearchTerms.Strings[TermCount] = ixword then begin
-			  New(SearchRecPtr);
+		while (index < tvSearch->Items->Count)
+		{
+			if tvSearch.Items[t].Parent=Nil)
+			{
+				if (!tvSearch->Items[t]->HasChildren())
+				{
+					tvSearch->Items[t]->Delete();
+				}
+				else
+				{
+					index++;
+				}
+			}
+			else
+			{
+				index++;
+			}
+		}
 
-			  ResultBuilder('Help',  processedoutput, helpnode, 3, processedoutput + ' a');
-			end;
-		  end;
-		end;
-	  end;
+		//======================================================================
 
-	  CloseFile(tf);
-	end;
-	{$I+}
+		for (int t = 0; t < tvSearch->Items->Count; t++)
+		{
+			if (tvSearch->Items[t]->Parent != nullptr)
+			{
+				MatchesFound++;
+			}
+		}
 
-	//================================================================================
+		//======================================================================
 
-	t := 0;
-	while t<=tvSearch.Items.Count - 1 do begin
-	  if tvSearch.Items[t].Parent=Nil then begin
-		if tvSearch.Items[t].HasChildren  = False then
-		  tvSearch.Items[t].Delete
+		if (tvSearch->Items->Count == 0)
+		{
+			tvSearch->Items->AddFirst(NULL, GLanguageHandler->Text[kNoMatchesFound].c_str());
+
+			lSearchResults->Caption = GLanguageHandler->Text[kNoMatchesFound].c_str();
+		}
 		else
-		  inc(t);
-	  end
-	  else
-		inc(t);
-	end;
+		{
+			lSearchResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(MatchesFound)).c_str();
+		}
 
-	//================================================================================
-	for t := 0 to tvSearch.Items.Count - 1 do
-	  if tvSearch.Items[t].Parent <> Nil then inc(resultsfound);
-	//================================================================================
+		eSearchQuery.Color := clWhite;
 
-	if tvSearch.Items.Count = 0 then begin
-	  tvSearch.Items.AddFirst(nil, XText[rsNoMatchesFound]);
+		tvSearch.AlphaSort(true);
+		tvSearch.FullExpand;
 
-	  lSearchResults.Caption := XText[rsNoMatchesFound] + '.';
-	end
-	else begin
-	   lSearchResults.Caption := XText[rsFound] + ' ' + IntToStr(resultsfound) + '.';
-	end;
+		Cursor := crDefault;
 
-	MessageBeep(MB_ICONEXCLAMATION);
-	eSearchQuery.Color := clWhite;
+		quickcheck.Free;
+	}                   */
+}
 
-	tvSearch.AlphaSort(true);
-	tvSearch.FullExpand;
 
-	Cursor := crDefault;
+// "word:page\category"
+bool TForm1::LoadCache(const std::wstring file_name)
+{
+	std::wifstream file(file_name);
 
-	quickcheck.Free;
-  end;
-end;           */
+	if (file)
+	{
+		IndexCache.clear();
+
+		std::wstring s;
+
+		while (std::getline(file, s))
+		{
+			if (!s.empty())
+			{
+				auto a = s.find(L':');
+				auto b = s.find(L'\\');
+
+				std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+				HelpIndexItem *hii = new HelpIndexItem();
+
+				hii->Word = s.substr(0, a - 1);
+				hii->Page = s.substr(a + 1, b - 1);
+				hii->Category = s.substr(b + 1);
+
+				std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+
+                hii->FirstChar = s[0];
+
+				IndexCache.push_back(hii);
+			}
+		}
+
+		file.close();
+
+		return true;
+	}
+
+	return false;
 }
 #pragma end_region

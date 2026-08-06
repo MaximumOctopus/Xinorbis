@@ -9,6 +9,8 @@
 #include "ConstantsReports.h"
 #include "Convert.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
+#include "ReportText.h"
 #include "LanguageHandler.h"
 #include "SettingsHandler.h"
 
@@ -207,18 +209,20 @@ void __fastcall TFormEditTextReport::sbRemoveClick(TObject *Sender)
 
 void __fastcall TFormEditTextReport::sbPreviewClick(TObject *Sender)
 {
-	std::vector<std::wstring> Output;
+	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	BuildReport(InternalReport);
 
-	// TO DO GReportText.GenerateTextReport(FSource, lReportOutput, InternalReport);
+	ReportText::Generate(InternalReport, data, DataSource);
 
 	Memo1->Clear();
 
-	for (int t = 0; t < Output.size(); t++)
+	for (std::wstring s : *data)
 	{
-		Memo1->Lines->Add(Output[t].c_str());
+		Memo1->Lines->Add(s.c_str());
 	}
+
+	delete data;
 }
 
 
@@ -231,7 +235,7 @@ void __fastcall TFormEditTextReport::bAdvancedClick(TObject *Sender)
 
 void __fastcall TFormEditTextReport::SpeedButton3Click(TObject *Sender)
 {
-//	THelp.OpenHelpPage('report_text.htm');
+	HelpHandler::OpenHelpPage(L"report_text.htm");
 }
 
 

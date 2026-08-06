@@ -87,7 +87,9 @@ private:
 public:
 	__fastcall TFormEditXmlReport(TComponent* Owner);
 
-    XMLReportOptions InternalReport;
+	XMLReportOptions InternalReport;
+
+    int DataSource = 0;
 };
 
 XMLReportOptions OpenXMLReportOptions(int, bool);

@@ -97,6 +97,9 @@ public:
 
     CSVDataFormat GetImportInstructions();
 };
+
+CSVDataFormat OpenCSVDataFormat(const std::wstring);
+
 //---------------------------------------------------------------------------
 extern PACKAGE TFormImportCSV *FormImportCSV;
 //---------------------------------------------------------------------------

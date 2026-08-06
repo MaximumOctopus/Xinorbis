@@ -152,7 +152,7 @@ object Form1: TForm1
       item
         Control = ToolBar1
         ImageIndex = -1
-        Width = 1234
+        Width = 1238
       end>
     object ToolBar1: TToolBar
       Left = 11

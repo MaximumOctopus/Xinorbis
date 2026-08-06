@@ -27,12 +27,14 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbStop;
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall sbStopClick(TObject *Sender);
 private:
 public:
 	__fastcall TForm18(TComponent* Owner);
 
 	void SetProcessBar(int);
 
+    void SetAbort();
 	void SetProcessText(const std::wstring);
 	void SetPercentage(const std::wstring);
 	void SetStatus3(const std::wstring);

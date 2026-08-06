@@ -150,8 +150,6 @@ __published:	// IDE-managed Components
 	void __fastcall tsOFileNamesDateTreeClick(TObject *Sender);
 private:
 
-	static const int kChartCount = 19;
-
 	static const int kPagePostScan      = 0;
 	static const int kPageOptimisations = 1;
 	static const int kPagePaths         = 2;

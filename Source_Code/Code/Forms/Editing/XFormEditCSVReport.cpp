@@ -8,7 +8,9 @@
 #include "XFormEditCSVReport.h"
 
 #include "ConstantsGui.h"
+#include "CSVPreview.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "SettingsHandler.h"
 
@@ -176,7 +178,7 @@ void __fastcall TFormEditCSVReport::sbPreviewClick(TObject *Sender)
 
 	BuildReport(InternalReport);
 
-   // TO DO	CSVPreview::Get(InternalReport, Preview);
+	CSVPreview::Get(InternalReport, Preview);
 
 	Memo1->Clear();
 
@@ -189,7 +191,7 @@ void __fastcall TFormEditCSVReport::sbPreviewClick(TObject *Sender)
 
 void __fastcall TFormEditCSVReport::SpeedButton1Click(TObject *Sender)
 {
-	// TO DO THelp.OpenHelpPage("report_csv.htm");
+	HelpHandler::OpenHelpPage(L"report_csv.htm");
 }
 
 

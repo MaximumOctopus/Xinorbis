@@ -6,21 +6,25 @@
 #include <algorithm>
 
 #include "XFormSettings.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ConstantsData.h"
 #include "ConstantsSettings.h"
 #include "FileExtension.h"
 #include "FileExtensionHandler.h"
+#include "HelpHandler.h"
+#include "ScanHistoryHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
 #include "WindowsUtility.h"
 
-extern FileExtensionHandler* GFileExtensionHandler;
-extern LanguageHandler* GLanguageHandler;
-extern SettingsHandler* GSettingsHandler;
-extern SystemGlobal* GSystemGlobal;
+extern FileExtensionHandler *GFileExtensionHandler;
+extern LanguageHandler *GLanguageHandler;
+extern SettingsHandler *GSettingsHandler;
+extern ScanHistoryHandler *GScanHistoryHandler;
+extern SystemGlobal *GSystemGlobal;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -227,11 +231,11 @@ void TFormSettings::UpdateSettingsOnSave()
 #pragma region Setup
 void TFormSettings::Init()
 {
-	//miFSH1->Caption       = TXWindows.GetSpecialFolder(5);
-//	miFSH2->Caption       = TXWindows.GetSpecialFolder(6);
-//	miFSH3->Caption       = TXWindows.GetSpecialFolder(7); TO DO
-//	miFSH4->Caption       = TXWindows.GetSpecialFolder(8);
-//	miFSH5->Caption       = TXWindows.GetSpecialFolder(9);
+	miFSH1->Caption = WindowsUtility::GetSpecialFolder(5).c_str();
+	miFSH2->Caption = WindowsUtility::GetSpecialFolder(6).c_str();
+	miFSH3->Caption = WindowsUtility::GetSpecialFolder(7).c_str();
+	miFSH4->Caption = WindowsUtility::GetSpecialFolder(8).c_str();
+	miFSH5->Caption = WindowsUtility::GetSpecialFolder(9).c_str();
 
 	cbDateFormat->Items->Add((GLanguageHandler->Dates[kDateDD] + L"/" + GLanguageHandler->Dates[kDateMM] + L"/" + GLanguageHandler->Dates[kDateYYYY]).c_str());
 	cbDateFormat->Items->Add((GLanguageHandler->Dates[kDateMM] + L"/" + GLanguageHandler->Dates[kDateDD] + L"/" + GLanguageHandler->Dates[kDateYYYY]).c_str());
@@ -405,7 +409,7 @@ void TFormSettings::SetLanguage()
 	tDataFolder->Caption   = GLanguageHandler->Text[kXinorbisDataFolder].c_str();
 	//  tPostScan->Caption     =LanguageStrings[61];
 
-	// to do rbNPostScan->Caption   = GLanguageHandler->Text[kDoNothing].c_str(); to do
+	rbPSDoNothing->Caption   = GLanguageHandler->Text[kDoNothing].c_str();
 
 	for (int t = 0; t < 12; t++)
 	{
@@ -472,35 +476,32 @@ void __fastcall TFormSettings::miFSH1Click(TObject *Sender)
 #pragma region Page_General
 void __fastcall TFormSettings::bGResetGraphGradientsClick(TObject *Sender)
 {
-//  if MessageDlg(GLanguageHandler->Text[kResetChartGradientColours] + #13#13 + GLanguageHandler->Text[kAreYouSureContinue], mtWarning, [mbYes, mbNo], 0) = mrYes then begin
-//	XSettings.ResetChartGradients; TO DO
-//  end;
+	std::wstring message = GLanguageHandler->Text[kResetChartGradientColours] + L"\n\n" + GLanguageHandler->Text[kAreYouSureContinue];
+
+	if (MessageDlg(message.c_str(), mtWarning, mbYesNo, 0) == mrYes)
+	{
+		GSettingsHandler->Chart.Reset();
+	}
 }
 
 
 void __fastcall TFormSettings::bClearScanHistoryClick(TObject *Sender)
 {
-/*  if MessageDlg(GLanguageHandler->Text[kClearScanHistoryPrompt], mtWarning, [mbYes, mbNo], 0) = mrYes then begin
-	ScanHistory.Clear;
-
-	Reg = TRegistry.Create(KEY_WRITE);
-
-	try
-	  Reg.RootKey = HKEY_CURRENT_USER;
-	  Reg.DeleteKey('\software\' + XinorbisRegistryKey + L"\SinglePaths');
-	finally
-	 Reg.Free;
-	end;
-  end; TO DO DO DO */
+	if (MessageDlg(GLanguageHandler->Text[kClearScanHistoryPrompt].c_str(), mtWarning, mbYesNo, 0) == mrYes)
+	{
+		GScanHistoryHandler->Clear();
+	}
 }
 
 
 void __fastcall TFormSettings::bClearAllSettingsClick(TObject *Sender)
 {
-//	if MessageDlg(GLanguageHandler->Text[kRestoreToDefaults] + L"?' + #13#13 + GLanguageHandler->Text[kAreYouSureContinue], mtWarning, [mbYesNo], 0) == mrYes)
-//	{
-//		XSettings.SetAllToDefault; TO DO
-//	}
+	std::wstring message = (GLanguageHandler->Text[kRestoreToDefaults] + L"?\n\n" + GLanguageHandler->Text[kAreYouSureContinue]);
+
+	if (MessageDlg(message.c_str(), mtWarning, mbYesNo, 0) == mrYes)
+	{
+		GSettingsHandler->SetDefaults();
+	}
 }
 #pragma end_region
 
@@ -516,10 +517,12 @@ void __fastcall TFormSettings::bClearAllSettingsClick(TObject *Sender)
 #pragma region Page_Paths
 void __fastcall TFormSettings::sbXinorbisFolderClick(TObject *Sender)
 {
-	std::wstring folder = L""; // TO DO WindowsUtility::BrowseForFolder(Handle);
+	std::vector<std::wstring> paths;
 
-	if (!folder.empty())
+	if (WindowsUtility::BrowseForFolder(paths, true, false))
 	{
+		std::wstring folder = paths[0];
+
 		eXinorbisFolder->Text = folder.c_str();
 	}
 }
@@ -644,10 +647,11 @@ void __fastcall TFormSettings::SpeedButton11Click(TObject *Sender)
 {
 	if (lbQuickFolders->Count < kQuickFolderCount)
 	{
-		std::wstring folder = L"";// TO DO TXWindows.BrowseForFolder(Handle);
+		std::vector<std::wstring> paths;
 
-		if (!folder.empty())
+		if (WindowsUtility::BrowseForFolder(paths, true, false))
 		{
+			std::wstring folder = paths[0];
 			std::wstring folderuc = folder;
 
 			std::transform(folderuc.begin(), folderuc.end(), folderuc.begin(), ::toupper);
@@ -676,7 +680,9 @@ void __fastcall TFormSettings::SpeedButton11Click(TObject *Sender)
 			}
 			else
 			{
-// TO DO				ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kQuickFoldersAlreadyExists], XDialogTypeWarning);
+				ShowXDialog(GLanguageHandler->Text[kWarning],
+							GLanguageHandler->Text[kQuickFoldersAlreadyExists],
+							XDialogTypeWarning);
 			}
 		}
 	}
@@ -759,7 +765,7 @@ void __fastcall TFormSettings::lbTempClick(TObject *Sender)
 #pragma region Bottom_Buttons
 void __fastcall TFormSettings::bHelpClick(TObject *Sender)
 {
-		 // to do THelp.OpenHelpPage('prefs.htm');
+	HelpHandler::OpenHelpPage(L"prefs.htm");
 }
 
 #pragma end_region
@@ -788,27 +794,8 @@ TToggleSwitchState TFormSettings::BooleanToSliderState(bool state)
 
 
 void TFormSettings::SaveUsersPath()
-{ /* TO DO
-	if (olduserpath != eXinorbisFolder.Text)
-	{
-		config = TINIFile.Create(GSystemGlobal.ExePath + L"custom.ini');
-
-		try
-		{
-			config.WriteString('Main', 'DataPath', eXinorbisFolder.Text);
-		}
-		catch(...)
-		{
-
-		}
-
-		if (ini != nullptr)
-		{
-			delete ini;
-		}
-
-		ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kXinorbisDataFolderChanges], XDialogTypeWarning);
-	}   */
+{
+	GSettingsHandler->State.DataPath = eXinorbisFolder->Text.c_str();
 }
 
 

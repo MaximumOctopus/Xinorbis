@@ -64,7 +64,9 @@ private:
 public:		// User declarations
 	__fastcall TFormEditCSVReport(TComponent* Owner);
 
-   	CSVReportOptions InternalReport;
+	CSVReportOptions InternalReport;
+
+    int DataSource = 0;
 
 	bool OneOffCustom = false;
 };

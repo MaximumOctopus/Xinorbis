@@ -61,6 +61,8 @@ public:		// User declarations
 
 	TreeReportOptions InternalReport;
 
+    int DataSource = 0;
+
 	void SetOneOff(bool);
 };
 

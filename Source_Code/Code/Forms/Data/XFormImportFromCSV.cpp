@@ -6,6 +6,7 @@
 #include "XFormImportFromCSV.h"
 
 #include "ConstantsReports.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "Utility.h"
 
@@ -19,6 +20,23 @@ TFormImportCSV *FormImportCSV;
 __fastcall TFormImportCSV::TFormImportCSV(TComponent* Owner)
 	: TForm(Owner)
 {
+}
+
+
+CSVDataFormat OpenCSVDataFormat(const std::wstring file_name)
+{
+	FormImportCSV = new TFormImportCSV(Application);
+
+	CSVDataFormat df;
+
+	if (FormImportCSV->ShowModal() == mrOk)
+	{
+		df = FormImportCSV->GetImportInstructions();
+	}
+
+	delete FormImportCSV;
+
+	return df;
 }
 
 
@@ -169,7 +187,7 @@ void __fastcall TFormImportCSV::bAutoClick(TObject *Sender)
 
 void __fastcall TFormImportCSV::bHelpClick(TObject *Sender)
 {
-	// to do THelp.OpenHelpPage('w21.htm');
+	HelpHandler::OpenHelpPage(L"w21.htm");
 }
 
 
@@ -237,8 +255,12 @@ bool TFormImportCSV::ProcessFile()
       ComboList[i].Visible = True;
     end;
   end
-  else
-	ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kBadCSVFile], XDialogTypeWarning); */
+	else
+	{
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kBadCSVFile],
+					XDialogTypeWarning);
+	}*/
 
 	return false;
 }
