@@ -20,12 +20,12 @@ static const int kPostScanStructure    = 3;
 
 static const int kFTPOptionsCount = 6;
 
-static const int kFTPOptionHost          = 1;
-static const int kFTPOptionUserName      = 2;
-static const int kFTPOptionPassword      = 3;
-static const int kFTPOptionRemoteFolder  = 4;
-static const int kFTPOptionActualLink    = 5;
-static const int kFTPOptionInitialFolder = 6;
+static const int kFTPOptionHost          = 0;
+static const int kFTPOptionUserName      = 1;
+static const int kFTPOptionPassword      = 2;
+static const int kFTPOptionRemoteFolder  = 3;
+static const int kFTPOptionActualLink    = 4;
+static const int kFTPOptionInitialFolder = 5;
 
 
 static const int ProgressUpdates[6][2] = { { 30,   500 },

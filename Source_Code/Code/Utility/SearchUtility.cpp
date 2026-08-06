@@ -293,37 +293,37 @@ void SearchUtility::ProcessSearchTermFNL(SearchCriteriaObject& sco, std::wstring
 	{
 		index = input.find(L"FILENAMELENGTH=");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FileNameLengthEqual);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FileNameLengthEqual);
 	}
 	else if (input.find(L"FILENAMELENGTH<") != std::wstring::npos)
 	{
 		index = input.find(L"FILENAMELENGTH<");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FileNameLengthLess);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FileNameLengthLess);
 	}
 	else if (input.find(L"FILENAMELENGTH>") != std::wstring::npos)
 	{
 		index = input.find(L"FILENAMELENGTH>");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FilenameLengthMore);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FilenameLengthMore);
 	}
 	else if (input.find(L"FILEPATHLENGTH=") != std::wstring::npos)
 	{
 		index = input.find(L"FILEPATHLENGTH=");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FilePathLengthEqual);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FilePathLengthEqual);
 	}
 	else if (input.find(L"FILEPATHLENGTH<") != std::wstring::npos)
 	{
 		index = input.find(L"FILEPATHLENGTH<");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FilePathLengthLess);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FilePathLengthLess);
 	}
 	else if (input.find(L"FILEPATHLENGTH>") != std::wstring::npos)
 	{
 		index = input.find(L"FILEPATHLENGTH>");
 
-		IntegerValueHelper(sco, input, index + 15, 15, SearchType::FilePathLengthMore);
+		IntegerValueHelper(sco, input, index + 15, SearchType::FilePathLengthMore);
 	}
 }
 
@@ -431,9 +431,9 @@ void SearchUtility::ProcessSearchTermCategory(SearchCriteriaObject& sco, std::ws
 
 void SearchUtility::ProcessSearchTermTypes(SearchCriteriaObject& sco, std::wstring input)
 {
-	for (int t = 0; t < SearchConstants::TypeTermCount; t++)
+	for (int t = 0; t < SearchConstants::kTypeTermCount; t++)
 	{
-		if (input.find(L'@' + SearchConstants::TypeTerms[t]) != std::wstring::npos)
+		if (input.find(L'@' + SearchConstants::kTypeTerms[t]) != std::wstring::npos)
 		{
 			if (input.back() == L'-')
 			{
@@ -444,19 +444,19 @@ void SearchUtility::ProcessSearchTermTypes(SearchCriteriaObject& sco, std::wstri
 				sco.Type = SearchType::FileType;
 			}
 
-			sco.IntegerValue = SearchConstants::TypeValues[t];
+			sco.IntegerValue = SearchConstants::kTypeValues[t];
 		}
 	}
 }
 
 
-void SearchUtility::IntegerValueHelper(SearchCriteriaObject& sco, std::wstring input, int from, int to, SearchType search_type)
+void SearchUtility::IntegerValueHelper(SearchCriteriaObject& sco, std::wstring input, int start_index, SearchType search_type)
 {
 	int value = -1;
 
 	try
 	{
-		value = std::stoi(input.substr(from, input.length() - to));
+		value = std::stoi(input.substr(start_index));
 	}
 	catch (...)
 	{
@@ -471,7 +471,7 @@ void SearchUtility::IntegerValueHelper(SearchCriteriaObject& sco, std::wstring i
 	else
 	{
 		sco.Type = SearchType::Error;
-		//sco.error = XText[kInvalidInput] + ' "' + Copy(aInput, aFrom, length(aInput) - aTo) + '"'; to do
+		sco.error = GLanguageHandler->Text[kInvalidInput] + L" \"" + input.substr(start_index) + L"\"";
 	}
 }
 
@@ -484,7 +484,7 @@ void SearchUtility::IntegerValueHelper(SearchCriteriaObject& sco, std::wstring i
 //
 void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter, std::wstring& value, TestType& test_type)
 {
-	int mode = SearchConstants::ModeField;
+	int mode = SearchConstants::kModeField;
 	std::wstring test = L"";
 	int position = 0;
 
@@ -498,9 +498,9 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 		{
 			parameter = L"CATEGORY";
 
-			for (int t = 0; t < SearchConstants::CategoryTermCount; t++)
+			for (int t = 0; t < SearchConstants::kCategoryTermCount; t++)
 			{
-				if (input.find(L'#' + SearchConstants::CategoryTerms[t]) != std::wstring::npos)
+				if (input.find(L'#' + SearchConstants::kCategoryTerms[t]) != std::wstring::npos)
 				{
 				if (input.back() == L'-')
 				{
@@ -511,7 +511,7 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 					test_type = TestType::EqualTo;
 				}
 
-				value = std::to_wstring(SearchConstants::CategoryValues[t]);
+				value = std::to_wstring(SearchConstants::kCategoryValues[t]);
 				}
 			}
 		}
@@ -519,9 +519,9 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 		{
 			parameter = L"ATTRIBUTES";
 
-			for (int t = 0; t < SearchConstants::TypeTermCount; t++)
+			for (int t = 0; t < SearchConstants::kTypeTermCount; t++)
 			{
-				if (input.find(L'@' + SearchConstants::TypeTerms[t]) != std::wstring::npos)
+				if (input.find(L'@' + SearchConstants::kTypeTerms[t]) != std::wstring::npos)
 				{
 					if (input.back() == L'-')
 					{
@@ -532,7 +532,7 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 						test_type = TestType::EqualTo;
 					}
 
-					value = std::to_wstring(SearchConstants::TypeValues[t]);
+					value = std::to_wstring(SearchConstants::kTypeValues[t]);
 				}
 			}
 		}
@@ -542,7 +542,7 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 			{
 				switch (mode)
 				{
-				case SearchConstants::ModeField:
+				case SearchConstants::kModeField:
 					if (isalpha(input[position]))
 					{
 						parameter = parameter + input[position];
@@ -551,12 +551,12 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 					}
 					else
 					{
-						mode = SearchConstants::ModeTest;
+						mode = SearchConstants::kModeTest;
 					}
 
 					break;
 
-				case SearchConstants::ModeTest:
+				case SearchConstants::kModeTest:
 					if (Utility::IsTestCharacter(input[position]))
 					{
 						test += input[position];
@@ -590,12 +590,12 @@ void SearchUtility::GetTokens(const std::wstring input, std::wstring& parameter,
 							test_type = TestType::NotContains;
 						}
 
-						mode = SearchConstants::ModeValue;
+						mode = SearchConstants::kModeValue;
 					}
 
 					break;
 
-				case SearchConstants::ModeValue:
+				case SearchConstants::kModeValue:
 					value += input[position];
 
 					position++;
@@ -720,285 +720,5 @@ std::wstring SearchUtility::GetSearchSize(int from_size, int from_unit, int to_s
 		output += L"(size<" + std::to_wstring(to_size) + GLanguageHandler->Units[to_unit] + L")";
 	}
 
-    return output;
-}
-
-
-std::wstring SearchUtility::XinorbisSearchToSQL(const std::wstring xdate, const std::wstring xfolder, const std::wstring xcomputer, const std::wstring xinsearch,
-	int limitx, int limity, bool demomode)
-{/*
- var
-  SQLTerms : TStringList;
-  t : integer;
-
-  procedure GetSearchTerms(const xinsearch2 : string);
-   var
-    i : integer;
-    s : string;
-    reading : boolean;
-    inside : boolean;
-
-    function AddThisKeyword(const s : string): string;
-     var
-      ts : string;
-
-     begin
-      ts := ProcessSearchTermToSQL(s);
-
-      if ts <> '' then
-        SQLTerms.Add(ts);
-    end;
-
-   begin
-    s       := '';
-    reading := False;
-    inside  := False;
-    SQLTerms.Clear;
-
-    for i := 1 to length(xinsearch2) do begin
-      if xinsearch2[i] = '"' then begin
-        if reading=False then
-          reading := True
-        else begin
-          reading := False;
-
-          AddThisKeyword(UpperCase(s));
-          s := '';
-        end;
-      end
-      else if xinsearch2[i] = '(' then
-        inside := True
-      else if xinsearch2[i] = ')' then
-        inside := False
-      else if (xinsearch2[i] = ' ') and not(inside) then begin
-        if reading then
-          s := s + ' '
-        else begin
-          if s <> '' then begin
-            AddThisKeyword(UpperCase(s));
-            s := '';
-          end;
-        end;
-      end
-      else begin
-        s := s + xinsearch2[i];
-      end;
-    end;
-
-    if s <> '' then AddThisKeyword(UpperCase(s));
-  end;
-
-  procedure GetODBCSpecificPreTerms(const xinsearch2 : string);
-   var
-    i : integer;
-    s : string;
-    reading : boolean;
-    inside : boolean;
-
-    function AddThisKeyword(const s : string): string;
-     var
-      ts : string;
-
-     begin
-      ts := ProcessSearchTermToSQLPostODBC(s);
-
-      if ts <> '' then
-        SQLTerms.Add(ts);
-    end;
-
-   begin
-    s       := '';
-    reading := False;
-    inside  := False;
-    SQLTerms.Clear;
-
-    for i := 1 to length(xinsearch2) do begin
-      if xinsearch2[i] = '"' then begin
-        if reading = False then
-          reading := True
-        else begin
-          reading := False;
-
-          AddThisKeyword(UpperCase(s));
-          s := '';
-        end;
-      end
-      else if xinsearch2[i] = '(' then
-        inside := True
-      else if xinsearch2[i] = ')' then
-        inside := False
-      else if (xinsearch2[i] = ' ') and not(inside) then begin
-        if reading then
-          s:= S + ' '
-        else begin
-          if s <> '' then begin
-            AddThisKeyword(UpperCase(s));
-            s := '';
-          end;
-        end;
-      end
-      else begin
-        s := s + xinsearch2[i];
-      end;
-    end;
-
-    if s <> '' then AddThisKeyword(UpperCase(s));
-  end;
-
-  procedure GetPostTerms(const xinsearch2 : string);
-   var
-    i : integer;
-    s : string;
-    reading : boolean;
-    inside : boolean;
-
-    function AddThisKeyword(const s : string): string;
-     var
-      ts : string;
-
-     begin
-      ts := ProcessSearchTermToSQLPost(s);
-
-      if ts <> '' then
-        SQLTerms.Add(ts);
-    end;
-
-   begin
-    s       := '';
-    reading := False;
-    inside  := False;
-    SQLTerms.Clear;
-
-    for i := 1 to length(xinsearch2) do begin
-      if xinsearch2[i] = '"' then begin
-        if reading = False then
-          reading := True
-        else begin
-          reading := False;
-
-          AddThisKeyword(UpperCase(s));
-          s := '';
-        end;
-      end
-      else if xinsearch2[i] = '(' then
-        inside := True
-      else if xinsearch2[i] = ')' then
-        inside := False
-      else if (xinsearch2[i] = ' ') and not(inside) then begin
-        if reading then
-          s := s + ' '
-        else begin
-          if s <> '' then begin
-            AddThisKeyword(UpperCase(s));
-            s := '';
-          end;
-        end;
-      end
-      else begin
-        s := s + xinsearch2[i];
-      end;
-    end;
-
-    if s <> '' then AddThisKeyword(UpperCase(s));
-  end;
-
- begin
-  if xinsearch <> '' then begin
-
-    SQLTerms := TStringList.Create;
-
-    // == now add required fields ==============================================
-
-    Result := 'SELECT ';
-
-    if XSettings.Database.UseODBC then begin
-      GetODBCSpecificPreTerms(xinsearch);
-
-      if SQLTerms.Count <> 0 then
-        Result := Result + ' ' + SQLTerms[0];
-    end;
-
-    // == now add required fields ==============================================
-
-    if demomode then
-      Result := Result + ' *'
-    else
-      Result := Result + ' FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner';
-
-    // =========================================================================
-
-    Result := Result + ' FROM ';
-
-    // =========================================================================
-
-    if demomode then
-      Result := Result + '$x$'
-    else
-      Result := Result + '"' + TConvert.CreateTableName(xdate, xfolder, xcomputer) + '"';
-
-    // =========================================================================
-
-    GetSearchTerms(xinsearch);
-
-    if SQLTerms.Count <> 0 then begin
-      Result := Result + ' WHERE ';
-
-      for t := 0 to SQLTerms.Count - 1 do begin
-        Result := Result + SQLTerms[t];
-
-        if t <> SQLTerms.Count - 1 then
-          Result := Result + ' AND ';
-      end;
-    end;
-
-    // ===========================================================================
-
-    GetPostTerms(xinsearch);
-
-    if SQLTerms.Count <> 0 then begin
-      Result := Result + ' ' + SQLTerms[0];
-    end;
-
-    // ===========================================================================
-
-    SQLTerms.Free;
-
-    if Pos(' LIMIT ', Result) = 0 then begin
-      if XSettings.Database.UseODBC then
-        Result := Result + ';'
-      else
-        Result := Result + ' LIMIT ' + IntToStr(limitx) + ', ' + IntToStr(limity) + ';';
-    end;
-
-    // ===========================================================================
-  end; */
-
-  return L"to do";
-}
-
-
-std::wstring SearchUtility::XinorbisSearchAllToSQL(const std::wstring xdate, const std::wstring xfolder, const std::wstring xcomputer, bool demomode)
-{
-	// == now add required fields ==============================================
-
-	std::wstring sql = L"SELECT FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner";
-
-	// =========================================================================
-
-	sql += L" FROM ";
-
-	// =========================================================================
-
-	if (demomode)
-	{
-		sql += L"$x$";
-	}
-	else
-	{
-		sql += L"\"" + Convert::CreateTableName(xdate, xfolder, xcomputer) + L"\"";
-	}
-
-	// =========================================================================
-
-	return sql + L";";
+	return output;
 }

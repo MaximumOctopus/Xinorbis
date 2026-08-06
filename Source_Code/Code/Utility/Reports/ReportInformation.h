@@ -12,10 +12,12 @@
 
 #pragma once
 
-#include <Vcl.Buttons.hpp>
+#include <vector>
 
 
-namespace GuiUtility
+namespace ReportInformation
 {
-	void SetButtonImageEnabled(TSpeedButton*, int, bool);
+	void GetInfoCSVReport(const std::wstring, std::vector<std::wstring>*);
+	void GetInfoXinorbisReport(const std::wstring, std::vector<std::wstring>*);
+	bool GetInfoXinorbis2Report(const std::wstring, std::vector<std::wstring>*);
 }

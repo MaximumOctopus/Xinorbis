@@ -822,6 +822,17 @@ const static int kTextReport23 					   = 789;
 const static int kTextReport24					   = 790;
 const static int kTextReport25 					   = 791;	// benford's law
 const static int kFolderUC                         = 792;   // uppercase version of folder (for reports etc.)
+const static int kData                             = 793;
+const static int kReports                          = 794;
+const static int kDateReport                       = 795;
+const static int kJSONReport                       = 796;
+const static int kHelpCats                         = 797;
+const static int kSubMenuTemplate                  = 798;
+const static int kToday                            = 799;
+const static int kLastSixMonths                    = 800;
+const static int kLastYear                         = 801;
+const static int kUnableToConnectToMaximumOctopusCom = 802;
+const static int kUpdateCheck                      = 803;
 
-const static int kLanguageConstantsCount = 793;
+const static int kLanguageConstantsCount = 804;
 

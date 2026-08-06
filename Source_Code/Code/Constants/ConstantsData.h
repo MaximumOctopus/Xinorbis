@@ -12,26 +12,18 @@
 
 #pragma once
 
+enum class ScanSource { None = 0, LiveScan, FileXinorbisNormal, FileXinorbisDetailed, FileXinorbis2Detailed,
+						FileCSV, LiveShare, FolderHistory, SearchResults };
 
 enum class DateTimeFormat { Display = 0, File = 1, YYYYMMDD = 2, Slash = 3, HHMM = 4};
 enum class DateFormat { kSlashDDMMYYYY = 0, kSlashMMDDYYYY, kSlashYYYYMMDD, kHyphenDDMMYYYY, kHyphenMMDDYYYY, kYYYYMMDD };
 
-static const int kDatacan = 0;
+static const int kDataScan = 0;
 static const int kDataSearch = 1;
 static const int kDataFolderHistory = 2;
 
-static const int kScanSourceLive             = 0;
-static const int kScanSourceFileXinNormal    = 1;
-static const int kScanSourceFileCSV          = 2;
-static const int kScanSourceFileXinDetailed  = 3;
-static const int kScanSourceLiveShare        = 4;
-static const int kScanSourceFolderHistory    = 5;
-static const int kScanSourceSearchResults    = 6;
-static const int kScanSourceFileXin2Detailed = 7;
-
 static const int kReportTypeCount  =  6;
 static const int kQuickFolderCount = 20;
-static const int kChartCount       = 19;
 
 static const int kAutoSaveItemCount = 6;
 

@@ -19,7 +19,7 @@ static const int kMagnitudesCount = 13;
 static const int kHTMLColoursCount = 11;
 static const int kHTMLItemsCount = 17;
 
-static const int kTextItemsCount = 16;
+static const int kTextItemsCount = 17;
 static const int kXMLItemsCount = 17;
 
 static const int kReportLayoutUnknown = 0;
@@ -28,6 +28,17 @@ static const int kReportLayoutQuick    = 2;
 static const int kReportLayoutSaveAs   = 3;
 static const int kReportLayoutCustom1  = 4;
 static const int kReportLayoutCustom2  = 5;
+
+static const int kReportTypeCSV       = 0;
+static const int kReportTypeDate      = 1;
+static const int kReportTypeHTML      = 2;
+static const int kReportTypeJSON      = 3;
+static const int kReportTypeText      = 4;
+static const int kReportTypeTree      = 5;
+static const int kReportTypeXinorbis  = 6;
+static const int kReportTypeXinorbis2 = 7;
+static const int kReportTypeXML       = 8;
+static const int kReportTypeUnknown   = 99;
 
 static const int kTableWidth = 0;
 static const int kBarGraph = 1;
@@ -67,14 +78,14 @@ static const int kSpectrumMod = 29;
 static const int kReportSizes[8] = { 1250, 370, 350, 618, 1238, 618, 1238, 152 };  // 1280x mode
 
 static const int kDefaultDisplayColours[kFileCategoriesCount] = { 0xFFFF00, 0x9d9fff, 0x70b7fe, 0x72f1fc, 0x73fcb7, 0xc5fd71, 0xeefc72, 0xfccf72, 0xfc8d72, 0xfe79be,
-																	0xfe70f3, 0x99bdd5, 0x8c8c8c, 0xd1d1d1, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff };
+																  0xfe70f3, 0x99bdd5, 0x8c8c8c, 0xd1d1d1, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff };
 
 static const int kMagnitudeColour[kMagnitudesCount] = { 0x8383FF, 0x83BAFF, 0x83ECFF, 0x83FFCC, 0x92ff83, 0xD5FF83,
-														  0xFFFE83, 0xFFCF83, 0xFF9283, 0xFF83Af, 0xFF83F5, 0xFF83F5, 0xFF83F5 };
+														0xFFFE83, 0xFFCF83, 0xFF9283, 0xFF83Af, 0xFF83F5, 0xFF83F5, 0xFF83F5 };
 
 static const int kSpectrumColours[kSpectrumMod] = { 0x0000FF, 0x0022FF, 0x0054FF, 0x0084FF, 0x00B4FF, 0x00E4FF, 0x00FFA8, 0x00FF36, 0x3EFF00, 0xB0FF00,
-													  0xFFFA00, 0xFFDC00, 0xFFBE00, 0xFFA000, 0xFF8200, 0xFF6400, 0xFF4600, 0xFF2800, 0xFF0A00, 0xFF0020,
-													  0xFF0050, 0xFF0080, 0xFF00B0, 0xFF00E0, 0xFF02F0, 0xFF05F0, 0xFF08F0, 0xFF0BF0, 0xFF0EF0 };
+													0xFFFA00, 0xFFDC00, 0xFFBE00, 0xFFA000, 0xFF8200, 0xFF6400, 0xFF4600, 0xFF2800, 0xFF0A00, 0xFF0020,
+													0xFF0050, 0xFF0080, 0xFF00B0, 0xFF00E0, 0xFF02F0, 0xFF05F0, 0xFF08F0, 0xFF0BF0, 0xFF0EF0 };
 
 const static std::wstring DefaultExtensionFileName[kFileCategoriesCount] = {L"Temp", L"Programs", L"System", L"Graphics", L"Movie",
 																			 L"Audio", L"Office", L"Programming", L"Compressed", L"Other",
@@ -206,3 +217,12 @@ static const int kTextNewest        = 15;
 static const int kTextOldest        = 16;
 static const int kTextNameLength    = 17;
 
+// these values are preserved from previous versions of Xinorbis
+static const int kScanSourceLive             = 0;
+static const int kScanSourceFileXinNormal    = 1;
+static const int kScanSourceFileCSV          = 2;
+static const int kScanSourceFileXinDetailed  = 3;
+static const int kScanSourceLiveShare        = 4;
+static const int kScanSourceFolderHistory    = 5;
+static const int kScanSourceSearchResults    = 6;
+static const int kScanSourceFileXin2Detailed = 7;

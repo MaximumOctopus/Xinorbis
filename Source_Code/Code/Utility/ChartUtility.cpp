@@ -14,11 +14,57 @@
 #include <VCLTee.Series.hpp>
 
 #include "ChartUtility.h"
+#include "SettingsHandler.h"
+
+extern SettingsHandler *GSettingsHandler;
 
 
 void ChartUtility::SetAdvancedOptions(TChart* chart, ChartOptions co)
 {
-// to do
+	if (chart->SeriesCount != 0)
+	{
+		chart->SeriesList->Items[0]->Marks->BackColor = TColor(co.MarkColour);
+		chart->SeriesList->Items[0]->Marks->Visible   = co.ShowMarks;
+		chart->SeriesList->Items[0]->Marks->Style     = IntegerToSeriesMarksStyle(co.MarksType);
+
+		if (chart->Series[0]->ClassNameIs(L"TPieSeries"))
+		{
+			reinterpret_cast<TPieSeries*>(chart->SeriesList->Items[0])->ExplodeBiggest = co.Explode;
+			chart->View3DOptions->Zoom = co.Zoom;
+		}
+		//else if (chart.Series[0] is TBarSeries)
+		//{
+		//}
+		//else if (chart.Series[0] is THorizBarSeries)
+		//{
+		//}
+	}
+
+	chart->View3DOptions->Elevation = co.Elevation;
+
+	chart->Legend->Visible = co.ShowLegend;
+
+	chart->Title->Font->Color                   = TColor(co.TitleColour);
+
+	chart->AxesList->Bottom->Axis->Color        = TColor(co.MarkColour);
+	chart->AxesList->Left->Axis->Color          = TColor(co.MarkColour);
+	chart->AxesList->Right->Axis->Color         = TColor(co.MarkColour);
+	chart->AxesList->Top->Axis->Color           = TColor(co.MarkColour);
+
+	chart->AxesList->Bottom->LabelsFont->Color  = TColor(co.MarkColour);
+	chart->AxesList->Left->LabelsFont->Color    = TColor(co.MarkColour);
+	chart->AxesList->Right->LabelsFont->Color   = TColor(co.MarkColour);
+	chart->AxesList->Top->LabelsFont->Color     = TColor(co.MarkColour);
+
+	chart->AxesList->Bottom->Title->Font->Color = TColor(co.MarkColour);
+	chart->AxesList->Left->Title->Font->Color   = TColor(co.MarkColour);
+	chart->AxesList->Right->Title->Font->Color  = TColor(co.MarkColour);
+	chart->AxesList->Top->Title->Font->Color    = TColor(co.MarkColour);
+
+	chart->Color                = TColor(co.ChartFrom);
+	chart->Gradient->StartColor = TColor(co.ChartFrom);
+	chart->Gradient->EndColor   = TColor(co.ChartTo);
+	chart->Gradient->Visible    = co.ChartGradient;
 }
 
 
@@ -63,8 +109,9 @@ void ChartUtility::ChangeChartToPie(TChart* chart)
 
 		if (chart->SeriesCount != 0)
 		{
-			//TPieSeries(mychart.Series[0]).ExplodeBiggest := XSettings.Charts.Options.Explode;
-		  //mychart.View3DOptions.Zoom                   := XSettings.Charts.Options.Zoom;     to do
+			reinterpret_cast<TPieSeries*>(chart->SeriesList->Items[0])->ExplodeBiggest = GSettingsHandler->Chart.Explode;
+
+			chart->View3DOptions->Zoom = GSettingsHandler->Chart.Zoom;
 		}
 	}
 }
@@ -114,6 +161,28 @@ ChartType ChartUtility::GetChartType(TChart *chart)
 }
 
 
+int ChartUtility::GetChartTypeInt(TChart *chart)
+{
+	if (chart->SeriesCount != 0)
+	{
+		if (chart->Series[0]->ClassNameIs(L"TPieSeries"))
+		{
+			return 1;
+		}
+		else if (chart->Series[0]->ClassNameIs(L"TBarSeries"))
+		{
+			return 2;
+		}
+		else if (chart->Series[0]->ClassNameIs(L"THorizBarSeries"))
+		{
+			return 3;
+		}
+	}
+
+	return 0;
+}
+
+
 void ChartUtility::CopyChartToClipboard(TChart *chart)
 {
 /*
@@ -141,4 +210,26 @@ void ChartUtility::CopyChartToClipboard(TChart *chart)
 	  bmp.Free;
 	end;
 	end; */
+}
+
+
+TSeriesMarksStyle ChartUtility::IntegerToSeriesMarksStyle(int value)
+{
+	if (value >= ksmsValue && value <= ksmsXValue)
+	{
+		switch (value)
+		{
+		case ksmsValue             : return smsValue;
+		case ksmsPercent           : return smsPercent;
+		case ksmsLabel             : return smsLabel;
+		case ksmsLabelPercent      : return smsLabelPercent;
+		case ksmsLabelValue        : return smsLabelValue;
+		case ksmsLegend            : return smsLegend;
+		case ksmsPercentTotal      : return smsPercentTotal;
+		case ksmsLabelPercentTotal : return smsLabelPercentTotal;
+		case ksmsXValue            : return smsXValue;
+		}
+	}
+
+	return smsValue;
 }

@@ -14,9 +14,11 @@
 #include "aclapi.h"
 #include <filesystem>
 #include <Lmcons.h>
-#include <ShlObj.h>  
+#include <ShlObj.h>
+#include <shobjidl.h>
 #include <string>
 #include <windows.h>
+#include <vector>
 
 #include "ConstantsData.h"
 #include "Convert.h"
@@ -168,7 +170,7 @@ std::wstring WindowsUtility::GetExePath()
 
     GetModuleFileName( NULL, result, MAX_PATH );
 
-    return Utility::SplitFilename(std::wstring(result)) + L"\\";
+	return Utility::SplitFileName(std::wstring(result)) + L"\\";
 }
 
 
@@ -395,13 +397,208 @@ void WindowsUtility::ExecuteFile(const std::wstring path, const std::wstring par
 }
 
 
+// http://msdn.microsoft.com/en-us/library/bb762494.aspx
 std::wstring WindowsUtility::GetSpecialFolder(int folder)
-{
+{          /*
+var
+  szPath: array [0..MAX_PATH] of Char;
+  xcopy, temp : string;
+  t : integer;
+  go : boolean;
+
+ begin
+  Assert((xID >= 1) and (xID <= 11), 'GetSpecialFolder :: Invalid ID');
+
+  case xID of
+     1 : SHGetFolderPath(0, CSIDL_PROGRAM_FILES,    0, 0, @szPath[0]);
+     2 : SHGetFolderPath(0, CSIDL_PROGRAM_FILESX86, 0, 0, @szPath[0]);
+     3 : SHGetFolderPath(0, CSIDL_WINDOWS,          0, 0, @szPath[0]);
+     4 : begin // users
+           SHGetFolderPath(0, $0028, 0, 0, @szPath[0]);
+
+           xcopy := SzPath;
+           temp  := '';
+           go    := false;
+
+           t     := length(xcopy);
+
+           while t > 0 do begin
+             if go then
+               temp := xcopy[t] + temp;
+
+             if xcopy[t] = '\' then go := True;
+
+             dec(t);
+           end;
+         end;
+     5 : SHGetFolderPath(0, $0028, 0, 0, @szPath[0]);
+     6 : SHGetFolderPath(0, $000D, 0, 0, @szPath[0]);
+     7 : SHGetFolderPath(0, $0027, 0, 0, @szPath[0]);
+     8 : SHGetFolderPath(0, $0005, 0, 0, @szPath[0]);
+     9 : SHGetFolderPath(0, $000E, 0, 0, @szPath[0]);
+    10 : begin
+           ShGetSpecialFolderPath(0, szPath, $0028, FALSE);
+
+           temp := szPath + '\xinorbis';
+         end;
+    11 : begin
+           ShGetSpecialFolderPath(0, szPath, CSIDL_PERSONAL, FALSE);
+
+           temp := szPath + '\MaximumOctopus\xinorbis';
+         end;
+  end;
+
+  if (xID <> 4) and (xID < 10) then
+    temp := SzPath;
+
+  Result := temp + '\';      */
+
     return L"to do";
+}
+
+
+bool WindowsUtility::ShowFilePropertiesDialog(HWND handle, const std::wstring file_name)
+{
+	const wchar_t* widecstr = file_name.c_str();
+
+	TShellExecuteInfo info;
+
+	info.cbSize       = sizeof(info);
+	info.fMask        = SEE_MASK_NOCLOSEPROCESS or SEE_MASK_INVOKEIDLIST or SEE_MASK_FLAG_NO_UI;
+	info.hwnd         = handle;
+	info.lpVerb       = L"properties";
+	info.lpFile       = widecstr;
+	info.lpParameters = NULL;
+	info.lpDirectory  = NULL;
+	info.nShow        = 0;
+	info.hInstApp     = 0;
+	info.lpIDList     = NULL;
+
+	return ShellExecuteEx(&info);
+}
+
+
+// based on code from here https://gist.github.com/0xF5T9/3f3203950f480d348aa6d99850a26016
+bool WindowsUtility::BrowseForFolder(std::vector<std::wstring> &paths, bool selectFolder, bool multiSelect)
+{
+    IFileOpenDialog *p_file_open = nullptr;
+	bool are_all_operation_success = false;
+    while (!are_all_operation_success)
+    {
+        HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+                                      IID_IFileOpenDialog, reinterpret_cast<void **>(&p_file_open));
+        if (FAILED(hr))
+            break;
+
+        if (selectFolder || multiSelect)
+        {
+            FILEOPENDIALOGOPTIONS options = 0;
+            hr = p_file_open->GetOptions(&options);
+            if (FAILED(hr))
+                break;
+
+            if (selectFolder)
+                options |= FOS_PICKFOLDERS;
+            if (multiSelect)
+                options |= FOS_ALLOWMULTISELECT;
+
+            hr = p_file_open->SetOptions(options);
+            if (FAILED(hr))
+                break;
+        }
+
+        hr = p_file_open->Show(NULL);
+        if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED)) // No items were selected.
+		{
+            are_all_operation_success = true;
+            break;
+        }
+        else if (FAILED(hr))
+            break;
+
+        IShellItemArray *p_items;
+        hr = p_file_open->GetResults(&p_items);
+        if (FAILED(hr))
+            break;
+        DWORD total_items = 0;
+        hr = p_items->GetCount(&total_items);
+        if (FAILED(hr))
+            break;
+
+        for (int i = 0; i < static_cast<int>(total_items); ++i)
+        {
+            IShellItem *p_item;
+            p_items->GetItemAt(i, &p_item);
+            if (SUCCEEDED(hr))
+            {
+                PWSTR path;
+                hr = p_item->GetDisplayName(SIGDN_FILESYSPATH, &path);
+                if (SUCCEEDED(hr))
+                {
+                    paths.push_back(path);
+                    CoTaskMemFree(path);
+                }
+                p_item->Release();
+            }
+        }
+
+        p_items->Release();
+        are_all_operation_success = true;
+    }
+
+    if (p_file_open)
+        p_file_open->Release();
+    return are_all_operation_success;
+}
+
+
+bool WindowsUtility::CopyAllFiles(const std::wstring PathFrom, const std::wstring PathTo)
+{
+	TSHFileOpStruct FOS;
+
+	ZeroMemory(&FOS, sizeof(FOS));
+
+	FOS.wFunc  = FO_COPY;
+	FOS.fFlags = FOF_ALLOWUNDO || FOF_SIMPLEPROGRESS;
+	FOS.pFrom  = (PathFrom + L"*.*\0").c_str();
+	FOS.pTo    = (PathTo + L"\0").c_str();
+
+	return (SHFileOperationW(&FOS) == 0);
+}
+
+
+bool WindowsUtility::MoveAllFiles(const std::wstring PathFrom, const std::wstring PathTo)
+{
+	TSHFileOpStruct FOS;
+
+	ZeroMemory(&FOS, sizeof(FOS));
+
+	FOS.wFunc  = FO_MOVE;
+	FOS.fFlags = FOF_ALLOWUNDO || FOF_SIMPLEPROGRESS;
+	FOS.pFrom  = (PathFrom + L"*.*\0").c_str();
+	FOS.pTo    = (PathTo + L"\0").c_str();
+
+	return (SHFileOperationW(&FOS) == 0);
 }
 
 
 bool WindowsUtility::SendToRecycleBin(const std::wstring file_name)
 {
-    return false;
+	const wchar_t* widecstr = file_name.c_str();
+
+	SHFILEOPSTRUCT fileOp;
+	fileOp.hwnd = NULL;
+	fileOp.wFunc = FO_DELETE;
+	fileOp.pFrom = widecstr;
+	fileOp.pTo = NULL;
+	fileOp.fFlags = FOF_ALLOWUNDO | FOF_NOERRORUI | FOF_NOCONFIRMATION | FOF_SILENT;
+
+	int result = SHFileOperation(&fileOp);
+
+	if (result == 0)
+	{
+		return true;
+	}
+
+	return false;
 }

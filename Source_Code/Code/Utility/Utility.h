@@ -31,10 +31,11 @@ namespace Utility
 	[[nodiscard]] std::wstring GetFileExtension(const std::wstring&);
 	[[nodiscard]] std::wstring ProcessFileName(const std::wstring &);
 	[[nodiscard]] std::wstring ReplaceString(const std::wstring, const std::wstring&, const std::wstring&);
-	[[nodiscard]] std::wstring SplitFilename(const std::wstring&);
+	[[nodiscard]] std::wstring SplitFileName(const std::wstring&);
 	[[nodiscard]] std::wstring WebFileLink(const std::wstring);
 
 	[[nodiscard]] std::wstring GetDefaultFileName(const std::wstring, const std::wstring);
+	std::wstring ReportFileName(const std::wstring);
 
 	[[nodiscard]] std::wstring BoolToString(bool);
 	[[nodiscard]] bool StringToBool(wchar_t);
@@ -45,4 +46,7 @@ namespace Utility
 	[[nodiscard]] bool IsTestCharacter(wchar_t);
 
 	[[nodiscard]] std::wstring LastFolder(const std::wstring&);
+
+	std::wstring GetSourceAsString(ScanSource);
+	ScanSource GetSourceFromInt(int source);
 }

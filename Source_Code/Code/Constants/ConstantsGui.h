@@ -30,7 +30,6 @@ static const int kMainMapPanelIndex         = 9;
 static const int kMainExploderPanelIndex    = 10;
 static const int kLogPanelIndex             = 99;
 
-
 static const int kDBSelectedFolder   = 0;
 
 static const int kFormFileSpread     = 1;
@@ -50,7 +49,6 @@ static const int kFormEditTextReport = 21;
 static const int kFormEditTreeReport = 22;
 static const int kFormEditXMLReport  = 23;
 static const int kFormEditCSVReport  = 24;
-
 
 static const int kTabIndexCategories    = 0;
 static const int kTabIndexTypes         = 1;
@@ -80,6 +78,40 @@ static const int kTabFHCompare          = 0;
 static const int kTabFHCompareDiff      = 1;
 static const int kTabFHCompareTree      = 2;
 
+static const int kTabDisplayOptionTree    = 2;
+static const int kTabDisplayOptionLengths = 3;
 
 static const int kWindowAnalysisProgress = 0;
 static const int kWindowZipProgress      = 1;
+
+static const int kReportIconOffStart = 9;
+
+// folder structure
+static const int kLeftOptions  = 0;
+static const int kRightOptions = 1;
+
+static const int ksgnIsFolder      = 0;
+static const int ksgnFileName      = 1;
+static const int ksgnStringSize    = 2;
+static const int ksgnGraphSize     = 3;
+static const int ksgnStringPCent   = 4;
+static const int ksgnCreatedDate   = 5;
+static const int ksgnAccessedDate  = 6;
+static const int ksgnModifiedDate  = 7;
+static const int ksgnUserName      = 8;
+static const int ksgnAttributes    = 9;
+static const int ksgnSizeOnDisk    = 10;
+static const int ksgnIntegerPCent  = 11;
+static const int ksgnFolderFile    = 12;
+static const int ksgnOrderIndex    = 13;
+static const int ksgnIntegerSize   = 14;
+static const int ksgnCategoryIndex = 15;
+static const int ksgnIntegetSoD    = 16;
+
+
+  //                                   glyph,column
+static const int TableColumnLookup[56] = { 2,3, 3,4, 4,5, 5,6,              	//  0-3  = search page
+										   1,3, 2,4, 3,5, 4,6, 5,7, 6, 2,   	//  4-9  = FH Compare Left
+										   1,3, 2,4, 3,5, 4,6, 5,7, 6, 2,   	// 10-15 = FH Compare Right
+										   1,5, 2,6, 3,7, 4,8, 5,9, 6, 10,   	// 16-21 = navigation left
+										   1,5, 2,6, 3,7, 4,8, 5,9, 6, 10  };	// 22-27 = navigation side

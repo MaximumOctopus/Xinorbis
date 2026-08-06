@@ -20,6 +20,17 @@
 
 namespace Formatting
 {
+	std::wstring TrimW(const std::wstring input)
+	{
+		std::wstring s = input;
+
+		s.erase(0,s.find_first_not_of(L" \n\r\t"));
+		s.erase(s.find_last_not_of(L" \n\r\t") + 1);
+
+		return s;
+	}
+
+
 	std::wstring AddLeading(std::wstring input, int length, char character)
 	{
 		if (input.length() == length)
@@ -81,8 +92,21 @@ namespace Formatting
 		}
 		else
 		{
-			return input; // to do (should trim)
+			return TrimW(input);
 		}
+	}
+
+
+	std::wstring StringOfChars(int count, wchar_t fill)
+	{
+		std::wstring output = L"";
+
+		for (int t = 0; t < count; t++)
+		{
+			output += fill;
+		}
+
+		return output;
 	}
 
 

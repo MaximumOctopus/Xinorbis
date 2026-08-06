@@ -17,6 +17,17 @@
 #include "ChartOptions.h"
 
 
+static const int ksmsValue             = 0;
+static const int ksmsPercent           = 1;
+static const int ksmsLabel             = 2;
+static const int ksmsLabelPercent      = 3;
+static const int ksmsLabelValue        = 4;
+static const int ksmsLegend            = 5;
+static const int ksmsPercentTotal      = 6;
+static const int ksmsLabelPercentTotal = 7;
+static const int ksmsXValue            = 8;
+
+
 namespace ChartUtility
 {
 	void SetAdvancedOptions(TChart*, ChartOptions);
@@ -28,6 +39,9 @@ namespace ChartUtility
 	void ChangeChartToHorizontalBar(TChart*, bool);
 
 	ChartType GetChartType(TChart *);
+	int GetChartTypeInt(TChart *);
 
-    void CopyChartToClipboard(TChart*);
+	TSeriesMarksStyle IntegerToSeriesMarksStyle(int);
+
+	void CopyChartToClipboard(TChart*);
 }

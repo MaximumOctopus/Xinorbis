@@ -12,12 +12,17 @@
 
 #pragma once
 
+#include <Vcl.Buttons.hpp>
 #include <Vcl.Grids.hpp>
 
 
 namespace GridUtility
 {
-	void CopyGridToClipboard(int, TStringGrid*);
+	void ToggleColumn(TStringGrid*, TSpeedButton*, int, int, int);
+
+	void Clear(TStringGrid*, bool);
+
+	void CopyGridToClipboard(TStringGrid*, int);
 
 	void SaveGrid(TStringGrid*, const std::wstring);
 }

@@ -17,9 +17,13 @@
 
 namespace Formatting
 {
+	std::wstring TrimW(const std::wstring);
+
 	[[nodiscard]] std::wstring AddLeading(std::wstring, int, char);
 	[[nodiscard]] std::wstring AddLeadingSpace(std::wstring, int);
 	[[nodiscard]] std::wstring AddTrailing(std::wstring, int, char);
+
+	std::wstring StringOfChars(int, wchar_t);
 
 	[[nodiscard]] std::wstring AffixFileExtension(const std::wstring, const std::wstring);
 

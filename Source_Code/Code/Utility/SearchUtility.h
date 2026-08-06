@@ -31,14 +31,11 @@ namespace SearchUtility
 	void ProcessExcludeFolder(SearchCriteriaObject&, std::wstring);
 	void ProcessIncludeFolder(SearchCriteriaObject&, std::wstring);
 
-	void IntegerValueHelper(SearchCriteriaObject&, std::wstring, int, int, SearchType);
+	void IntegerValueHelper(SearchCriteriaObject&, std::wstring, int, SearchType);
 
 	[[nodiscard]] SearchCriteriaObject ProcessSearchTerm(const std::wstring);
 
 	std::wstring GetSearchText(int);
 	std::wstring GetSearchAttribute(int);
 	std::wstring GetSearchSize(int, int, int, int);
-
-	std::wstring XinorbisSearchToSQL(const std::wstring, const std::wstring, const std::wstring, const std::wstring, int, int, bool);
-	std::wstring XinorbisSearchAllToSQL(const std::wstring, const std::wstring, const std::wstring, bool);
 }

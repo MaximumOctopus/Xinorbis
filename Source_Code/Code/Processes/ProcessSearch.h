@@ -33,5 +33,5 @@ public:
 
 	ProcessSearch();
 
-    int Filter(Command);
+    int Execute(Command);
 };

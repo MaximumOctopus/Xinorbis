@@ -12,10 +12,10 @@
 
 #pragma once
 
-#include <Vcl.Buttons.hpp>
+#include <vector>
 
 
-namespace GuiUtility
+namespace FileIO
 {
-	void SetButtonImageEnabled(TSpeedButton*, int, bool);
+	bool LoadIntoVector(std::vector<std::wstring>*, const std::wstring);
 }

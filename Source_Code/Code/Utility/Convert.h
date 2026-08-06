@@ -27,6 +27,8 @@ namespace Convert
 	[[nodiscard]] std::wstring DoubleToPercent(double);
 	[[nodiscard]] std::wstring GetSizeString(int, unsigned __int64);
 
+	std::wstring ConvertUsefulUnitToString(const std::wstring);
+
 	[[nodiscard]] std::wstring BoolToString(bool);
 	[[nodiscord]] int BoolToInteger(bool);
 
@@ -54,4 +56,8 @@ namespace Convert
 	[[nodiscard]] std::wstring ToReportFileName(const std::wstring);
 
 	std::wstring CreateTableName(const std::wstring, const std::wstring, const std::wstring);
+
+    std::wstring LowerCase(const std::wstring);
+
+    std::wstring ToWstring(const std::string);
 };

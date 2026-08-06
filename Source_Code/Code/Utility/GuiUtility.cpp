@@ -13,4 +13,16 @@
 #include "GuiUtility.h"
 
 
+void GuiUtility::SetButtonImageEnabled(TSpeedButton *button, int start_offset, bool enabled)
+{
+	if (enabled)
+	{
+		button->ImageIndex = button->Tag;
+	}
+	else
+	{
+		button->ImageIndex = button->Tag + start_offset;
+	}
 
+	button->Enabled = enabled;
+}

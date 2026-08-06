@@ -418,7 +418,7 @@ namespace Utility
 	}
 
 
-    std::wstring SplitFilename(const std::wstring &str)
+    std::wstring SplitFileName(const std::wstring &str)
     {
 		size_t found;
 
@@ -433,6 +433,18 @@ namespace Utility
 		std::wstring file_name = prefix + L"_" + std::to_wstring(Convert::DateToYYYYMMDDI(Now())) + L"_" + Convert::TimeToString(Now(), false) + extension;
 
 		return Convert::ToReportFileName(file_name);
+	}
+
+
+	std::wstring ReportFileName(const std::wstring file_name)
+	{
+		std::wstring nfn = file_name;
+
+		std::transform(nfn.begin(), nfn.end(), nfn.begin(), ::tolower);
+
+		ReplaceString(nfn, L" ", L"_");
+
+		return nfn;
 	}
 
 
@@ -519,5 +531,57 @@ namespace Utility
 		std::replace(wfl.begin(), wfl.end(), '\\', '/');
 
 		return L"file:///" + wfl;
+	}
+
+
+	std::wstring GetSourceAsString(ScanSource ss)
+	{
+		switch (ss)
+		{
+		case ScanSource::LiveScan:
+			return L"Live scan";
+		case ScanSource::FileXinorbisNormal:
+			return L"Xinorbis report (v1) normal data";
+		case ScanSource::FileXinorbisDetailed:
+			return L"Xinorbis report (v1) detailed data";
+		case ScanSource::FileXinorbis2Detailed:
+			return L"Xinorbis report (v2) detailed data";
+		case ScanSource::FileCSV:
+			return L"CSV report";
+		case ScanSource::LiveShare:
+			return L"Live scan (shared drive)";
+		case ScanSource::FolderHistory:
+			return L"Folder History";
+		case ScanSource::SearchResults:
+			return L"Search results";
+		}
+
+		return L"Unknown data source";
+	}
+
+
+	ScanSource GetSourceFromInt(int source)
+	{
+		switch (source)
+		{
+		case kScanSourceLive:
+			return ScanSource::LiveScan;
+		case kScanSourceFileXinNormal:
+			return ScanSource::FileXinorbisNormal;
+		case kScanSourceFileCSV:
+			return ScanSource::FileCSV;
+		case kScanSourceFileXinDetailed:
+			return ScanSource::FileXinorbisDetailed;
+		case kScanSourceLiveShare:
+			return ScanSource::LiveShare;
+		case kScanSourceFolderHistory:
+			return ScanSource::FolderHistory;
+		case kScanSourceSearchResults:
+			return ScanSource::SearchResults;
+		case kScanSourceFileXin2Detailed:
+			return ScanSource::FileXinorbis2Detailed;
+		}
+
+		return ScanSource::None;
 	}
 }

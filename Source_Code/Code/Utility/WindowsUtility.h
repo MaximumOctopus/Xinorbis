@@ -44,7 +44,13 @@ namespace WindowsUtility
 
 	void ExecuteFile(const std::wstring, const std::wstring);
 
-    std::wstring GetSpecialFolder(int);
+	std::wstring GetSpecialFolder(int);
+
+	bool ShowFilePropertiesDialog(HWND, const std::wstring);
+	bool BrowseForFolder(std::vector<std::wstring> &, bool, bool);
+
+	bool CopyAllFiles(const std::wstring, const std::wstring);
+	bool MoveAllFiles(const std::wstring, const std::wstring);
 
 	bool SendToRecycleBin(const std::wstring);
 }

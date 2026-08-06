@@ -26,12 +26,14 @@ ProcessSearch::ProcessSearch()
 }
 
 
-int ProcessSearch::Filter(Command command)
+int ProcessSearch::Execute(Command command)
 {
 	std::wstring UserSearchTerms(command.secondary);
 
 	DataSource = command.Source;
 	DataTarget = command.Target;
+
+    GScanEngine->Data[DataTarget].Clear();
 
 	bool CategorySearchFound = false;
 	bool UserSearchFound = false;
@@ -75,7 +77,7 @@ int ProcessSearch::Filter(Command command)
 
 		for (int i = 0; i < s.length(); i++)
 		{
-			if (s[i] == L'"')
+			if (s[i] == L'\"')
 			{
 				// do nothing
 			}
@@ -112,7 +114,7 @@ int ProcessSearch::Filter(Command command)
 
 	for (int i = 0; i < UserSearchTerms.length(); i++)
 	{
-		if (UserSearchTerms[i] == L'"')
+		if (UserSearchTerms[i] == L'\"')
 		{
 			reading = !reading;
 
@@ -120,7 +122,7 @@ int ProcessSearch::Filter(Command command)
 
 			if (AddThisKeyword(s))
 			{
-				SearchTerms.push_back(L'"' + s + L'"');
+				SearchTerms.push_back(L'\"' + s + L'\"');
 			}
 
 			s.clear();
@@ -252,7 +254,7 @@ int ProcessSearch::Filter(Command command)
 			// search for each search term -------------------------------------------
 			for (int x = 0; x < SearchTerms.size(); x++)
 			{
-				if (SearchTerms[x][0] == '"')  // this is an AND search...
+				if (SearchTerms[x][0] == L'\"')  // this is an AND search...
 				{
 					ProcessQuickTerms(SearchTerms[x]);
 
@@ -264,7 +266,7 @@ int ProcessSearch::Filter(Command command)
 
 						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
-						if (term.find(filename) != std::wstring::npos)
+						if (filename.find(term) != std::wstring::npos)
 						{
 							if (std::find(FoundTerms.begin(), FoundTerms.end(), term) != FoundTerms.end())
 							{
@@ -286,24 +288,23 @@ int ProcessSearch::Filter(Command command)
 					{
 						if (!(file->Attributes & FILE_ATTRIBUTE_DIRECTORY))
 						{
-							std::wstring filename(file->Name);
+							std::wstring filename(file->FullPath);
 							std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
 							if (z == 0)
 							{
 								std::wstring parameter(SearchTerms[x].substr(1));
 
-								if (parameter.find(filename) == filename.length() - SearchTerms[x].length() + 2) // to do check!
-
+								if (filename.find(parameter) == filename.size() - SearchTerms[x].size() + 2) // to do check!
 								{
 									Found = true;
 								}
 							}
-							else if (z == SearchTerms[x].length() - 1)
+							else if (z == SearchTerms[x].size() - 1)
 							{
-								std::wstring parameter(SearchTerms[x].substr(0, SearchTerms[x].length() - 1));
+								std::wstring parameter(SearchTerms[x].substr(0, SearchTerms[x].size() - 1));
 
-								if (parameter.find(filename) == 0) // to do check!
+								if (filename.find(parameter) != std::wstring::npos)
 								{
 									Found = true;
 								}
@@ -315,7 +316,7 @@ int ProcessSearch::Filter(Command command)
 						std::wstring filename(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name);
 						std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
-						if (SearchTerms[x].find(filename) != std::wstring::npos)
+						if (filename.find(SearchTerms[x]) != std::wstring::npos)
 						{
 							Found = true;
 						}

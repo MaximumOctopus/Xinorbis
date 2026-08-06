@@ -78,25 +78,25 @@ std::wstring Convert::ConvertToUsefulUnit(unsigned __int64 value)
 	{
 		double size = (double)value / (double)1024;
 
-		return L"TO DO";//std::format(L"{0:.2f}KB", size);
+		return FloatToStrF(size, ffFixed, 7, 2).c_str();
 	}
 	else if (value < 1073741824)
 	{
 		double size = (double)value / (double)1048576;
 
-		return L"TO DO";//std::format(L"{0:.2f}MB", size);
+		return FloatToStrF(size, ffFixed, 7, 2).c_str();
 	}
 	else if (value < 1099511627776)
 	{
 		double size = (double)value / (double)1073741824;
 
-		return L"TO DO";//std::format(L"{0:.2f}GB", size);
+		return FloatToStrF(size, ffFixed, 7, 2).c_str();
 	}
 	else
 	{
 		double size = (double)value / (double)1099511627776;
 
-		return L"TO DO";//std::format(L"{0:.2f}TB", size);
+		return FloatToStrF(size, ffFixed, 7, 2).c_str();
 	}
 }
 
@@ -207,6 +207,12 @@ unsigned __int64 Convert::ConvertUsefulUnitToInteger(const std::wstring input)
 }
 
 
+std::wstring Convert::ConvertUsefulUnitToString(const std::wstring s)
+{
+	return std::to_wstring(ConvertUsefulUnitToInteger(s));
+}
+
+
 int Convert::DateFromAnyFormatToYYYYMMDD(std::wstring input)
 {
 	int output = 0;
@@ -293,7 +299,7 @@ int Convert::DateFromAnyFormatToYYYYMMDD(std::wstring input)
 
 	if (input.find(L"*") == 2)             // dd/mm/yyyy
 	{
-		if (false) // to do XSettings.General.DateFormat = CDateFormatSlashMMDDYYYY)  // assume the user is entering in mm/dd/yyyy
+		if (GSettingsHandler->General.FormatDate == DateFormat::kSlashMMDDYYYY)  // assume the user is entering in mm/dd/yyyy
 		{
 			std::wstring mmddyyyy = input.substr(6, 4) + input.substr(0, 2) + input.substr(3, 2);
 
@@ -403,7 +409,7 @@ std::wstring Convert::DoubleToPercent(double value)
 			return L">99%";
 		}
 		
-		return L"to do";//std::format(L"{0:.2f}%", value * 100);
+		return FloatToStrF(value * 100, ffFixed, 7, 2).c_str();
 	}
 
 	return L"0%";
@@ -459,11 +465,11 @@ std::wstring Convert::GetSizeString(int units, unsigned __int64 size)
 		case 1:
 			return std::to_wstring(size);
 		case 2:
-			return L"to do";//std::format(L"{0:.2f}KB", (double)size / 1024);
+			return FloatToStrF((double)size / 1024, ffFixed, 7, 2).c_str();
 		case 3:
-			return L"to do";//std::format(L"{0:.2f}MB", (double)size / 1048576);
+			return FloatToStrF((double)size / 1048576, ffFixed, 7, 2).c_str();
 		case 4:
-			return L"to do";//std::format(L"{0:.2f}GB", (double)size / 1073741824);
+			return FloatToStrF((double)size / 1073741824, ffFixed, 7, 2).c_str();
 			
 		default:
 			return ConvertToUsefulUnit(size);
@@ -491,6 +497,8 @@ std::wstring Convert::IntDateToString(int dx)
 		return day + L"-" + month + L"-" + year;   // dd-mm-yyyy
 	case DateFormat::kHyphenMMDDYYYY:
 		return month + L"-" + day + L"-" + year;   // mm-dd-yyyy
+	case DateFormat::kYYYYMMDD:
+        return year + month + day;
 	}
 
 	return L"01/01/1990";
@@ -644,4 +652,23 @@ std::wstring Convert::CreateTableName(const std::wstring ScanDate, const std::ws
 	delete[] y;
 
 	return MD5;
+}
+
+
+std::wstring Convert::LowerCase(const std::wstring input)
+{
+	std::wstring output = input;
+
+	std::transform(output.begin(), output.end(), output.begin(), ::tolower);
+
+	return output;
+}
+
+
+std::wstring Convert::ToWstring(const std::string input)
+{
+	std::wstring ws(input.size(), L' '); // Overestimate number of code points.
+	ws.resize(std::mbstowcs(&ws[0], input.c_str(), input.size())); // Shrink to fit.
+
+	return ws;
 }
