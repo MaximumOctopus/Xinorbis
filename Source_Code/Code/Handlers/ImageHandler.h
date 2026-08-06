@@ -12,14 +12,15 @@
 
 #pragma once
 
+#include <Vcl.Buttons.hpp>
 #include <vector>
 
 
 class ImageHandler
 {
-	std::wstring FlagFiles[11] = { L"UK\flag.bmp", L"FR\flag.bmp", L"DE\flag.bmp", L"ES\flag.bmp",
-								   L"IT\flag.bmp", L"NL\flag.bmp", L"HU\flag.bmp", L"US\flag.bmp",
-								   L"CAT\flag.bmp", L"RU\flag.bmp", L"CZ\flag.bmp" };
+	std::wstring FlagFiles[11] = { L"UK\\flag.bmp", L"FR\\flag.bmp", L"DE\\flag.bmp", L"ES\\flag.bmp",
+								   L"IT\\flag.bmp", L"NL\\flag.bmp", L"HU\\flag.bmp", L"US\\flag.bmp",
+								   L"CAT\\flag.bmp", L"RU\\flag.bmp", L"CZ\\flag.bmp" };
 
 	std::vector<TBitmap*> ImagesOn;
 	std::vector<TBitmap*> ImagesOff;
@@ -33,4 +34,14 @@ public:
 	std::vector<TBitmap*> Flags;
 
 	ImageHandler(const std::wstring);
+	~ImageHandler();
+
+	void SetButtonOnImage(TSpeedButton*, int);
+	void SetButtonOffImage(TSpeedButton*, int);
+
+//	void SetButtonImageEnabled(mrbutton : TW7ToolButton; aOffStart : integer; aEnabled : boolean);
+
+	void SetFolderHistoryButtonImage(TSpeedButton*, int);
+
+	void SetPieBarImages(TSpeedButton*, TSpeedButton*);
 };

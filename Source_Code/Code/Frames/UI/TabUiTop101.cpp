@@ -11,6 +11,7 @@
 // =====================================================================
 
 #include "Convert.h"
+#include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "ScanEngine.h"
 #include "TabUiTop101.h"
@@ -23,24 +24,21 @@ std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int
 {
 	if (GScanEngine->Data[DataSource].FileCount == 0) return L"n/a";
 
-//	if XSettings.Forms.ProgressForm <> Nil then
-//      XSettings.Forms.ProgressForm.SetProcessText(XText[kBuilding] + ' ' + XText[kTop101]);
-
 	switch (date_type)
 	{
-	case 0:
-		GScanEngine->Data[DataSource].SortByProperty(0);
+	case kCreatedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 		break;
-	case 1:
-		GScanEngine->Data[DataSource].SortByProperty(1);
+	case kAccessedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 		break;
-	case 2:
-		GScanEngine->Data[DataSource].SortByProperty(2);
+	case kModifiedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 		break;
 	}
 
-//	TGridUtility.ClearStringGird(gridbig, False);
-//	TGridUtility.ClearStringGird(oTopSmall, False);
+	GridUtility::Clear(gridbig, false);
+	GridUtility::Clear(gridsmall, false);
 
 	gridbig->BeginUpdate();
 	gridsmall->BeginUpdate();
@@ -106,7 +104,7 @@ std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int
 	added_count = 0;
 	index = 0;
 
-	while (index < GScanEngine->Data[DataSource].Files.size() && added_count <= 100)
+	while (index < GScanEngine->Data[DataSource].Files.size() && added_count <= 101)
 	{
 		if (!(faDirectory & GScanEngine->Data[DataSource].Files[index]->Attributes))
 		{
@@ -166,10 +164,10 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, int
 //	if XSettings.Forms.ProgressForm <> Nil then
 //	  XSettings.Forms.ProgressForm.SetProcessText(XText[kBuilding] + ' ' + XText[kTop101]);
 
-	// to do GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileSizes));
+	GScanEngine->Data[DataSource].SortByProperty(SortMode::kSize);
 
-//	TGridUtility.ClearStringGird(gridbig, False);
-//	TGridUtility.ClearStringGird(oTableSmall, False);
+	GridUtility::Clear(gridbig, false);
+	GridUtility::Clear(gridsmall, false);
 
 	gridbig->BeginUpdate();
 	gridsmall->BeginUpdate();
@@ -179,7 +177,7 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, int
 	int index = GScanEngine->Data[DataSource].Files.size() - 1;
 	unsigned __int64 TopSize = 0;
 
-	while (index >= 0 && added_count <= 100)
+	while (index >= 0 && added_count <= 101)
 	{
 		bool CanAdd = false;
 
@@ -216,33 +214,24 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, int
 
 	gridbig->RowCount--;
 
-	/*oCapacityBar.Items.Clear;
+	/*icecream->Clear();
 
 	if (GScanEngine->Data[DataSource].TotalSize != 0 && GScanEngine->Data[DataSource].Count != 0)
 	{
-	  Result := IntToStr(oTableBig.RowCount - 1) + ' ' +
-						 XText[kFiles] + ' (' +
-						 TConvert.RealToPercent((oTableBig.RowCount - 1) /GScanDetails[aDataIndex].FileCount) + '), ' +
-						 TConvert.ConvertToUsefulUnit(TopSize) + ' (' + TConvert.RealToPercent(TopSize / GScanDetails[aDataIndex].TotalSize) + ')';
+		icecream->Begin();
 
-	  lCapacityItem             := oCapacityBar.Items.Add;
-	  lCapacityItem.Value       := (TopSize /GScanDetails[aDataIndex].TotalSize * 100);
-	  lCapacityItem.Color       := $00FF8822;
-	  lCapacityItem.ColorTo     := $00FF8822;
-	  lCapacityItem.DisplayName := 'Top 101';
-	  lCapacityItem.Description := 'Top 101';
-	  lCapacityItem.Hint        := 'Top 101  (' + TConvert.ConvertToUsefulUnit(TopSize) + ')';
+		icecream->Add((TopSize /GScanDetails[aDataIndex].TotalSize * 100),
+					  L"Top 101",
+					  L"Top 101  (" + Convert::ConvertToUsefulUnit(TopSize) + L")",
+					  0x00FF8822);
 
-	  lCapacityItem             := oCapacityBar.Items.Add;
-	  lCapacityItem.Value       := 100 - ((TopSize /GScanDetails[aDataIndex].TotalSize * 100));
-	  lCapacityItem.Color       := $00AAAAAA;
-	  lCapacityItem.ColorTo     := $00AAAAAA;
-	  lCapacityItem.DisplayName := 'Others';
-	  lCapacityItem.Description := 'Others';
-	  lCapacityItem.Hint        := 'Others  (' + TConvert.ConvertToUsefulUnit(TopSize -GScanEngine[aDataIndex].TotalSize) + ')';
-	end
-	else
-	  Result := IntToStr(oTableBig.RowCount - 1) + ' ' + XText[kFiles] + ' (100%), ' + TConvert.ConvertToUsefulUnit(TopSize) + ' (100%)'; */
+		icecream->Add(100 - ((TopSize /GScanDetails[aDataIndex].TotalSize * 100)),
+					  L"Others",
+					  L"Others  (" + Convert::ConvertToUsefulUnit(TopSize - GScanEngine->Data[DataSource].TotalSize) + L")",
+					  0x00AAAAAA);
+
+	  icecream->End();
+	}*/
 
 	// == build top list of smallest files =======================================
 	added_count = 0;

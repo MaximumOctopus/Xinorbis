@@ -224,6 +224,8 @@ void LanguageHandler::InitReportText()
 	SummaryReport[13] = Text[kSummReport14] + L" ";
 	SummaryReport[14] = Text[kSummReport15] + L" ";
 
+    SummaryReportZeroLength = SummaryReport[0].size();
+
 	DriveReport[0]  = Text[kDriveReport1]  + L" ";
 	DriveReport[1]  = Text[kDriveReport2]  + L" ";
 	DriveReport[2]  = Text[kDriveReport3]  + L" ";

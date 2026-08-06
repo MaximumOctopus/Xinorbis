@@ -25,6 +25,8 @@
 #include "ReportCSVOptions.h"
 #include "ReportDateOptions.h"
 #include "ReportHTMLOptions.h"
+#include "ReportJSONOptions.h"
+#include "ReportSummaryOptions.h"
 #include "ReportTextOptions.h"
 #include "ReportTreeOptions.h"
 #include "ReportXinorbisOptions.h"
@@ -46,6 +48,10 @@ struct CustomSettings
 struct DatabaseSettings
 {
 	bool Enabled = false;
+
+	bool FolderHistoryEnabled = false;
+
+	bool Privacy = false;
 
 	bool UseODBC = false;
 };
@@ -104,18 +110,30 @@ struct OptimisationSettings
 };
 
 
+struct NavigationOptions
+{
+	int BarColours[6];
+	std::wstring Display[2] = { L"11111111111111111111", L"11111111111111111111" };
+};
+
+
 struct ReportSettings
 {
-	std::wstring CSVOutput = L"";
-	std::wstring HTMLOutput = L"";
-	std::wstring SummaryLayout = L"";
-	std::wstring TextOutput = L"";
-	std::wstring TreeOutput = L"";
-	std::wstring XMLOutput = L"";
+	std::wstring CSVCommand = L"";
+	std::wstring DateCommand = L"";
+	std::wstring HTMLCommand = L"";
+	std::wstring JSONCommand = L"";
+	std::wstring SummaryCommand = L"";
+	std::wstring TextCommand = L"";
+	std::wstring TreeCommand = L"";
+	std::wstring XinorbisCommand = L"";
+	std::wstring XMLCommand = L"";
 
 	CSVReportOptions CSV[kReportTypeCount];
 	DateReportOptions Date[kReportTypeCount];
 	HTMLReportOptions HTML[kReportTypeCount];
+	JSONReportOptions JSON[kReportTypeCount];
+    SummaryReportOptions Summary;
 	TextReportOptions Text[kReportTypeCount];
 	TreeReportOptions Tree[kReportTypeCount];
 	XinorbisReportOptions Xinorbis[kReportTypeCount];
@@ -123,7 +141,7 @@ struct ReportSettings
 
 	bool AutoSaveMode = false;
 	bool AutoSaveOrganise = false;
-	bool AutoSaveItem[6];
+	bool AutoSaveItem[8];
 };
 
 
@@ -161,14 +179,23 @@ struct TabInternalOptions
 	int TreeViewChartIndex = 0;
 };
 
+
+// cache, then save when exit
+struct StateOptions
+{
+	std::wstring LastScanPath = L"";
+
+	std::wstring DataPath = L"";
+};
+
+
 class SettingsHandler
 {
     HKEY hKey;
 
 	Ini* __iniFile;
 
-	bool OpenSettings(bool);
-	bool CloseSettings();
+	void SetupFormat();
 
     bool ClearFormDetails(int);
 
@@ -178,16 +205,9 @@ class SettingsHandler
 
 	int LanguageToInt(LanguageType);
 
-	std::wstring ReadString(const std::wstring, const std::wstring, std::wstring);
-	int ReadInteger(const std::wstring, const std::wstring, int, int);
-	int ReadIntegerInputCheck(const std::wstring, const std::wstring, int, int, int);
-	bool ReadBool(const std::wstring, const std::wstring, bool);
-
-	void WriteString(const std::wstring, const std::wstring, std::wstring);
-	void WriteInteger(const std::wstring, const std::wstring, int);
-	void WriteBool(const std::wstring, const std::wstring, bool);
-
 public:
+
+	TFormatSettings XinorbisFormat;
 
 	ChartOptions Chart;
 	TabDisplayOptions TabDisplay[4];
@@ -199,9 +219,11 @@ public:
     HistorySettings History;
 	GeneralSettings General;
 	OptimisationSettings Optimisations;
+    NavigationOptions Navigation;
 	ReportSettings Reports;
 	SystemSettings System;
 	FTPSettings FTP;
+	StateOptions State;
 
 	int ProgressPercentage = 10;
 	int ProgressFileCount = 10000;
@@ -220,4 +242,16 @@ public:
 	bool SaveDefaults();
 
 	SettingsHandler();
+
+	bool OpenSettings(bool);
+	bool CloseSettings();
+
+	std::wstring ReadString(const std::wstring, const std::wstring, std::wstring);
+	int ReadInteger(const std::wstring, const std::wstring, int, int);
+	int ReadIntegerInputCheck(const std::wstring, const std::wstring, int, int, int);
+	bool ReadBool(const std::wstring, const std::wstring, bool);
+
+	void WriteString(const std::wstring, const std::wstring, std::wstring);
+	void WriteInteger(const std::wstring, const std::wstring, int);
+	void WriteBool(const std::wstring, const std::wstring, bool);
 };

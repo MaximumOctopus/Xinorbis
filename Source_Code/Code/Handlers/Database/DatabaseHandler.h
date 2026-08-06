@@ -12,16 +12,8 @@
 
 #pragma once
 
-#include <VCLTee.Chart.hpp>
-#include <Vcl.Grids.hpp>
 
-
-namespace TabUiTypes
+class DatabaseHandler
 {
-	void Chart(TChart*, int, int);
-
-	void List(TStringGrid*, int);
-
-	void Tree(TTreeView*, int, int);
-	int TreePost(TTreeView* view);
-}
+public:
+};

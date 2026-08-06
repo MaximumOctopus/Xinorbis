@@ -15,10 +15,12 @@
 #include <VCLTee.Chart.hpp>
 #include <Vcl.Grids.hpp>
 
+#include "XIceCream.h"
+
 
 namespace TabUiDates
 {
 	void Chart(TTreeView*, TChart*);
 
-	void Tree(TTreeView* tree, int, int, int, bool, bool);
+	void Tree(TTreeView*, XIceCream*, int, int, int, bool, bool);
 }

@@ -3,6 +3,7 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include "ConstantsGui.h"
 #include "ConstantsReports.h"
 
 #include "XFrameSearch.h"
@@ -10,8 +11,13 @@
 #include "XFormGetCopyMove.h"
 #include "XFormXinorbisDialog.h"
 
+#include "FileExtensionHandler.h"
+#include "GridUtility.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
+#include "Log.h"
+#include "ReportHandler.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
@@ -20,7 +26,10 @@
 #include "Utility.h"
 #include "WindowsUtility.h"
 
+extern FileExtensionHandler *GFileExtensionHandler;
+extern Log *GLog;
 extern LanguageHandler *GLanguageHandler;
+extern ReportHandler *GReportHandler;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SplashHandler *GSplashHandler;
@@ -40,105 +49,107 @@ __fastcall TFrameSearch::TFrameSearch(TComponent* Owner)
 
 void __fastcall TFrameSearch::FrameResize(TObject *Sender)
 {
-//	int i = 0;
-//
-//	for t := 1 to 12 do begin
-//	if not(sgSearchResults.IsHiddenColumn(t)) then
-//	  inc(i, sgSearchResults.ColWidths[t]);
-// end;
+	int total = 0;
 
-//	sgSearchResults->ColWidths[0] = sgSearchResults->Width - (i + __WidthOfScrollbar);
+	for (int t = 1; t < 13; t++)
+	{
+		if (sgSearchResults->ColWidths[t] != -1)
+		{
+			total += sgSearchResults->ColWidths[t];
+		}
+	}
+
+	sgSearchResults->ColWidths[0] = sgSearchResults->Width - (total + __WidthOfScrollbar);
 }
 
 
 void TFrameSearch::Init()
 {
- /*	FSearchDataChanged = False;
+ /*	SearchDataChanged = False;
 
 	GScanEngine[dataSearch].ScanPath = GLanguageHandler->Text[kSearch];
 
-	tsSearch.Caption   = GLanguageHandler->Text[kSearch];
-
-	tsProperties.Caption     = GLanguageHandler->Text[kDetail];
-	tsDuplicatesName.Caption = GLanguageHandler->Text[kDuplicatesName];
-	tsDuplicatesSize.Caption = GLanguageHandler->Text[kDuplicatesSize];
-
-	sgDuplicatesName.HideColumn(2);
-	sgDuplicatesName->Cells[0, 0]   = GLanguageHandler->Text[kFilePath];
-	sgDuplicatesName->Cells[1, 0]   = GLanguageHandler->Text[kSize];
-
-	sgDuplicatesSize.HideColumn(2);
-	sgDuplicatesSize->Cells[0, 0]   = GLanguageHandler->Text[kFilePath];
-	sgDuplicatesSize->Cells[1, 0]   = GLanguageHandler->Text[kSize];
-
 	lSearchDetails.Caption = GLanguageHandler->Text[kSearchResults];
-
-	miExploreDirectory.Caption     = GLanguageHandler->Text[kExploreFolder];
 
 	lPSearchSize.Caption = GLanguageHandler->Text[kBySize];
 
 	lPSearchQuantity.Caption   = GLanguageHandler->Text[kByQuantity];
+*/
+	tsSearch->Caption = GLanguageHandler->Text[kSearch].c_str();
+	tsProperties->Caption = GLanguageHandler->Text[kDetail].c_str();
 
-	cbSearchShowPath.Caption   = GLanguageHandler->Text[kShowFullPath];
-	cbSearchColourCode.Caption = GLanguageHandler->Text[kColourCode];
+	sgSearchResults->DefaultRowHeight  = GSettingsHandler->Appearance.RowHeight;
 
-	sgSearchResults.DefaultRowHeight  = GSettingsHandler->General.RowHeight;
+	sgSearchResults->Cells[kschVFileName][0]   = GLanguageHandler->Text[kFileName].c_str();
+	sgSearchResults->Cells[kschVSize][0]       = GLanguageHandler->Text[kSize].c_str();
+	sgSearchResults->Cells[kschVCDate][0]      = GLanguageHandler->Text[kDate].c_str();
 
-	sgSearchResults->Cells[schVFilename, 0]   = GLanguageHandler->Text[kFileName];
-	sgSearchResults->Cells[schVSize, 0]       = GLanguageHandler->Text[kSize];
-	sgSearchResults->Cells[schVCDate, 0]      = GLanguageHandler->Text[kDate];
+	sgSearchResults->Cells[kschVADate][0]      = GLanguageHandler->Text[kAccessed].c_str();
+	sgSearchResults->Cells[kschVMDate][0]      = GLanguageHandler->Text[kModified].c_str();
+	sgSearchResults->Cells[kschVOwner][0]      = GLanguageHandler->Text[kFileOwner].c_str();
+	sgSearchResults->Cells[kschVAttributes][0] = GLanguageHandler->Text[kAttr].c_str();
 
-	sgSearchResults->Cells[schVADate, 0]      = GLanguageHandler->Text[kAccessed];
-	sgSearchResults->Cells[schVMDate, 0]      = GLanguageHandler->Text[kModified];
-	sgSearchResults->Cells[schVOwner, 0]      = GLanguageHandler->Text[kFileOwner];
-	sgSearchResults->Cells[schVAttributes, 0] = GLanguageHandler->Text[kAttr];
+	sgSearchResults->ColWidths[kschVADate] = -1;
+	sgSearchResults->ColWidths[kschVMDate] = -1;
+	sgSearchResults->ColWidths[kschVAttributes] = -1;
+	sgSearchResults->ColWidths[kschVOwner] = -1;
+	sgSearchResults->ColWidths[kschIFileName] = -1;
+	sgSearchResults->ColWidths[kschISize] = -1;
+	sgSearchResults->ColWidths[kschICDate] = -1;
+	sgSearchResults->ColWidths[kschIADate] = -1;
+	sgSearchResults->ColWidths[kschIMDate] = -1;
+	sgSearchResults->ColWidths[kschIColour] = -1;
 
-	sgSearchResults.HideColumn(kschVADate);
-	sgSearchResults.HideColumn(kschVMDate);
-	sgSearchResults.HideColumn(kschVAttributes);
-	sgSearchResults.HideColumn(kschVOwner);
-	sgSearchResults.HideColumn(kschIFilename);
-	sgSearchResults.HideColumn(kschISize);
-	sgSearchResults.HideColumn(kschICDate);
-	sgSearchResults.HideColumn(kschIADate);
-	sgSearchResults.HideColumn(kschIMDate);
-	sgSearchResults.HideColumn(kschIColour);
-
-	// ===========================================================================================
-
-	miSearchOpen.Caption       = GLanguageHandler->Text[kViewOpenFile];
-	miSearchOpenCustom.Caption = GLanguageHandler->Text[kOpenWithCustomViewer];
-	miExploreDirectory.Caption = GLanguageHandler->Text[kExploreFolder];
-	miSFileProperties.Caption  = GLanguageHandler->Text[kFileProperties];
-	miGenerateMD5.Caption      = GLanguageHandler->Text[kGenerateMD5];
-	miHexEdit.Caption          = GLanguageHandler->Text[kHexEdit];
-
-	miCopyMenu.Caption         = GLanguageHandler->Text[kCopy];
-	miCopySelected.Caption     = GLanguageHandler->Text[kSelected] + rsEllipsis;
-	miCopyAll.Caption          = GLanguageHandler->Text[kAll] + rsEllipsis;
-	miMoveMenu.Caption         = GLanguageHandler->Text[kMove];
-	miMoveSelected.Caption     = GLanguageHandler->Text[kSelected] + rsEllipsis;
-	miMoveAll.Caption          = GLanguageHandler->Text[kAll] + rsEllipsis;
-	miDeleteMenu.Caption       = GLanguageHandler->Text[kDelete];
-	miDeleteSelected.Caption   = GLanguageHandler->Text[kSelected] + rsEllipsis;
-	miDeleteAll.Caption        = GLanguageHandler->Text[kAll] + rsEllipsis;
-
-	miZIP.Caption              = GLanguageHandler->Text[kAddZipFile] + rsEllipsis;
-	miSearchExportToCB.Caption = GLanguageHandler->Text[kCopyResultsToClipboard];
-
-	miSSave.Caption            = GLanguageHandler->Text[kSaveAs] + rsEllipsis;
+	cbSearchShowPath->Caption   = GLanguageHandler->Text[kShowFullPath].c_str();
+	cbSearchColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
 
 	// ===========================================================================================
 
-	CreateReportsFrame(dataSearch);
+	miExploreDirectory->Caption = GLanguageHandler->Text[kExploreFolder].c_str();
+
+	miSearchOpen->Caption       = GLanguageHandler->Text[kViewOpenFile].c_str();
+	miSearchOpenCustom->Caption = GLanguageHandler->Text[kOpenWithCustomViewer].c_str();
+	miExploreDirectory->Caption = GLanguageHandler->Text[kExploreFolder].c_str();
+	miSFileProperties->Caption  = GLanguageHandler->Text[kFileProperties].c_str();
+	miGenerateMD5->Caption      = GLanguageHandler->Text[kGenerateMD5].c_str();
+	miHexEdit->Caption          = GLanguageHandler->Text[kHexEdit].c_str();
+
+	miCopyMenu->Caption         = GLanguageHandler->Text[kCopy].c_str();
+	miCopySelected->Caption     = (GLanguageHandler->Text[kSelected] + kEllipsis).c_str();;
+	miCopyAll->Caption          = (GLanguageHandler->Text[kAll] + kEllipsis).c_str();;
+	miMoveMenu->Caption         = GLanguageHandler->Text[kMove].c_str();
+	miMoveSelected->Caption     = (GLanguageHandler->Text[kSelected] + kEllipsis).c_str();
+	miMoveAll->Caption          = (GLanguageHandler->Text[kAll] + kEllipsis).c_str();
+	miDeleteMenu->Caption       = GLanguageHandler->Text[kDelete].c_str();
+	miDeleteSelected->Caption   = (GLanguageHandler->Text[kSelected] + kEllipsis).c_str();
+	miDeleteAll->Caption        = (GLanguageHandler->Text[kAll] + kEllipsis).c_str();
+
+	miZIP->Caption              = (GLanguageHandler->Text[kAddZipFile] + kEllipsis).c_str();
+	miSearchExportToCB->Caption = GLanguageHandler->Text[kCopyResultsToClipboard].c_str();
+
+	miSSave->Caption            = (GLanguageHandler->Text[kSaveAs] + kEllipsis).c_str();
 
 	// ===========================================================================================
 
-	SetTheme;
+	//CreateReportsFrame(dataSearch);
 
-	LoadSettings;      */
+	// ===========================================================================================
+
+//	LoadSettings;
+
+	SearchEngine = new ProcessSearch();
 }
 
+
+void TFrameSearch::DeInit()
+{
+	SaveSettings();
+
+	if (SearchEngine != nullptr)
+	{
+        delete SearchEngine;
+	}
+}
 
 
 void TFrameSearch::ExecuteSearch(const std::wstring search)
@@ -306,7 +317,7 @@ void __fastcall TFrameSearch::miSearchOpenCustomClick(TObject *Sender)
 		}
 		else
 		{
-		// TO DO LOG	TMSLogger.Error("miSearchOpenCustomClickError loading file "" + file_name + "".");
+			GLog->AddError(L"Search unable to open custom file \"" + file_name + L"\".");
 		}
 	}
 }
@@ -339,7 +350,7 @@ void __fastcall TFrameSearch::miSFilePropertiesClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		// TO DO	WindowsUtility::ShowFilePropertiesDialog(Application->Handle, file_name);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, file_name);
 	}
 }
 
@@ -354,7 +365,7 @@ void __fastcall TFrameSearch::miGenerateMD5Click(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-	    // TO DO	ShowMD5Checksum(file_name, TMD5.Generate(file_name));
+		// TO DO	ShowMD5Checksum(file_name, TMD5.Generate(file_name));
 	}
 }
 
@@ -407,43 +418,13 @@ void __fastcall TFrameSearch::miZIPClick(TObject *Sender)
 
 void __fastcall TFrameSearch::miSearchExportToCBClick(TObject *Sender)
 {
-	TMenuItem* mi = (TMenuItem*)Sender;
-	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
-	TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
-
-	switch (grid->Tag)
-	{
-	case 1:
-		SearchCSVReport();
-		break;
-	case 2:
-		// TO DO sbCopyCSVDNClick(NULL);
-		break;
-	case 3:
-		// TO DO sbCopyCSVDSClick(NULL);
-		break;
-	}
+	SearchCSVReport();
 }
 
 
 void __fastcall TFrameSearch::miSSaveClick(TObject *Sender)
 {
-	TMenuItem* mi = (TMenuItem*)Sender;
-	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
-	TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
-
-	switch (grid->Tag)
-	{
-	case 1:
-		sbSaveSearchClick(NULL);
-		break;
-	case 2:
-		// TO DO sbSaveDNClick(NULL);
-		break;
-	case 3:
-		// TO DO sbSaveDSClick(NULL);
-		break;
-	}
+	sbSaveSearchClick(NULL);
 }
 
 
@@ -458,9 +439,11 @@ void __fastcall TFrameSearch::miCopySelectedClick(TObject *Sender)
 
 	if (!folder.empty() && !file_name.empty())
 	{
-		//CopyFile(PChar(file_name),
-		//		 PChar(folder + ExtractFileName(file_name)),
-		//		 false);
+		std::wstring effn = Utility::SplitFileName(file_name);
+
+		CopyFile(file_name.c_str(),
+				 (folder + effn).c_str(),
+				 false);
 	}
 }
 
@@ -473,9 +456,9 @@ void __fastcall TFrameSearch::miCopyAllClick(TObject *Sender)
 	{
 		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-			//CopyFile(PChar(GScanEngine[dataSearch].Folders[file->FilePathIndex] + file->Name),
-			 //		 PChar(folder + file->Name),
-			  //		 false);
+			CopyFile((GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name).c_str(),
+					 (folder + file->Name).c_str(),
+					 false);
 		}
 	}
 }
@@ -493,9 +476,9 @@ void __fastcall TFrameSearch::miMoveSelectedClick(TObject *Sender)
 
 	if (!folder.empty() && !file_name.empty())
 	{
-	   //	MoveFileEx(PChar(file_name),
-	   //			   PChar(s + file_name),
-	   //			   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+		MoveFileEx(file_name.c_str(),
+				   (folder + file_name).c_str(),
+				   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 	}
 }
 
@@ -506,11 +489,11 @@ void __fastcall TFrameSearch::miMoveAllClick(TObject *Sender)
 
 	if (!folder.empty())
 	{
-		for (FileObject *file : GScanEngine->Data[DataSource].Files)   // to do, all, search data, NOT .Files
+		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-		  //	MoveFileEx(PChar(GScanEngine[dataSearch].Folders[file->FilePathIndex] + file->Name),
-		  //			   PChar(folder + file->Name),
-		  //				MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx((GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name).c_str(),
+					   (folder + file->Name).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 		}
 	}
 }
@@ -540,7 +523,7 @@ void __fastcall TFrameSearch::miDeleteAllClick(TObject *Sender)
 	{
 		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-			// TO DO WindowsUtility::SendToRecycleBin(GScanEngine[dataSearch].Folders[file->FilePathIndex] + file->Name);
+			WindowsUtility::SendToRecycleBin(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name);
 		}
 	}
 }
@@ -595,7 +578,7 @@ void TFrameSearch::LoadSettings()
 		{
 			for t = 1 to MaximumFolderHistory do
 			{
-				s = GSettingsHandler->ReadStringFromSettings("Prefs", "SearchTerm" + IntToStr(t), "");
+				s = GSettingsHandler->ReadStringFromSettings("Prefs", "SearchTerm" + std::to_wstring(t), "");
 
 				if s != "" then
 				{
@@ -613,9 +596,9 @@ void TFrameSearch::LoadSettings()
 				lReg.OpenKey("\software\" + XinorbisRegistryKey + "\SearchTerm", True);
 
 				t = 0;
-				While lReg.ValueExists("Term" + IntToStr(t)) do
+				While lReg.ValueExists("Term" + std::to_wstring(t)) do
 				{
-					eSearch.Items.Add(lReg.ReadString("Term" + IntToStr(t)));
+					eSearch.Items.Add(lReg.ReadString("Term" + std::to_wstring(t)));
 					t++;
 				}
 			}
@@ -630,10 +613,10 @@ void TFrameSearch::LoadSettings()
 	}
 	else
 	{
-		TMSLogger.Error("Error loading settings in FrameSearch");
+		GLog->AddError(L"Error loading settings in FrameSearch");
 	}
 
-  	RebuildCharts(); */
+	BuildSearchCharts(); */
 }
 
 
@@ -651,7 +634,7 @@ void TFrameSearch::SaveSettings()
 			{
 				for t = 0 to eSearch.Items.Count - 1 do
 				{
-					GSettingsHandler->WriteStringToSettings("Prefs", "SearchTerm" + IntToStr(t + 1), eSearch.Items[t]);
+					GSettingsHandler->WriteStringToSettings("Prefs", "SearchTerm" + std::to_wstring(t + 1), eSearch.Items[t]);
 				}
 			}
 		}
@@ -668,7 +651,7 @@ void TFrameSearch::SaveSettings()
 
 					for t = 0 to eSearch.Items.Count - 1 do
 					{
-						if t < MaximumFolderHistory then lReg.WriteString("Term" + IntToStr(t), eSearch.Items[t]);
+						if t < MaximumFolderHistory then lReg.WriteString("Term" + std::to_wstring(t), eSearch.Items[t]);
 					}
 				}
 				catch(...)
@@ -682,148 +665,130 @@ void TFrameSearch::SaveSettings()
 	}
 	else
 	{
-	//TMSLogger.Error("Error saving FrameSearch settings");
+		GLog->AddError(L"Error saving FrameSearch settings");
 	}               */
 }
 #pragma end_region
 
 
 void TFrameSearch::RenderResults(int index_from, int index_to)
-{   /*
-  l{, lEnd, lTemp, lInc : integer;
-  t, sColourCode : integer;
-  ts : string;
-  lFinished : boolean;
-  tfo : TFileObject;
-
 {
-  l{    = a{;
-  lEnd      = a}
-  lInc      = 1;
+	if (index_from < 0)
+	{
+		index_from = 0;
+	}
 
-  if l{ < 0 then
-    l{ = 0;
+	if (index_to > GScanEngine->Data[kDataSearch].Files.size() - 1)
+	{
+		index_to = GScanEngine->Data[kDataSearch].Files.size() - 1;
+	}
 
-  if lEnd > GScanEngine[dataSearch].Files.Count - 1 then
-    lEnd = GScanEngine[dataSearch].Files.Count - 1;
+	GridUtility::Clear(sgSearchResults, false);
 
-  if sgSearchResults.SortSettings.Direction = sdAscending then {
-    lTemp  = l}
-    lEnd   = l{;
-    l{ = lTemp;
+	if (GScanEngine->Data[kDataSearch].Files.size() != 0)
+	{
+		sgSearchResults->BeginUpdate();
+		sgSearchResults->RowCount = 2;
 
-    lInc   = -1;
-  }
+		int row = 1;
+		int index = index_from;
 
-  TGridUtility.ClearStringGird(sgSearchResults, False);
+		while (index < index_to)
+		{
+			FileObject *tfo = GScanEngine->Data[kDataSearch].Files[index];
 
-  sgSearchResults.{Update;
+			// == File Name / Path =============================================
+			if (cbSearchShowPath->Checked)
+			{
+				sgSearchResults->Cells[kschVFileName][row] = (GScanEngine->Data[kDataSearch].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
+			}
+			else
+			{
+				sgSearchResults->Cells[kschVFileName][row] = tfo->Name.c_str();
+			}
 
-  sgSearchResults.RowCount = 2;
+			sgSearchResults->Cells[kschIFileName][row] = (GScanEngine->Data[kDataSearch].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
 
-  if GScanEngine[dataSearch].Files.Count != 0 then {
+			// == File Size ====================================================
+			if (faDirectory & tfo->Attributes)
+			{
+				sgSearchResults->Cells[kschVSize][row]   = GLanguageHandler->Text[kFolderUC].c_str();
+				sgSearchResults->Cells[kschISize][row]   = L"-1";
 
-    t = l{;
+				sgSearchResults->Cells[kschIColour][row] = kFileCategoryDirectory;
+			}
+			else
+			{
+				sgSearchResults->Cells[kschVSize][row]   = Convert::ConvertToUsefulUnit(tfo->Size).c_str();
+				sgSearchResults->Cells[kschISize][row]   = tfo->Size;
 
-    repeat
+				int colour = GFileExtensionHandler->GetExtensionCategoryIDFromName(tfo->Name);
+				sgSearchResults->Cells[kschIColour][row] = colour;
+			}
 
-      tfo = GScanEngine[dataSearch].Files[t];
+			// == Attributes ===================================================
+			std::wstring ts = L"----  ";
 
-      // == File Name / Path =====================================================
+			if (faArchive & tfo->Attributes)  ts[1] = L'A';
+			if (faReadOnly & tfo->Attributes) ts[2] = L'R';
+			if (faSysFile & tfo->Attributes)  ts[3] = L'S';
+			if (faHidden & tfo->Attributes)   ts[4] = L'H';
 
-      if cbSearchShowPath.Checked then
-	   sgSearchResults->Cells[kschVFileName, sgSearchResults.RowCount - 1] = GScanEngine[dataSearch].Folders[tfo.FilePathIndex] + tfo.FileName
-	  else
-		sgSearchResults->Cells[kschVFileName, sgSearchResults.RowCount - 1] = tfo.FileName;
+			sgSearchResults->Cells[kschVAttributes][row] = ts.c_str();
 
-	  sgSearchResults->Cells[kschIFileName, sgSearchResults.RowCount - 1] = GScanEngine[dataSearch].Folders[tfo.FilePathIndex] + tfo.FileName;
+			// == User =========================================================
+			sgSearchResults->Cells[kschVOwner][row] = GScanEngine->Data[kDataSearch].Users[tfo->Owner]->Name.c_str();
 
-	  // == File Size ============================================================
+			// == Dates ========================================================
+			sgSearchResults->Cells[kschVCDate][row] = Convert::IntDateToString(tfo->DateCreated).c_str();
+			sgSearchResults->Cells[kschICDate][row] = tfo->DateCreated;
 
-	  if ((faDirectory and tfo.Attributes) = faDirectory) then {
-		sgSearchResults->Cells[kschVSize,   sgSearchResults.RowCount - 1]   = UpperCase(GLanguageHandler->Text[kFolder]);
-		sgSearchResults->Cells[kschISize,   sgSearchResults.RowCount - 1]   = "-1";
+			sgSearchResults->Cells[kschVADate][row] = Convert::IntDateToString(tfo->DateAccessed).c_str();
+			sgSearchResults->Cells[kschIADate][row] = tfo->DateAccessed;
 
-		sgSearchResults->Cells[kschIColour, sgSearchResults.RowCount - 1] = IntToStr(FileCategoryDirectory);
-	  end
-	  else {
-		sgSearchResults->Cells[kschVSize,   sgSearchResults.RowCount - 1]   = TConvert.ConvertToUsefulUnit(tfo.FileSize);
-		sgSearchResults->Cells[kschISize,   sgSearchResults.RowCount - 1]   = IntToStr(tfo.FileSize);
+			sgSearchResults->Cells[kschVMDate][row] = Convert::IntDateToString(tfo->DateModified).c_str();
+			sgSearchResults->Cells[kschIMDate][row] = tfo->DateModified;
 
-		sColourCode  = FileExtensionsObject.GetExtensionCategoryIDFromName(tfo.FileName);
-        sgSearchResults->Cells[kschIColour, sgSearchResults.RowCount - 1] = IntToStr(sColourCode);
-      }
+			// =================================================================
 
-      // == Attributes ===========================================================
+			sgSearchResults->RowCount++;
 
-      ts = "----  ";
-      if ((faArchive and tfo.Attributes)  = faArchive) then  ts[1] = "A";
-      if ((faReadOnly and tfo.Attributes) = faReadOnly) then ts[2] = "R";
-      if ((faSysFile and tfo.Attributes)  = faSysFile) then  ts[3] = "S";
-      if ((faHidden and tfo.Attributes)   = faHidden) then   ts[4] = "H";
+			index++;
+			row++;
+		}
 
-      sgSearchResults->Cells[schVAttributes, sgSearchResults.RowCount - 1] = ts;
+		if (sgSearchResults->RowCount != 2)
+		{
+			sgSearchResults->RowCount--;
+		}
+	}
 
-      // == User =================================================================
-
-      sgSearchResults->Cells[schVOwner, sgSearchResults.RowCount - 1]      = GScanEngine[dataSearch].Users[tfo.Owner].Name;
-
-      // == Dates ================================================================
-
-	  sgSearchResults->Cells[kschVCDate, sgSearchResults.RowCount - 1]      = TConvert.IntDateToString(tfo.FileDateC);
-	  sgSearchResults->Cells[kschICDate, sgSearchResults.RowCount - 1]      = IntToStr(tfo.FileDateC);
-
-	  sgSearchResults->Cells[kschVADate, sgSearchResults.RowCount - 1]      = TConvert.IntDateToString(tfo.FileDateA);
-	  sgSearchResults->Cells[kschIADate, sgSearchResults.RowCount - 1]      = IntToStr(tfo.FileDateA);
-
-	  sgSearchResults->Cells[kschVMDate, sgSearchResults.RowCount - 1]      = TConvert.IntDateToString(tfo.FileDateM);
-	  sgSearchResults->Cells[kschIMDate, sgSearchResults.RowCount - 1]      = IntToStr(tfo.FileDateM);
-
-      // =========================================================================
-
-	  sgSearchResults.RowCount = sgSearchResults.RowCount + 1;
-
-      inc(t, lInc);
-
-      if (lInc = 1) then
-        lFinished = t > lEnd
-      else
-        lFinished = t < l}
-
-    until lFinished;
-
-    if sgSearchResults.RowCount != 2 then
-      sgSearchResults.RowCount = sgSearchResults.RowCount - 1;
-  }
-
-  sgSearchResults.EndUpdate;*/
+	sgSearchResults->EndUpdate();
 }
 
 
 void TFrameSearch::ClearGUI(bool no_results)
 {
- /*	if (no_results)
+	if (no_results)
 	{
-		lSearchDetails.HTMLText[0] = GLanguageHandler->Text[kNoMatchesFound]
+		lSearchDetails->Caption = GLanguageHandler->Text[kNoMatchesFound].c_str();
 	}
 	else
 	{
-		lSearchDetails.HTMLText[0] = "";
+		lSearchDetails->Caption = L"";
 	}
 
-	lsPagePrevious->Enabled     = False;
-	lsPageNext->Enabled         = False;
+	sbPagePrevious->Enabled = false;
+	sbPageNext->Enabled = false;
 
-	FPageNumber                = 0;
-	lPageNumber.Caption        = "";
-
-	lShowing.Caption           = ""; */
+	PageNumber = 0;
+	lPageNumber->Caption = L"";
 }
 
 
 void TFrameSearch::UpdateGUI()
-{  /*
-	if (sgSearchResults->Cells[schVFilename][1] == L"")
+{
+	if (sgSearchResults->Cells[kschVFileName][1] == L"")
 	{
 		ClearGUI(true);
 	}
@@ -831,52 +796,60 @@ void TFrameSearch::UpdateGUI()
 	{
 		std::wstring ts = L"";
 
-		if TotalSearchFilesCount != 0)
+		if (TotalSearchFilesCount != 0)
 		{
-			if GScanEngine[FSource].FileCount = 0)
+			if (GScanEngine->Data[DataSource].Files.size() == 0)
 			{
-				ts = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(TotalSearchFilesCount) + "</b> " + GLanguageHandler->Text[kFiles] + " (100%)"
+				ts = GLanguageHandler->Text[kFound] + L" " + std::to_wstring(TotalSearchFilesCount) + L" " + GLanguageHandler->Text[kFiles] + L" (100%)";
 			}
 			else
 			{
-				ts = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(TotalSearchFilesCount) + "</b> " + GLanguageHandler->Text[kFiles] + " (<b>" + FloatToStrF(((TotalSearchFilesCount) / GScanEngine[FSource].FileCount) * 100, ffFixed, 7, 2, XinorbisFormatSettings) + "%</b>)";
+				std::wstring sp = FloatToStrF(((TotalSearchFilesCount) / GScanEngine->Data[DataSource].FileCount) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+
+				ts = GLanguageHandler->Text[kFound] + L" " + std::to_wstring(TotalSearchFilesCount) + L" " + GLanguageHandler->Text[kFiles] + L" (" + sp + L"%)";
 			}
 		}
 
-		if TotalSearchFoldersCount != 0 then
+		if (TotalSearchFoldersCount != 0)
 		{
+			std::wstring cp = FloatToStrF((TotalSearchFoldersCount) / GScanEngine->Data[DataSource].FolderCount * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+
 			if (ts.empty())
 			{
-				ts = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(TotalSearchFoldersCount) + "</b> " + GLanguageHandler->Text[kFolders] + " (<b>" + FloatToStrF(((TotalSearchFoldersCount) / GScanEngine[FSource].FolderCount) * 100, ffFixed, 7, 2, XinorbisFormatSettings) + "%</b>)"
+				ts += GLanguageHandler->Text[kFound] + L" " + std::to_wstring(TotalSearchFoldersCount) + L" " + GLanguageHandler->Text[kFolders] + L" " + cp + L"%)";
 			}
 			else
 			{
-				ts += L" " + GLanguageHandler->Text[kAnd] + " <b>" + IntToStr(TotalSearchFoldersCount) + "</b> " + GLanguageHandler->Text[kFolders] + " (<b>" + FloatToStrF(((TotalSearchFoldersCount) / GScanEngine[FSource].FolderCount) * 100, ffFixed, 7, 2, XinorbisFormatSettings) + "%</b>)";
+				ts += L" " + GLanguageHandler->Text[kAnd] + L" " + std::to_wstring(TotalSearchFoldersCount) + L" " + GLanguageHandler->Text[kFolders] + L" " + cp + L"%)";
 			}
 		}
 
-		if GScanEngine[FSource].TotalSize != 0)
+		if (GScanEngine->Data[DataSource].TotalSize != 0)
 		{
-			lSearchDetails.HTMLText[0] = ts + ", <b>" + TConvert.ConvertToUsefulUnit(TotalSearchSize) + "</b> (" + FloatToStrF((TotalSearchSize / GScanEngine[FSource].TotalSize) * 100, ffFixed, 7, 2, XinorbisFormatSettings) + "%)"
+			std::wstring sp = FloatToStrF((TotalSearchSize / GScanEngine->Data[DataSource].TotalSize) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+
+			ts += L", " + Convert::ConvertToUsefulUnit(TotalSearchSize) + L" (" + sp + L"%)";
 		}
 		else
 		{
-			lSearchDetails.HTMLText[0] = ts + ", <b>" + TConvert.ConvertToUsefulUnit(TotalSearchSize) + "</b> (100%)";
+			ts += L", " + Convert::ConvertToUsefulUnit(TotalSearchSize) + L" (100%)";
 		}
 
-		UpdateSearchGUI;
-	} */
+		lSearchDetails->Caption = ts.c_str();
+
+		UpdateSearchGUI();
+	}
 }
 
 
 void TFrameSearch::UpdateSearchGUI()
 {                                       /*
-	lPageNumber->Caption = IntToStr(FPageNumber + 1) + " (" + IntToStr(FLastPage + 1) + ")";
+	lPageNumber->Caption = std::to_wstring(FPageNumber + 1) + " (" + std::to_wstring(FLastPage + 1) + ")";
 
 	lShowing.Caption = GLanguageHandler->Text[kShowing] + " " +
-					  IntToStr((FPageNumber * GSettingsHandler->General.MaxSearchResults) + 1) +
-					  rsEllipsis + IntToStr((FPageNumber * GSettingsHandler->General.MaxSearchResults) + sgSearchResults.RowCount - 1) + " " +
-					  GLanguageHandler->Text[kOf] + " " + IntToStr(TotalSearchFilesCount + TotalSearchFoldersCount) + ".";
+					  std::to_wstring((FPageNumber * GSettingsHandler->General.MaxSearchResults) + 1) +
+					  rsEllipsis + std::to_wstring((FPageNumber * GSettingsHandler->General.MaxSearchResults) + sgSearchResults.RowCount - 1) + " " +
+					  GLanguageHandler->Text[kOf] + " " + std::to_wstring(TotalSearchFilesCount + TotalSearchFoldersCount) + ".";
 
 	if (PageNumber > FFirstPage)
 	{
@@ -900,9 +873,9 @@ void TFrameSearch::UpdateSearchGUI()
 }
 
 
-void TFrameSearch::RebuildCharts()
+std::wstring TFrameSearch::GetSearchText()
 {
-// to do
+	return eSearch->Text.c_str();
 }
 
 
@@ -911,23 +884,6 @@ void TFrameSearch::RebuildCharts()
 
 const
   SearchSortColumns     : array[0..6] of integer = (schVFilename, kschISize, 2, 3, 4, 5, 6);
-
-
-procedure TFrameSearch.SetTheme;
-{
-  TThemeHelper.SetSmoothTabPager(pSearchOptions);
-
-  TThemeHelper.SetSmoothTabPage(tsSearch);
-  TThemeHelper.SetSmoothTabPage(tsProperties);
-  TThemeHelper.SetSmoothTabPage(tsDuplicatesName);
-  TThemeHelper.SetSmoothTabPage(tsDuplicatesSize);
-}
-
-
-procedure TFrameSearch.DeInit;
-{
-  SaveSettings;
-}
 
 
 function TFrameSearch.GetActivePage: integer;
@@ -939,7 +895,7 @@ function TFrameSearch.GetActivePage: integer;
 procedure TFrameSearch.CreateReportsFrame(aDataIndex : integer);
 {
   FReportsFrame = TFrameReports.Create(Self);
-  FReportsFrame.Name                        = "FrameReports" + IntToStr(aDataIndex);
+  FReportsFrame.Name                        = "FrameReports" + std::to_wstring(aDataIndex);
   FReportsFrame.Parent                      = tsProperties;
   FReportsFrame.Source                      = aDataIndex;
   FReportsFrame.Init;
@@ -984,111 +940,6 @@ procedure TFrameSearch.CreateReportsFrame(aDataIndex : integer);
 }
 
 
-procedure TFrameSearch.SetTab(aTab : integer);
-{
-  pSearchOptions.ActivePageIndex = aTab;
-}
-
-
-function TFrameSearch.GetSearchText: string;
-{
-  Result = eSearch->Text;
-}
-
-
-
-procedure TFrameSearch.SearchThreadOnTerminate(Sender: TObject);
-var
-  t : integer;
-  lUserData : TUserData;
-
-{
-  for t= 0 to GScanEngine[FSource].Users.Count - 1 do {
-    lUserData = TUserData.Create;
-
-    lUserData.Name = GScanEngine[FSource].Users[t].Name;
-
-    GScanEngine[dataSearch].Users.Add(lUserData);
-  }
-
-  for t= 0 to GScanEngine[FSource].Folders.Count - 1 do
-    GScanEngine[dataSearch].Folders.Add(GScanEngine[FSource].Folders[t]);
-
-  GScanEngine[dataSearch].ScanPath = GScanEngine[FSource].ScanPath;
-
-  // ===========================================================================
-
-  if Assigned(FMenuChange) then
-    FMenuChange(GLanguageHandler->Text[kSearch], 0, 0);
-
-  UpdateSearchCapacity;
-
-  if Assigned(FSetStatusBarText) then
-    FSetStatusBarText(GLanguageHandler->Text[kSearchFinished]);
-
-  FFirstPage = 0;
-  FLastPage  = Ceil(GScanEngine[dataSearch].Files.Count / GSettingsHandler->General.MaxSearchResults) - 1;
-
-  RenderResults(0, GSettingsHandler->General.MaxSearchResults - 1);
-  UpdateGUI;
-
-  if pSearchChart.Visible then
-    BuildSearchChart;
-
-  UpdateSearchCapacity;
-
-  sbGoSearch->Enabled = True;
-}
-
-
-procedure TFrameSearch.sbSearchThingClick(Sender: TObject);
-{
-  if sbSearchThing.Tag = 1 then
-    sbSearchThing.Tag = 2
-  else
-    sbSearchThing.Tag = 1;
-
-  UpdateSearchCapacity;
-}
-
-procedure TFrameSearch.UpdateSearchCapacity;
- var
-  t : integer;
-  lCapacityItem : TCapacityItem;
-
- {
-  capacitySearch.Items.Clear;
-
-  for t = 1 to __FileCategoriesCount do {
-    if sbSearchThing.Tag = 1 then {
-      if GScanEngine[dataSearch].Files.Count != 0 then {
-        if ExtSpreadSearch[t, 1] != 0 then {
-          lCapacityItem             = capacitySearch.Items.Add;
-          lCapacityItem.Value       = (ExtSpreadSearch[t, 1] / TotalSearchFilesCount) * 100;
-          lCapacityItem.Color       = GSystemGlobal.FileCategoryColors[t];
-          lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
-          lCapacityItem.DisplayName = TypeDescriptions[t];
-          lCapacityItem.Description = TypeDescriptions[t];
-          lCapacityItem.Hint        = TypeDescriptions[t] + " (" + IntToStr(ExtSpreadSearch[t, 1]) + " files)";
-        }
-      }
-    end
-    else {
-      if TotalSearchSize != 0 then {
-        if ExtSpreadSearch[t, 2] != 0 then {
-          lCapacityItem             = capacitySearch.Items.Add;
-          lCapacityItem.Value       = (ExtSpreadSearch[t, 2] / TotalSearchSize) * 100;
-          lCapacityItem.Color       = GSystemGlobal.FileCategoryColors[t];
-          lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
-          lCapacityItem.DisplayName = TypeDescriptions[t];
-          lCapacityItem.Description = TypeDescriptions[t];
-          lCapacityItem.Hint        = TypeDescriptions[t] + " (" + TConvert.ConvertToUsefulUnit(ExtSpreadSearch[t, 2]) + ")";
-        }
-      }
-     }
-  }
-}
-
 
  */
 
@@ -1104,18 +955,22 @@ void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
 
 		PageNumber = 0;
 
-//		GScanEngine->Search.Clear();
-
 //	  if Assigned(FMenuChange) then
 //		FMenuChange("", 0, 1);
 
-//	  lSearchDetails.HTMLText[0] = GLanguageHandler->Text[kSearching] + rsEllipsis;
-//	  lSearchDetails.Refresh;
+	  lSearchDetails->Caption = (GLanguageHandler->Text[kSearching] + kEllipsis).c_str();
+	  lSearchDetails->Refresh();
 
 //	  if eSearch.Items.IndexOf(eSearch->Text) = -1 then {
 //		if eSearch->Text != "" then
 //		  eSearch.Items.Insert(0, eSearch->Text);
 //	  }
+
+		Command c(PrimaryCommand::Search, eSearch->Text.c_str());
+
+		SearchEngine->Execute(c);
+
+		PostSearch();
 
 //	  FSearchThread = TSearchThread.Create(True);
 //	  FSearchThread.SetData(FSource, eSearch->Text);
@@ -1124,6 +979,50 @@ void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
 //	  FSearchThread.Priority        = tpHigher;
 //	  FSearchThread.Start
 	}
+}
+
+
+void TFrameSearch::PostSearch()
+{
+	for (UserData *user : GScanEngine->Data[DataSource].Users)
+	{
+		UserData *ud = new UserData(user->Name);
+
+		GScanEngine->Data[kDataSearch].Users.push_back(ud);
+	}
+
+	for (std::wstring folder : GScanEngine->Data[DataSource].Folders)
+	{
+		GScanEngine->Data[kDataSearch].Folders.push_back(folder);
+	}
+
+	GScanEngine->Data[kDataSearch].Path.String = GScanEngine->Data[DataSource].Path.String;
+
+	// =========================================================================
+
+	if (OnMenuChange)
+	{
+		OnMenuChange(GLanguageHandler->Text[kSearch], 0, 0);
+	}
+
+//	if (SetStatusBarText)
+//	{
+//		FSetStatusBarText(GLanguageHandler->Text[kSearchFinished]);
+//	}
+
+	FirstPage = 0;
+	LastPage  = (int)std::ceil((double)GScanEngine->Data[kDataSearch].Files.size() / (double)GSettingsHandler->General.MaxSearchResults) - 1;
+
+	RenderResults(0, GSettingsHandler->General.MaxSearchResults - 1);
+
+	UpdateGUI();
+
+//	if (pSearchChart.Visible then
+//    BuildSearchChart;
+
+	UpdateIceCream();
+
+	sbGoSearch->Enabled = true;
 }
 
 
@@ -1143,24 +1042,29 @@ void __fastcall TFrameSearch::eSearchKeyPress(TObject *Sender, System::WideChar 
 
 void __fastcall TFrameSearch::sbSearchHelpClick(TObject *Sender)
 {
-	// to do THelp.OpenHelpPage("t41.htm");
+	HelpHandler::OpenHelpPage(L"t41.htm");
 }
 
 
 void __fastcall TFrameSearch::sbSearchSyntaxClick(TObject *Sender)
 {
-// to do	THelp.OpenSearchManual;
+	HelpHandler::OpenSearchManual();
 }
 
 
 void __fastcall TFrameSearch::sbSCAccessedClick(TObject *Sender)
 {
-//	TGridUtility.ToggleColumn(sgSearchResults,
-//							  TSpeedbutton(Sender),
-//	   to do						  TableColumnLookup[(TSpeedbutton(Sender).Tag * 2) + 1],
-//							  TableColumnLookup[TSpeedbutton(Sender).Tag * 2]);
-//
-//	ResizeColumns();
+	TSpeedButton *button = (TSpeedButton*)Sender;
+
+	int column_index = TableColumnLookup[button->Tag * 2];
+
+	GridUtility::ToggleColumn(sgSearchResults,
+							  button,
+							  TableColumnLookup[(button->Tag * 2) + 1],
+							  DefaultColumnWidths[column_index],
+							  column_index);
+
+	FrameResize(NULL);
 }
 
 
@@ -1189,94 +1093,35 @@ void __fastcall TFrameSearch::cbSearchShowPathClick(TObject *Sender)
 
 
 void __fastcall TFrameSearch::sbSaveSearchClick(TObject *Sender)
-{                                     /*
-procedure TFrameSearch.sbSaveSearchClick(Sender: TObject);
-var
-  tf : TextFile;
-  t, a, b, c, w : integer;
-  lFileName : string;
-  tempCSVOptions : TCSVReportOptions;
-  lReportOutput : TStringList;
-
 {
-	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(".csv", GLanguageHandler->Text[kSearchResults]));
+	std::wstring path = eSearch->Text.c_str();
+
+	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv",
+														 GLanguageHandler->Text[kSearchResults]));
 
 	if (!file_name.empty())
 	{
-		switch (GReportUtility.GetReportType(lFileName))
+		switch (GReportHandler->GetReportType(file_name))
 		{
-		CReportTypeCSV:
+		case kReportTypeCSV:
 		{
-			tempCSVOptions = GSettingsHandler->Report.CSVOptions[LayoutQuick];
-			tempCSVOptions.Category = -1;
-			tempCSVOptions.CSVData  = CDataFileList;
-			tempCSVOptions.FileName = lFileName;
+			CSVReportOptions tcsvo = GSettingsHandler->Reports.CSV[kReportLayoutQuick];
+			tcsvo.Category = -1;
+			tcsvo.Data  = kDataFileList;
+			tcsvo.FileName = file_name;
 
-			lReportOutput = TStringList.Create;
-
-			GReportCSV.GenerateCSVReport(dataSearch, lReportOutput, tempCSVOptions, LayoutUnknown);
-
-			FreeAndNULL(lReportOutput);
+			GReportHandler->SaveCSV(tcsvo, kDataSearch, false, false);
+			break;
 		}
-		CReportTypeHTML:
-		{
-			lReportOutput = TStringList.Create;
-
-			GReportHTML.GenerateHTMLFileReport(dataSearch, lReportOutput, GLanguageHandler->Text[kSearchResults] + " "" + eSearch->Text + """, lFileName);
-
-			FreeAndNULL(lReportOutput);
-		}
-		CReportTypeText:
-		{
-			AssignFile(tf, lFileName);
-
-			{$I-}
-			Rewrite(tf);
-
-			if IOResult != 0 then {
-			ShowXDialog(GLanguageHandler->Text[kWarning],
-						GLanguageHandler->Text[kErrorSaving] + " "" + lFileName + "".",
-						XDialogTypeWarning);
-
-			if Assigned(FSetStatusBarText) then
-			  FSetStatusBarText(GLanguageHandler->Text[kError] + " " + lFileName);
-			end
-			else {
-			a = Length(GLanguageHandler->Text[kPath]);
-			b = Length(GLanguageHandler->Text[kSearch]);
-			c = Length(GLanguageHandler->Text[kFound]);
-
-			w = Max(Max(a, b), c);   // find the largest of the three texts
-
-			Writeln(tf, "// Xinorbis 8.3 - " + GLanguageHandler->Text[kSearchResults]);
-			Writeln(tf, "//");
-
-			if FSource = dataLatestScan then
-			  Writeln(tf, "// " + GLanguageHandler->Text[kPath] + TXFormatting.StringOfChars(w - a, " ") + " : " + GScanEngine[FSource].ScanPath)
-			else
-			  Writeln(tf, "// " + GLanguageHandler->Text[kPath] + TXFormatting.StringOfChars(w - a, " ") + " : " + GScanEngine[FSource].ScanPath + " (DB " + GLanguageHandler->Text[kTable] + " " + GScanEngine[FSource].ScanTable + ")");
-
-			Writeln(tf, "// " + GLanguageHandler->Text[kSearch] + TXFormatting.StringOfChars(w - b, " ") + " : " + eSearch->Text);
-			Writeln(tf, "// " + GLanguageHandler->Text[kFound]  + TXFormatting.StringOfChars(w - c, " ") + " : " + IntToStr(GScanEngine[dataSearch].Files.Count));
-			Writeln(tf, "");
-
-			writeln(tf, GLanguageHandler->Text[kFilePath] + " " +
-						" [" +  GLanguageHandler->Text[kSize] + "] " +
-						GLanguageHandler->Text[kFileOwner] +  " :: " +
-						GLanguageHandler->Text[kAttr]);
-
-			Writeln(tf, "");
-
-			for t = 0 to GScanEngine[dataSearch].Files.Count - 1 do {
-			  Writeln(tf, GScanEngine[dataSearch].Folders[GScanEngine[dataSearch].Files[t].FilePathIndex] + GScanEngine[dataSearch].Files[t].Filename +
-						  "  [" + TConvert.ConvertToUsefulUnit(GScanEngine[dataSearch].Files[t].FileSize) + "] " +
-						  GScanEngine[dataSearch].Users[GScanEngine[dataSearch].Files[t].Owner].Name + " :: " +
-						  TConvert.AttributesToString(GScanEngine[dataSearch].Files[t].Attributes));
-			}
-
-			CloseFile(tf);
-		}
-	}                 */
+		case kReportTypeHTML:
+			GReportHandler->SaveHTMLFileList(kDataSearch, file_name,
+											 GLanguageHandler->Text[kSearchResults] + L" \"" + path + L"\"");
+			break;
+		case kReportTypeText:
+			GReportHandler->SaveTextSearch(file_name, path, kDataSearch);
+			break;
+        }
+	}
 }
 
 
@@ -1310,15 +1155,59 @@ void __fastcall TFrameSearch::pcSearchChange(TObject *Sender)
 		}
 	}
 }
+#pragma end_region
 
 
+#pragma region Search_Displays
 void TFrameSearch::BuildSearchCharts()
  {
-/*	if (GScanEngine[FSource].FileCount != 0) and (GScanEngine[FSource].TotalSize != 0)
+/*	if (GScanEngine->Data[DataSource].Files.size() != 0 && GScanEngine->Data[DataSource].TotalSize != 0)
 	{
-		guageSearchQuantity.SetDisplay(((TotalSearchFilesCount + TotalSearchFoldersCount) / (GScanEngine[FSource].FileCount + GScanEngine[FSource].FolderCount)) * 100);
-		guageSearchSize.SetDisplay(    ((TotalSearchSize) / GScanEngine[FSource].TotalSize) * 100);
-    } */
+//		guageSearchQuantity.SetDisplay(((TotalSearchFilesCount + TotalSearchFoldersCount) / (GScanEngine[FSource].FileCount + GScanEngine[FSource].FolderCount)) * 100);
+//		guageSearchSize.SetDisplay(    ((TotalSearchSize) / GScanEngine[FSource].TotalSize) * 100);
+
+		UpdateIceCream();
+
+	} */
+}
+
+
+void TFrameSearch::UpdateIceCream()
+{ /*
+  t : integer;
+  lCapacityItem : TCapacityItem;
+
+ {
+  capacitySearch.Items.Clear;
+
+  for t = 1 to __FileCategoriesCount do {
+	if sbSearchThing.Tag = 1 then {
+	  if GScanEngine[dataSearch].Files.Count != 0 then {
+		if ExtSpreadSearch[t, 1] != 0 then {
+		  lCapacityItem             = capacitySearch.Items.Add;
+		  lCapacityItem.Value       = (ExtSpreadSearch[t, 1] / TotalSearchFilesCount) * 100;
+		  lCapacityItem.Color       = GSettingsHandler->FileCategoryColors[t];
+		  lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
+		  lCapacityItem.DisplayName = TypeDescriptions[t];
+		  lCapacityItem.Description = TypeDescriptions[t];
+		  lCapacityItem.Hint        = TypeDescriptions[t] + " (" + IntToStr(ExtSpreadSearch[t, 1]) + " files)";
+		}
+	  }
+	end
+	else {
+	  if TotalSearchSize != 0 then {
+		if ExtSpreadSearch[t, 2] != 0 then {
+		  lCapacityItem             = capacitySearch.Items.Add;
+		  lCapacityItem.Value       = (ExtSpreadSearch[t, 2] / TotalSearchSize) * 100;
+		  lCapacityItem.Color       = GSettingsHandler->FileCategoryColors[t];
+		  lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
+		  lCapacityItem.DisplayName = TypeDescriptions[t];
+		  lCapacityItem.Description = TypeDescriptions[t];
+		  lCapacityItem.Hint        = TypeDescriptions[t] + " (" + TConvert.ConvertToUsefulUnit(ExtSpreadSearch[t, 2]) + ")";
+		}
+	  }
+	 }
+  }               */
 }
 #pragma end_region
 
@@ -1409,14 +1298,14 @@ procedure TFrameSearch.sgSearchResultsCanSort(Sender: TObject; ACol: Integer;
   DoSort = False;
 
   if TAdvStringGrid(Sender).SortSettings.Direction = sdDescending then
-    TAdvStringGrid(Sender).SortSettings.Direction = sdAscending
+	TAdvStringGrid(Sender).SortSettings.Direction = sdAscending
   else
-    TAdvStringGrid(Sender).SortSettings.Direction = sdDescending;
+	TAdvStringGrid(Sender).SortSettings.Direction = sdDescending;
 
   case ACol of
     schVSize       : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileSizes));
     schVCDate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDates));
-    schVADate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
+	schVADate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
     schVMDate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
     schVFilename   : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNames));
     schVOwner      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareOwnerSD));
@@ -1424,16 +1313,9 @@ procedure TFrameSearch.sgSearchResultsCanSort(Sender: TObject; ACol: Integer;
   }
 
   RenderResults(FPageNumber * GSettingsHandler->General.MaxSearchResults,
-               (FPageNumber * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults - 1);
+			   (FPageNumber * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults - 1);
   UpdateGUI;
 }
-
-
-procedure TFrameSearch.sgSearchResultsEndColumnSize(Sender: TObject; ACol: Integer);
-{
-  ResizeColumns;
-}
-
 
 procedure TFrameSearch.sgSearchResultsGetCellColor(Sender: TObject; ARow,
   ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
@@ -1443,7 +1325,7 @@ procedure TFrameSearch.sgSearchResultsGetCellColor(Sender: TObject; ARow,
       ABrush.Color = GSystemGlobal.FileCategoryColors[StrToInt(TAdvStringGrid(Sender)->Cells[kschIColour, ARow])];
   end
   else {
-    if gdSelected in AState then
+	if gdSelected in AState then
       ABrush.Color = CGridColourSelected
     else {
       if Odd(ARow) then

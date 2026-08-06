@@ -13,15 +13,9 @@
 #pragma once
 
 #include <VCLTee.Chart.hpp>
-#include <Vcl.Grids.hpp>
 
 
-namespace TabUiTypes
+namespace TabUiFolders
 {
-	void Chart(TChart*, int, int);
-
-	void List(TStringGrid*, int);
-
-	void Tree(TTreeView*, int, int);
-	int TreePost(TTreeView* view);
+	void Chart(TChart*, int, double, int);
 }

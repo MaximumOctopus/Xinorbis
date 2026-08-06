@@ -7,11 +7,15 @@
 
 #include "XFrameDuplicates.h"
 #include "XFormGetCopyMove.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ConstantsGui.h"
 #include "Formatting.h"
+#include "GridUtility.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
+#include "Log.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
@@ -20,6 +24,7 @@
 #include "WindowsUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
@@ -47,11 +52,13 @@ void TFrame2::Init()
 	tsDuplicatesName->Caption = GLanguageHandler->Text[kDuplicatesName].c_str();
 	tsDuplicatesSize->Caption = GLanguageHandler->Text[kDuplicatesSize].c_str();
 
-//	sgDuplicatesName.HideColumn(2);
+	sgDuplicatesName->ColWidths[1] = 64;
+	sgDuplicatesName->ColWidths[2] = -1;
 	sgDuplicatesName->Cells[0][0]   = GLanguageHandler->Text[kFilePath].c_str();
 	sgDuplicatesName->Cells[1][0]   = GLanguageHandler->Text[kSize].c_str();
 
-//	sgDuplicatesSize.HideColumn(2);
+	sgDuplicatesSize->ColWidths[1] = 64;
+	sgDuplicatesSize->ColWidths[2] = -1;
 	sgDuplicatesSize->Cells[0][0]   = GLanguageHandler->Text[kFilePath].c_str();
 	sgDuplicatesSize->Cells[1][0]   = GLanguageHandler->Text[kSize].c_str();
 
@@ -159,16 +166,16 @@ void __fastcall TFrame2::sbDNGoClick(TObject *Sender)
 	// =========================================================================
 
 //	sgDuplicatesName.ClearRows(1, sgDuplicatesName->RowCount - 1);
-//	sgDuplicatesName->RowCount = 2;
+	sgDuplicatesName->RowCount = 2;
 	sgDuplicatesName->BeginUpdate();
 
 	bool status = false;
 	std::wstring fn = L"";
 	int count = 0;
 
-// to do 	GScanEngine->Data[DataSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNames));
+	GScanEngine->Data[DataSource].SortByProperty(SortMode::kFileName);
 
-  // ===========================================================================
+	// ===========================================================================
 
 	for (int t = 1; t < GScanEngine->Data[DataSource].Files.size(); t++)
 	{
@@ -251,7 +258,7 @@ void __fastcall TFrame2::sbDNGoClick(TObject *Sender)
 
 void __fastcall TFrame2::sbDNHelpClick(TObject *Sender)
 {
-	// to do THelp.OpenHelpPage("a21.htm");
+	HelpHandler::OpenHelpPage(L"a21.htm");
 }
 
 
@@ -260,7 +267,7 @@ void __fastcall TFrame2::sbDNSaveClick(TObject *Sender)
 	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.txt)|*.txt",
 												  L".txt",
 												  Utility::GetDefaultFileName(L".txt", L"duplicates_" + GLanguageHandler->Text[kReport]),
-												  GSystemGlobal->AppDataPath + L"Saves\Duplicates");
+												  GSystemGlobal->AppDataPath + L"Saves\\Duplicates");
 
 	if (!file_name.empty())
 	{
@@ -280,9 +287,9 @@ void __fastcall TFrame2::sbDNSaveClick(TObject *Sender)
 		}
 		else
 		{
-//			ShowXDialog(GLanguageHandler->Text[kErrorSaving] + ": " + GLanguageHandler->Text[kDuplicatesFileName],
-//					  GLanguageHandler->Text[kErrorSaving] + " "" + lFileName + "".",
-//					  XDialogTypeWarning);
+			ShowXDialog(GLanguageHandler->Text[kErrorSaving] + L": " + GLanguageHandler->Text[kDuplicatesFileName],
+						GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+						XDialogTypeWarning);
 		}
 	}
 }
@@ -317,9 +324,9 @@ void __fastcall TFrame2::sbDNCSVClick(TObject *Sender)
 		}
 		else
 		{
-		// to do	  ShowXDialog(GLanguageHandler->Text[kErrorSavingReport] + L" (CSV)",
-				//  GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
-				//  XDialogTypeWarning);
+			ShowXDialog(GLanguageHandler->Text[kErrorSavingReport] + L" (CSV)",
+						GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+						XDialogTypeWarning);
 		}
 	}
 }
@@ -327,7 +334,7 @@ void __fastcall TFrame2::sbDNCSVClick(TObject *Sender)
 
 void __fastcall TFrame2::sbDNClipboardClick(TObject *Sender)
 {
-// to do 	TGridUtility.CopyGridToClipboard(0, sgDuplicatesName);
+	GridUtility::CopyGridToClipboard(sgDuplicatesName, 0);
 }
 #pragma end_region
 
@@ -346,7 +353,7 @@ void __fastcall TFrame2::sbDSGoClick(TObject *Sender)
 	unsigned __int64 fs = -1;
 	int count = 0;
 
- // to do	GScanEngine->[FSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileSizes));
+	GScanEngine->Data[DataSource].SortByProperty(SortMode::kSize);
 
 	// ===========================================================================
 
@@ -416,7 +423,7 @@ void __fastcall TFrame2::sbDSGoClick(TObject *Sender)
 
 void __fastcall TFrame2::sbDSHelpClick(TObject *Sender)
 {
-// to do   THelp.OpenHelpPage("a31.htm");
+	HelpHandler::OpenHelpPage(L"a31.htm");
 }
 
 
@@ -445,9 +452,9 @@ void __fastcall TFrame2::sbDSSaveClick(TObject *Sender)
 		}
 		else
 		{
-		 // to do	  ShowXDialog(GLanguageHandler->Text[kErrorSaving] + ": " + GLanguageHandler->Text[kDuplicatesFileSize],
-//				  GLanguageHandler->Text[kErrorSaving] + " "" + lFileName + "".",
-  //				  XDialogTypeWarning);
+			ShowXDialog(GLanguageHandler->Text[kErrorSaving] + L": " + GLanguageHandler->Text[kDuplicatesFileSize],
+						GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+						XDialogTypeWarning);
 		}
 
 	}
@@ -483,9 +490,9 @@ void __fastcall TFrame2::sbDSCSVClick(TObject *Sender)
 		}
 		else
 		{
-		   // to do	ShowXDialog(GLanguageHandler->Text[kErrorSavingReport] + " (CSV)",
-//				  GLanguageHandler->Text[kErrorSaving] + " "" + lFileName + "".",
-//				  XDialogTypeWarning);
+			ShowXDialog(GLanguageHandler->Text[kErrorSavingReport] + L" (CSV)",
+						GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+						XDialogTypeWarning);
 		}
 	}
 }
@@ -493,7 +500,7 @@ void __fastcall TFrame2::sbDSCSVClick(TObject *Sender)
 
 void __fastcall TFrame2::sbDSClipboardClick(TObject *Sender)
 {
- // to do	TGridUtility.CopyGridToClipboard(0, sgDuplicatesSize);
+	GridUtility::CopyGridToClipboard(sgDuplicatesSize, 0);
 }
 #pragma end_region
 
@@ -559,7 +566,7 @@ void __fastcall TFrame2::miSearchOpenCustomClick(TObject *Sender)
 		}
 		else
 		{
-		// TO DO LOG	TMSLogger.Error("miSearchOpenCustomClickError loading file "" + file_name + "".");
+			GLog->AddError(L"miSearchOpenCustomClick() loading file \"" + file_name + L"\".");
 		}
 	}
 }
@@ -592,7 +599,7 @@ void __fastcall TFrame2::miSFilePropertiesClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		//TXWindows.ShowFilePropertiesDialog(Application.Handle, file_name);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, file_name);
 	}
 }
 
@@ -638,9 +645,9 @@ void __fastcall TFrame2::miCopySelectedClick(TObject *Sender)
 
 	if (!folder.empty() && !file_name.empty())
 	{
-		//CopyFile(PChar(file_name),
-//				 PChar(folder + ExtractFileName(file_name)),
-//				 False);
+		CopyFile(file_name.c_str(),
+				 (folder + Utility::SplitFileName(file_name)).c_str(),
+				 false);
 	}
 }
 
@@ -656,9 +663,9 @@ void __fastcall TFrame2::miMoveSelectedClick(TObject *Sender)
 
 	if (!folder.empty() && !file_name.empty())
 	{
-	   //	MoveFileEx(PChar(file_name),
-//				   PChar(folder + file_name),
-//				   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+		MoveFileEx(file_name.c_str(),
+				   (folder + file_name).c_str(),
+				   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 	}
 }
 
@@ -674,7 +681,7 @@ void __fastcall TFrame2::miDeleteSelectedClick(TObject *Sender)
 
 		if (!file_name.empty())
 		{
-			// to do TXWindows.SendToRecycleBin(lFileName);
+			WindowsUtility::SendToRecycleBin(file_name);
 		}
 	}
 }

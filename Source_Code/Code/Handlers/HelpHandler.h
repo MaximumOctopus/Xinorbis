@@ -13,11 +13,9 @@
 #pragma once
 
 
-class HelpHandler
+namespace HelpHandler
 {
-public:
-
 	void OpenContextHelpPage(const std::wstring, int, int, int);
 	void OpenHelpPage(const std::wstring);
 	void OpenSearchManual();
-};
+}

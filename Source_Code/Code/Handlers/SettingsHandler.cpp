@@ -44,6 +44,16 @@ SettingsHandler::SettingsHandler()
 
   //		System.Loaded = LoadBasic();
   //	}
+
+	SetupFormat();
+}
+
+
+void SettingsHandler::SetupFormat()
+{
+	GetLocaleFormatSettings(0, XinorbisFormat);
+
+	XinorbisFormat.ShortDateFormat = L"dd/MM/yyyy";
 }
 
 
@@ -77,7 +87,7 @@ bool SettingsHandler::SaveDefaults()
 
 		// ===========================================================================
 		// ===========================================================================
-		// == Load Settings                                                         ==
+		// == Save Settings                                                         ==
 		// ===========================================================================
 		// ===========================================================================
 
@@ -87,6 +97,9 @@ bool SettingsHandler::SaveDefaults()
 		WriteInteger(L"Prefs", L"Main_Height", 700);
 
 		WriteBool(L"Prefs", L"Tutorial", true);
+
+		WriteString(L"Prefs", L"Main_Path", State.LastScanPath);
+		WriteString(L"Main", L"DataPath", State.DataPath);
 
 		// ===========================================================================
 		// == Chart Options                                                         ==
@@ -308,8 +321,6 @@ bool SettingsHandler::SaveDefaults()
 
 		// ===========================================================================
 		// ===========================================================================
-
-//	FDefault = True; to do what does this do
 
 		return true;
 	}

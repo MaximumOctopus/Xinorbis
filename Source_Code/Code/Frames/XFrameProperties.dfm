@@ -15,19 +15,19 @@ object FrameProperties: TFrameProperties
     Top = 0
     Width = 1514
     Height = 700
-    ActivePage = tsNull
+    ActivePage = tsCategories
     Align = alClient
     Images = ilTabs
     TabOrder = 0
     OnChange = pcPropertiesChange
     object tsCategories: TTabSheet
-      object Splitter1: TSplitter
+      object splitCategories: TSplitter
         Left = 497
         Top = 27
         Height = 643
-        ExplicitLeft = 592
-        ExplicitTop = 296
-        ExplicitHeight = 100
+        OnMoved = splitCategoriesMoved
+        ExplicitLeft = 503
+        ExplicitTop = 33
       end
       object TPanel
         Left = 0
@@ -146,10 +146,11 @@ object FrameProperties: TFrameProperties
     end
     object tsTypes: TTabSheet
       ImageIndex = 1
-      object Splitter5: TSplitter
+      object splitTypes: TSplitter
         Left = 265
         Top = 27
         Height = 643
+        OnMoved = splitTypesMoved
         ExplicitLeft = 232
         ExplicitTop = 30
         ExplicitHeight = 646
@@ -285,12 +286,15 @@ object FrameProperties: TFrameProperties
           Width = 263
           Height = 238
           Align = alClient
+          ColCount = 6
+          FixedCols = 0
           TabOrder = 1
         end
       end
     end
     object tsExtensions: TTabSheet
       ImageIndex = 2
+      OnResize = tsExtensionsResize
       object Panel4: TPanel
         Left = 0
         Top = 0
@@ -352,10 +356,11 @@ object FrameProperties: TFrameProperties
     end
     object tsFolders: TTabSheet
       ImageIndex = 3
-      object Splitter3: TSplitter
+      object splitFolders: TSplitter
         Left = 497
         Top = 27
         Height = 643
+        OnMoved = splitFoldersMoved
         ExplicitLeft = 505
         ExplicitTop = 24
         ExplicitHeight = 646
@@ -457,10 +462,11 @@ object FrameProperties: TFrameProperties
     end
     object tsMagnitude: TTabSheet
       ImageIndex = 4
-      object Splitter4: TSplitter
+      object splitMagnitude: TSplitter
         Left = 497
         Top = 27
         Height = 643
+        OnMoved = splitMagnitudeMoved
         ExplicitLeft = 505
         ExplicitTop = 24
         ExplicitHeight = 646
@@ -528,6 +534,7 @@ object FrameProperties: TFrameProperties
         ColCount = 7
         FixedCols = 0
         RowCount = 14
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         PopupMenu = puMagnitude
         TabOrder = 1
         ColWidths = (
@@ -671,18 +678,35 @@ object FrameProperties: TFrameProperties
         PopupMenu = puTreeDate
         TabOrder = 1
       end
-      object vtcDates: TChart
+      object Panel22: TPanel
         Left = 372
         Top = 27
         Width = 1134
         Height = 643
-        Title.Text.Strings = (
-          'TChart')
         Align = alClient
-        PopupMenu = puCharts
+        Caption = 'Panel22'
         TabOrder = 2
-        DefaultCanvas = 'TGDIPlusCanvas'
-        ColorPaletteIndex = 13
+        object vtcDates: TChart
+          Left = 1
+          Top = 1
+          Width = 1132
+          Height = 541
+          Title.Text.Strings = (
+            'TChart')
+          Align = alClient
+          PopupMenu = puCharts
+          TabOrder = 0
+          DefaultCanvas = 'TGDIPlusCanvas'
+          ColorPaletteIndex = 13
+        end
+        object pDatesIceCream: TPanel
+          Left = 1
+          Top = 542
+          Width = 1132
+          Height = 100
+          Align = alBottom
+          TabOrder = 1
+        end
       end
     end
     object tsHistory: TTabSheet
@@ -864,13 +888,13 @@ object FrameProperties: TFrameProperties
         TabOrder = 1
         object TabSheet1: TTabSheet
           Caption = 'TabSheet1'
-          object Splitter8: TSplitter
+          object splitTop101Size: TSplitter
             Left = 881
             Top = 27
             Height = 586
-            ExplicitLeft = 944
-            ExplicitTop = 184
-            ExplicitHeight = 100
+            OnMoved = splitTop101SizeMoved
+            ExplicitLeft = 886
+            ExplicitTop = 33
           end
           object Panel1: TPanel
             Left = 0
@@ -952,10 +976,11 @@ object FrameProperties: TFrameProperties
         object TabSheet2: TTabSheet
           Caption = 'TabSheet2'
           ImageIndex = 1
-          object Splitter9: TSplitter
+          object splitTop101Dates: TSplitter
             Left = 881
             Top = 27
             Height = 586
+            OnMoved = splitTop101DatesMoved
             ExplicitLeft = 889
           end
           object Panel18: TPanel
@@ -1112,10 +1137,11 @@ object FrameProperties: TFrameProperties
     end
     object tsUsers: TTabSheet
       ImageIndex = 9
-      object Splitter6: TSplitter
+      object splitUsers: TSplitter
         Left = 497
         Top = 27
         Height = 643
+        OnMoved = splitUsersMoved
         ExplicitLeft = 505
         ExplicitTop = 24
         ExplicitHeight = 646
@@ -1216,10 +1242,11 @@ object FrameProperties: TFrameProperties
     end
     object tsTemporary: TTabSheet
       ImageIndex = 10
-      object Splitter7: TSplitter
+      object splitTemporary: TSplitter
         Left = 777
         Top = 27
         Height = 643
+        OnMoved = splitTemporaryMoved
         ExplicitLeft = 944
         ExplicitTop = 208
         ExplicitHeight = 100
@@ -1284,10 +1311,11 @@ object FrameProperties: TFrameProperties
     end
     object tsLength: TTabSheet
       ImageIndex = 11
-      object Splitter10: TSplitter
+      object splitLengths: TSplitter
         Left = 433
         Top = 27
         Height = 643
+        OnMoved = splitLengthsMoved
         ExplicitLeft = 592
         ExplicitTop = 224
         ExplicitHeight = 100

@@ -42,7 +42,7 @@ __published:	// IDE-managed Components
 	TTabSheet *tsTemporary;
 	TTabSheet *tsLength;
 	TStringGrid *sgCategories;
-	TSplitter *Splitter1;
+	TSplitter *splitCategories;
 	TPopupMenu *puCharts;
 	TMenuItem *miChartOptions;
 	TMenuItem *N9;
@@ -194,17 +194,16 @@ __published:	// IDE-managed Components
 	TPanel *Panel11;
 	TPanel *Panel12;
 	TTreeView *tvDates;
-	TChart *vtcDates;
 	TStringGrid *sgFolders;
-	TSplitter *Splitter3;
+	TSplitter *splitFolders;
 	TChart *vtcFolders;
 	TStringGrid *sgMagnitude;
-	TSplitter *Splitter4;
+	TSplitter *splitMagnitude;
 	TChart *vtcMagnitude;
-	TSplitter *Splitter5;
+	TSplitter *splitTypes;
 	TChart *vtcTypes;
 	TStringGrid *sgUsers;
-	TSplitter *Splitter6;
+	TSplitter *splitUsers;
 	TChart *vtcUsers;
 	TPanel *Panel13;
 	TChart *vtcHistory;
@@ -226,7 +225,7 @@ __published:	// IDE-managed Components
 	TRadioButton *rbUsersSize;
 	TRadioButton *rbUsersQuantity;
 	TStringGrid *sgTemporary;
-	TSplitter *Splitter7;
+	TSplitter *splitTemporary;
 	TChart *vtcTemporary;
 	TSpeedButton *SpeedButton6;
 	TRadioButton *rbTempBySize;
@@ -236,7 +235,7 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheet2;
 	TPanel *Panel1;
 	TPanel *Panel15;
-	TSplitter *Splitter8;
+	TSplitter *splitTop101Size;
 	TPanel *Panel16;
 	TPanel *Panel17;
 	TStringGrid *sgTop101Big;
@@ -249,12 +248,12 @@ __published:	// IDE-managed Components
 	TPanel *Panel19;
 	TPanel *Panel20;
 	TStringGrid *sgTop101BigDate;
-	TSplitter *Splitter9;
+	TSplitter *splitTop101Dates;
 	TStringGrid *sgTop101SmallDate;
 	TComboBox *cbTop101DateDate;
 	TStringGrid *sgLengths;
 	TChart *vtcLengths;
-	TSplitter *Splitter10;
+	TSplitter *splitLengths;
 	TStringGrid *sgNullFolders;
 	TSplitter *Splitter11;
 	TStringGrid *sgNullFiles;
@@ -307,6 +306,9 @@ __published:	// IDE-managed Components
 	TStringGrid *sgTypes;
 	TSplitter *Splitter12;
 	TComboBox *ComboBox3;
+	TPanel *Panel22;
+	TChart *vtcDates;
+	TPanel *pDatesIceCream;
 	void __fastcall sbCategoriesPieClick(TObject *Sender);
 	void __fastcall sbCategoriesBarClick(TObject *Sender);
 	void __fastcall miOA1Click(TObject *Sender);
@@ -373,7 +375,34 @@ __published:	// IDE-managed Components
 	void __fastcall tvTypesClick(TObject *Sender);
 	void __fastcall rbTypesBySizeClick(TObject *Sender);
 	void __fastcall pcPropertiesChange(TObject *Sender);
+	void __fastcall splitCategoriesMoved(TObject *Sender);
+	void __fastcall tsExtensionsResize(TObject *Sender);
+	void __fastcall splitTypesMoved(TObject *Sender);
+	void __fastcall splitFoldersMoved(TObject *Sender);
+	void __fastcall splitMagnitudeMoved(TObject *Sender);
+	void __fastcall splitTop101DatesMoved(TObject *Sender);
+	void __fastcall splitTop101SizeMoved(TObject *Sender);
+	void __fastcall splitUsersMoved(TObject *Sender);
+	void __fastcall splitTemporaryMoved(TObject *Sender);
+	void __fastcall splitLengthsMoved(TObject *Sender);
 private:	// User declarations
+
+	static constexpr int CategoryWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int TypesWidths[6] = { 100, 50, 52, 4, 60, 52 };
+	static constexpr int ExtensionsWidths[8] = { 75, 65, 52, 4, 65, 52, 4, 100 };
+	static constexpr int FoldersWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int MagnitudesWidths[7] = { 10, 100, 40, 52, 4, 60, 52 };
+	static constexpr int Top101SizeBigWidths[3] = { 100, 60, 90 };
+	static constexpr int Top101SizeSmallWidths[2] = { 100, 60 };
+	static constexpr int Top101DateBigWidths[4] = { 100, 65, 60, 90 };
+	static constexpr int Top101DateSmallWidths[4] = { 100, 65, 60, 90 };
+	static constexpr int UsersWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int TempWidths[2] = { 100, 80 };
+	static constexpr int LengthsWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+
+	static constexpr double FilterValues[8] = { 0, 1, 2, 3, 4, 5, 10, 15 };
+
+    static const int kChartCount = 9;
 
 	static const int kGridTemp            = 0;
 	static const int kGridTop101Big       = 2;
@@ -392,19 +421,20 @@ private:	// User declarations
 
     std::vector<std::wstring> SearchStrings;
 
+	TChart* Charts[kChartCount];
+
 	TMenuItem* FileCategoryMenus[19];
 
 	void Init();
 	void InitMenus();
 
 	// tab generic
-	void UpdateDisplay(int);
-    void UpdateControls();
+	void UpdateControls();
 
 	// tab categories
 	void InitCategoriesTab();
 	void BuildCategoriesTable();
-	void BuildCategoriesChart();
+	void BuildCategoriesChart(int);
 
 	// tab types
     void InitTypesTab();
@@ -424,6 +454,7 @@ private:	// User declarations
 
 	// tab dates
 	void InitDatesTab();
+	void DatesUpdateDropDowns();
 
 	// tab history
 	void InitHistoryTab();
@@ -438,6 +469,7 @@ private:	// User declarations
 
 	// tab users
 	void InitUsersTab();
+    void UsersUpdateDropDowns();
 
 	// tab temp
 	void InitTempTab();
@@ -451,6 +483,10 @@ public:		// User declarations
 	int DataSource = 0;
 
 	JITProperties JIT;
+
+	void UpdateDisplay(int);
+
+    void SaveSettings();
 
 	void Update();
 

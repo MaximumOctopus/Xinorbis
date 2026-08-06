@@ -9,6 +9,9 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ComCtrls.hpp>
+#include <Vcl.ExtCtrls.hpp>
+
+#include "XIceCream.h"
 //---------------------------------------------------------------------------
 class TFrameSummary : public TFrame
 {
@@ -47,11 +50,18 @@ __published:	// IDE-managed Components
 	TLabel *lSULSNoFX;
 	TLabel *lSLFX;
 	TLabel *lSULSSoFX;
+	TPanel *pICQuantity;
+	TPanel *Panel1;
 private:
 
+	XIceCream *icQuantity = nullptr;
+	XIceCream *icSize = nullptr;
+
 	void Init();
-    void BuildPreamble();
+	void BuildPreamble();
 	void BuildSummaryLabels();
+
+    void BuildIceCream(int);
 	void BuildGauges();
 
 public:
@@ -60,7 +70,6 @@ public:
     int DataSource = 0;
 
     void Update();
-
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSummary *FrameSummary;

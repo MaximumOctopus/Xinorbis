@@ -13,12 +13,19 @@
 #pragma once
 
 
+enum class InitStatus { kNone = 0, kInstallCheckFail, kSuccess };
+
+
 class SystemGlobal
 {
 
 	void Init();
 
+	bool InstallationCheck();
+
 public:
+
+	InitStatus Status = InitStatus::kNone;
 
 	std::wstring ExePath = L"";
 	std::wstring HelpPath = L"";

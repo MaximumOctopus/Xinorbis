@@ -18,7 +18,15 @@ ImageHandler* GImageHandler;
 
 ImageHandler::ImageHandler(const std::wstring folder)
 {
-    LoadIcons(folder);
+	if (!folder.empty())
+	{
+		LoadIcons(folder + L"\\system\\images\\");
+	}
+}
+
+
+ImageHandler::~ImageHandler()
+{
 }
 
 
@@ -26,14 +34,14 @@ void ImageHandler::LoadIcons(const std::wstring folder)
 {
 	for (int t = 0; t < kButtonImagesCount; t++)
 	{
-		std::wstring file_name = folder + L"\On\\" + std::to_wstring(t) + L".bmp";
+		std::wstring file_name = folder + L"\\On\\" + std::to_wstring(t) + L".bmp";
 
 		TBitmap *bmon = new TBitmap();
 		bmon->LoadFromFile(file_name.c_str());
 		ImagesOn.push_back(bmon);
 		bmon->Free();
 
-		file_name = folder + L"\Off\\" + std::to_wstring(t) + L".bmp";
+		file_name = folder + L"\\Off\\" + std::to_wstring(t) + L".bmp";
 		TBitmap *bmon2 = new TBitmap();
 		bmon2->LoadFromFile(file_name.c_str());
 		ImagesOff.push_back(bmon);
@@ -42,7 +50,7 @@ void ImageHandler::LoadIcons(const std::wstring folder)
 
 	for (int t = 0; t < kFileTypeImagesCount; t++)
 	{
-		std::wstring file_name = folder + L"\Icons\\" + std::to_wstring(t) + L".bmp";
+		std::wstring file_name = folder + L"\\Icons\\" + std::to_wstring(t) + L".bmp";
 
 		TBitmap *bmft = new TBitmap();
 		bmft->LoadFromFile(file_name.c_str());
@@ -63,4 +71,27 @@ void ImageHandler::LoadFlags(const std::wstring folder)
 
 		delete flag;
 	}
+}
+
+
+void ImageHandler::SetButtonOnImage(TSpeedButton*, int)
+{
+}
+
+
+void ImageHandler::SetButtonOffImage(TSpeedButton*, int)
+{
+}
+
+
+//	void ImageHandler::SetButtonImageEnabled(mrbutton : TW7ToolButton; aOffStart : integer; aEnabled : boolean);
+
+
+void ImageHandler::SetFolderHistoryButtonImage(TSpeedButton*, int)
+{
+}
+
+
+void ImageHandler::SetPieBarImages(TSpeedButton*, TSpeedButton*)
+{
 }

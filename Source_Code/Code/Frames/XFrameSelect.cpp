@@ -3,17 +3,29 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <algorithm>
+#include <System.DateUtils.hpp>
+
 #include "XFrameSelect.h"
+#include "XFormExcludeFiles.h"
+#include "XFormExcludeFolders.h"
 #include "XFormXinorbisDialog.h"
 
+#include "ConstantsGui.h"
 #include "LanguageHandler.h"
+#include "LoadDialogs.h"
+#include "ReportInformation.h"
 #include "ScanEngine.h"
+#include "ScanHistoryHandler.h"
 #include "SettingsHandler.h"
+#include "SystemGlobal.h"
 #include "WindowsUtility.h"
 
 extern LanguageHandler* GLanguageHandler;
-extern ScanEngine* GScanEngine;
+extern ScanEngine *GScanEngine;
+extern ScanHistoryHandler *GScanHistoryHandler;
 extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -31,6 +43,9 @@ __fastcall TFrameSelect::TFrameSelect(TComponent* Owner)
 
 void TFrameSelect::Init()
 {
+	// tab scan
+	tsScan->Caption = GLanguageHandler->Text[kScanDriveFolder].c_str();
+
 	bScanNow->Caption = GLanguageHandler->Text[kScan].c_str();
 	bExplore->Caption = GLanguageHandler->Text[kExplore].c_str();
 
@@ -40,19 +55,48 @@ void TFrameSelect::Init()
 	bExcludeFiles->Caption = GLanguageHandler->Text[kExclude].c_str();
 	bCombine->Caption = GLanguageHandler->Text[kCombine].c_str();
 
+	// tab import
+	tsImport->Caption = GLanguageHandler->Text[kImportScanDetail].c_str();
+
+	bSelectImport->Caption = GLanguageHandler->Text[kSelect].c_str();
+	bOpenImport->Caption = GLanguageHandler->Text[kOpen].c_str();
+
+	// tab history
+	tsScanHistory->Caption = GLanguageHandler->Text[kScanHistory].c_str();
+
+	sgScanHistory->ColWidths[3] = -1;
+	sgScanHistory->ColWidths[4] = -1;
+	sgScanHistory->Cells[0][0] = GLanguageHandler->Text[kDate].c_str();
+	sgScanHistory->Cells[1][0] = GLanguageHandler->Text[kTime].c_str();
+	sgScanHistory->Cells[2][0] = GLanguageHandler->Text[kFolder].c_str();
+
+	bShowYesterday->Caption = GLanguageHandler->Text[kYesterday].c_str();
+	bShowLastMonth->Caption = GLanguageHandler->Text[kLastMonth].c_str();
+	bShowAll->Caption       = GLanguageHandler->Text[kAll].c_str();
+	bShowThisWeek->Caption  = GLanguageHandler->Text[kThisWeek].c_str();
+	bShowThisMonth->Caption = GLanguageHandler->Text[kThisMonth].c_str();
+	bShowLastWeek->Caption  = GLanguageHandler->Text[kLastWeek].c_str();
+
 	// popup menus
 	miQFTitle->Caption = GLanguageHandler->Text[kFavourites].c_str();
 	miQFAdd->Caption = GLanguageHandler->Text[kAddCurrentFolder].c_str();
 }
 
 
+void TFrameSelect::SaveSettings()
+{
+	GSettingsHandler->State.LastScanPath = eScanPath->Text.c_str();
+}
+
+
+#pragma region Tab_Scan
 void __fastcall TFrameSelect::bScanNowClick(TObject *Sender)
 {
 	if (OnNewScan)
 	{
 		std::wstring path = eScanPath->Text.c_str();
 
-		OnNewScan(path);
+		OnNewScan(path, DataSource, false);
 	}
 }
 
@@ -76,19 +120,24 @@ void __fastcall TFrameSelect::bExploreClick(TObject *Sender)
 
 void __fastcall TFrameSelect::bSelectClick(TObject *Sender)
 {
-	std::wstring folder = L""; //WindowsUtility::BrowseForFolder(Handle);
+	std::vector<std::wstring> paths;
 
-	if (!folder.empty())
+	if (WindowsUtility::BrowseForFolder(paths, true, false))
 	{
-		eScanPath->Text = folder.c_str();
+		std::wstring folder = paths[0];
 
-		GScanEngine->ExcludedFolders.clear();
-		GScanEngine->ExcludedFiles.clear();
-
-		if (eScanPath->Text[1] == L':')
+		if (!folder.empty())
 		{
-			dcbSelect->Drive     = folder[1];
-			dlbSelect->Directory = folder.c_str();
+			eScanPath->Text = folder.c_str();
+
+			GScanEngine->ExcludedFolders.clear();
+			GScanEngine->ExcludedFiles.clear();
+
+			if (eScanPath->Text[1] == L':')
+			{
+				dcbSelect->Drive     = folder[1];
+				dlbSelect->Directory = folder.c_str();
+			}
 		}
 	}
 }
@@ -102,7 +151,7 @@ void __fastcall TFrameSelect::bFavouritesClick(TObject *Sender)
 
 void __fastcall TFrameSelect::bExcludeFoldersClick(TObject *Sender)
 {
-	// to do DoExcludedFolders(GScanEngine->ExcludedFolders, GScanEngine->ExcludeVirtual);
+	OpenExcludedFolders(GScanEngine->ExcludedFolders, GScanEngine->AllowVirtualFiles);
 
 	if (GScanEngine->ExcludedFolders.size() != 0)
 	{
@@ -117,7 +166,7 @@ void __fastcall TFrameSelect::bExcludeFoldersClick(TObject *Sender)
 
 void __fastcall TFrameSelect::bExcludeFilesClick(TObject *Sender)
 {
-	// to do 	DoExcludedFiles(GSystemGlobal.ExcludedFiles);
+	OpenExcludedFiles(GScanEngine->ExcludedFiles);
 
 	if (GScanEngine->ExcludedFiles.size() != 0)
 	{
@@ -147,7 +196,9 @@ void __fastcall TFrameSelect::dlbSelectChange(TObject *Sender)
 
 void __fastcall TFrameSelect::puScanHistoryPopup(TObject *Sender)
 {
-	// to do miQFAdd->Enabled = !(Utility::QuickFolderExists(eScanPath->Text));
+	std::wstring folder = eScanPath->Text.c_str();
+
+	miQFAdd->Enabled = !WindowsUtility::DirectoryExists(folder);
 }
 
 
@@ -180,3 +231,178 @@ void TFrameSelect::UpdateQuickFolders()
 		}
 	}
 }
+#pragma end_region
+
+
+#pragma region Tab_Import
+void __fastcall TFrameSelect::bSelectImportClick(TObject *Sender)
+{
+	std::wstring file_name = LoadDialogs::Execute(GLanguageHandler->Text[kSupportedFileTypes] + L" (*.csv, *.zsr, *.zsr2)|*.csv; *.zsr; *.zsr2|" + GLanguageHandler->Text[kCSVFiles] + L" (*.csv)|*.csv|Xinorbis (*.zsr)|*.zsr|Xinorbis v2 (*.zsr2)|*.zsr2",
+												  L".csv",
+												  GSystemGlobal->AppDataPath + L"reports\\",
+												  L"");
+
+	if (!file_name.empty())
+	{
+		eImportFileName->Text = file_name.c_str();
+
+		ReportDetail(file_name);
+	}
+}
+
+
+void __fastcall TFrameSelect::bOpenImportClick(TObject *Sender)
+{
+	if (OnNewScan)
+	{
+		OnNewScan(eImportFileName->Text.c_str(), kDataScan, true);
+	}
+}
+
+
+void TFrameSelect::ReportDetail(const std::wstring file_name)
+{
+	mImport->Clear();
+
+	std::vector<std::wstring> *data = new std::vector<std::wstring>;
+
+	std::wstring fnuc = file_name;
+
+	std::transform(fnuc.begin(), fnuc.end(), fnuc.begin(), ::toupper);
+
+	if (fnuc.find(L".ZSR2") != std::wstring::npos)
+	{
+		ReportInformation::GetInfoXinorbis2Report(file_name, data);
+	}
+	else if (fnuc.find(L".ZSR") != std::wstring::npos)
+	{
+		ReportInformation::GetInfoXinorbisReport(file_name, data);
+	}
+	else if (fnuc.find(L".CSV") != std::wstring::npos)
+	{
+		ReportInformation::GetInfoCSVReport(file_name, data);
+	}
+	else
+	{
+		data->push_back(GLanguageHandler->Text[kReport] + L": " + GLanguageHandler->Text[kUnknown]);
+	}
+
+	if (data->size() != 0)
+	{
+		for (std::wstring s : *data)
+		{
+            mImport->Lines->Add(s.c_str());
+		}
+	}
+
+    delete data;
+}
+#pragma end_region
+
+
+#pragma region Tab_Recent
+void __fastcall TFrameSelect::bShowAllClick(TObject *Sender)
+{
+	TBitBtn *button = (TBitBtn*)Sender;
+
+    BuildScanHistory(button->Tag);
+}
+
+
+void TFrameSelect::BuildScanHistory(int range)
+{
+	const static int kRangeAll = 0;
+	const static int kRangeYesterday = 1;
+	const static int kRangeThisWeek = 2;
+	const static int kRangeThisMonth = 3;
+	const static int kRangeLastWeek = 4;
+	const static int kRangeLastMonth = 5;
+
+	int DateFrom = 0;
+	int DateTo = 0;
+	int Count = 0;
+
+	if (GScanHistoryHandler->History.size() != 0)
+	{
+		switch (range)
+		{
+		case kRangeAll:
+			DateFrom = 00000000;
+			DateTo   = 99999999;
+			break;
+		case kRangeYesterday:
+			DateFrom = Convert::DateToYYYYMMDDI(IncDay(Now(), -1));
+			DateTo   = Convert::DateToYYYYMMDDI(IncDay(Now(), -1));
+			break;
+		case kRangeThisWeek:
+			DateFrom = Convert::DateToYYYYMMDDI(IncMonth(Now(), -7));
+			DateTo   = Convert::DateToYYYYMMDDI(Now());
+			break;
+		case kRangeThisMonth:
+			DateFrom = Convert::DateToYYYYMMDDI(IncDay(Now(), -31));
+			DateTo   = Convert::DateToYYYYMMDDI(Now());
+			break;
+		case kRangeLastWeek:
+			DateFrom = Convert::DateToYYYYMMDDI(IncDay(Now(), -14));
+			DateTo   = Convert::DateToYYYYMMDDI(IncDay(Now(), -7));
+			break;
+		case kRangeLastMonth:
+			DateFrom = Convert::DateToYYYYMMDDI(StartOfTheMonth(IncMonth(Now(), -1)));
+			DateTo   = Convert::DateToYYYYMMDDI(EndOfTheMonth(IncMonth(Now(), -1)));
+			break;
+
+		default:
+			DateFrom = 00000000;
+			DateTo   = 99999999;
+		}
+
+//		sgScanHistory.ClearRows(1, sgScanHistory.RowCount - 1);
+		sgScanHistory->RowCount = 2;
+
+		for (ScanHistoryItem *sho : GScanHistoryHandler->History)
+		{
+			if (sho->Date >= DateFrom && sho->Date <= DateTo)
+			{
+				sgScanHistory->Cells[0][Count + 1] = Convert::IntDateToString(sho->Date).c_str();
+				sgScanHistory->Cells[1][Count + 1] = sho->Time.c_str();
+				sgScanHistory->Cells[2][Count + 1] = sho->Path.c_str();
+				sgScanHistory->Cells[3][Count + 1] = sho->ExcludeFiles.c_str();
+				sgScanHistory->Cells[4][Count + 1] = sho->ExcludeFolders.c_str();
+
+				sgScanHistory->RowCount++;
+
+				Count++;
+			}
+		}
+
+		if (sgScanHistory->Cells[0][1] == L"")
+		{
+			sgScanHistory->Cells[0][Count + 1] = GLanguageHandler->Text[kNoneFound].c_str();
+			sgScanHistory->Cells[1][Count + 1] = L"";
+			sgScanHistory->Cells[2][Count + 1] = L"";
+			sgScanHistory->Cells[3][Count + 1] = L"";
+			sgScanHistory->Cells[4][Count + 1] = L"";
+		}
+	}
+	else
+	{
+		sgScanHistory->RowCount = 2;
+
+		sgScanHistory->Cells[0][1] = L"----";
+		sgScanHistory->Cells[1][1] = L"----";
+		sgScanHistory->Cells[2][1] = L"----";
+		sgScanHistory->Cells[3][1] = L"";
+		sgScanHistory->Cells[4][1] = L"";
+	}
+
+	tsScanHistory->Caption = (GLanguageHandler->Text[kScanHistory] + L" (" + std::to_wstring(Count) + L")").c_str();
+}
+
+
+void __fastcall TFrameSelect::tsScanHistoryResize(TObject *Sender)
+{
+	sgScanHistory->ColWidths[kScanHistoryDate] = HistoryWidths[kScanHistoryDate];
+	sgScanHistory->ColWidths[kScanHistoryTime] = HistoryWidths[kScanHistoryTime];
+	sgScanHistory->ColWidths[kScanHistoryPath] = sgScanHistory->Width - (__WidthOfScrollbar + HistoryWidths[kScanHistoryDate] + HistoryWidths[kScanHistoryTime]);
+}
+#pragma end_region

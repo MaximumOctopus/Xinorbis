@@ -10,18 +10,7 @@
 //
 // =====================================================================
 
-#pragma once
-
-#include <VCLTee.Chart.hpp>
-#include <Vcl.Grids.hpp>
+#include "DatabaseHandler.h"
 
 
-namespace TabUiTypes
-{
-	void Chart(TChart*, int, int);
-
-	void List(TStringGrid*, int);
-
-	void Tree(TTreeView*, int, int);
-	int TreePost(TTreeView* view);
-}
+DatabaseHandler *GDatabaseHandler;

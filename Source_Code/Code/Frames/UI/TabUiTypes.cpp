@@ -97,8 +97,8 @@ void TabUiTypes::Tree(TTreeView* view, int DataSource, int index)
 }
 
 
-void TabUiTypes::TreePost(TTreeView* view)
-{                /*
+int TabUiTypes::TreePost(TTreeView* view)
+{
 	if (view->Items->Count != 0)
 	{
 		int i = -1;
@@ -106,9 +106,11 @@ void TabUiTypes::TreePost(TTreeView* view)
 
 		while (i == -1 && t < view->Items->Count)
 		{
-			if (view->Items[t]->Parent != nullptr)
+			if (view->Items->Item[t]->Parent != nullptr)
 			{
-				if (Pos('0%', view.Items[t].Text) = 0)
+				std::wstring nt = view->Items->Item[t]->Text.c_str();
+
+				if (nt.find(L"0%") == std::wstring::npos)
 				{
 					i = t;
 				}
@@ -119,7 +121,7 @@ void TabUiTypes::TreePost(TTreeView* view)
 
 		if (i != -1)
 		{
-			view->Select(view->Items[i], []);
+			view->Select(view->Items->Item[i], TShiftState() << ssLeft);
 
 			return 1;
 		}
@@ -129,7 +131,7 @@ void TabUiTypes::TreePost(TTreeView* view)
 		return  2;
 	}
 
-	return 0;         */
+	return 0;
 }
 
 

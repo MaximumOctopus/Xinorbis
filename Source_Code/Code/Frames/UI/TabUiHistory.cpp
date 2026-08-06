@@ -101,12 +101,18 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 {
 	if (interval <= kIntervalYear)
 	{
-//		switch (date_select)
-//		{                   TO DO TO DO TO Do
-//		CCreatedDate  : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDates));
-//		CAccessedDate : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
-//		CModifiedDate : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
-//		}
+		switch (date_select)
+		{
+		case kCreatedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
+			break;
+		case kAccessedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
+			break;
+		case kModifiedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
+			break;
+		}
 	}
 
 	unsigned __int64 ExtSpreadHistory[kFileCategoriesCount][2];
@@ -434,11 +440,17 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 
 	if (interval <= kIntervalYear)
 	{
-//		switch (date_select)
-//		{                TO DO
-//		case kCreatedDate  : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDates));
-//		case kAccessedDate : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
-//		case kModifiedDate : GScanEngine->[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
-//		}
+		switch (date_select)
+		{
+		case kCreatedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
+			break;
+		case kAccessedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
+			break;
+		case kModifiedDate:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
+            break;
+		}
 	}
-} //440
+}

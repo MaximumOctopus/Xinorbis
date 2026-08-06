@@ -4,7 +4,12 @@
 #pragma hdrstop
 
 #include "XFrameProperties.h"
+
 #include "XFormChartOptions.h"
+#include "XFormGetCopyMove.h"
+#include "XFormMoreDetail.h"
+#include "XFormShowMD5.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ChartUtility.h"
 #include "ConstantsGui.h"
@@ -13,6 +18,7 @@
 #include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
+#include "MD5.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
@@ -22,8 +28,10 @@
 #include "WindowsUtility.h"
 
 #include "TabUiDates.h"
+#include "TabUiFolders.h"
 #include "TabUiHistory.h"
 #include "TabUiLength.h"
+#include "TabUiMagnitude.h"
 #include "TabUiNull.h"
 #include "TabUiTop101.h"
 #include "TabUiTypes.h"
@@ -49,6 +57,7 @@ __fastcall TFrameProperties::TFrameProperties(TComponent* Owner)
 //---------------------------------------------------------------------------
 
 
+#pragma region Application_Control
 void TFrameProperties::Init()
 {
 	// tab titles
@@ -64,6 +73,10 @@ void TFrameProperties::Init()
 	tsUsers->Caption      = GLanguageHandler->Text[kUsers].c_str();
 	tsTemporary->Caption  = GLanguageHandler->Text[kTemp].c_str();
 	tsLength->Caption     = GLanguageHandler->Text[kLength].c_str();
+
+	Charts[0] = vtcCategories; Charts[1] = vtcTypes;   Charts[2] = vtcFolders;
+	Charts[3] = vtcMagnitude;  Charts[4] = vtcDates;   Charts[5] = vtcTemporary;
+	Charts[6] = vtcUsers;      Charts[7] = vtcHistory; Charts[8] = vtcLengths;
 
 	// tabs
 	InitCategoriesTab();
@@ -223,16 +236,16 @@ void TFrameProperties::Update()
 	UpdateControls();
 
 	BuildCategoriesTable();
-	BuildCategoriesChart();
+	BuildCategoriesChart(GSettingsHandler->Chart.LabelOptions);
 
 	TabUiTypes::Tree(tvTypes, DataSource, 2);
 	rbTypesBySizeClick(NULL);
 
 	BuildExtensionsTable();
 
-	Top101UpdateDropDowns();
-
 	BuildMagnitudeTable();
+
+	Top101UpdateDropDowns();
 }
 
 
@@ -240,6 +253,38 @@ void TFrameProperties::UpdateControls()
 {
 	UpdateHistoryDropDowns();
 }
+
+
+void TFrameProperties::SaveSettings()
+{
+	if (GSettingsHandler->OpenSettings(false))
+	{
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_sgMainReport_" + std::to_wstring(DataSource), sgCategories->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_sgDirList_"    + std::to_wstring(DataSource), sgFolders->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_sgMagnitude_"  + std::to_wstring(DataSource), sgMagnitude->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_tvMain_"       + std::to_wstring(DataSource), tvTypes->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_vtcTree_"      + std::to_wstring(DataSource), sgTemporary->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_vtcFileDates_" + std::to_wstring(DataSource), tvDates->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_Top50_"        + std::to_wstring(DataSource), sgTop101Big->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_Top101Dates_"  + std::to_wstring(DataSource), sgTop101BigDate->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_Users_"        + std::to_wstring(DataSource), sgUsers->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"Sizes_sgLength_"     + std::to_wstring(DataSource), sgLengths->Width);
+
+		// ===========================================================================
+
+		for (int t = 0; t < kChartCount; t++)
+		{
+			GSettingsHandler->WriteInteger(L"Charts", L"Report_" + std::to_wstring(DataSource) + L"_" + std::to_wstring(t + 1), ChartUtility::GetChartTypeInt(Charts[t]));
+		}
+
+		GSettingsHandler->CloseSettings();
+	}
+	else
+	{
+//		GLog		TMSLogger.Error('Error saving FrameReports settings.');
+	}
+}
+#pragma end_region
 
 
 #pragma region Tab_Generic
@@ -276,10 +321,10 @@ void TFrameProperties::UpdateDisplay(int display)
 
 		if (cbDatesUsers->ItemIndex != 0)
 		{
-			int user_id = cbDatesUsers->ItemIndex - 1; // to do check
+			int user_id = cbDatesUsers->ItemIndex - 1;
 		}
 
-		TabUiDates::Tree(tvDates, DataSource, user_id, cbDatesDateRange->ItemIndex, true, rbDatesByQuantity->Checked);
+		TabUiDates::Tree(tvDates, nullptr, DataSource, user_id, cbDatesDateRange->ItemIndex, true, rbDatesByQuantity->Checked);
 		TabUiDates::Chart(tvDates, vtcDates);
 		break;
 	}
@@ -289,7 +334,7 @@ void TFrameProperties::UpdateDisplay(int display)
 
 		if (cbHistoryUsers->ItemIndex != 0)
 		{
-			user_id = cbHistoryUsers->ItemIndex - 1; // to do check
+			user_id = cbHistoryUsers->ItemIndex - 1;
 		}
 
 		TabUiHistory::Chart(vtcHistory, SearchStrings, DataSource, user_id,
@@ -306,12 +351,12 @@ void TFrameProperties::UpdateDisplay(int display)
 
 		if (cbTop101SizeUser->ItemIndex != 0)
 		{
-			suser_id = cbTop101SizeUser->ItemIndex - 1; // to do check
+			suser_id = cbTop101SizeUser->ItemIndex - 1;
 		}
 
 		if (cbTop101DateUser->ItemIndex != 0)
 		{
-			duser_id = cbTop101DateUser->ItemIndex - 1; // to do check
+			duser_id = cbTop101DateUser->ItemIndex - 1;
 		}
 
 		TabUiTop101::Size(sgTop101Big, sgTop101Small, DataSource, suser_id);
@@ -347,7 +392,7 @@ void TFrameProperties::UpdateDisplay(int display)
 			vtcLengths->Tag = 2;
 		}
 
-		TabUiLength::Table(sgLengths, DataSource, 3, miLengthShowAll->Checked); // to do 3 is hardcoded, make constant!
+		TabUiLength::Table(sgLengths, DataSource, kTabDisplayOptionLengths, miLengthShowAll->Checked);
 		TabUiLength::Chart(vtcLengths, DataSource, GSettingsHandler->Chart.LabelOptions);
 		break;
 	}
@@ -443,7 +488,13 @@ void TFrameProperties::InitCategoriesTab()
 	rbCategoriesBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbCategoriesByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
+	sgCategories->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgCategories->RowCount = kFileCategoriesCount + 1;
+
+	for (int t = 0; t < 7; t++)
+	{
+		sgCategories->ColWidths[t] = CategoryWidths[t];
+	}
 }
 
 
@@ -464,13 +515,13 @@ void TFrameProperties::BuildCategoriesTable()
 }
 
 
-void TFrameProperties::BuildCategoriesChart()
+void TFrameProperties::BuildCategoriesChart(int LabelOptions)
 {
 	if (GScanEngine->Data[DataSource].FileCount > 0)
 	{
 		// == don't show size details if the chart is in quantity mode =============
 ///		if oChart->Tag = fQuantity then
-//		  ChartLabelOption = 0;
+//		  LabelOptions = kLabelOptionDefault;
 		// =========================================================================
 
 		vtcCategories->SeriesList->Items[0]->Clear();
@@ -488,17 +539,18 @@ void TFrameProperties::BuildCategoriesChart()
 
 				s = GScanEngine->Data[DataSource].ExtensionSpread[t].Name;
 
-//        case ChartLabelOption of                                            to do
-//          CLabelOptionDefault        : s = TypeDescriptions[t];
-//          CLabelOptionMostConvenient : s = TConvert.ConvertToUsefulUnit(GScanEngine[aDataIndex].ExtensionSpread[t, fSize]);
-//          CLabelOptionKilobyte       : s = TConvert.ConvertToStaticUnit(GScanEngine[aDataIndex].ExtensionSpread[t, fSize], unitKB);
-//          CLabelOptionMegabyte       : s = TConvert.ConvertToStaticUnit(GScanEngine[aDataIndex].ExtensionSpread[t, fSize], unitMB);
-//          CLabelOptionGigabyte       : s = TConvert.ConvertToStaticUnit(GScanEngine[aDataIndex].ExtensionSpread[t, fSize], unitGB);
-//        }
+				switch (LabelOptions)
+				{
+				case kLabelOptionDefault: 		 s = GLanguageHandler->TypeDescriptions[t]; break;
+				case kLabelOptionMostConvenient: s = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size); break;
+				case kLabelOptionKilobyte:       s = Convert::ConvertToStaticUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size, UnitConversion::kUnitKB); break;
+				case kLabelOptionMegabyte:       s = Convert::ConvertToStaticUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size, UnitConversion::kUnitMB); break;
+				case kLabelOptionGigabyte:       s = Convert::ConvertToStaticUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size, UnitConversion::kUnitGB); break;
+				}
 
 				vtcCategories->SeriesList->Items[0]->Add((double)GScanEngine->Data[DataSource].ExtensionSpread[t].Count,
 														 s.c_str(),
-														 TColor(0xff8844));//GSystemGlobal.FileCategoryColors[t]);
+														 TColor(GSettingsHandler->FileCategoryColors[t]));
 			}
 		}
 	}
@@ -538,6 +590,19 @@ void __fastcall TFrameProperties::sbCategoriesConfigClick(TObject *Sender)
 	TPoint mouse_pos = Mouse->CursorPos;
 	puTableDisplay->Popup(mouse_pos.X, mouse_pos.Y);
 }
+
+
+void __fastcall TFrameProperties::splitCategoriesMoved(TObject *Sender)
+{
+	int total = sgCategories->ColWidths[0];
+
+	for (int t = 2; t < 7; t++)
+	{
+		total += sgCategories->ColWidths[t];
+	}
+
+	sgCategories->ColWidths[1] = sgCategories->Width - (total + __WidthOfScrollbar);
+}
 #pragma end_region
 
 
@@ -546,6 +611,14 @@ void TFrameProperties::InitTypesTab()
 {
 	rbTypesBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbTypesByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
+
+	sgTypes->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTypes->RowCount = 15;
+
+	for (int t = 0; t < 6; t++)
+	{
+		sgTypes->ColWidths[t] = TypesWidths[t];
+	}
 }
 
 
@@ -560,7 +633,7 @@ void __fastcall TFrameProperties::rbTypesBySizeClick(TObject *Sender)
 		vtcTypes->Tag = 1;
 	}
 
-	TabUiTypes::Chart(vtcTypes, DataSource, 0); // to do XSettings.Charts.Options.LabelOptions);
+	TabUiTypes::Chart(vtcTypes, DataSource, GSettingsHandler->Chart.LabelOptions);
 }
 
 
@@ -591,6 +664,19 @@ void __fastcall TFrameProperties::tvTypesClick(TObject *Sender)
 		TabUiTypes::Chart(vtcTypes, DataSource, 0); //XSettings.Charts.Options.LabelOptions);
 	}
 }
+
+
+void __fastcall TFrameProperties::splitTypesMoved(TObject *Sender)
+{
+	int total = 0;
+
+	for (int t = 1; t < 6; t++)
+	{
+		total += sgTypes->ColWidths[t];
+	}
+
+	sgTypes->ColWidths[1] = sgTypes->Width - (total + __WidthOfScrollbar);
+}
 #pragma end_region
 
 
@@ -601,6 +687,14 @@ void TFrameProperties::InitExtensionsTab()
 	cbExtensionsCustom->Caption = GLanguageHandler->Text[kShowCustom].c_str();
 	cbExtensionsOther->Caption = GLanguageHandler->Text[kShowUncategorised].c_str();
 	cbExtensionsColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
+
+	sgExtensions->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgExtensions->RowCount = 2;
+
+	for (int t = 0; t < 8; t++)
+	{
+		sgExtensions->ColWidths[t] = ExtensionsWidths[t];
+	}
 }
 
 
@@ -630,6 +724,19 @@ void TFrameProperties::BuildExtensionsTable()
 		sgExtensions->RowCount--;
 	}
 }
+
+
+void __fastcall TFrameProperties::tsExtensionsResize(TObject *Sender)
+{
+	int total = 0;
+
+	for (int t = 0; t < 7; t++)
+	{
+		total += sgExtensions->ColWidths[t];
+	}
+
+	sgExtensions->ColWidths[7] = sgExtensions->Width - (total + __WidthOfScrollbar);
+}
 #pragma end_region
 
 
@@ -640,6 +747,14 @@ void TFrameProperties::InitFoldersTab()
 	rbFoldersByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
 	sbFoldersMoreDetail->Caption = (GLanguageHandler->Text[kMoreDetail] + kEllipsis).c_str();
+
+	sgFolders->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgFolders->RowCount = 2;
+
+	for (int t = 0; t < 7; t++)
+	{
+		sgFolders->ColWidths[t] = FoldersWidths[t];
+	}
 }
 
 
@@ -674,13 +789,28 @@ void TFrameProperties::FoldersDoubleClickCell(int row)
 	{
 		if (row == 1)
 		{
-// to do			DoExplore(FSource,GScanDetails[FSource].ScanPath)
+			OpenMoreDetails(DataSource, GScanEngine->Data[DataSource].Path.String);
 		}
 		else
 		{
-//			DoExplore(FSource,GScanDetails[FSource].ScanPath + sgDirList.Cells[1, row] + '\');
+			std::wstring folder = sgFolders->Cells[1][row].c_str();
+
+			OpenMoreDetails(DataSource, GScanEngine->Data[DataSource].Path.String + folder + L"\\");
 		}
 	}
+}
+
+
+void __fastcall TFrameProperties::splitFoldersMoved(TObject *Sender)
+{
+	int total = sgFolders->ColWidths[0];
+
+	for (int t = 2; t < 7; t++)
+	{
+		total += sgFolders->ColWidths[t];
+	}
+
+	sgFolders->ColWidths[1] = sgFolders->Width - (total + __WidthOfScrollbar);
 }
 #pragma end_region
 
@@ -690,6 +820,14 @@ void TFrameProperties::InitMagnitudeTab()
 {
 	rbMagnitudeBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbMagnitudeByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
+
+	sgMagnitude->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgMagnitude->RowCount = kMagnitudesCount + 1;
+
+	for (int t = 0; t < 7; t++)
+	{
+		sgMagnitude->ColWidths[t] = MagnitudesWidths[t];
+	}
 }
 
 
@@ -749,6 +887,19 @@ void TFrameProperties::BuildMagnitudeChart(bool range)
 		}
 	}
 }
+
+
+void __fastcall TFrameProperties::splitMagnitudeMoved(TObject *Sender)
+{
+	int total = sgMagnitude->ColWidths[0];
+
+	for (int t = 2; t < 7; t++)
+	{
+		total += sgMagnitude->ColWidths[t];
+	}
+
+	sgMagnitude->ColWidths[1] = sgMagnitude->Width - (total + __WidthOfScrollbar);
+}
 #pragma end_region
 
 
@@ -759,6 +910,20 @@ void TFrameProperties::InitDatesTab()
 	rbDatesByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
 	sbDatesCollapseNodes->Caption = GLanguageHandler->Text[kCollapseNodes].c_str();
+}
+
+
+void TFrameProperties::DatesUpdateDropDowns()
+{
+	cbDatesUsers->Items->Clear();
+	cbDatesUsers->Items->Add(GLanguageHandler->Text[kAllUsers].c_str());
+
+	for (int t = 0; t < GScanEngine->Data[DataSource].Users.size(); t++)
+	{
+		cbDatesUsers->Items->Add(GScanEngine->Data[DataSource].Users[t]->Name.c_str());
+	}
+
+	cbDatesUsers->ItemIndex = 0;
 }
 #pragma end_region
 
@@ -808,6 +973,29 @@ void TFrameProperties::InitTop101Tab()
 	cbTop101DateDate->Items->Add(GLanguageHandler->Text[kAccessed].c_str());
 	cbTop101DateDate->Items->Add(GLanguageHandler->Text[kModified].c_str());
 	cbTop101DateDate->ItemIndex = 0;
+
+	sgTop101Big->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTop101Small->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTop101BigDate->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTop101SmallDate->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTop101Big->RowCount = 2;
+	sgTop101Small->RowCount = 2;
+	sgTop101BigDate->RowCount = 2;
+	sgTop101SmallDate->RowCount = 2;
+
+	for (int t = 0; t < 3; t++)
+	{
+		sgTop101Big->ColWidths[t] = Top101SizeBigWidths[t];
+	}
+
+	sgTop101Small->ColWidths[0] = Top101SizeBigWidths[0];
+	sgTop101Small->ColWidths[1] = Top101SizeSmallWidths[1];
+
+	for (int t = 0; t < 4; t++)
+	{
+		sgTop101BigDate->ColWidths[t] = Top101DateBigWidths[t];
+		sgTop101SmallDate->ColWidths[t] = Top101DateSmallWidths[t];
+	}
 }
 
 
@@ -827,6 +1015,18 @@ void TFrameProperties::Top101UpdateDropDowns()
 
 	cbTop101SizeUser->ItemIndex = 0;
 	cbTop101DateUser->ItemIndex = 0;
+}
+
+
+void __fastcall TFrameProperties::splitTop101SizeMoved(TObject *Sender)
+{
+//
+}
+
+
+void __fastcall TFrameProperties::splitTop101DatesMoved(TObject *Sender)
+{
+//
 }
 #pragma end_region
 
@@ -853,6 +1053,41 @@ void TFrameProperties::InitUsersTab()
 	}
 
 	cbUsersDisplayMode->ItemIndex = 0;
+
+	sgUsers->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgUsers->RowCount = 2;
+
+	for (int t = 0; t < 7; t++)
+	{
+		sgUsers->ColWidths[t] = UsersWidths[t];
+	}
+}
+
+
+void TFrameProperties::UsersUpdateDropDowns()
+{
+	cbUsersDisplayMode->Items->Clear();
+	cbUsersDisplayMode->Items->Add(GLanguageHandler->Text[kAllUsers].c_str());
+
+	for (int t = 0; t < GScanEngine->Data[DataSource].Users.size(); t++)
+	{
+		cbUsersDisplayMode->Items->Add(GScanEngine->Data[DataSource].Users[t]->Name.c_str());
+	}
+
+	cbUsersDisplayMode->ItemIndex = 0;
+}
+
+
+void __fastcall TFrameProperties::splitUsersMoved(TObject *Sender)
+{
+	int total = sgUsers->ColWidths[0];
+
+	for (int t = 2; t < 7; t++)
+	{
+		total += sgUsers->ColWidths[t];
+	}
+
+	sgUsers->ColWidths[1] = sgUsers->Width - (total + __WidthOfScrollbar);
 }
 #pragma end_region
 
@@ -862,6 +1097,20 @@ void TFrameProperties::InitTempTab()
 {
 	rbTempBySize->Caption  = GLanguageHandler->Text[kBySize].c_str();
 	rbTempByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
+
+	sgTemporary->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgTemporary->RowCount = 2;
+
+	sgTemporary->ColWidths[0] = TempWidths[0];
+	sgTemporary->ColWidths[1] = TempWidths[1];
+}
+
+
+void __fastcall TFrameProperties::splitTemporaryMoved(TObject *Sender)
+{
+	sgTemporary->ColWidths[0] = TempWidths[1];
+
+	sgTemporary->ColWidths[1] = sgTemporary->Width - (TempWidths[1] + __WidthOfScrollbar);
 }
 #pragma end_region
 
@@ -874,6 +1123,14 @@ void TFrameProperties::InitLengthTab()
 
 	miLengthShowAll->Caption = GLanguageHandler->Text[kShowAll].c_str();
 	miLengthNonZero->Caption = GLanguageHandler->Text[kShowNonZero].c_str();
+
+	sgLengths->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgLengths->RowCount = 2;
+
+	for (int t = 0; t < 7; t++)
+	{
+		sgLengths->ColWidths[t] = LengthsWidths[t];
+	}
 }
 
 
@@ -894,6 +1151,19 @@ void __fastcall TFrameProperties::SpeedButton15Click(TObject *Sender)
 	TPoint mouse_pos = Mouse->CursorPos;
 
 	puTableDisplay->Popup(mouse_pos.X, mouse_pos.Y);
+}
+
+
+void __fastcall TFrameProperties::splitLengthsMoved(TObject *Sender)
+{
+	int total = sgLengths->ColWidths[0];
+
+	for (int t = 2; t < 7; t++)
+	{
+		total += sgLengths->ColWidths[t];
+	}
+
+	sgLengths->ColWidths[1] = sgLengths->Width - (total + __WidthOfScrollbar);
 }
 #pragma end_region
 
@@ -958,19 +1228,17 @@ void __fastcall TFrameProperties::miOA1Click(TObject *Sender)
 {
 	int tag = ((TMenuItem*)Sender)->Tag;
 
-	for (int r = 1; r < sgExtensions->RowCount; r++)
+	if (sgExtensions->Selection.Top != -1)
 	{
-//		if (sgExtensions->RowSelect[r])      to do
-//		{
- //			FileExtension tfx;
-		// //	tfx.Name = sgExtensions->Cells[0][r];
-		//	tfx.Category = idx;
+		for (int r = sgExtensions->Selection.Top; r <= sgExtensions->Selection.Bottom; r++)
+		{
+			FileExtension *tfx = new FileExtension(sgExtensions->Cells[0][r].c_str(), tag);
 
-		//	FileExtensionsObject.CategoryExtensions.Add(tfx);
-//		}
+			GFileExtensionHandler->Extensions.push_back(tfx);
+		}
+
+		GFileExtensionHandler->SaveFileExtensionLists(GSystemGlobal->ExePath, true);
 	}
-
-	//FileExtensionsObject.SaveFileExtensionLists(GSettingsHandler->Custom.SettingsSaveLocation);
 }
 
 
@@ -998,22 +1266,22 @@ void __fastcall TFrameProperties::miExtensionsExportTableCSVClick(TObject *Sende
 	switch (tag)
 	{
 	case kGridTemp:
-		GridUtility::CopyGridToClipboard(0, sgTemporary);
+		GridUtility::CopyGridToClipboard(sgTemporary, 0);
 		break;
 	case kGridTop101Big:
-		GridUtility::CopyGridToClipboard(0, sgTop101Big);
+		GridUtility::CopyGridToClipboard(sgTop101Big, 0);
 		break;
 	case kGridTop101Small:
-		GridUtility::CopyGridToClipboard(0, sgTop101Small);
+		GridUtility::CopyGridToClipboard(sgTop101Small, 0);
 		break;
 	case kGridTop101BigDate:
-		GridUtility::CopyGridToClipboard(0, sgTop101BigDate);
+		GridUtility::CopyGridToClipboard(sgTop101BigDate, 0);
 		break;
 	case kGridTop101SmallDate:
-		GridUtility::CopyGridToClipboard(0, sgTop101SmallDate);
+		GridUtility::CopyGridToClipboard(sgTop101SmallDate, 0);
 		break;
 	case kGridExtension:
-		GridUtility::CopyGridToClipboard(0, sgExtensions);
+		GridUtility::CopyGridToClipboard(sgExtensions, 0);
 		break;
 	}
 }
@@ -1040,10 +1308,9 @@ void __fastcall TFrameProperties::miFCOShowAllClick(TObject *Sender)
 {
 	if (Sender != NULL)
 	{
-//		if (Sender.ClassType = TMenuItem)
-//		{
-//	TO DO	sbFolderConfig->Tag = TMenuItem(Sender)->Tag;
-//		}
+		TMenuItem *mi = (TMenuItem*)Sender;
+
+		sbFoldersConfig->Tag = mi->Tag;
 	}
 
 	if (rbFoldersBySize->Checked)
@@ -1055,7 +1322,7 @@ void __fastcall TFrameProperties::miFCOShowAllClick(TObject *Sender)
 		vtcFolders->Tag = 0;
 	}
 
-	// TO DO DisplayUtility.InformationTabFolderChart(FSource, sbFoldersConfig->Tag, vtcFolders, GSettingsHandler->Charts.Options.LabelOptions);
+	TabUiFolders::Chart(vtcFolders, DataSource, FilterValues[sbFoldersConfig->Tag], GSettingsHandler->Chart.LabelOptions);
 }
 #pragma end_region
 
@@ -1107,7 +1374,7 @@ void __fastcall TFrameProperties::miExploreFromDirListClick(TObject *Sender)
 
 void __fastcall TFrameProperties::miFolderExportSelectedCBClick(TObject *Sender)
 {
-	GridUtility::CopyGridToClipboard(1, sgFolders);
+	GridUtility::CopyGridToClipboard(sgFolders, 1);
 }
 #pragma end_region
 
@@ -1133,68 +1400,26 @@ void __fastcall TFrameProperties::miLengthNonZeroClick(TObject *Sender)
 #pragma region PopupMenu_Magnitude
 void __fastcall TFrameProperties::miMagnitudeExportClick(TObject *Sender)
 {
-/* to do        var
-  wp : TextFile;
-  str : string;
-  t, lDataIndex : integer;
-  grid : TAdvStringGrid;
-  lFileName : string;
+//  Assert(grid != NULL, 'miMagnitudeExportClick :: Grid is NULL');
 
- {
-  lDataIndex = FSource;
-  grid       = sgMagnitude;
+	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kMagnitude] + L"_" + GLanguageHandler->Text[kExport]));
 
-  Assert(grid != NULL, 'miMagnitudeExportClick :: Grid is NULL');
-
-  lFileName = SaveDialog::ExecuteReports(TUtility.GetDefaultFileName('.csv", GLanguageHandler->Text[kMagnitude] + L"_' + GLanguageHandler->Text[kExport]));
-
-  if lFileName != L"" then {
-    if UpperCase(ExtractFileExt(lFileName)) = '.TXT' then {
-      AssignFile(wp, lFileName);
-
-      {$I-}
-      Rewrite(wp);
-      {$I+}
-
-      if (IOResult != 0) then {
-		ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
-					GLanguageHandler->Text[kErrorSaving] + L" " + lFileName + L".",
-                    XDialogTypeWarning);
-      end
-      else {
-        //-- file magnitudes ----------------------------------------------
-        writeln(wp, TextReport[0]);
-        writeln(wp, TextReport[7]);
-        writeln(wp, TextReport[0]);
-        writeln(wp, TextReport[2]);
-        writeln(wp, TextReport[0]);
-
-		if GScanEngine[lDataIndex].FileCount != 0 then {
-          for t = 0 to __MagnitudesCount do {
-			str = TXFormatting.AddTrailing(' ' + magNULLabels[t], 25, L" ");
-			str = str + TXFormatting.AddLeading(IntToStr(GScanEngine[lDataIndex].Magnitude.Data[Category_MagnitudeAll, t, 0]), 8, L" ");
-            str = str + TXFormatting.AddLeading(TConvert.RealToPercent(GScanEngine[lDataIndex].Magnitude.Data[Category_MagnitudeAll, t, 0] / GScanEngine[lDataIndex].FileCount), 6, ' ');
-			str = str + TXFormatting.AddLeading(TConvert.ConvertToUsefulUnit(GScanEngine[lDataIndex].Magnitude.Data[Category_MagnitudeAll, t, 1]), 11, L" ");
-
-            if GScanEngine[lDataIndex].TotalSize != 0 then
-              str = str + TXFormatting.AddLeading(TConvert.RealToPercent(GScanEngine[lDataIndex].Magnitude.Data[Category_MagnitudeAll, t, 1] /GScanEngine[lDataIndex].TotalSize), 6, ' ')
-            else
-			  str = str + TXFormatting.AddLeading(L"100%", 6, L" ");
-
-            writeln(wp, str);
-		  }
-        }
-
-		writeln(wp, GLanguageHandler->Text[kFavourite]);
-        writeln(wp, L"");
-
-        CloseFile(wp);
-      }
-    end
-    else {
-      GridUtility::SaveGrid(grid, lFileName);
-    }
-  }   */
+	if (!file_name.empty())
+	{
+		if (Utility::GetFileExtension(file_name) == L".txt")
+		{
+			if (!TabUiMagnitude::AsText(file_name, DataSource))
+			{
+				ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
+							GLanguageHandler->Text[kErrorSaving] + L" " + file_name + L".",
+							XDialogTypeWarning);
+			}
+		}
+		else
+		{
+			GridUtility::SaveGrid(sgMagnitude, file_name);
+		}
+	}
 }
 
 
@@ -1216,7 +1441,7 @@ void __fastcall TFrameProperties::miMagnitudeZipClick(TObject *Sender)
 
 void __fastcall TFrameProperties::miMagnitudeExportCBClick(TObject *Sender)
 {
-	GridUtility::CopyGridToClipboard(1, sgMagnitude);
+	GridUtility::CopyGridToClipboard(sgMagnitude, 1);
 }
 #pragma end_region
 
@@ -1237,8 +1462,7 @@ void __fastcall TFrameProperties::miNFPropertiesClick(TObject *Sender)
 {
 	if (sgNullFiles->Selection.Top > 0)
 	{
-		//ndowsUtility::ShowFilePropertiesDialog(Application->Handle,
-		//						         sgNullFiles->Cells[0][sgNullFiles->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgNullFiles->Cells[0][sgNullFiles->Selection.Top].c_str());
 	}
 }
 #pragma end_region
@@ -1260,7 +1484,7 @@ void __fastcall TFrameProperties::miNFFolderPropertiesClick(TObject *Sender)
 {
 	if (sgNullFolders->Selection.Top != -1)
 	{
-		//WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgNullFolders->Cells[0][sgNullFolders->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgNullFolders->Cells[0][sgNullFolders->Selection.Top].c_str());
 	}
 }
 #pragma end_region
@@ -1387,28 +1611,28 @@ void __fastcall TFrameProperties::miSFilePropertiesClick(TObject *Sender)
 	switch (tag)
 	{
 	case kGridTemp:
-//		WindowsUtility::ShowFilePropertiesDialog(Application.Handle, sgTemporary->Cells[0][sgTemporary->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str());
 		break;
 
 	case kGridTop101Big:
-//		WindowsUtility::ShowFilePropertiesDialog(Application.Handle, sgTop101Big->Cells[0][sgTop101Big->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str());
 		break;
 	case kGridTop101Small:
-//		WindowsUtility::ShowFilePropertiesDialog(Application.Handle, sgTop101Small->Cells[0][sgTop101Small->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str());
 		break;
 
 	case kGridTop101BigDate:
-//		WindowsUtility::ShowFilePropertiesDialog(Application.Handle, sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str());
 		break;
 	case kGridTop101SmallDate:
-//		WindowsUtility::ShowFilePropertiesDialog(Application.Handle, sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top]);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str());
 		break;
 	}
 }
 
 
 void __fastcall TFrameProperties::miGenerateMD5Click(TObject *Sender)
-{ /* to do
+{
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 	TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
@@ -1417,22 +1641,26 @@ void __fastcall TFrameProperties::miGenerateMD5Click(TObject *Sender)
 	switch (tag)
 	{
 	case kGridTemp:
-		ShowMD5Checksum(sgTemporary->Cells[0][sgTemporary->Selection.Top], TMD5.Generate(sgTemporary->Cells[0][sgTemporary->Selection.Top]));
-
+		OpenMD5Checksum(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str(),
+						Utility::GetMD5(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str()));
+		break;
 	case kGridTop101Big:
-		ShowMD5Checksum(sgTop101Big->Cells[0][sgTop101Big->Selection.Top], TMD5.Generate(sgTop101Big->Cells[0][sgTop101Big->Selection.Top]));
+		OpenMD5Checksum(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str(),
+						Utility::GetMD5(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str()));
 		break;
 	case kGridTop101Small:
-		ShowMD5Checksum(sgTop101Small->Cells[0][sgTop101Small->Selection.Top], TMD5.Generate(sgTop101Small->Cells[0][sgTop101Small->Selection.Top]));
+		OpenMD5Checksum(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str(),
+						Utility::GetMD5(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str()));
 		break;
-
 	case kGridTop101BigDate:
-		ShowMD5Checksum(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top], TMD5.Generate(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top]));
+		OpenMD5Checksum(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str(),
+						Utility::GetMD5(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str()));
 		break;
-	CGridTop101SmallDate:
-		ShowMD5Checksum(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top], TMD5.Generate(sgTop101SmallDate->Cells[0, sgTop101SmallDate->Selection.Top]));
+	case kGridTop101SmallDate:
+		OpenMD5Checksum(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str(),
+						Utility::GetMD5(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str()));
 		break;
-	}     */
+	}
 }
 
 
@@ -1523,22 +1751,22 @@ void __fastcall TFrameProperties::miSearchExportToCBClick(TObject *Sender)
 	switch (tag)
 	{
 	case kGridTemp:
-		GridUtility::CopyGridToClipboard(0, sgTemporary);
+		GridUtility::CopyGridToClipboard(sgTemporary, 0);
 		break;
 	case kGridTop101Big:
-		GridUtility::CopyGridToClipboard(0, sgTop101Big);
+		GridUtility::CopyGridToClipboard(sgTop101Big, 0);
 		break;
 	case kGridTop101Small:
-		GridUtility::CopyGridToClipboard(0, sgTop101Small);
+		GridUtility::CopyGridToClipboard(sgTop101Small, 0);
 		break;
 	case kGridTop101BigDate:
-		GridUtility::CopyGridToClipboard(0, sgTop101BigDate);
+		GridUtility::CopyGridToClipboard(sgTop101BigDate, 0);
 		break;
 	case kGridTop101SmallDate:
-		GridUtility::CopyGridToClipboard(0, sgTop101SmallDate);
+		GridUtility::CopyGridToClipboard(sgTop101SmallDate, 0);
 		break;
 	case kGridExtension:
-		GridUtility::CopyGridToClipboard(0, sgExtensions);
+		GridUtility::CopyGridToClipboard(sgExtensions, 0);
 		break;
 	}
 }
@@ -1617,7 +1845,7 @@ void __fastcall TFrameProperties::miTableZipClick(TObject *Sender)
 
 void __fastcall TFrameProperties::miTableExportSelectedCBClick(TObject *Sender)
 {
-	GridUtility::CopyGridToClipboard(1, sgCategories);
+	GridUtility::CopyGridToClipboard(sgCategories, 1);
 }
 #pragma end_region
 
@@ -1702,7 +1930,7 @@ void __fastcall TFrameProperties::miFileDatesInfoClick(TObject *Sender)
 {
 	if (FileExists(tvDates->Selected->Text))
 	{
-		//WindowsUtility::ShowFilePropertiesDialog(Application.Handle, tvFileDates.Selected.Text);
+		WindowsUtility::ShowFilePropertiesDialog(Application->Handle, tvDates->Selected->Text.c_str());
 	}
 }
 
@@ -1711,7 +1939,7 @@ void __fastcall TFrameProperties::miDGenerateMD5Click(TObject *Sender)
 {
 	if (FileExists(tvDates->Selected->Text))
 	{
-		//ShowMD5Checksum(tvFileDates.Selected.Text, TMD5.Generate(tvFile->Selected->Text));
+		//ShowMD5Checksum(tvDates.Selected.Text, TMD5.Generate(tvFile->Selected->Text));
 	}
 }
 
@@ -1727,13 +1955,13 @@ void __fastcall TFrameProperties::miFileDatesExportClick(TObject *Sender)
 	{
 		try
 		{
-		  // to do tvDates->SaveToFile(file_name);
+			tvDates->SaveToFile(file_name.c_str());
 		}
 		catch(...)
 		{
-			//ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
-		   //				GLanguageHandler->Text[kErrorSaving] + L" " + file_name + L".",
-		   //				XDialogTypeWarning);
+			ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
+						GLanguageHandler->Text[kErrorSaving] + L" " + file_name + L".",
+						XDialogTypeWarning);
 		}
 	}
 }
@@ -1756,7 +1984,7 @@ void __fastcall TFrameProperties::miTypeExportContentClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		// to do tvTypes->SaveToFile(file_name);
+		tvTypes->SaveToFile(file_name.c_str());
 	}
 }
 
@@ -1902,14 +2130,14 @@ void __fastcall TFrameProperties::miUsersZipClick(TObject *Sender)
 
 void __fastcall TFrameProperties::miUsersExportSelectedCBClick(TObject *Sender)
 {
-	GridUtility::CopyGridToClipboard(1, sgUsers);
+	GridUtility::CopyGridToClipboard(sgUsers, 1);
 }
 #pragma end_region
 
 
 
 void __fastcall TFrameProperties::miCopySelectedClick(TObject *Sender)
-{ /*
+{
 	std::wstring s = GetCopyMoveFolder(GLanguageHandler->Text[kCopyTo] + kEllipsis);
 
 	if (!s.empty())
@@ -1922,39 +2150,39 @@ void __fastcall TFrameProperties::miCopySelectedClick(TObject *Sender)
 		switch (tag)
 		{
 		case kGridTemp:
-			CopyFile(PChar(sgTemporary->Cells[0, sgTemporary->Selection.Top]),
-					  PChar(s + ExtractFileName(sgTemporary->Cells[0][sgTemporary->Selection.Top])),
-					 False);
+			CopyFile(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str(),
+					 (s + Utility::SplitFileName(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str())).c_str(),
+					 false);
 			break;
 		case kGridTop101Big:
-			 CopyFile(PChar(sgTop101Big->Cells[0, sgTop101Big->Selection.Top]),
-					  PChar(s + ExtractFileName(sgTop101Big->Cells[0][sgTop101Big->Selection.Top])),
-					  False);
+			CopyFile(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str(),
+					 (s + Utility::SplitFileName(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str())).c_str(),
+					  false);
 			break;
 		case kGridTop101Small:
-			CopyFile(PChar(sgTop101Small->Cells[0, sgTop101Small->Selection.Top]),
-					  PChar(s + ExtractFileName(sgTop101Small->Cells[0][sgTop101Small->Selection.Top])),
-				  False);
+			CopyFile(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str(),
+					 (s + Utility::SplitFileName(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str())).c_str(),
+					 false);
 			break;
 
 		case kGridTop101BigDate:
-			CopyFile(PChar(sgTop101BigDate->Cells[0, sgTop101BigDate->Selection.Top]),
-					  PChar(s + ExtractFileName(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top])),
-				  False);
+			CopyFile(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str(),
+					 (s + Utility::SplitFileName(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str())).c_str(),
+					 false);
 			break;
 		case kGridTop101SmallDate:
-			CopyFile(PChar(sgTop101SmallDate->Cells[0, sgTop101SmallDate->Selection.Top]),
-					  PChar(s + ExtractFileName(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top])),
-				  False);
+			CopyFile(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str(),
+					 (s + Utility::SplitFileName(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str())).c_str(),
+					 false);
 			break;
 		}
-	} */
+	}
 }
 
 
 void __fastcall TFrameProperties::miCopyAllClick(TObject *Sender)
-{       /*
-// to do	std::wstring s = GetCopyMoveFolder((GLanguageHandler->Text[kCopyTo] + kEllipsis).c_str());
+{
+	std::wstring s = GetCopyMoveFolder(GLanguageHandler->Text[kCopyTo] + kEllipsis);
 
 	if (!s.empty())
 	{
@@ -1968,35 +2196,41 @@ void __fastcall TFrameProperties::miCopyAllClick(TObject *Sender)
 		case kGridTemp:
 			for (int r = 1; r < sgTemporary->RowCount; r++)
 			{
-				CopyFile(PChar(sgTemporary->Cells[0][r]),
-						  PChar(s + ExtractFileName(sgTemporary->Cells[0][r])),
-						  False);
+				std::wstring fn = Utility::SplitFileName(sgTemporary->Cells[0][r].c_str());
+
+				CopyFile(sgTemporary->Cells[0][r].c_str(),
+						 (s + fn).c_str(),
+						 false);
 			}
 			break;
 		case kGridTop101Big:
 			for (int r = 1; r < sgTop101Big->RowCount; r++)
 			{
-				CopyFile(PChar(sgTop101Big->Cells[0][r]),
-					  PChar(s + ExtractFileName(sgTop101Big->Cells[0][r])),
-					  False);
+				std::wstring fn = Utility::SplitFileName(sgTop101Big->Cells[0][r].c_str());
+
+				CopyFile(sgTop101Big->Cells[0][r].c_str(),
+						 (s + fn).c_str(),
+						 false);
 			}
 			break;
 		case kGridTop101Small:
 			for (int r = 1; r < sgTop101Small->RowCount; r++)
 			{
-				 CopyFile(PChar(sgTop101Small->Cells[0][r]),
-					  PChar(s + ExtractFileName(sgTop101Small->Cells[0][r])),
-					  False);
+				std::wstring fn = Utility::SplitFileName(sgTop101Small->Cells[0][r].c_str());
+
+				CopyFile(sgTop101Small->Cells[0][r].c_str(),
+						 (s + fn).c_str(),
+					     false);
 			}
 			break;
 		}
-	}     */
+	}
 }
 
 
 void __fastcall TFrameProperties::miMoveSelectedClick(TObject *Sender)
-{                               /*
-	std::wstring s = GetCopyMoveFolder((GLanguageHandler->Text[kMoveTo] + kEllipsis).c_str());
+{
+	std::wstring s = GetCopyMoveFolder(GLanguageHandler->Text[kMoveTo] + kEllipsis);
 
 	if (!s.empty())
 	{
@@ -2008,38 +2242,38 @@ void __fastcall TFrameProperties::miMoveSelectedClick(TObject *Sender)
 		switch (tag)
 		{
 		case kGridTemp:
-			MoveFileEx(PChar(sgTemporary->Cells[0, sgTemporary->Selection.Top]),
-						PChar(s + ExtractFileName(sgTemporary->Cells[0][sgTemporary->Selection.Top])),
-						MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str(),
+					   (s + Utility::SplitFileName(sgTemporary->Cells[0][sgTemporary->Selection.Top].c_str())).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			break;
 		case kGridTop101Big:
-			MoveFileEx(PChar(sgTop01Big->Cells[0][sgTop101Big->Selection.Top]),
-					PChar(s + ExtractFileName(sgTop101Big->Cells[0][sgTop101Big->Selection.Top])),
-					MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str(),
+					   (s + Utility::SplitFileName(sgTop101Big->Cells[0][sgTop101Big->Selection.Top].c_str())).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			break;
 		case kGridTop101Small:
-			MoveFileEx(PChar(sgTop101Small->Cells[0][sgTop101Small->Selection.Top]),
-						PChar(s + ExtractFileName(sgTop101Small->Cells[0][sgTop101Small->Selection.Top])),
-						MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str(),
+					   (s + Utility::SplitFileName(sgTop101Small->Cells[0][sgTop101Small->Selection.Top].c_str())).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			break;
 		case kGridTop101BigDate:
-			MoveFileEx(PChar(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top]),
-						PChar(s + ExtractFileName(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top])),
-						MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str(),
+					   (s + Utility::SplitFileName(sgTop101BigDate->Cells[0][sgTop101BigDate->Selection.Top].c_str())).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			break;
 		case kGridTop101SmallDate:
-			MoveFileEx(PChar(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top]),
-						PChar(s + ExtractFileName(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top])),
-						MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
+			MoveFileEx(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str(),
+					   (s + Utility::SplitFileName(sgTop101SmallDate->Cells[0][sgTop101SmallDate->Selection.Top].c_str())).c_str(),
+					   MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			break;
 		}
-	}     */
+	}
 }
 
 
 void __fastcall TFrameProperties::miMoveAllClick(TObject *Sender)
-{      /*
-	std::wstring s = GetCopyMoveFolder((GLanguageHandler->Text[kMoveTo] + kEllipsis).c_str());
+{
+	std::wstring s = GetCopyMoveFolder(GLanguageHandler->Text[kMoveTo] + kEllipsis);
 
 	if (!s.empty())
 	{
@@ -2053,29 +2287,29 @@ void __fastcall TFrameProperties::miMoveAllClick(TObject *Sender)
 		case kGridTemp:
 			for (int r = 1; r < sgTemporary->RowCount; r++)
 			{
-				 MoveFileEx(PChar(sgTemporary->Cells[0][r]),
-							PChar( s+ ExtractFileName(sgTemporary->Cells[0][r])),
+				 MoveFileEx(sgTemporary->Cells[0][r].c_str(),
+							(s + Utility::SplitFileName(sgTemporary->Cells[0][r].c_str())).c_str(),
 							MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			}
 			break;
-		case kCGridTop101Big:
+		case kGridTop101Big:
 			for (int r = 1; r < sgTop101Big->RowCount; r++)
 			{
-				 MoveFileEx(PChar(sgTop101Big->Cells[0][r]),
-							PChar(s + ExtractFileName(sgTop01Big->Cells[0][r])),
+				 MoveFileEx(sgTop101Big->Cells[0][r].c_str(),
+							(s + Utility::SplitFileName(sgTop101Big->Cells[0][r].c_str())).c_str(),
 							MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			}
 			break;
 		case kGridTop101Small:
 			for (int r = 1; r < sgTop101Small->RowCount; r++)
 			{
-				 MoveFileEx(PChar(sgTop101Small->Cells[0][r]),
-							PChar(s + ExtractFileName(sgTop101Small->Cells[0][r])),
+				 MoveFileEx(sgTop101Small->Cells[0][r].c_str(),
+							(s + Utility::SplitFileName(sgTop101Small->Cells[0][r].c_str())).c_str(),
 							MOVEFILE_COPY_ALLOWED + MOVEFILE_REPLACE_EXISTING + MOVEFILE_WRITE_THROUGH);
 			}
 			break;
 		}
-	}     */
+	}
 }
 
 
@@ -2142,3 +2376,4 @@ void __fastcall TFrameProperties::miDeleteAllClick(TObject *Sender)
 		}
 	}
 }
+

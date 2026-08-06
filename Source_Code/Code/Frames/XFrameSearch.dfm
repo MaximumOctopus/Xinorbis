@@ -36,19 +36,19 @@ object FrameSearch: TFrameSearch
         object sbPagePrevious: TSpeedButton
           Left = 10
           Top = 55
-          Width = 23
+          Width = 44
           Height = 22
           OnClick = sbPagePreviousClick
         end
         object sbPageNext: TSpeedButton
-          Left = 79
+          Left = 100
           Top = 55
-          Width = 23
+          Width = 44
           Height = 22
           OnClick = sbPageNextClick
         end
         object lPageNumber: TLabel
-          Left = 39
+          Left = 60
           Top = 57
           Width = 34
           Height = 15
@@ -79,22 +79,28 @@ object FrameSearch: TFrameSearch
             OnClick = sbSCAccessedClick
           end
           object sbSCModified: TSpeedButton
+            Tag = 1
             Left = 43
             Top = 452
             Width = 23
             Height = 22
+            OnClick = sbSCAccessedClick
           end
           object sbSCOwner: TSpeedButton
+            Tag = 2
             Left = 72
             Top = 452
             Width = 23
             Height = 22
+            OnClick = sbSCAccessedClick
           end
           object sbSCAttributes: TSpeedButton
+            Tag = 3
             Left = 101
             Top = 452
             Width = 23
             Height = 22
+            OnClick = sbSCAccessedClick
           end
           object sbSaveSearch: TSpeedButton
             Left = 130
@@ -165,7 +171,7 @@ object FrameSearch: TFrameSearch
               Height = 22
               OnClick = sbSearchSyntaxClick
             end
-            object Label1: TLabel
+            object lSearchDetails: TLabel
               Left = 8
               Top = 35
               Width = 22
@@ -186,13 +192,23 @@ object FrameSearch: TFrameSearch
             Width = 1127
             Height = 476
             Align = alClient
-            ColCount = 3
+            ColCount = 13
             FixedCols = 0
             TabOrder = 1
             ColWidths = (
               116
               118
-              224)
+              224
+              64
+              64
+              64
+              64
+              64
+              64
+              64
+              64
+              64
+              64)
           end
         end
       end

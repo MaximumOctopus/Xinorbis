@@ -12,6 +12,9 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Menus.hpp>
+
+#include "ProcessSearch.h"
+
 //---------------------------------------------------------------------------
 class TFrameSearch : public TFrame
 {
@@ -29,7 +32,7 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbGoSearch;
 	TSpeedButton *sbSearchHelp;
 	TSpeedButton *sbSearchSyntax;
-	TLabel *Label1;
+	TLabel *lSearchDetails;
 	TCheckBox *cbSearchShowPath;
 	TCheckBox *cbSearchColourCode;
 	TSpeedButton *sbSCAccessed;
@@ -113,6 +116,8 @@ private:
 	const int kschIMDate        = 11;
 	const int kschIColour       = 12;
 
+	const int DefaultColumnWidths[13] = { 20, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64 };
+
 	int Source  = 0;
 	int PageNumber = 0;
 	int FirstPage = 1;	// indexed from 1
@@ -124,6 +129,8 @@ private:
 	int TotalSearchFilesCount = 0;			//
 	int TotalSearchFoldersCount = 0;		//
 
+	ProcessSearch *SearchEngine = nullptr;
+
 //	FMenuChange        : TMenuChange;
 //	FSetStatusBarText  : TSetStatusBarText;
 //	FOpenSearchWizard  : TOpenSearchWizard;
@@ -132,16 +139,19 @@ private:
 	void __fastcall miQuickSearchClick(TObject *Sender);
 
 	void Init();
+	void DeInit();
 
     void ClearGUI(bool);
 	void UpdateGUI();
     void UpdateSearchGUI();
 
-    void RenderResults(int, int);
+    void PostSearch();
 
-	void BuildSearchCharts();
+	void RenderResults(int, int);
 
-    void BuildPropertiesTab(int);
+	void UpdateIceCream();
+
+	void BuildPropertiesTab(int);
 
 	void SearchCSVReport();
 
@@ -154,15 +164,19 @@ private:
 public:
 	__fastcall TFrameSearch(TComponent* Owner);
 
-    int DataSource = 0;
+	int DataSource = 0;
 
 	void SetTab(int);
 
-    void ExecuteSearch(const std::wstring);
+	void ExecuteSearch(const std::wstring);
+
+	void BuildSearchCharts();
 
 	std::wstring GetSelectedFileName(int);
+	std::wstring GetSearchText();
 
-    void RebuildCharts();
+	std::function<void(const std::wstring, int, int)> OnMenuChange;
+	std::function<void(int)> OnOpenSearchWizard;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSearch *FrameSearch;

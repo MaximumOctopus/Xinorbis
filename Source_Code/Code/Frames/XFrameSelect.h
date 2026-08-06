@@ -11,13 +11,15 @@
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.FileCtrl.hpp>
 #include <Vcl.Menus.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Grids.hpp>
 //---------------------------------------------------------------------------
 class TFrameSelect : public TFrame
 {
 __published:	// IDE-managed Components
-	TPageControl *PageControl1;
-	TTabSheet *tsSelectFolder;
-	TTabSheet *TabSheet2;
+	TPageControl *pcSelect;
+	TTabSheet *tsScan;
+	TTabSheet *tsImport;
 	TBitBtn *bScanNow;
 	TDriveComboBox *dcbSelect;
 	TDirectoryListBox *dlbSelect;
@@ -39,6 +41,19 @@ __published:	// IDE-managed Components
 	TMenuItem *N16;
 	TMenuItem *miQFAdd;
 	TMenuItem *N17;
+	TTabSheet *tsScanHistory;
+	TMemo *mImport;
+	TBitBtn *bSelectImport;
+	TBitBtn *bOpenImport;
+	TEdit *eImportFileName;
+	TPanel *Panel1;
+	TBitBtn *bShowAll;
+	TBitBtn *bShowYesterday;
+	TBitBtn *bShowThisWeek;
+	TBitBtn *bShowThisMonth;
+	TBitBtn *bShowLastWeek;
+	TBitBtn *bShowLastMonth;
+	TStringGrid *sgScanHistory;
 	void __fastcall bScanNowClick(TObject *Sender);
 	void __fastcall bExploreClick(TObject *Sender);
 	void __fastcall bSelectClick(TObject *Sender);
@@ -48,18 +63,40 @@ __published:	// IDE-managed Components
 	void __fastcall bCombineClick(TObject *Sender);
 	void __fastcall dlbSelectChange(TObject *Sender);
 	void __fastcall puScanHistoryPopup(TObject *Sender);
+	void __fastcall bSelectImportClick(TObject *Sender);
+	void __fastcall bOpenImportClick(TObject *Sender);
+	void __fastcall bShowAllClick(TObject *Sender);
+	void __fastcall tsScanHistoryResize(TObject *Sender);
 private:
+
+	const int kScanHistoryDate = 0;
+	const int kScanHistoryTime = 1;
+	const int kScanHistoryPath = 2;
+	const int kScanHistoryExcludeFiles   = 3;
+	const int kScanHistoryExcludeFolders = 4;
+
+	constexpr static int HistoryWidths[5] = { 68, 40, 100, 64, 64 };
 
 	void Init();
 
 	void __fastcall miQFTitleClick(TObject *Sender);
 
+	// import tab
+	void ReportDetail(const std::wstring);
+
+	// report history tab
+	void BuildScanHistory(int);
+
 public:
 	__fastcall TFrameSelect(TComponent* Owner);
 
+    int DataSource = 0;
+
 	void UpdateQuickFolders();
 
-	std::function<void(const std::wstring)> OnNewScan;
+    void SaveSettings();
+
+	std::function<void(const std::wstring, int, bool)> OnNewScan;
     std::function<void(int)> OnScanWithMultiple;
 };
 //---------------------------------------------------------------------------

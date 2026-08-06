@@ -50,7 +50,7 @@ void TabUiDates::Chart(TTreeView* tree, TChart* chart)
 }
 
 
-void TabUiDates::Tree(TTreeView* tree, int DataSource, int userid, int data_range, bool build_tree, bool quantity)
+void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int userid, int data_range, bool build_tree, bool quantity)
 {
 	if (!build_tree || GScanEngine->Data[DataSource].Files.size() == 0) return;
 
@@ -74,17 +74,21 @@ void TabUiDates::Tree(TTreeView* tree, int DataSource, int userid, int data_rang
 	TTreeNode* monthnode = nullptr;
 	TTreeNode* daynode = nullptr;
 
-	// ===========================================================================
+	unsigned __int64 ExtSpreadSize[kFileCategoriesCount];
+	int ExtSpreadCount[kFileCategoriesCount];
+
+	// =========================================================================
 
 	unsigned __int64 DatesTotalSize = 0;
 	int DatesTotalCount = 0;
 
-//	for t := 1 to __FileCategoriesCount do begin // clear data
-//		ExtSpreadDates[t, 1] := 0;
-//		ExtSpreadDates[t, 2] := 0;
-//	  end;
+	for (int t = 0; t < kFileCategoriesCount; t++)
+	{
+		ExtSpreadSize[t] = 0;
+		ExtSpreadCount[t] = 0;
+	}
 
-  // ===========================================================================
+	// =========================================================================
 
 	tree->Items->Clear();
 	tree->Items->BeginUpdate();
@@ -109,13 +113,18 @@ void TabUiDates::Tree(TTreeView* tree, int DataSource, int userid, int data_rang
 		}
 	}
 
-//	switch (data_range)
-//	{
-//	case kCreatedDate:
-//		GScanEngine->taIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDates));
-//	case kAccessedDate : GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
-//	case kModifiedDate : GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
-//	}
+	switch (data_range)
+	{
+	case kCreatedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
+		break;
+	case kAccessedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
+		break;
+	case kModifiedDate:
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
+		break;
+	}
 
 	for (FileObject *file : GScanEngine->Data[DataSource].Files)
 	{
@@ -269,8 +278,8 @@ void TabUiDates::Tree(TTreeView* tree, int DataSource, int userid, int data_rang
 			DatesTotalCount++;
 			DatesTotalSize += file->Size;
 
-			//inc(ExtSpreadDates[GScanDetails[aDataIndex].Files.Items[x].FileCategory, 1]);    to do
-			//inc(ExtSpreadDates[GScanDetails[aDataIndex].Files.Items[x].FileCategory, 2], GScanDetails[aDataIndex].Files.Items[x].FileSize);
+			ExtSpreadCount[file->Category]++;
+			ExtSpreadSize[file->Category] += file->Size;
 		}
 	}
 
@@ -282,10 +291,49 @@ void TabUiDates::Tree(TTreeView* tree, int DataSource, int userid, int data_rang
 
 	tree->Items->EndUpdate();
 
-//	switch (aDataIndex)
-//	{                TO DO TO DO TO DO
-//	  dataLatestScan    : GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNamePathLS));
-//	  dataFolderHistory : GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNamePathFH));
-//	}
+	if (icecream != nullptr)
+	{
+		icecream->Begin();
+
+		for (int t = 1; t < kFileCategoriesCount; t++)
+		{
+			if (DatesTotalCount != 0)
+			{
+				if (ExtSpreadCount[t] != 0)
+				{
+					icecream->Add(0,
+								  (ExtSpreadCount[t] / DatesTotalCount) * 100,
+								  GLanguageHandler->TypeDescriptions[t],
+								  GLanguageHandler->TypeDescriptions[t] + L" (" + std::to_wstring(ExtSpreadCount[t]) + L" files)",
+								  GSettingsHandler->FileCategoryColors[t]);
+				}
+			}
+
+			if (DatesTotalSize != 0)
+			{
+				if (ExtSpreadSize[t] != 0)
+				{
+					icecream->Add(1,
+								  (ExtSpreadSize[t] / DatesTotalSize) * 100,
+								  GLanguageHandler->TypeDescriptions[t],
+								  GLanguageHandler->TypeDescriptions[t] + L" (" + Convert::ConvertToUsefulUnit(ExtSpreadSize[t]) + L")",
+								  GSettingsHandler->FileCategoryColors[t]);
+				}
+			}
+		}
+
+		icecream->End();
+	}
+
+//	switch (DataSource)
+//	{
+//	case kDataScan:
+//		GScanEngine->Data[DataSource].SortByPropert(SortMode::kFullPath);
+//        break;
+
+//	case kDataFolderHistory:
+//	//GScanDetails[aDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNamePathFH));
+//      break;
+//  }
 }
 

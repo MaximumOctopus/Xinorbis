@@ -5,11 +5,13 @@
 
 #include "XFrameSummary.h"
 
-#include "ScanEngine.h"
 #include "LanguageHandler.h"
+#include "ScanEngine.h"
+#include "SettingsHandler.h"
 
 extern LanguageHandler* GLanguageHandler;
 extern ScanEngine* GScanEngine;
+extern SettingsHandler *GSettingsHandler;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -26,23 +28,25 @@ __fastcall TFrameSummary::TFrameSummary(TComponent* Owner)
 
 void TFrameSummary::Init()
 {
+	icQuantity = new XIceCream(this, pICQuantity);
+
 	lSummaryBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	lSummaryByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
-  //== configure summary panel =================================================
-  lSNoF->Caption        = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[1]).c_str();
-  lSNoD->Caption        = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[2]).c_str();
-  lSSoF->Caption        = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[3]).c_str();
-  lSSoFoD->Caption      = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[4]).c_str();
-  lSAFS->Caption         = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[8]).c_str();
-  lSAFF->Caption         = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[9]).c_str();
-  lSEF->Caption          = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[6]).c_str();
-  lSED->Caption          = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[7]).c_str();
-  lSLFSoF->Caption      = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[10] + L" (" + lSSoF->Caption.c_str() + L")").c_str();
-  lSLFNoF->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[10] + L" (" + lSNoF->Caption.c_str() + L")").c_str();
-  lSLF->Caption          = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[12]).c_str();
-  lSULSSoF->Caption      = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSSoF->Caption.c_str() + L")").c_str();
-  lSULSNoF->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSNoF->Caption.c_str() + L")").c_str();
+	//== configure summary panel =================================================
+	lSNoF->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[1]).c_str();
+	lSNoD->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[2]).c_str();
+	lSSoF->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[3]).c_str();
+	lSSoFoD->Caption  = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[4]).c_str();
+	lSAFS->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[8]).c_str();
+	lSAFF->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[9]).c_str();
+	lSEF->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[6]).c_str();
+	lSED->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[7]).c_str();
+	lSLFSoF->Caption  = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[10] + L" (" + lSSoF->Caption.c_str() + L")").c_str();
+	lSLFNoF->Caption  = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[10] + L" (" + lSNoF->Caption.c_str() + L")").c_str();
+	lSLF->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[12]).c_str();
+	lSULSSoF->Caption = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSSoF->Caption.c_str() + L")").c_str();
+	lSULSNoF->Caption = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSNoF->Caption.c_str() + L")").c_str();
 
 //  lSVolName->Caption    := FormatForScreen(DriveReport[7]);
 //  lSSerial.Caption     := FormatForScreen(DriveReport[8]);
@@ -132,4 +136,38 @@ void TFrameSummary::BuildGauges()
 }
 
 
+void TFrameSummary::BuildIceCream(int data_source)
+{
+	icQuantity->Begin();
+	icSize->Begin();
 
+	for (int t = 1; t < kFileCategoriesCount; t++)
+	{
+		if (GScanEngine->Data[data_source].Files.size() != 0)
+		{
+			if (GScanEngine->Data[data_source].ExtensionSpread[t].Count != 0)
+			{
+				icQuantity->Add(0,
+								GScanEngine->Data[data_source].ExtensionSpread[t].PercentCount,
+								GLanguageHandler->TypeDescriptions[t],
+								GLanguageHandler->TypeDescriptions[t] + L" (" + std::to_wstring(GScanEngine->Data[data_source].ExtensionSpread[t].Count) + L" " + GLanguageHandler->Text[kFiles] + L")",
+								GSettingsHandler->FileCategoryColors[t]);
+			}
+		}
+
+		if (GScanEngine->Data[data_source].TotalSize != 0)
+		{
+			if (GScanEngine->Data[data_source].ExtensionSpread[t].Size != 0)
+			{
+				icSize->Add(0,
+							GScanEngine->Data[data_source].ExtensionSpread[t].PercentSize,
+							GLanguageHandler->TypeDescriptions[t],
+							GLanguageHandler->TypeDescriptions[t] + L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[data_source].ExtensionSpread[t].Size) + L")",
+							GSettingsHandler->FileCategoryColors[t]);
+			}
+		}
+	}
+
+	icQuantity->End();
+	icSize->End();
+}

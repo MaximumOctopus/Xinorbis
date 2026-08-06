@@ -23,8 +23,6 @@
 extern LanguageHandler *GLanguageHandler;
 extern SystemGlobal *GSystemGlobal;
 
-HelpHandler *GHelpHandler;
-
 
 void HelpHandler::OpenContextHelpPage(const std::wstring history_item, int reports_index, int fh_main_index, int fh_sub_index)
 {

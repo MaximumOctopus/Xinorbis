@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "XFrameExploder.h"
+#include "XFormMoreDetail.h"
 
 #include "Convert.h"
 #include "LanguageHandler.h"
@@ -138,7 +139,7 @@ void __fastcall TFrameExploder::OnGoBack()
 
 		DirectoryIndex = DirectoryList.size() - 1;
 
-		int folder_id = -1; // to do GScanEngine->GetFullFolderIndex(DirectoryList[DirectoryIndex]->Name);
+		int folder_id = GScanEngine->Data[DataSource].GetFullFolderIndex(DirectoryList[DirectoryIndex]->Name);
 
 		if (DirectoryIndex == 0) // use cached data
 		{
@@ -162,11 +163,11 @@ void __fastcall TFrameExploder::OnMouseDblClick(int folder_id)
 
 		if (xdo->FolderName == L"\\")
 		{
-			// to do DoExplore(FSource, xdo.FolderName)
+			OpenMoreDetails(DataSource, xdo->FolderName);
 		}
 		else
 		{
-			//DoExplore(FSource, FDirectoryList[FDirectoryList.Count - 1].Name + xdo.FolderName + '\');
+			OpenMoreDetails(DataSource, DirectoryList[DirectoryList.size() - 1]->Name + xdo->FolderName + L"\\");
 		}
 	}
 }

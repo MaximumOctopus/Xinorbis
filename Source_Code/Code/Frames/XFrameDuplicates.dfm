@@ -72,7 +72,7 @@ object Frame2: TFrame2
         Width = 1232
         Height = 601
         Align = alClient
-        ColCount = 2
+        ColCount = 3
         FixedCols = 0
         RowCount = 2
         TabOrder = 1
@@ -137,7 +137,7 @@ object Frame2: TFrame2
         Width = 1232
         Height = 601
         Align = alClient
-        ColCount = 2
+        ColCount = 3
         FixedCols = 0
         RowCount = 2
         TabOrder = 1

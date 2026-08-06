@@ -12,16 +12,22 @@
 
 #pragma once
 
-#include <VCLTee.Chart.hpp>
-#include <Vcl.Grids.hpp>
+#include <vector>
+
+#include "ScanHistoryItem.h"
 
 
-namespace TabUiTypes
+class ScanHistoryHandler
 {
-	void Chart(TChart*, int, int);
 
-	void List(TStringGrid*, int);
+	bool Load(const std::wstring, bool);
+	bool Save(const std::wstring, bool);
 
-	void Tree(TTreeView*, int, int);
-	int TreePost(TTreeView* view);
-}
+public:
+
+	std::vector<ScanHistoryItem*> History;
+
+    void Clear();
+
+	void Add(const std::wstring, const std::wstring, const std::wstring);
+};

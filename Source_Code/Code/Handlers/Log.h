@@ -22,4 +22,5 @@ public:
 	std::vector<std::wstring> LogData;
 
 	void Add(const std::wstring);
+	void AddError(const std::wstring);
 };

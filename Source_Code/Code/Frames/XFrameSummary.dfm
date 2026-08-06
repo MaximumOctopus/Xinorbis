@@ -13,6 +13,9 @@ object FrameSummary: TFrameSummary
     Align = alClient
     TabOrder = 0
     object tsSummary: TTabSheet
+      DesignSize = (
+        1024
+        587)
       object SpeedButton1: TSpeedButton
         Left = 5
         Top = 7
@@ -228,6 +231,22 @@ object FrameSummary: TFrameSummary
         Width = 34
         Height = 15
         Caption = 'Label1'
+      end
+      object pICQuantity: TPanel
+        Left = 144
+        Top = 318
+        Width = 865
+        Height = 91
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 0
+      end
+      object Panel1: TPanel
+        Left = 144
+        Top = 418
+        Width = 865
+        Height = 91
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 1
       end
     end
     object TabSheet2: TTabSheet

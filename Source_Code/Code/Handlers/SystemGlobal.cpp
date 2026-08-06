@@ -11,6 +11,7 @@
 // =====================================================================
 
 #include "FileExtensionHandler.h"
+#include "ImageHandler.h"
 #include "LanguageHandler.h"
 #include "ReportHandler.h"
 #include "ScanEngine.h"
@@ -19,6 +20,7 @@
 #include "WindowsUtility.h"
 
 extern FileExtensionHandler *GFileExtensionHandler;
+extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
 extern ReportHandler *GReportHandler;
 extern ScanEngine *GScanEngine;
@@ -45,14 +47,14 @@ void SystemGlobal::Init()
 	ExePath = WindowsUtility::GetExePath();
 	//AppDataPath = GetUsersPath(AppPath);
 
-	//if (InstallationCheck())
-//	{
-//		Status = InitStatus::Success;
-//	}
-//	else      TO DO
-//	{
-//		Status = InitStatus::InstallationCheckFailed;
-//	}
+	if (InstallationCheck())
+	{
+		Status = InitStatus::kSuccess;
+	}
+	else
+	{
+		Status = InitStatus::kInstallCheckFail;
+	}
 }
 
 
@@ -60,6 +62,8 @@ void SystemGlobal::CreateObjects()
 {
 	// load settings first!
 	GSettingsHandler = new SettingsHandler();
+
+	GImageHandler = new ImageHandler(ExePath);
 
 	//
 	GFileExtensionHandler = new FileExtensionHandler(ExePath);
@@ -70,4 +74,16 @@ void SystemGlobal::CreateObjects()
 	GScanEngine = new ScanEngine();
 
     GReportHandler = new ReportHandler();
+}
+
+
+void SystemGlobal::FreeObjects()
+{
+//
+}
+
+
+bool SystemGlobal::InstallationCheck()
+{         // to do
+	return false;
 }

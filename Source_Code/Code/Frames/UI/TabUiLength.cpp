@@ -24,13 +24,15 @@ extern SettingsHandler* GSettingsHandler;
 
 void TabUiLength::Chart(TChart* chart, int DataSource, int label_options)
 {
-// to do	if (GScanEngine->Data[DataSource].LeCount == 0) return;
+	chart->SeriesList->Items[0]->Clear();
+
+	if (GScanEngine->Data[DataSource].Files.size() == 0) return;
 
 	// == don't show size details if the chart is in quantity mode =============
-//	if (chart->Tag == fQuantity) // to do
-//	{
-//		label_options = 0;
-//	}
+	if (chart->Tag == kSelectionQuantity)
+	{
+		label_options = 0;
+	}
 	// =========================================================================
 
 	chart->SeriesList->Items[0]->Clear();

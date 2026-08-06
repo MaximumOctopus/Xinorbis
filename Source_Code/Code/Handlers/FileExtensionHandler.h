@@ -27,10 +27,17 @@ class FileExtensionHandler
 public:
 
 	std::vector<FileExtension*> Extensions;
+	std::vector<std::wstring> Descriptions;
 
 	FileExtensionHandler(const std::wstring);
 
 	bool LoadDefaultFileExtensions(const std::wstring);
+
+	bool LoadDescriptions(const std::wstring);
+
+	void Sort();
+
+	bool SaveFileExtensionLists(const std::wstring, bool);
 
 	int GetExtensionCategoryIDFromName(const std::wstring);
 	ExtensionSearch GetExtensionCategoryID(const std::wstring);

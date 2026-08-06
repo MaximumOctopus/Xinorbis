@@ -51,6 +51,8 @@ public:
 	std::wstring GenericReportItems[18];
 	std::wstring OtherReportItems[9];
 
+    int SummaryReportZeroLength = 0;
+
 	std::wstring MagniLabels[kMagnitudesCount] = { L"<=1$K", L"1$K < x <=1$M", L"1$M < x <=10$M", L"10$M < x <=50$M", L"50$M < x <=100$M", L"100$M < x <=150$M",
 												   L"150$M < x <=200$M", L"200$M < x <=250$M", L"250$M < x <=500$M", L"500$M < x <=1$G", L"1$G < x <=2$G",
 												   L"2$G < x <=5$G", L">5$G" };
