@@ -69,7 +69,7 @@ __published:	// IDE-managed Components
 	TToolButton *tbRefresh;
 	TToolButton *ToolButton11;
 	TToolButton *tbAbout;
-	TImageList *ImageList1;
+	TImageList *ilBigToolbar;
 	TMainMenu *MainMenu1;
 	TMenuItem *File1;
 	TMenuItem *File2;
@@ -78,8 +78,8 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbHome;
 	TSpeedButton *sbNavigatePrevious;
 	TSpeedButton *sbNavigateNext;
-	TSpeedButton *SpeedButton4;
-	TSpeedButton *SpeedButton5;
+	TSpeedButton *sbToggleFolderHistory;
+	TSpeedButton *sbTogglePrivacy;
 	TSpeedButton *sbReportSummary;
 	TSpeedButton *sbReportCSV;
 	TSpeedButton *sbReportHTML;
@@ -149,7 +149,7 @@ __published:	// IDE-managed Components
 	TMenuItem *miTLanguage;
 	TMenuItem *miTAddToContextMenu;
 	TMenuItem *miVOpenLastReport;
-	TMenuItem *miVCopyLastReportToClipboard;
+	TMenuItem *miRCopyLastReportToClipboard;
 	TMenuItem *N52;
 	TMenuItem *miVFolderProperties;
 	TMenuItem *N54;
@@ -173,10 +173,6 @@ __published:	// IDE-managed Components
 	TMenuItem *miTextReport;
 	TMenuItem *miTreeReport;
 	TMenuItem *miXMLReport;
-	TPopupMenu *puCustomReport;
-	TMenuItem *miCustomReport;
-	TMenuItem *N25;
-	TMenuItem *miOpenCustomReport;
 	TSpeedButton *sbReportDate;
 	TMenuItem *Dbug1;
 	TMenuItem *Debug1;
@@ -194,15 +190,30 @@ __published:	// IDE-managed Components
 	TMenuItem *miLang12;
 	TMenuItem *miLang13;
 	TMenuItem *miLang11;
+	TMenuItem *N1;
+	TCheckBox *cbFastAnalysis;
+	TImageList *ilNavToolbar_Off;
+	TImageList *ilNavToolbar_On;
+	TImageList *ilReports;
+	TImageList *ilMenu;
+	TBevel *Bevel5;
+	TSpeedButton *sbToggleVirtualFiles;
+	TSpeedButton *sbReportXinorbis;
+	TLabel *lDataTitle;
+	TShape *Shape1;
+	TLabel *lReportsTitle;
+	TShape *Shape2;
+	TMenuItem *miJSONReport;
+	TMenuItem *miDateReport;
+	TSpeedButton *sbSourceLive;
+	TSpeedButton *sbSourceFolderHistory;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
 	void __fastcall tbSaveReportsClick(TObject *Sender);
 	void __fastcall tbOpenClick(TObject *Sender);
-	void __fastcall tbWizardClick(TObject *Sender);
 	void __fastcall tbRefreshClick(TObject *Sender);
 	void __fastcall tbAboutClick(TObject *Sender);
-	void __fastcall miFScanClick(TObject *Sender);
 	void __fastcall miFSaveReportsClick(TObject *Sender);
 	void __fastcall miFExitClick(TObject *Sender);
 	void __fastcall miESettingsClick(TObject *Sender);
@@ -210,7 +221,7 @@ __published:	// IDE-managed Components
 	void __fastcall miEFileTypesClick(TObject *Sender);
 	void __fastcall miECustomiseQuickFolderClick(TObject *Sender);
 	void __fastcall miVOpenLastReportClick(TObject *Sender);
-	void __fastcall miVCopyLastReportToClipboardClick(TObject *Sender);
+	void __fastcall miRCopyLastReportToClipboardClick(TObject *Sender);
 	void __fastcall miTabTableClick(TObject *Sender);
 	void __fastcall miVCategoryColoursClick(TObject *Sender);
 	void __fastcall miVLogsClick(TObject *Sender);
@@ -243,12 +254,8 @@ __published:	// IDE-managed Components
 	void __fastcall sbHomeClick(TObject *Sender);
 	void __fastcall sbNavigatePreviousClick(TObject *Sender);
 	void __fastcall sbNavigateNextClick(TObject *Sender);
-	void __fastcall SpeedButton4Click(TObject *Sender);
-	void __fastcall SpeedButton5Click(TObject *Sender);
-	void __fastcall sbReportSummaryClick(TObject *Sender);
-	void __fastcall sbReportCSVClick(TObject *Sender);
-	void __fastcall sbReportHTMLClick(TObject *Sender);
-	void __fastcall sbReportTextClick(TObject *Sender);
+	void __fastcall sbToggleFolderHistoryClick(TObject *Sender);
+	void __fastcall sbTogglePrivacyClick(TObject *Sender);
 	void __fastcall sbReportSettingsClick(TObject *Sender);
 	void __fastcall miSSearchClick(TObject *Sender);
 	void __fastcall miSWizardClick(TObject *Sender);
@@ -258,9 +265,39 @@ __published:	// IDE-managed Components
 	void __fastcall sbReportXMLMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall lWelcomeScanClick(TObject *Sender);
-	void __fastcall sbReportDateClick(TObject *Sender);
-	void __fastcall sbReportJSONClick(TObject *Sender);
 	void __fastcall miLang1Click(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+	void __fastcall sbToggleVirtualFilesClick(TObject *Sender);
+	void __fastcall FormResize(TObject *Sender);
+	void __fastcall lWelcomeFolderHistoryMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+	void __fastcall ToolButton7Click(TObject *Sender);
+	void __fastcall ToolButton8Click(TObject *Sender);
+	void __fastcall sbReportSummaryMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportCSVMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportDateMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportHTMLMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportJSONMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportTextMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall sbReportXinorbisMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+	void __fastcall FormConstrainedResize(TObject *Sender, int &MinWidth, int &MinHeight,
+          int &MaxWidth, int &MaxHeight);
+	void __fastcall miDateReportClick(TObject *Sender);
+	void __fastcall miJSONReportClick(TObject *Sender);
+	void __fastcall miCSVReportClick(TObject *Sender);
+	void __fastcall miTreeReportClick(TObject *Sender);
+	void __fastcall miTextReportClick(TObject *Sender);
+	void __fastcall miXMLReportClick(TObject *Sender);
+	void __fastcall sbSourceLiveClick(TObject *Sender);
+	void __fastcall sbSourceFolderHistoryClick(TObject *Sender);
 private:
 
 	constexpr static int kSideMenuWelcomeCount  = 2;
@@ -276,20 +313,24 @@ private:
 	TLabel *TaskOptions[kSideMenuTasksCount];
 	TLabel *AdvancedOptions[kSideMenuAdvancedCount];
 
-    int DataSource = 0;
+	int DataSource = 0;
 
 	int PanelInFront = -1;
 	int PanelSource = -1;
 
 	// Application init
 	void CreateFrames();
+    void CreateFolderHistoryFrame();
+	void FreeFrames();
 	void SetLanguageText();
 	void SetMenuLanguageText();
 	void ConfigureObjects();
+	void UpdateGUICustomNames(int);
 
 	void UpdateMainMenu();
 
 	void ToggleSoftwareStatus(int, bool);
+    void UpdateLeftPanelStatus();
 
 	void LoadMenu(TPopupMenu *, const std::wstring);
 
@@ -301,6 +342,8 @@ private:
 	// Frame_Events
 	void __fastcall OnNewScan(const std::wstring);
 
+	// GUI_Navigation
+
 	// GUI control
 	void ToggleSoftwareStatus(bool);
 	void SetSidePanelDisplay(int, int, int, bool);
@@ -308,20 +351,22 @@ private:
 	void HandleResizing(int);
 	void DoWelcome(int);
 	void DoTask(int, int);
+	void SetTasksDisplay(int);
 
 	void AddToPageNavigationHistory(const std::wstring);
 
 	void UpdateFrameExploder();
 	void UpdateFrameMap();
 
-    void DoPreferenceChanges();
+	void DoPreferenceChanges();
+
+    void AutoSaveReports(int);
 
 	// hooks
 	void OnOpenSettingsTab(int);
 	void OnNewReport();
 	void OnJustInTime(int);
-	void OnBuildInformationDisplay(int);
-	void OnStatusBarChange(const std::wstring);
+    void OnStatusBarChange(const std::wstring);
 	void OnReportsChange(int);
 	void OnTutorialBarChange(const std::wstring);
 	void OnResetDisplay(int);
@@ -333,6 +378,18 @@ private:
 	void OnUpdateHistoryFinished();
 	void OnChartsHaveChanged();
 	void OnOpenSearchWizard(int);
+
+	void RequestNewScan(const std::wstring, int, bool);
+	void RequestNewCombineScan(int);
+	void RequestNewSummary(int, bool);
+	void RequestNewFHPath(const std::wstring);
+	void RequestNewSearch(const std::wstring, int);
+	void BuildMainFromCSV(const std::wstring, int);
+	void CombineScan();
+
+	void NewSourceAvailable(int);
+	void ActivateSource(int);
+	void DeactivateSource(int);
 
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
