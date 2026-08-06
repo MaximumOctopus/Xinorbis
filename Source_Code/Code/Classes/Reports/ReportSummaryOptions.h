@@ -12,15 +12,10 @@
 
 #pragma once
 
-
 #include <string>
 
-#include "ReportCSVOptions.h"
 
-
-namespace ReportCSV
+struct SummaryReportOptions
 {
-	void Summary(CSVReportOptions, std::vector<std::wstring>*, int);
-
-	void FullList(CSVReportOptions, std::vector<std::wstring>*, int);
+	std::wstring Layout = L"1:2:3:4:5:6:7:8:9:10:";
 };

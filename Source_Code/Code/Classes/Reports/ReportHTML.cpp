@@ -255,7 +255,7 @@ namespace ReportHTML
 		if (GScanEngine->Data[DataSource].Source == ScanSource::FileCSV)
 		{
 			data->push_back(L"<tr class=\"C4C\">\n");
-			data->push_back(L"<td>CSV Source: <b>" + GScanEngine->Data[DataSource].Path.CSVSource + L"</b>.</td>\n");
+			data->push_back(L"<td>CSV Source: <b>" + GScanEngine->Data[DataSource].Path.FileName + L"</b>.</td>\n");
 			data->push_back(L"</tr>\n");
 		}
 
@@ -755,9 +755,9 @@ namespace ReportHTML
 		data->push_back(L"<tr>\n");
 		data->push_back(L"<td width=\"170\" class=\"C4R\">" + GLanguageHandler->Text[kDiskSpaceUsed] + L" </td>\n");
 
-		if (GScanEngine->DiskStats.DriveSpaceUsed > 0)
+		if (GScanEngine->Data[DataSource].DiskStats.DriveSpaceUsed > 0)
 		{
-			data->push_back(L"<td width=\"92\" class=\"C4L\"> <b>" + Convert::ConvertToUsefulUnit(GScanEngine->DiskStats.DriveSpaceUsed) + L"</b></td>\n");
+			data->push_back(L"<td width=\"92\" class=\"C4L\"> <b>" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceUsed) + L"</b></td>\n");
 		}
 		else
 		{
@@ -781,10 +781,10 @@ namespace ReportHTML
 		data->push_back(L"</tr>\n");
 		data->push_back(L"<tr><td width=\"170\" class=\"C4G\">&nbsp;</td><td width=\"92\" class=\"C4G\">&nbsp;</td></tr>\n");
 
-		if (GScanEngine->DiskStats.DriveSpaceFree > 0)
+		if (GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree > 0)
 		{
 			data->push_back(L"<tr><td width=\"170\" class=\"C4R\">" + GLanguageHandler->Text[kDiskSpaceFree] + L" </td>" +
-				L"<td width=\"92\" class=\"C4L\"> <b>" + Convert::ConvertToUsefulUnit(GScanEngine->DiskStats.DriveSpaceFree) + L"</b></td>" +
+				L"<td width=\"92\" class=\"C4L\"> <b>" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree) + L"</b></td>" +
 				L"</tr>\n");
 		}
 		else
@@ -857,7 +857,7 @@ namespace ReportHTML
 
 			if (large1 <= 0) { large1 = kReportSizes[kBarGraphSmall]; }
 
-// to do			std::ranges::sort(GScanEngine->Data[DataSource].RootFolders, {}, &RootFolder::Count);
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kRootFoldersCount);
 
 			int mod = 0;
 
@@ -933,7 +933,7 @@ namespace ReportHTML
 
 				rowidx = 1;
 
-// to do				std::ranges::sort(GScanEngine->Data[DataSource].RootFolders, {}, &RootFolder::Size);
+				GScanEngine->Data[DataSource].SortByProperty(SortMode::kRootFoldersSize);
 
 				mod = 0;
 
@@ -1003,7 +1003,7 @@ namespace ReportHTML
 
 					rowidx = 1;
 
-// to do					std::ranges::sort(GScanEngine->Data[DataSource].RootFolders, {}, &RootFolder::Name);
+			        GScanEngine->Data[DataSource].SortByProperty(SortMode::kRootFoldersName);
 
 					mod = 0;
 
@@ -1492,10 +1492,10 @@ namespace ReportHTML
 	void BuildGraphDataQuickInfo(std::vector<std::wstring> *data, int DataSource)
 	{
 		data->push_back(L"var dataQI1 = google.visualization.arrayToDataTable([\n");
-		data->push_back(L"['Disk space', '%'], ['Disk Free', " + std::to_wstring(GScanEngine->DiskStats.DriveSpaceFree) + L"], ['Disk Used', " + std::to_wstring(GScanEngine->DiskStats.DriveSpaceUsed) + L"] ]);\n");
+		data->push_back(L"['Disk space', '%'], ['Disk Free', " + std::to_wstring(GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree) + L"], ['Disk Used', " + std::to_wstring(GScanEngine->Data[DataSource].DiskStats.DriveSpaceUsed) + L"] ]);\n");
 
 		data->push_back(L"var dataQI2 = google.visualization.arrayToDataTable([\n");
-		data->push_back(L"['Disk space', '%'], ['Disk', " + std::to_wstring(GScanEngine->DiskStats.DriveSpaceTotal - GScanEngine->Data[DataSource].TotalSize) + L"], ['Scan', " + std::to_wstring(GScanEngine->Data[DataSource].TotalSize) + L"] ]);\n");
+		data->push_back(L"['Disk space', '%'], ['Disk', " + std::to_wstring(GScanEngine->Data[DataSource].DiskStats.DriveSpaceTotal - GScanEngine->Data[DataSource].TotalSize) + L"], ['Scan', " + std::to_wstring(GScanEngine->Data[DataSource].TotalSize) + L"] ]);\n");
 	}
 
 
@@ -1758,5 +1758,30 @@ namespace ReportHTML
 		data->push_back(L"<td width=\"80\" height=\"13\" class=\"C7G\"><div align=\"center\"><b>" + GLanguageHandler->Text[kAsPercent] + L"</b></div></td>\n");
 		data->push_back(L"<td width=\"380\" height=\"20\">&nbsp;</td>\n");
 		data->push_back(L"</tr>\n");
+	}
+
+
+	void FileReport(std::vector<std::wstring> *data, int DataSource, const std::wstring file_name, const std::wstring title)
+	{
+		data->push_back(L"<!DOCTYPE html><html><head><style>p { display: inline;} .name { color : #886600; } .user { color : #668800; } .size { color : #006688; }</style></head><body>");
+		data->push_back(L"<p>Xinorbis :: <b>" + title + L"</b></p><br/><br/>");
+
+		if (GScanEngine->Data[DataSource].Files.size() != 0)
+		{
+			for (FileObject *file : GScanEngine->Data[DataSource].Files)
+			{
+				data->push_back(L"<p class=\"name\">" + GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name + L"</p>");
+				data->push_back(L"<p class=\"user\">" + GScanEngine->Data[DataSource].Users[file->Owner]->Name + L"</p>");
+				data->push_back(L"<p class=\"size\">" + Convert::ConvertToUsefulUnit(file->Size) + L" (" + std::to_wstring(file->Size) + L" " + GLanguageHandler->Text[kBytes] + L")</p>");
+				data->push_back(L"<br/>");
+			}
+		}
+		else
+		{
+			data->push_back(L"<p class=\"name\">No files found.</p>");
+			data->push_back(L"<br/>");
+		}
+
+		data->push_back(L"</body></html>");
 	}
 };

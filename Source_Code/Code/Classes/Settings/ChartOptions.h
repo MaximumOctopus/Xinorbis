@@ -40,4 +40,10 @@ public:
 	int ShowLegend = 0;
 
 	int TitleColour = 0;
+
+	void Reset()
+	{
+		ChartFrom = 16777215;
+		ChartTo   = 16118773;
+	}
 };

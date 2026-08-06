@@ -10,17 +10,5 @@
 //
 // =====================================================================
 
-#pragma once
+#include "DatabaseODBC.h"
 
-
-#include <string>
-
-#include "ReportCSVOptions.h"
-
-
-namespace ReportCSV
-{
-	void Summary(CSVReportOptions, std::vector<std::wstring>*, int);
-
-	void FullList(CSVReportOptions, std::vector<std::wstring>*, int);
-};

@@ -13,14 +13,15 @@
 #pragma once
 
 
-#include <string>
-
-#include "ReportCSVOptions.h"
-
-
-namespace ReportCSV
+class ScanHistoryItem
 {
-	void Summary(CSVReportOptions, std::vector<std::wstring>*, int);
+public:
 
-	void FullList(CSVReportOptions, std::vector<std::wstring>*, int);
+	int Date;   		// yyyymmdd
+	std::wstring Time;  // hh:mm
+
+	std::wstring Path = L"";
+
+	std::wstring ExcludeFiles = L"";
+    std::wstring ExcludeFolders = L"";
 };

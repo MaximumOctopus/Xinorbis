@@ -32,5 +32,17 @@ void FileExtension::PostProcess(int total_count, unsigned __int64 total_size)
 
 void FileExtension::Clear()
 {
-// to do
+	Name = L"";
+	Description = L"";
+
+	Category = 0;
+	Count = 0;
+
+	Size = 0;
+
+	PercentCount = 0;
+	PercentSize = 0;
+
+	PercentCountString = L"";
+	PercentSizeString = L"";
 }

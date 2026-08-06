@@ -12,9 +12,10 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
 
 #include "ReportTextOptions.h"
-#include <string>
 
 
 const int TRDescriptionWidth = 39;
@@ -25,6 +26,9 @@ const int TRSizeWidth        = 11;
 
 namespace ReportText
 {
+    // simplified report ideal for search results
+	void SearchResults(std::vector<std::wstring> *data, int, const std::wstring);
+
 	void Generate(TextReportOptions, std::vector<std::wstring>*, int);
 
 	void CreateDeepReport(std::vector<std::wstring>*, int);

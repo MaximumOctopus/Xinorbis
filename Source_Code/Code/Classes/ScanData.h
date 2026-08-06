@@ -18,6 +18,7 @@
 #include "Command.h"
 #include "Consolidated.h"
 #include "ConstantsData.h"
+#include "CSVDataFormat.h"
 #include "DateUtility.h"
 #include "FileDateObject.h"
 #include "FileObject.h"
@@ -27,12 +28,11 @@
 #include "UserData.h"
 
 
-enum class ScanSource { None = 0, LiveScan, FileXinorbisNormal, FileXinorbisDetails, FileXinorbis2Details,
-						FileCSV, LiveShare, FolderHistory, SearchResults };
-
 struct ScanPath
 {
-	std::wstring CSVSource = L"";
+	std::wstring FileName = L"";
+
+	std::wstring FileHistoryStr = L"";
 
 	std::wstring String = L"";
 	std::wstring DateStr = L"";
@@ -65,12 +65,59 @@ struct ScanPath
 };
 
 
+struct Disk
+{
+	unsigned __int64 DriveSpaceTotal = 0;
+	unsigned __int64 DriveSpaceFree = 0;
+	unsigned __int64 DriveSpaceUsed = 0;
+
+	std::wstring DiskType = L"";
+
+	int SectorsPerCluster = 0;
+	int BbytesPerSector = 0;
+	int FreeClusters = 0;
+	int TotalClusters = 0;
+
+	int DriveSectorSize = 0;
+
+	std::wstring VolumeName = L"";
+	std::wstring SerialNumber = L"";
+	std::wstring FileSystem = L"";
+
+	void Clear()
+	{
+		DriveSpaceTotal = 0;
+		DriveSpaceFree = 0;
+		DriveSpaceUsed = 0;
+
+		DiskType = L"";
+
+		SectorsPerCluster = 0;
+		BbytesPerSector = 0;
+		FreeClusters = 0;
+		TotalClusters = 0;
+
+		DriveSectorSize = 0;
+
+		VolumeName = L"";
+		SerialNumber = L"";
+		FileSystem = L"";
+	}
+};
+
+
+enum class SortMode { kNone = 0, kSize, kAttributes, kFileName, kFullPath, kDateCreated, kDateAccessed, kDateModified, kUser,
+					  kRootFoldersSize, kRootFoldersCount, kRootFoldersName };
+
 class ScanData
 {
+	void AddUserNotSpecified();
 
-    void AddUserNotSpecified();
+    bool LoadFromCustomCSV(const std::wstring, CSVDataFormat);
 
 public:
+
+	SortMode LastSort = SortMode::kNone;
 
 	bool HasLengthData = false;
 
@@ -80,12 +127,16 @@ public:
 
     ScanPath Path;
 
+    std::wstring ScanTable = L"";
+
 	int FileCount = 0;
 	int FolderCount = 0;
 	unsigned __int64 TotalSize = 0;
 	unsigned __int64 TotalSizeOD = 0;
 	unsigned __int64 AverageFileSize = 0;
 	float AverageFilesPerFolder = 0;
+
+   	Disk DiskStats;
 
 	ConsolidatedData Magnitude[kMagnitudesCount];
 	ConsolidatedData FileAttributes[kAttributesCount];
@@ -150,8 +201,7 @@ public:
 	int FindUser(std::wstring);
 
 	// Sorting
-	void SortRootBySize();
-	void SortByProperty(int property);
+	void SortByProperty(SortMode);
 
 	// Export data
 	void SaveRawData(Command command);
@@ -159,6 +209,8 @@ public:
 	// Import
 	FileObject* ImportRow(const std::wstring);
 	bool ImportFromCSV(const std::wstring);
+
+	bool ImportFromCSVCustom(const std::wstring, CSVDataFormat);
 
 	// Export settings
 	std::wstring ToJSON();

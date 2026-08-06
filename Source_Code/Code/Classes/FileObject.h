@@ -12,7 +12,6 @@
 
 #pragma once
 
-
 #include <string>
 #include <Windows.h>
 
@@ -25,7 +24,7 @@ public:
     int FilePathIndex = 0;
     
 	std::wstring Name = L"";
-	std::wstring FullPath = L"";    // folder + Name  TO DO TO DO TO DO
+	std::wstring FullPath = L"";
 
 	unsigned __int64 Size = 0;
 

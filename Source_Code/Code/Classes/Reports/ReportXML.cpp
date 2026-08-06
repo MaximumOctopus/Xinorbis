@@ -114,7 +114,7 @@ namespace ReportXML
 
 		if (GScanEngine->Data[DataSource].Source == ScanSource::FileCSV)
 		{
-			data->push_back(Formatting::InsertElement(L"csvsource", Formatting::ReplaceEntitiesForXML(GScanEngine->Data[DataSource].Path.CSVSource), 1) + L"\n");
+			data->push_back(Formatting::InsertElement(L"csvsource", Formatting::ReplaceEntitiesForXML(GScanEngine->Data[DataSource].Path.FileName), 1) + L"\n");
 		}
 
 		if (GScanEngine->FilterCategory != -1)
@@ -131,10 +131,10 @@ namespace ReportXML
 		//ofile << Formatting::InsertElement(L"serialnumber", std::to_wstring(SerialNumber, 8), 1) << "\n";
 		//ofile << Formatting::InsertElement(L"filesystem", FileSysName, 1) << "\n";
 
-		if (GScanEngine->DiskStats.DriveSpaceFree != 0)
+		if (GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree != 0)
 		{
-			data->push_back(Formatting::InsertElement(L"diskspacefree", Convert::ConvertToUsefulUnit(GScanEngine->DiskStats.DriveSpaceFree), 1) + L"\n");
-			data->push_back(Formatting::InsertElement(L"diskspacemax", Convert::ConvertToUsefulUnit(GScanEngine->DiskStats.DriveSpaceTotal), 1) + L"\n");
+			data->push_back(Formatting::InsertElement(L"diskspacefree", Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree), 1) + L"\n");
+			data->push_back(Formatting::InsertElement(L"diskspacemax", Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceTotal), 1) + L"\n");
 		}
 		else
 		{

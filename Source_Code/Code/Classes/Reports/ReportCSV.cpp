@@ -27,7 +27,7 @@ extern ScanEngine* GScanEngine;
 
 
 
-void ReportCSV::Summary(CSVReportOptions options, std::vector<std::wstring> &data, int DataSource)
+void ReportCSV::Summary(CSVReportOptions options, std::vector<std::wstring> *data, int DataSource)
 {
 	//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (CSV):\n\n";
 
@@ -44,7 +44,7 @@ void ReportCSV::Summary(CSVReportOptions options, std::vector<std::wstring> &dat
 
 		if (options.Titles)
 		{
-			data.push_back(GLanguageHandler->Text[kCategory] + separator +
+			data->push_back(GLanguageHandler->Text[kCategory] + separator +
 					 GLanguageHandler->Text[kQuantity] + separator +
 					 GLanguageHandler->Text[kQuantity] + separator + GLanguageHandler->Text[kAsPercent] + separator +
 					 GLanguageHandler->Text[kSize] + separator +
@@ -76,7 +76,7 @@ void ReportCSV::Summary(CSVReportOptions options, std::vector<std::wstring> &dat
 				output += L"\"100\"";
 			}
 
-			data.push_back(output + L"\n");
+			data->push_back(output + L"\n");
 		}
 
 		ofile.close();
@@ -84,7 +84,7 @@ void ReportCSV::Summary(CSVReportOptions options, std::vector<std::wstring> &dat
 }
 
 
-void FullList(CSVReportOptions options, std::vector<std::wstring> &data, int DataSource)
+void ReportCSV::FullList(CSVReportOptions options, std::vector<std::wstring> *data, int DataSource)
 {
 	//GLog->Add( GLanguageHandler->Text[kSavingReports] + L" (CSV):\n";
 	//GLog->Add( L"    " << options.FileName << "\n\n";
@@ -127,7 +127,7 @@ void FullList(CSVReportOptions options, std::vector<std::wstring> &data, int Dat
 				GLanguageHandler->Text[kTemporary] + separator +
 				GLanguageHandler->Text[kFileAttributes];
 
-			data.push_back(s + L"\n");
+			data->push_back(s + L"\n");
 		}
 
 		for (int t = 0; t < GScanEngine->Data[DataSource].Files.size(); t++)
@@ -148,7 +148,7 @@ void FullList(CSVReportOptions options, std::vector<std::wstring> &data, int Dat
 
 			if (AddToFile)
 			{
-				data.push_back(GScanEngine->Data[DataSource].Files[t]->ToCSV(GScanEngine->Data[DataSource].Folders[GScanEngine->Data[DataSource].Files[t]->FilePathIndex],
+				data->push_back(GScanEngine->Data[DataSource].Files[t]->ToCSV(GScanEngine->Data[DataSource].Folders[GScanEngine->Data[DataSource].Files[t]->FilePathIndex],
 																 GScanEngine->Data[DataSource].Users[GScanEngine->Data[DataSource].Files[t]->Owner]->Name,
 																 options.Units) + L"\n");
 			}

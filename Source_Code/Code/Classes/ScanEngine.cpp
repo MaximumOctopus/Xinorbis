@@ -120,7 +120,7 @@ void ScanEngine::Init()
 
 void ScanEngine::InitLanguage()
 {
-	for (int d = 0; d < 2; d++) // to do, make 2 a constant!
+	for (int d = 0; d < kAvailableDataSlots; d++)
 	{
 		for (int t = 0; t < kFileCategoriesCount; t++)
 		{
@@ -133,10 +133,6 @@ void ScanEngine::InitLanguage()
 void ScanEngine::ClearData()
 {
 	Data[DataSource].Clear();
-
-	DiskStats.DriveSpaceTotal = 0;
-	DiskStats.DriveSpaceFree = 0;
-	DiskStats.DriveSpaceUsed = 0;
 }
 
 
@@ -184,10 +180,10 @@ void ScanEngine::PopulateDiskStat()
 							&total,
 							&free) != 0)
 	{
-		DiskStats.DriveSpaceTotal = total.QuadPart;
-		DiskStats.DriveSpaceFree  = free.QuadPart;
+		Data[DataSource].DiskStats.DriveSpaceTotal = total.QuadPart;
+		Data[DataSource].DiskStats.DriveSpaceFree  = free.QuadPart;
 
-		DiskStats.DriveSpaceUsed  = total.QuadPart - free.QuadPart;
+		Data[DataSource].DiskStats.DriveSpaceUsed  = total.QuadPart - free.QuadPart;
 	}
 }
 
@@ -279,7 +275,7 @@ bool ScanEngine::Scan(bool process_data, bool process_top_100_size, bool process
 
 bool ScanEngine::Import(bool process_data, bool process_top_100_size, bool process_top_100_date, bool process_file_dates)
 {
-	bool success = Data[DataSource].ImportFromCSV(Data[DataSource].Path.CSVSource);
+	bool success = Data[DataSource].ImportFromCSV(Data[DataSource].Path.FileName);
 
 	if (!success)
 	{
@@ -876,6 +872,7 @@ void ScanEngine::ScanFolder(const std::wstring &folder)
 			FileObject *file_object = new FileObject();
 
 			file_object->Name          = std::wstring(file.cFileName);
+			file_object->FullPath      = folder + file_object->Name;
 			file_object->FilePathIndex = CurrentFolderIndex;
 			file_object->DateCreated   = Convert::FileTimeToDateInt(&file.ftCreationTime);
 			file_object->DateAccessed  = Convert::FileTimeToDateInt(&file.ftLastAccessTime);
@@ -1067,6 +1064,7 @@ void ScanEngine::ScanFolderExt(const std::wstring& folder)
 			FileObject *file_object = new FileObject();
 
 			file_object->Name          = std::wstring(file.cFileName);
+			file_object->FullPath      = folder + file_object->Name;
 			file_object->FilePathIndex = CurrentFolderIndex;
 			file_object->DateCreated   = Convert::FileTimeToDateInt(&file.ftCreationTime);
 			file_object->DateAccessed  = Convert::FileTimeToDateInt(&file.ftLastAccessTime);
@@ -1269,4 +1267,35 @@ int ScanEngine::FindUser(std::wstring name)
 	}
 
 	return -1;
+}
+
+//                                                                XSettings.Navigation.DisplayOptions[side]
+SizeOfFolder ScanEngine::SizeOfFolderNav(const std::wstring folder, const std::wstring display_options)
+{
+	//Assert(aFolderName <> '', 'SizeOfFolder :: blank input error');
+
+	SizeOfFolder sof;
+
+	int index = 0;
+
+	while (index < Data[DataSource].Files.size())
+	{
+		if (Data[DataSource].Files[index]->Category != kFileCategoryDirectory)
+		{
+			if (display_options[Data[DataSource].Files[index]->Category] == L'1')
+			{
+				if ((folder + L"\\").compare(0, Data[DataSource].Folders[Data[DataSource].Files[index]->FilePathIndex].size(), Data[DataSource].Folders[Data[DataSource].Files[index]->FilePathIndex]) == 0)
+				{
+					sof.Size += Data[DataSource].Files[index]->Size;
+					sof.SizeOnDisk += Data[DataSource].Files[index]->SizeOnDisk;
+
+					sof.FileCount++;
+				}
+			}
+		}
+
+		index++;
+	}
+
+    return sof;
 }

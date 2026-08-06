@@ -44,8 +44,6 @@ bool ReportDeep::ProcessFolder(int DataSource, int folder_index)
 		{
 			if (file->Category == kFileCategoryDirectory)
             {
-			    //GLog->Add( L"      " << GScanDetails->Folders[GScanDetails->Files[f].FilePathIndex] + GScanDetails->Files[f].FileName << "\n";
-
 				SizeOfFolder sof = GScanEngine->Data[DataSource].GetSizeOfFolder(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name,
 																                 file->Name);
 

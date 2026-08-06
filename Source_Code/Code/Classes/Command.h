@@ -45,5 +45,11 @@ struct Command
 	int Source = 0;         // index to ScanEngine->Data[here!]
     int Target = 1;         // index to ScanEngine->Data[here!]
 
+	Command(PrimaryCommand pc, const std::wstring sec)
+	{
+		primary = pc;
+        secondary = sec;
+    }
+
 	void Print();
 };

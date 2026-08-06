@@ -13,14 +13,13 @@
 #pragma once
 
 
-#include <string>
-
-#include "ReportCSVOptions.h"
-
-
-namespace ReportCSV
+class HelpIndexItem
 {
-	void Summary(CSVReportOptions, std::vector<std::wstring>*, int);
+public:
 
-	void FullList(CSVReportOptions, std::vector<std::wstring>*, int);
+	std::wstring Word = L"";
+	std::wstring Page = L"";
+	std::wstring Category = L"";
+
+    int FirstChar = 0;
 };

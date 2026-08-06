@@ -24,12 +24,17 @@ extern SettingsHandler *GSettingsHandler;
 
 bool static sortBySize(const FileObject *lhs, const FileObject *rhs) { return lhs->Size < rhs->Size; }
 bool static sortByDate(const FileObject *lhs, const FileObject *rhs) { return lhs->DateCreated < rhs->DateCreated; }
+bool static sortByAttributes(const FileObject *lhs, const FileObject *rhs) { return lhs->Attributes < rhs->Attributes; }
+bool static sortByFileName(const FileObject *lhs, const FileObject *rhs) { return lhs->Name < rhs->Name; }
+bool static sortByFullPath(const FileObject *lhs, const FileObject *rhs) { return lhs->FullPath < rhs->FullPath; }
 
 bool static sortByCreatedDate(const FileObject *lhs, const FileObject *rhs) { return lhs->DateCreated < rhs->DateCreated; }
 bool static sortByAccessedDate(const FileObject *lhs, const FileObject *rhs) { return lhs->DateAccessed < rhs->DateAccessed; }
 bool static sortByModifiedDate(const FileObject *lhs, const FileObject *rhs) { return lhs->DateModified < rhs->DateModified; }
 
 bool static sortRootBySize(const RootFolder* lhs, const RootFolder* rhs) { return lhs->Size > rhs->Size; }
+bool static sortRootByCount(const RootFolder* lhs, const RootFolder* rhs) { return lhs->Count > rhs->Count; }
+bool static sortRootByName(const RootFolder* lhs, const RootFolder* rhs) { return lhs->Name > rhs->Name; }
 
 
 ScanData::ScanData()
@@ -55,6 +60,8 @@ void ScanData::Clear()
 	FolderCount = 0;
 	TotalSize   = 0;
 	TotalSizeOD = 0;
+
+    DiskStats.Clear();
 
 	for (int t = 0; t < kMagnitudesCount; t++)
 	{
@@ -425,26 +432,46 @@ int ScanData::GetFolderIndex(const std::wstring folder_name)
 // =============================================================================
 
 
-void ScanData::SortRootBySize()
+void ScanData::SortByProperty(SortMode sort)
 {
-	std::sort(RootFolders.begin(), RootFolders.end(), sortRootBySize);
-}
-
-
-void ScanData::SortByProperty(int property)
-{
-	switch (property)
+	switch (sort)
 	{
-	case 0:
+	case SortMode::kSize:
 		std::sort(Files.begin(), Files.end(), sortByCreatedDate);
 		break;
-	case 1:
+	case SortMode::kAttributes:
+		std::sort(Files.begin(), Files.end(), sortByAttributes);
+		break;
+	case SortMode::kFileName:
+		std::sort(Files.begin(), Files.end(), sortByFileName);
+		break;
+	case SortMode::kFullPath:
+		std::sort(Files.begin(), Files.end(), sortByFullPath);
+		break;
+	case SortMode::kDateCreated:
+		std::sort(Files.begin(), Files.end(), sortByCreatedDate);
+		break;
+	case SortMode::kDateAccessed:
 		std::sort(Files.begin(), Files.end(), sortByAccessedDate);
 		break;
-	case 2:
+	case SortMode::kDateModified:
 		std::sort(Files.begin(), Files.end(), sortByModifiedDate);
 		break;
+	case SortMode::kUser:
+		break;
+
+	case SortMode::kRootFoldersSize:
+		std::sort(RootFolders.begin(), RootFolders.end(), sortRootBySize);
+		break;
+	case SortMode::kRootFoldersCount:
+		std::sort(RootFolders.begin(), RootFolders.end(), sortRootByCount);
+		break;
+	case SortMode::kRootFoldersName:
+		std::sort(RootFolders.begin(), RootFolders.end(), sortRootByName);
+		break;
 	}
+
+    LastSort = sort;
 }
 
 
@@ -806,6 +833,354 @@ bool ScanData::ImportFromCSV(const std::wstring file_name)
 }
 
 
+bool ScanData::ImportFromCSVCustom(const std::wstring file_name, CSVDataFormat csvdf)
+{                /*
+	GScanDetails[aDataIndex].TimeStarted := Now;
+
+	if (LoadFromCustomCSV(file_name, csvdf))
+	{
+
+		TPopulate.FromXinFilesFromCSV(aDataIndex, ret, fn);
+
+		GXinorbisScan.AnalyseDataFromCSVImport(aDataIndex);
+	}
+			   */
+	return true;
+}
+
+
+bool ScanData::LoadFromCustomCSV(const std::wstring file_name, CSVDataFormat csvdf)
+{                 /*
+var
+  tf : TextFile;
+  s,r,fdir,fname : string;
+  z,t,i,a : integer;
+  xfo : TFileObject;
+  tud : TUserData;
+  recordcount : integer;
+  processthisfield, inquotes : boolean;
+  tempString : string;
+
+  function IsValidNumber(const s : string): boolean;
+   var
+    t : integer;
+
+  begin
+   Result := True;
+
+   for t := 1 to length(s) do
+     if (ord(s[t]) < 48) or (ord(s[t]) > 57) then
+       Result := False;
+  end;
+
+ begin
+  Result := True;
+
+  if FileExists(aFileName) then begin
+
+    GScanDetails[aDataIndex].ClearAll; // to do, maybe need to set MD5 and others
+
+    GScanDetails[aDataIndex].InitNow;
+
+    GScanDetails[aDataIndex].ScanType   := ScanTypeNormal;
+    GScanDetails[aDataIndex].ScanSource := ScanSourceFileCSV;
+    GScanDetails[aDataIndex].Filename   := aFileName;
+
+    GScanDetails[aDataIndex].ScanPath   := 'unknown :(';
+
+    recordcount := 0;
+
+    AssignFile(tf, aFileName);
+    Reset(tf);
+
+    XSettings.Forms.ProgressForm.SetProcessIcon(1);
+
+    while not(eof(tf)) do begin
+      Readln(tf, s);
+
+      s := s + ' ';
+
+      if Pos(',', s) <> 0 then begin
+        xfo := TFileObject.Create;
+        xfo.FileName       := '';
+        xfo.FilePathIndex  := 0;
+        xfo.FileSize       := 0;
+        xfo.FileSizeOnDisk := 0;
+        xfo.FileDateC      := TConvert.DateToYYYYMMDDI(Now);
+        xfo.FileDateA      := TConvert.DateToYYYYMMDDI(Now);
+        xfo.FileDateM      := TConvert.DateToYYYYMMDDI(Now);
+        xfo.FileTimeC      := 0;
+        xfo.FileTimeA      := 0;
+        xfo.FileTimeM      := 0;
+        xfo.FileCategory   := 7;
+        xfo.Attributes     := 0;
+        xfo.Temp           := False;
+        xfo.Owner          := 0;
+
+        r := '';
+        i := 0;
+        processthisfield := False;
+        inquotes         := False;
+
+        for t := 1 to length(s) do begin
+
+          case s[t] of
+            '"' : begin
+                    if inquotes then begin
+                      case s[t + 1] of
+                        ',' : inquotes := False;
+                      else
+                        r := r + s[t];
+                      end;
+                    end
+                    else
+                      inquotes := not(inquotes);
+                  end;
+            ',' : begin
+                    if not(inquotes) then
+                      processthisfield := True;
+                  end;
+          else
+            r := r + s[t];
+          end;
+
+          if processthisfield then begin
+            if i <= MaxCSVFields then begin
+              if not((recordcount = 0) and (aCSVDataFormat.IgnoreFirstRecord)) then begin
+                r := Trim(r);
+
+                case aCSVDataFormat.Fields[i] of
+                   CFieldIgnore            : {}; // ignore
+                   CFieldFullFilePath      : begin
+											   xfo.FileName := Utility::SplitFileName(r);
+
+                                               tempString   := ExtractFilePath(r);
+
+                                               a := GScanDetails[aDataIndex].Folders.IndexOf(tempstring);
+
+                                               if a <> -1 then
+                                                 xfo.FilePathIndex := a
+                                               else begin
+                                                 GScanDetails[aDataIndex].Folders.Add(tempString);
+                                                 xfo.FilePathIndex := GScanDetails[aDataIndex].Folders.Count - 1;
+                                               end;
+                                             end;
+                   CFieldFileSizeBytes     : if IsValidNumber(r) then begin
+                                               xfo.FileSize := StrToInt64(r);
+
+                                               inc(GScanDetails[aDataIndex].TotalSize, xfo.FileSize);
+
+                                               SetMagnitude(0, aDataIndex, xfo.FileSize);
+                                             end
+                                             else
+                                               xfo.attributes:=xfo.Attributes+faDirectory;
+                   CFieldFileSizeOnDIsk    : if IsValidNumber(r) then
+                                               xfo.FileSizeOnDisk:=StrToInt64(r);
+                   CFieldCreatedDDMMYYYY   : if length(r) = 10 then
+                                               xfo.FileDateC := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+                   CFieldCreatedMMDDYYYY   : xfo.FileDateC := TConvert.UStoUKDate(r);
+                   CFieldModifiedDDMMYYYY  : if length(r) = 10 then
+                                               xfo.FileDateM := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+                   CFieldModifiedMMDDYYYY  : xfo.FileDateM := TConvert.UStoUKDate(r);
+                   CFieldAccessedDDMMYYYY  : if length(r) = 10 then
+                                               xfo.FileDateA := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+                   CFieldAccessedMMDDYYYY  : xfo.FileDateA := TConvert.UStoUKDate(r);
+                  CFieldFilePath           : if r[length(r)] <> '\' then
+                                               fdir := r + '\'
+                                             else
+                                               fdir := r;
+                  CFieldFileName           : fname:=r;
+                  CFieldOwner              : begin
+                                               if XSettings.Optimisations.GetUserDetails then begin
+                                                 z := TUtility.FindUserIndex(1, r);
+                                                 if z = -1 then begin
+                                                   tud      := TUserData.Create;
+                                                   tud.Name := r;
+
+                                                   GScanDetails[aDataIndex].Users.Add(tud);
+
+                                                   z := GScanDetails[aDataIndex].Users.Count - 1;
+                                                 end;
+
+                                                 xfo.Owner:=z;
+
+                                                 inc(GScanDetails[aDataIndex].Users[z].Data[XUserCount]);
+                                                 inc(GScanDetails[aDataIndex].Users[z].Data[XUserSize], xfo.FileSize);
+                                               end;
+                                             end;
+                  CFieldCategory           : if IsValidNumber(r) then begin
+                                               xfo.FileCategory := StrToInt(r);
+
+                                               SetMagnitude(xfo.FileCategory, aDataIndex, xfo.FileSize);
+                                             end;
+                  CFieldReadOnly           : if IsValidNumber(r) then
+                                               if StrToInt(r) <> 0 then
+                                                 xfo.Attributes := xfo.Attributes + Sysutils.faReadOnly;
+                  CFieldHidden             : if IsValidNumber(r) then
+                                               if StrToInt(r) <> 0 then
+                                                 xfo.Attributes := xfo.Attributes + Sysutils.faHidden;
+                  CFieldSystem             : if IsValidNumber(r) then
+                                               if StrToInt(r) <> 0 then
+                                                 xfo.Attributes := xfo.Attributes + Sysutils.faSysFile;
+                  CFieldArchive            : if IsValidNumber(r) then
+                                               if StrToInt(r) <> 0 then
+                                                 xfo.Attributes := xfo.Attributes + Sysutils.faArchive;
+                  CFieldTemp               : if IsValidNumber(r) then
+                                               if StrToInt(r) <> 0 then
+                                                 xfo.Temp := True;
+                  CFieldAttributes         : if IsValidNumber(r) then
+                                               xfo.Attributes := StrToInt(r);
+                  CFieldCreatedTimeHHMMSS  : if IsValidNumber(r) then
+                                               xfo.FileTimeC := StrToInt(r);
+                  CFieldModifiedTimeHHMMSS : if IsValidNumber(r) then
+                                               xfo.FileTimeA := StrToInt(r);
+                  CFieldAccessedTimeHHMMSS : if IsValidNumber(r) then
+                                               xfo.FileTimeM := StrToInt(r);
+                end;
+              end;
+
+              r := '';
+
+              processthisfield := False;
+              inquotes         := False;
+            end;
+
+            inc(i);
+          end;
+        end;
+
+        if i <= MaxCSVFields then begin
+          if not((recordcount = 0) and (aCSVDataFormat.IgnoreFirstRecord)) then begin
+            r := Trim(r);
+
+            case aCSVDataFormat.Fields[i] of
+              CFieldIgnore             : {}; // ignore
+              CFieldFullFilePath       : begin
+                                           xfo.FileName := Utility::SplitFileName(r);
+
+                                           tempString   := ExtractFilePath(r);
+
+                                           a := GScanDetails[aDataIndex].Folders.IndexOf(tempstring);
+
+                                           if a <> -1 then
+                                             xfo.FilePathIndex := a
+                                           else begin
+                                             GScanDetails[aDataIndex].Folders.Add(tempString);
+                                             xfo.FilePathIndex := GScanDetails[aDataIndex].Folders.Count - 1;
+                                           end;
+                                         end;
+              CFieldFileSizeBytes      : if IsValidNumber(r) then begin
+                                           xfo.FileSize := StrToInt64(r);
+
+                                           if xfo.FileSize > 0 then
+                                             inc(GScanDetails[aDataIndex].TotalSize, xfo.FileSize);
+
+                                           //-- now lets put the size into the magnitude section --------------------
+                                           SetMagnitude(0, aDataIndex, xfo.FileSize);
+                                         end
+                                         else
+                                           xfo.attributes := xfo.Attributes+faDirectory;
+              CFieldFileSizeOnDisk     : if IsValidNumber(r) then
+                                           xfo.FileSizeOnDisk := StrToInt64(r);
+              CFieldCreatedDDMMYYYY    : if (length(r) = 10) then
+                                           xfo.FileDateC := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+              CFieldCreatedMMDDYYYY    : xfo.FileDateC := TConvert.UStoUKDate(r);
+              CFieldModifiedDDMMYYYY   : if (length(r) = 10) then
+                                           xfo.FileDateM := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+              CFieldModifiedMMDDYYYY   : xfo.FileDateM := TConvert.UStoUKDate(r);
+              CFieldAccessedDDMMYYYY   : if (length(r) = 10) then
+                                           xfo.FileDateA := StrToInt(r[7] + r[8] + r[9] + r[10] + r[4] + r[5] + r[1] + r[2]);
+              CFieldAccessedMMDDYYYY   : xfo.FileDateA := TConvert.UStoUKDate(r);
+              CFieldFilePath           : if r[length(r)] <> '\' then
+                                          fdir := r + '\'
+                                        else
+                                          fdir:=r;
+              CFieldFileName           : fname:=r;
+              CFieldOwner              : begin
+                                           if XSettings.Optimisations.GetUserDetails then begin
+                                             z := TUtility.FindUserIndex(aDataIndex, r);
+
+                                             if z = -1 then begin
+                                               tud      := TUserData.Create;
+                                               tud.Name := r;
+
+                                               GScanDetails[aDataIndex].Users.Add(tud);
+
+                                               z := GScanDetails[aDataIndex].Users.Count - 1;
+                                             end;
+
+                                             xfo.Owner := z;
+
+                                             inc(GScanDetails[aDataIndex].Users[z].Data[XUserCount]);
+                                             inc(GScanDetails[aDataIndex].Users[z].Data[XUserSize], xfo.FileSize);
+                                           end;
+                                         end;
+              CFieldCategory           : if IsValidNumber(r) then begin
+                                           xfo.FileCategory := StrToInt(r);
+
+                                           SetMagnitude(xfo.FileCategory, aDataIndex, xfo.FileSize);
+                                         end;
+              CFieldReadOnly           : if IsValidNumber(r) then
+                                          if StrToInt(r) <> 0 then
+                                            xfo.Attributes := xfo.Attributes + Sysutils.faReadOnly;
+              CFieldHidden             : if IsValidNumber(r) then
+                                          if StrToInt(r) <> 0 then
+                                            xfo.Attributes := xfo.Attributes + faHidden;
+              CFieldSystem             : if IsValidNumber(r) then
+                                          if StrToInt(r) <> 0 then
+                                            xfo.Attributes := xfo.Attributes + faSysFile;
+              CFieldArchive            : if IsValidNumber(r) then
+                                           if StrToInt(r) <> 0 then
+                                             xfo.Attributes := xfo.Attributes + faArchive;
+              CFieldTemp               : if IsValidNumber(r) then
+                                          if StrToInt(r) <> 0 then
+                                            xfo.Temp := True;
+              CFieldAttributes         : if IsValidNumber(r) then
+                                           xfo.Attributes := StrToInt(r);
+              CFieldCreatedTimeHHMMSS  : if IsValidNumber(r) then
+                                           xfo.FileTimeC := StrToInt(r);
+              CFieldModifiedTimeHHMMSS : if IsValidNumber(r) then
+                                           xfo.FileTimeA := StrToInt(r);
+              CFieldAccessedTimeHHMMSS : if IsValidNumber(r) then
+                                           xfo.FileTimeM := StrToInt(r);
+            end;
+          end;
+        end;
+
+        if xfo.FileName = '' then
+          xfo.FileName := fname;
+
+//        if xfo.FilePath='' then
+//          xfo.FilePath:=fdir;
+
+        if not((recordcount = 0) and (aCSVDataFormat.IgnoreFirstRecord)) then
+          GScanDetails[aDataIndex].Files.Add(xfo);
+
+        inc(recordcount);
+      end;
+    end;
+
+    CloseFile(tf);
+
+    GScanDetails[aDataIndex].ScanPath := GetScanPathFromFolderList(aDataIndex);
+
+    if GScanDetails[aDataIndex].Users.Count = 0 then begin
+      tud      := TUserData.Create;
+      tud.Name := XText[rsNOT_SPECIFIED];
+
+      GScanDetails[aDataIndex].Users.Add(tud);
+
+      GScanDetails[aDataIndex].Users[0].Data[XUserCount] := GScanDetails[aDataIndex].FileCount;
+      GScanDetails[aDataIndex].Users[0].Data[XUserSize]  := GScanDetails[aDataIndex].TotalSize;
+    end;
+  end
+  else
+	Result := False; */
+}
+
+
+
+
 // =============================================================================
 // Export settings
 // =============================================================================
@@ -820,7 +1195,7 @@ std::wstring ScanData::ToJSON()
 	case ScanSource::LiveScan:
 		return L"\"scan\":[{\"path\":\"" + Formatting::ReplaceForJSON(Path.String) + L"\", \"filecount\":\"" + std::to_wstring(FileCount) + L"\", \"foldercount\":\"" + std::to_wstring(FolderCount) + L"\", \"sizebytes\":\"" + std::to_wstring(TotalSize) + L"\", \"date\":\"" + DateUtility::GetDate(DateTimeFormat::Display) + L"\", \"time\":\"" + DateUtility::GetTime(DateTimeFormat::Display) + L"\"}],\n";
 	case ScanSource::FileCSV:
-		return L"\"scan\":[{\"path\":\"" + Formatting::ReplaceForJSON(Path.String) + L"\", \"csvsource\":\"" + Formatting::ReplaceForJSON(Path.CSVSource) + L"\", \"filecount\":\"" + std::to_wstring(FileCount) + L"\", \"foldercount\":\"" + std::to_wstring(FolderCount) + L"\", \"sizebytes\":\"" + std::to_wstring(TotalSize) + L"\", \"date\":\"" + DateUtility::GetDate(DateTimeFormat::Display) + L"\", \"time\":\"" + DateUtility::GetTime(DateTimeFormat::Display) + L"\"}],\n";
+		return L"\"scan\":[{\"path\":\"" + Formatting::ReplaceForJSON(Path.String) + L"\", \"csvsource\":\"" + Formatting::ReplaceForJSON(Path.FileName) + L"\", \"filecount\":\"" + std::to_wstring(FileCount) + L"\", \"foldercount\":\"" + std::to_wstring(FolderCount) + L"\", \"sizebytes\":\"" + std::to_wstring(TotalSize) + L"\", \"date\":\"" + DateUtility::GetDate(DateTimeFormat::Display) + L"\", \"time\":\"" + DateUtility::GetTime(DateTimeFormat::Display) + L"\"}],\n";
 	}
 
 	return L"";

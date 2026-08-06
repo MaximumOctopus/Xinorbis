@@ -15,10 +15,12 @@
 #include <fstream>
 #include <string>
 
+#include <Vcl.Grids.hpp>
+
 
 namespace ReportSummary
 {
-	void Generate(const std::wstring);
+	void Generate(const std::wstring, int, TStringGrid *, TStringGrid *, TStringGrid *, TStringGrid *, TStringGrid *);
 
-	void AddSummaryItem(std::ofstream &, int);
+	void AddSummaryItem(std::ofstream &, TStringGrid*, TStringGrid*, int, int);
 }

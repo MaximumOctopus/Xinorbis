@@ -67,7 +67,7 @@ namespace ReportTree
 
 		if (GScanEngine->Data[DataSource].Source == ScanSource::FileCSV)
 		{
-			data->push_back(L"    (from CSV import \"" + GScanEngine->Data[DataSource].Path.CSVSource + L"\")\n");
+			data->push_back(L"    (from CSV import \"" + GScanEngine->Data[DataSource].Path.FileName + L"\")\n");
 		}
 
 		for (FileObject *file : GScanEngine->Data[DataSource].Files)

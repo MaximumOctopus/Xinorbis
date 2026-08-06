@@ -33,25 +33,6 @@
 #include "UserData.h"
 
 
-struct Disk
-{
-	unsigned __int64 DriveSpaceTotal = 0;
-	unsigned __int64 DriveSpaceFree = 0;
-	unsigned __int64 DriveSpaceUsed = 0;
-
-	std::wstring diskType = L"";
-
-	int sectorsPerCluster = 0;
-	int bytesPerSector = 0;
-	int freeClusters = 0;
-	int totalClusters = 0;
-
-	std::wstring volumeName = L"";
-	std::wstring serialNumber = L"";
-	std::wstring fileSystem = L"";
-};
-
-
 struct SearchData
 {
 	std::vector<FileObject> Files;
@@ -74,6 +55,8 @@ struct SearchData
 class ScanEngine
 {
 private:
+
+	constexpr static int kAvailableDataSlots = 2;
 
 	int CurrentFolderIndex = 0;
 	std::wstring CurrentFolder = L"";
@@ -103,6 +86,9 @@ public:
 
     int DataSource = 0;
 
+	std::vector<std::wstring> FolderStructure;  		// used by FrameStructure and associated thread/process
+	std::wstring CurrentNavigationSideLocation = L"";   //  ""                          ""
+
 	std::vector<std::wstring> ExcludedFolders;
 	std::vector<std::wstring> ExcludedFiles;
 
@@ -110,9 +96,7 @@ public:
 
 	int FilterCategory = -1;
 
-	ScanData Data[2];
-
-	Disk DiskStats;
+	ScanData Data[kAvailableDataSlots];
 
 	bool AllowVirtualFiles = false;
 
@@ -135,6 +119,8 @@ public:
 	int ExcludeCount();
 
 	void PopulateSortedFiles();
+
+    SizeOfFolder SizeOfFolderNav(const std::wstring, const std::wstring);
 
 	// ======================================================================
 

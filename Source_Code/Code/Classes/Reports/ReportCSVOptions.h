@@ -27,6 +27,8 @@ struct CSVReportOptions
 	bool Titles = true;
 	int Category = -1; //0-14 or -1 for ALL
 
+    bool FullList = false;
+
 	std::wstring Layout = L"";
 
 	bool AutoOpen = false;

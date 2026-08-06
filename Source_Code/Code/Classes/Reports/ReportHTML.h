@@ -22,6 +22,8 @@
 
 namespace ReportHTML
 {
+    void FileReport(std::vector<std::wstring>*, int, const std::wstring, const std::wstring);
+
 	void Generate(HTMLReportOptions&, std::vector<std::wstring>*, int);
 
 	void CreateDeepReport(std::vector<std::wstring>*, HTMLReportOptions&, int);

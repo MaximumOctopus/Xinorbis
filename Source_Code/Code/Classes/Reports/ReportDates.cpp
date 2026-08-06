@@ -29,11 +29,11 @@ void ReportDates::ReportDates(DateReportOptions options, std::vector<std::wstrin
 {
 	if (options.Created)
 	{
-		// to do std::ranges::sort(GScanEngine->Data[DataSource].Files, {}, &FileObject::DateCreated);
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 	}
 	else
 	{
-		// to do std::ranges::sort(GScanEngine->Data[DataSource].Files, {}, &FileObject::DateModified);
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 	}
 
 	if (options.Day)
