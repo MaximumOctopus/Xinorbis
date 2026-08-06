@@ -6,6 +6,7 @@
 #include "XFormGetCopyMove.h"
 
 #include "LanguageHandler.h"
+#include "WindowsUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
 
@@ -25,10 +26,7 @@ std::wstring GetCopyMoveFolder(const std::wstring title)
 {
 	TFormGetCopyMove *FormGetCopyMove = new TFormGetCopyMove(Application);
 
-	FormGetCopyMove->Caption = title.c_str();
-	FormGetCopyMove->bCancel->Caption = GLanguageHandler->Text[kCancel].c_str();
-	FormGetCopyMove->lTitle->Caption = title.c_str();
-
+    FormGetCopyMove->Init(title);
 
 	std::wstring selection = L"";
 
@@ -43,12 +41,23 @@ std::wstring GetCopyMoveFolder(const std::wstring title)
 }
 
 
+void TFormGetCopyMove::Init(const std::wstring title)
+{
+	Caption = title.c_str();
+
+	bCancel->Caption = GLanguageHandler->Text[kCancel].c_str();
+	lTitle->Caption = title.c_str();
+}
+
+
 void __fastcall TFormGetCopyMove::SpeedButton1Click(TObject *Sender)
 {
-	std::wstring folder = L"";// WindowsUtility::BrowseForFolder(Handle); TO DO
+	std::vector<std::wstring> paths;
 
-	if (!folder.empty())
+	if (WindowsUtility::BrowseForFolder(paths, true, false))
 	{
+		std::wstring folder = paths[0];
+
 		eFolder->Text = folder.c_str();
-    }
+	}
 }

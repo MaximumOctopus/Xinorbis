@@ -25,6 +25,38 @@ __fastcall TForm15::TForm15(TComponent* Owner)
 }
 
 
+void OpenExcludedFolders(std::vector<std::wstring> &folders, bool &ignore_virtual)
+{
+	Form15 = new TForm15(Application);
+
+	Form15->cbIgnoreVirtual->Checked = !ignore_virtual;
+
+	if (folders.size() != 0)
+	{
+		for (std::wstring folder : folders)
+		{
+			Form15->lbExcluded->Items->Add(folder.c_str());
+		}
+	}
+
+	Form15->ToggleSave();
+
+	if (Form15->ShowModal() == mrOk)
+	{
+		folders.clear();
+
+		for (int t = 0; t < Form15->lbExcluded->Items->Count; t++)
+		{
+			folders.push_back(Form15->lbExcluded->Items->Strings[t].c_str());
+		}
+
+		ignore_virtual = !Form15->cbIgnoreVirtual->Checked;
+	}
+
+	delete Form15;
+}
+
+
 void TForm15::Init()
 {
 	Caption = GLanguageHandler->Text[kExcludeFromScan].c_str();
@@ -124,11 +156,11 @@ void __fastcall TForm15::bSaveClick(TObject *Sender)
 
 void __fastcall TForm15::sbAddClick(TObject *Sender)
 {
-	std::wstring folder = L""; // TO DO WindowsUtility::BrowseForFolder(Handle);
+	std::vector<std::wstring> paths;
 
-	if (!folder.empty())
+	if (WindowsUtility::BrowseForFolder(paths, true, false))
 	{
-		folder += L"*";
+		std::wstring folder = paths[0] + L"*";
 
 		lbExcluded->Items->Add(folder.c_str());
 

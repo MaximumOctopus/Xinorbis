@@ -2,7 +2,7 @@ object Form8: TForm8
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  ClientHeight = 513
+  ClientHeight = 514
   ClientWidth = 920
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

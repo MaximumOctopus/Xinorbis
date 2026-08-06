@@ -250,7 +250,6 @@ object FormFileSpread: TFormFileSpread
     Align = alClient
     TabOrder = 2
     OnMouseMove = vtcSpreadMouseMove
-    ExplicitTop = -6
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
     object Series1: TBarSeries

@@ -1,9 +1,9 @@
-object Form13: TForm13
+object FormReportSaves: TFormReportSaves
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Form13'
-  ClientHeight = 446
+  Caption = 'FormReportSaves'
+  ClientHeight = 325
   ClientWidth = 754
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,7 +17,7 @@ object Form13: TForm13
   TextHeight = 15
   object Panel2: TPanel
     Left = 0
-    Top = 412
+    Top = 291
     Width = 754
     Height = 34
     Align = alBottom
@@ -268,36 +268,349 @@ object Form13: TForm13
       OnClick = bSelectNoneClick
     end
   end
-  object PageControl1: TPageControl
+  object pcReports: TPageControl
     Left = 0
     Top = 31
     Width = 754
-    Height = 381
-    ActivePage = TabSheet1
+    Height = 260
+    ActivePage = tsXML
     Align = alClient
     TabOrder = 2
-    object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
+    object tsCSV: TTabSheet
+      Caption = 'tsCSV'
+      object lCSVFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lCSVFFLHelpText: TLabel
+        Left = 240
+        Top = 127
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object sbCSVFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbCSVFolderClick
+      end
+      object cbToggleCSV: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = '.'
+        TabOrder = 0
+        OnClick = cbToggleCSVClick
+      end
+      object eCSVFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+      end
+      object rbCSVCategories: TRadioButton
+        Left = 48
+        Top = 104
+        Width = 113
+        Height = 17
+        Caption = '.'
+        TabOrder = 2
+      end
+      object rbCSVFullFileList: TRadioButton
+        Left = 224
+        Top = 104
+        Width = 113
+        Height = 17
+        TabOrder = 3
+      end
+      object cbCSVIncludeColumnTitles: TCheckBox
+        Left = 48
+        Top = 197
+        Width = 97
+        Height = 17
+        Caption = '.'
+        TabOrder = 4
+      end
     end
-    object TabSheet2: TTabSheet
-      Caption = 'TabSheet2'
+    object tsHTML: TTabSheet
+      Caption = 'HTML'
       ImageIndex = 1
+      object lHTMLFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 85
+        Height = 15
+        Caption = 'lHTMLFileName'
+      end
+      object sbHTMLFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbHTMLFolderClick
+      end
+      object lHTMLLayout: TLabel
+        Left = 48
+        Top = 135
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lHTMLFileSize: TLabel
+        Left = 216
+        Top = 135
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object cbToggleHTML: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = '.'
+        TabOrder = 0
+        OnClick = cbToggleHTMLClickClick
+      end
+      object eHTMLFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+      end
+      object cbHTMLLayouts: TComboBox
+        Left = 48
+        Top = 156
+        Width = 145
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 2
+        OnChange = cbHTMLLayoutsChange
+      end
+      object cbHTMLFileSize: TComboBox
+        Left = 216
+        Top = 156
+        Width = 145
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 3
+      end
     end
-    object TabSheet3: TTabSheet
-      Caption = 'TabSheet3'
+    object tsText: TTabSheet
+      Caption = 'Text'
       ImageIndex = 2
+      object lTextFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object Label7: TLabel
+        Left = 48
+        Top = 135
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object sbTextFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbTextFolderClick
+      end
+      object cbToggleText: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = 'CheckBox1'
+        TabOrder = 0
+        OnClick = cbToggleTextClickClick
+      end
+      object eTextFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+        Text = 'Edit1'
+      end
+      object cbTextLayouts: TComboBox
+        Left = 48
+        Top = 156
+        Width = 145
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 2
+      end
     end
-    object TabSheet4: TTabSheet
-      Caption = 'TabSheet4'
+    object tsTree: TTabSheet
+      Caption = 'tsTree'
       ImageIndex = 3
+      object lTreeFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object Label9: TLabel
+        Left = 48
+        Top = 135
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object sbTreeFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbTreeFolderClick
+      end
+      object cbToggleTree: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = 'CheckBox1'
+        TabOrder = 0
+        OnClick = cbToggleTreeClickClick
+      end
+      object eTreeFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+        Text = 'Edit1'
+      end
+      object cbTreeLayouts: TComboBox
+        Left = 48
+        Top = 156
+        Width = 145
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 2
+      end
     end
-    object TabSheet5: TTabSheet
-      Caption = 'TabSheet5'
+    object tsXinorbis: TTabSheet
+      Caption = 'Xinorbis'
       ImageIndex = 4
+      object lXinorbisFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object sbXinorbisFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbXinorbisFolderClick
+      end
+      object lXinorbisHelpText: TLabel
+        Left = 72
+        Top = 98
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object cbToggleXinorbis: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = 'CheckBox1'
+        TabOrder = 0
+        OnClick = cbToggleXinorbisClick
+      end
+      object eXinorbisFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+        Text = 'Edit1'
+      end
     end
-    object TabSheet6: TTabSheet
-      Caption = 'TabSheet6'
+    object tsXML: TTabSheet
+      Caption = 'XML'
       ImageIndex = 5
+      object lXMLFileName: TLabel
+        Left = 48
+        Top = 48
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object sbXMLFolder: TSpeedButton
+        Left = 711
+        Top = 70
+        Width = 23
+        Height = 22
+        OnClick = sbXMLFolderClick
+      end
+      object lXMLLayouts: TLabel
+        Left = 48
+        Top = 151
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object cbToggleXML: TCheckBox
+        Left = 20
+        Top = 14
+        Width = 97
+        Height = 17
+        Caption = 'CheckBox1'
+        TabOrder = 0
+        OnClick = cbToggleXMLClick
+      end
+      object eXMLFileName: TEdit
+        Left = 48
+        Top = 69
+        Width = 657
+        Height = 23
+        TabOrder = 1
+        Text = 'Edit1'
+      end
+      object rbXMLScanData: TRadioButton
+        Left = 48
+        Top = 104
+        Width = 113
+        Height = 17
+        Caption = 'rbXMLScanData'
+        TabOrder = 2
+      end
+      object rbXMLFullFileList: TRadioButton
+        Left = 224
+        Top = 104
+        Width = 113
+        Height = 17
+        Caption = 'RadioButton1'
+        TabOrder = 3
+      end
+      object cbXMLLayouts: TComboBox
+        Left = 48
+        Top = 172
+        Width = 145
+        Height = 23
+        Style = csDropDownList
+        TabOrder = 4
+      end
     end
   end
 end

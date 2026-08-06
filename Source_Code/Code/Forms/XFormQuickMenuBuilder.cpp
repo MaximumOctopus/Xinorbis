@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "XFormQuickMenuBuilder.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ConstantsData.h"
 #include "SystemGlobal.h"
@@ -77,7 +78,7 @@ void TForm9::Init()
 
 	// structure
 	sbSeparator->Caption = GLanguageHandler->Text[kSeparator].c_str();
-	sbSubMenuTemplate->Caption = L"Sub-menu Template"; // to do
+	sbSubMenuTemplate->Caption = GLanguageHandler->Text[kSubMenuTemplate].c_str();
 
 	// dialogs
 	sbDCreatedDate->Caption = GLanguageHandler->Text[kCreatedDate].c_str();
@@ -97,12 +98,12 @@ void TForm9::Init()
 	rbZAccessed->Caption = GLanguageHandler->Text[kAccessed].c_str();
 	rbZModified->Caption = GLanguageHandler->Text[kModified].c_str();
 
-	sbZToday->Caption = L"Today"; // to do add to lang file
-	sbZYesterday->Caption = L"Yesterday";
-	sbZThisWeek->Caption = L"This Week";
-	sbZThisMonth->Caption = L"This Month";
-	sbZLastSixMonths->Caption = L"Last 6 months";
-	sbZLastYear->Caption = L"Last Year";
+	sbZToday->Caption = GLanguageHandler->Text[kToday].c_str();
+	sbZYesterday->Caption = GLanguageHandler->Text[kYesterday].c_str();
+	sbZThisWeek->Caption = GLanguageHandler->Text[kThisWeek].c_str();
+	sbZThisMonth->Caption = GLanguageHandler->Text[kThisMonth].c_str();
+	sbZLastSixMonths->Caption = GLanguageHandler->Text[kLastSixMonths].c_str();
+	sbZLastYear->Caption = GLanguageHandler->Text[kLastYear].c_str();
 }
 
 
@@ -139,9 +140,11 @@ void __fastcall TForm9::SpeedButton3Click(TObject *Sender)
 		}
 		catch(...)
 		{
-		//	ShowXDialog('Quick Menu Builder - error',
-// to do 					'Unable to save file "' + filename + '". ' + e.ClassName + ' / ' + e.Message,
-		 //		XDialogTypeWarning);
+			std::wstring fn = sdMain->FileName.c_str();
+
+			ShowXDialog(L"Quick Menu Builder - Error",
+						L"Unable to save file \"" + fn + L"\".",
+						XDialogTypeWarning);
 		}
 	}
 	else
@@ -161,9 +164,11 @@ void __fastcall TForm9::SpeedButton4Click(TObject *Sender)
 		}
 		catch(...)
 		{
-		//	ShowXDialog('Quick Menu Builder - error',
-// to do 					'Unable to save file "' + filename + '". ' + e.ClassName + ' / ' + e.Message,
-		 //		XDialogTypeWarning);
+			std::wstring fn = sdMain->FileName.c_str();
+
+			ShowXDialog(L"Quick Menu Builder - Error",
+						L"Unable to save file \"" + fn + L"\".",
+						XDialogTypeWarning);
 		}
 
 		FileName = sdMain->FileName.c_str();
@@ -284,9 +289,11 @@ void __fastcall TForm9::sbTestClick(TObject *Sender)
 
 void __fastcall TForm9::MenuClick(TObject *Sender)
 {
-//	ShowXDialog('Quick Menu Builder - output',
-//			  MenuStrings[TMenuItem(Sender).Tag],
-//			  XDialogTypeXinorbis);
+	TMenuItem *mi = (TMenuItem*)Sender;
+
+	ShowXDialog(L"Quick Menu Builder - output",
+				MenuStrings[mi->Tag],
+				XDialogTypeXinorbis);
 }
 
 

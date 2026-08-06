@@ -157,7 +157,7 @@ public:
     void UpdateSettings();
 };
 
-int OpenReportSettings(int);
+void OpenReportSettings(int);
 
 //---------------------------------------------------------------------------
 extern PACKAGE TForm8 *Form8;

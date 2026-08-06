@@ -3,21 +3,29 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <fstream>
+
 #include "XFormFileSpread.h"
 #include "XFormXinorbisDialog.h"
 
 #include "ChartUtility.h"
 #include "ConstantsGui.h"
 #include "ConstantsReports.h"
+#include "Formatting.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
+#include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
+#include "SystemGlobal.h"
+#include "Utility.h"
 #include "WindowsUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -37,22 +45,6 @@ void OpenFileSpread(int data_index)
 
     FormFileSpread->Show();
 }
-
-
-//    FULSP : TUpdateLeftStatusPanel;
-
-//	procedure SetTheme;
-//  public
-//    property OnHide : TUpdateLeftStatusPanel read FULSP write FULSP;
-//  end;
-
-
-//procedure DoSpread(whichDataIndex : integer);
-// begin
-//  frmSpread.FDataIndex := whichDataIndex;
-
-//  frmSpread.Show;
-//end;
 
 
 void __fastcall TFormFileSpread::FormShow(TObject *Sender)
@@ -105,8 +97,10 @@ void __fastcall TFormFileSpread::FormClose(TObject *Sender, TCloseAction &Action
 
 	GSettingsHandler->SaveFormDetails(fd);
 
-//	 if Assigned(FULSP) then to do
-//	FULSP(_FormFileSpread);
+	if (OnULSP)
+	{
+		OnULSP(kFormFileSpread);
+	}
 
 	Action = caHide;
 }
@@ -161,15 +155,15 @@ void TFormFileSpread::Init()
 
 	// =========================================================================
 
-//	FormDetails fd = XSettings.LoadFormDetails(_FormFileSpread); TO DO
+	FormDetails fd = GSettingsHandler->LoadFormDetails(kFormFileSpread);
 
-//	if (fd.FormId != -1)
-//	{
-//		Left   = fd.X;
-//		Top    = fd.Y;
-//		Width  = fd.Width;
-//		Height = fd.Height;
-//	}
+	if (fd.FormId != -1)
+	{
+		Left   = fd.X;
+		Top    = fd.Y;
+		Width  = fd.Width;
+		Height = fd.Height;
+	}
 }
 
 
@@ -215,20 +209,20 @@ void __fastcall TFormFileSpread::sbShowClick(TObject *Sender)
 
 void __fastcall TFormFileSpread::sbHelpClick(TObject *Sender)
 {
-	//THelp.OpenHelpPage('a11.htm');
+	HelpHandler::OpenHelpPage(L"a11.htm");
 }
 
 
 void __fastcall TFormFileSpread::sbCSVReportClick(TObject *Sender)
 {
-	std::wstring FileName = L"";// to do TXSaveDialog.Execute(GLanguageHandler->Text[kCSVFiles] + ' (*.csv)|*.csv',
-//									'.csv',
-//									TUtility.GetDefaultFileName('.csv', GLanguageHandler->Text[kFileSizeSpread] + '_' + GLanguageHandler->Text[kReport]),
-//									GSystemGlobal.AppDataPath);
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCSVFiles] + L" (*.csv)|*.csv",
+												  L".csv",
+												  Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kFileSizeSpread] + L"_" + GLanguageHandler->Text[kReport]),
+												  GSystemGlobal->AppDataPath);
 
-	if (FileName != L"")
+	if (!file_name.empty())
 	{
-		ExportData(FileName);
+		ExportData(file_name);
 	}
 }
 
@@ -292,28 +286,28 @@ void TFormFileSpread::BuildFileSpread()
 	switch (cbResolutionUnits->ItemIndex)
 	{
 	case kUnitBytes:
-		SX    = std::floor(LargestFileSize / StrToInt(eResolution->Text));
+		BlockSize = std::floor(LargestFileSize / StrToInt(eResolution->Text));
 		Coeff = StrToInt64(eResolution->Text);
 		break;
 	case kUnitKilobytes:
-		SX    = std::floor(LargestFileSize / ((StrToInt(eResolution->Text) * 1024)));
+		BlockSize = std::floor(LargestFileSize / ((StrToInt(eResolution->Text) * 1024)));
 		Coeff = StrToInt64(eResolution->Text) * 1024;
 		break;
 	case kUnitMegabytes:
-		SX    = std::floor(LargestFileSize / (StrToInt(eResolution->Text) * 1024 * 1024));
+		BlockSize = std::floor(LargestFileSize / (StrToInt(eResolution->Text) * 1024 * 1024));
 		Coeff = StrToInt64(eResolution->Text) * 1024 * 1024;
 		break;
 	case kUnitGigabytes:
-		SX    = std::floor(LargestFileSize / (StrToInt64(eResolution->Text) * 1024 * 1024 * 1024));
+		BlockSize = std::floor(LargestFileSize / (StrToInt64(eResolution->Text) * 1024 * 1024 * 1024));
 		Coeff = StrToInt64(eResolution->Text) * 1024 * 1024 * 1024;
 		break;
 	}
 
-	SX++;
+	BlockSize++;
 
-	Spread = new int[SX];
+	Spread = new int[BlockSize];
 
-	for (int t = 0; t < SX; t++)
+	for (int t = 0; t < BlockSize; t++)
 	{
 		Spread[t] = 0;
 	}
@@ -352,7 +346,7 @@ void TFormFileSpread::BuildFileSpread()
 
 	int MaxHit = 0;
 
-	for (int t = 0; t < SX; t++)
+	for (int t = 0; t < BlockSize; t++)
 	{
 		if (Spread[t] > MaxHit)
 		{
@@ -365,7 +359,7 @@ void TFormFileSpread::BuildFileSpread()
 
 	vtcSpread->SeriesList->Items[0]->Clear();
 
-	for (int t = 0; t < SX; t++)
+	for (int t = 0; t < BlockSize; t++)
 	{
 		bool CanAdd = true;
 
@@ -396,7 +390,7 @@ void TFormFileSpread::BuildFileSpread()
 			}
 			else
 			{
-				//colx := spectrumcolours[t mod spectrummod];
+				colx = kSpectrumColours[t % kSpectrumMod];
 			}
 
 			if (Spread[t] != 0)
@@ -530,31 +524,30 @@ void __fastcall TFormFileSpread::eResolutionExit(TObject *Sender)
 
 
 void __fastcall TFormFileSpread::eResolutionKeyPress(TObject *Sender, System::WideChar &Key)
-
 {
-//	if (Key = #13) and (TEdit(Sender).Text <> '') TO DO
-//	{
+	TEdit *edit = (TEdit*)Sender;
+
+	if (Key == VK_RETURN && edit->Text != L"")
+	{
 		if (cbAutoRefresh->Checked)
 		{
 			sbShowClick(NULL);
 		}
-//	}
+	}
 }
 
 
 void __fastcall TFormFileSpread::miSaveChartClick(TObject *Sender)
 {
-/*  lFileName := TXSaveDialog.Execute(GLanguageHandler->Text[kPNGFiles] + ' (*.png)|*.png',
-									'.png',
-									TUtility.GetDefaultFileName('.png', GLanguageHandler->Text[kFileSizeSpread]),
-									GSystemGlobal.AppDataPath);
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kPNGFiles] + L" (*.png)|*.png",
+												  L".png",
+												  Utility::GetDefaultFileName(L".png", GLanguageHandler->Text[kFileSizeSpread]),
+												  GSystemGlobal->AppDataPath);
 
-  if lFileName <> '' then begin
-	mychart := TChart(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent);
-
-	TChartUtility.SaveChartToPNG(mychart, lFileName);
-  end;
-end; */
+	if (!file_name.empty())
+	{
+		ChartUtility::SaveChartToPNG(vtcSpread, file_name);
+	}
 }
 
 
@@ -568,43 +561,49 @@ void __fastcall TFormFileSpread::miCopyToClipboardClick(TObject *Sender)
 
 void __fastcall TFormFileSpread::miSaveDataClick(TObject *Sender)
 {
-/*  lFileName := TXSaveDialog.Execute(GLanguageHandler->Text[kTextFiles] + ' (*.txt)|*.txt',
-									'.txt',
-                                    TUtility.GetDefaultFileName('.txt', GLanguageHandler->Text[kFileSizeSpread] + '_' + GLanguageHandler->Text[kReport]),
-                                    GSystemGlobal.AppDataPath);
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.txt)|*.txt",
+												  L".txt",
+												  Utility::GetDefaultFileName(L".txt", GLanguageHandler->Text[kFileSizeSpread] + L"_" + GLanguageHandler->Text[kReport]),
+												  GSystemGlobal->AppDataPath);
 
-  if lFileName <> '' then begin
-	AssignFile(tf, lFileName);
+	if (!file_name.empty())
+	{
+		std::ofstream file(file_name);
 
-	{$I-}
-    Rewrite(tf);
+		if (file)
+		{
+			for (int t = 0; t < BlockSize; t++)
+			{
+				std::wstring ru = (eResolution->Text + L" " + cbResolutionUnits->Text).c_str();
 
-    if IOResult <> 0 then begin
-      ShowXDialog(GLanguageHandler->Text[kWarning],
-                  GLanguageHandler->Text[kErrorSaving] + ' "' + lFileName + '".',
-                  XDialogTypeWarning);
-    end
-    else begin
-      for t := 0 to sx do begin
-		Writeln(tf,GScanEngine[FDataIndex].ScanPath);
-		Writeln(tf, GLanguageHandler->Text[kCreated] + ': ' + TUtility.GetTime(GETTIMEFORMAT_DISPLAY) + ' ' + TUtility.GetDate(GETTIMEFORMAT_DISPLAY));
-        Writeln(tf, '');
-		Writeln(tf, GLanguageHandler->Text[kInterval] + ': ' + eResolution->Text + ' ' + cbUnit.Text);
-        Writeln(tf, '');
+				file << Formatting::to_utf8(GScanEngine->Data[DataSource].Path.String + L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->Text[kCreated] + L": " + Utility::GetTime(DateTimeFormat::Display) + L" " + Utility::GetDate(DateTimeFormat::Display) + L"\n");
+				file << Formatting::to_utf8(L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->Text[kInterval] + L": " + ru + L"\n");
+				file << Formatting::to_utf8(L"\n");
 
-        if cbRange.Checked then begin
-          Writeln(tf, GLanguageHandler->Text[kRange] + ' : ' + eRangeFrom.Text + ' ' + cbRangeFrom.Text);
-          Writeln(tf, TXFormatting.AddLeading('', Length(GLanguageHandler->Text[kRange]) + 3, ' ') + eRangeTo.Text + ' ' + cbRangeTo.Text);
-          Writeln(tf, '');
-        end;
+				if (cbRange->Checked)
+				{
+					std::wstring ff = (eRangeFrom->Text + L" " + cbRangeFromUnits->Text).c_str();
+					std::wstring tt = (eRangeTo->Text + L" " + cbRangeToUnits->Text).c_str();
 
-        Writeln(tf, TXFormatting.AddLeading(IntToStr(spread[t]), 7, ' ') + ' : ' + TConvert.ConvertToUsefulUnit(t * coeff) + ' <= x < ' + TConvert.ConvertToUsefulUnit((t * coeff) + coeff - 1));
-      end;
+					file << Formatting::to_utf8(GLanguageHandler->Text[kRange] + L" : " + ff + L"\n");
+					file << Formatting::to_utf8(Formatting::AddLeading(L"", GLanguageHandler->Text[kRange].size() + 3, L' ') + tt + L"\n");
+					file << Formatting::to_utf8(L"\n");
+				}
 
-      CloseFile(tf);
-	end;
-	{$I+}
-  end; */
+				file << Formatting::to_utf8(Formatting::AddLeading(std::to_wstring(Spread[t]), 7, L' ') + L" : " + Convert::ConvertToUsefulUnit(t * Coeff) + L" <= x < " + Convert::ConvertToUsefulUnit((t * Coeff) + Coeff - 1) + L"\n");;
+			}
+
+			file.close();
+		}
+		else
+		{
+			  ShowXDialog(GLanguageHandler->Text[kWarning],
+						  GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+						  XDialogTypeWarning);
+		}
+	}
 }
 
 
@@ -642,7 +641,7 @@ void TFormFileSpread::ExportData(const std::wstring file_name)
 		{$I+}
 
 		if (IOResult <> 0) then begin
-			  TMSLogger.Error('Error writing CSV file "' + aFileName + '".');
+			  GLog->AddError(L"Error writing CSV file \"" + file_name + L"\".");
 		end
 		else
 		{

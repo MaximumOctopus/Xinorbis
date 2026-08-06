@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef XFormGetCopyMoveH
-#define XFormGetCopyMoveH
+#ifndef XFormShowMD5H
+#define XFormShowMD5H
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
@@ -10,26 +10,27 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
-class TFormGetCopyMove : public TForm
+class TForm22 : public TForm
 {
 __published:	// IDE-managed Components
-	TLabel *lTitle;
-	TSpeedButton *SpeedButton1;
+	TLabel *Label1;
+	TLabel *lMD5;
 	TBevel *Bevel1;
-	TBitBtn *bSave;
+	TShape *Shape1;
+	TLabel *lFileName;
 	TBitBtn *bCancel;
-	TEdit *eFolder;
-	void __fastcall SpeedButton1Click(TObject *Sender);
+	TBitBtn *bCopy;
+	void __fastcall bCopyClick(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
-	__fastcall TFormGetCopyMove(TComponent* Owner);
-
-	void Init(const std::wstring);
+	__fastcall TForm22(TComponent* Owner);
 };
 
-std::wstring GetCopyMoveFolder(const std::wstring);
+void OpenMD5Checksum(const std::wstring, const std::wstring);
 
 //---------------------------------------------------------------------------
-extern PACKAGE TFormGetCopyMove *FormGetCopyMove;
+extern PACKAGE TForm22 *Form22;
 //---------------------------------------------------------------------------
 #endif

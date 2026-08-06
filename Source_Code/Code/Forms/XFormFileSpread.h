@@ -88,7 +88,7 @@ private:
 	unsigned __int64 LargestFileSize = 0;
 
 	unsigned __int64 Coeff = 0;
-	unsigned __int64 SX = 0;
+	unsigned __int64 BlockSize = 0;
 
 	int *Spread = nullptr;
 
@@ -107,7 +107,9 @@ private:
 public:
 	__fastcall TFormFileSpread(TComponent* Owner);
 
-    void SetSource(int);
+	void SetSource(int);
+
+    std::function<void(int)> OnULSP;
 };
 
 void OpenFileSpread(int);

@@ -6,6 +6,7 @@
 #include "XFormCategoryColours.h"
 
 #include "ConstantsReports.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "SettingsHandler.h"
 
@@ -79,5 +80,5 @@ void __fastcall TFormCategoryColours::FormShow(TObject *Sender)
 
 void __fastcall TFormCategoryColours::SpeedButton1Click(TObject *Sender)
 {
-	//THelp.OpenHelpPage('catcolours.htm');
+	HelpHandler::OpenHelpPage(L"catcolours.htm");
 }

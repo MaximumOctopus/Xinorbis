@@ -4,11 +4,15 @@
 #pragma hdrstop
 
 #include <algorithm>
+#include <fstream>
 
 #include "XFormFileAssociations.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ConstantsReports.h"
 #include "FileExtensionHandler.h"
+#include "Formatting.h"
+#include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "SaveDialogs.h"
@@ -116,7 +120,7 @@ void __fastcall TFormFileAssociations::sCat1MouseDown(TObject *Sender, TMouseBut
 		{
 			shape->Brush->Color = cdMain->Color;
 
-// to do			GSystemGlobal.FileCategoryColors[cbFACategories.ItemIndex + 1] = cdMain.Color;
+			GSettingsHandler->FileCategoryColors[cbFACategories->ItemIndex + 1] = cdMain->Color;
 		}
 	}
 }
@@ -151,11 +155,15 @@ void __fastcall TFormFileAssociations::sbSearchFileExtClick(TObject *Sender)
 			fs = GLanguageHandler->Text[kFoundIn] + L": " + fs;
 		}
 
-	   //	ShowXDialog(GLanguageHandler->Text[rsWarning], fs, XDialogTypeWarning);
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					fs,
+					XDialogTypeWarning);
 	}
 	else
 	{
-	  //ShowXDialog(GLanguageHandler->Text[rsWarning], '"' + s + '", ' + GLanguageHandler->Text[rsNoneFound], XDialogTypeWarning);
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					L"\"" + s + L"\", " + GLanguageHandler->Text[kNoneFound],
+					XDialogTypeWarning);
 	}
 }
 
@@ -198,7 +206,7 @@ void __fastcall TFormFileAssociations::eAddChange(TObject *Sender)
 
 void __fastcall TFormFileAssociations::bHelpClick(TObject *Sender)
 {
-//	THelp.OpenHelpPage(L"filetypes.htm");
+	HelpHandler::OpenHelpPage(L"filetypes.htm");
 }
 
 
@@ -211,23 +219,25 @@ void __fastcall TFormFileAssociations::bImportLIstClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		/*if (file) to do fstream
-		{
-			while not(eof(tf))
-			{
-				Readln(tf, s);
+		std::wifstream file(file_name);
 
-				lbExtlist.Items.Add(s);
+		if (file)
+		{
+			std::wstring s = L"";
+
+			while (std::getline(file, s))
+			{
+				lbExtList->Items->Add(s.c_str());
 			}
 
 			file.close();
 		}
 		else
 		{
-			// to do	  ShowXDialog(GLanguageHandler->Text[rsErrorOpening] + ': ' + GLanguageHandler->Text[rsReport],
-				  //GLanguageHandler->Text[rsErrorOpening] + ' "' + lFilename + '".',
-//				  XDialogTypeWarning);
-		} */
+			ShowXDialog(GLanguageHandler->Text[kErrorOpening] + L": " + GLanguageHandler->Text[kReport],
+						GLanguageHandler->Text[kErrorOpening] + L" \"" + file_name + L"\".",
+						XDialogTypeWarning);
+		}
 	}
 }
 
@@ -241,22 +251,27 @@ void __fastcall TFormFileAssociations::bExportListClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
+		std::ofstream file(file_name);
 
-  /*		if (file)      to do fstream
+		if (file)
 		{
-			for (int t = 0; t < lbExtlist->Items->Count; t++)
+			std::wstring s = L"";
+
+			for (int t = 0; t < lbExtList->Items->Count; t++)
 			{
-				Writeln(tf, lbExtlist.Items[t]);
+				std::wstring item = lbExtList->Items->Strings[t].c_str();
+
+				file << Formatting::to_utf8(item + L"\n");
 			}
 
 			file.close();
-		}                 */
+		}
 	}
 	else
 	{
-//		  ShowXDialog(GLanguageHandler->Text[rsErrorSaving] + ': ' + GLanguageHandler->Text[rsExtensions],
-//				  GLanguageHandler->Text[rsErrorSaving] + ' "' + lFileName + '".',
-//				  XDialogTypeWarning);
+		  ShowXDialog(GLanguageHandler->Text[kErrorSaving] + L": " + GLanguageHandler->Text[kExtensions],
+					  GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+					  XDialogTypeWarning);
 	}
 }
 
@@ -330,7 +345,7 @@ void __fastcall TFormFileAssociations::sbRDClick(TObject *Sender)
 		// clear the file-extension caches first
 		GFileExtensionHandler->Extensions.clear();
 
-		GFileExtensionHandler->LoadDefaultFileExtensions(L"to do folder");
+		GFileExtensionHandler->LoadDefaultFileExtensions(GSystemGlobal->ExePath);
 
 		// =========================================================================
 
@@ -471,7 +486,7 @@ void TFormFileAssociations::SaveCustomNames()
 			config.WriteString('TypeDescriptions', 'TypeDescriptions' + IntToStr(t), TypeDescriptions[t + 9]);
 		except
 		  on e : exception do {
-			TMSLogger.Error('Error saving custom names. ' + e.ClassName + ' / ' + e.Message);
+			GLog->AddError(L"Error saving custom names. " + e.ClassName + L" / " + e.Message);
 		  }
 		}
 	  finally

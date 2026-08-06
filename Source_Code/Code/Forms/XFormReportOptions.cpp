@@ -7,13 +7,16 @@
 #include "XFormXinorbisDialog.h"
 
 #include "ConstantsSettings.h"
+#include "Convert.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
+#include "Log.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
 #include "WindowsUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
 
@@ -28,7 +31,7 @@ __fastcall TForm8::TForm8(TComponent* Owner)
 }
 
 
-int OpenReportSettings(int open_at_tab)
+void OpenReportSettings(int open_at_tab)
 {
 	TForm8 *Form8 = new TForm8(Application);
 
@@ -43,8 +46,6 @@ int OpenReportSettings(int open_at_tab)
 	}
 
 	delete Form8;
-
-	return 0; // to do, what is this?!
 }
 
 
@@ -174,10 +175,10 @@ void TForm8::Init()
 
 	cbXinorbisLayoutsChange(NULL);
 
-	eOOHTMLOutput->Text = GSettingsHandler->Reports.HTMLOutput.c_str();
-	eOOXMLOutput->Text  = GSettingsHandler->Reports.XMLOutput.c_str();
-	eOOCSVOutput->Text  = GSettingsHandler->Reports.CSVOutput.c_str();
-	eOOTextOutput->Text = GSettingsHandler->Reports.TextOutput.c_str();
+	eOOHTMLOutput->Text = GSettingsHandler->Reports.HTMLCommand.c_str();
+	eOOXMLOutput->Text  = GSettingsHandler->Reports.XMLCommand.c_str();
+	eOOCSVOutput->Text  = GSettingsHandler->Reports.CSVCommand.c_str();
+	eOOTextOutput->Text = GSettingsHandler->Reports.TextCommand.c_str();
 }
 
 
@@ -192,10 +193,10 @@ void TForm8::UpdateSettings()
 
 	// ---------------------------------------------------------------------
 
-	GSettingsHandler->Reports.HTMLOutput = eOOHTMLOutput->Text.c_str();
-	GSettingsHandler->Reports.XMLOutput  = eOOXMLOutput->Text.c_str();
-	GSettingsHandler->Reports.CSVOutput  = eOOCSVOutput->Text.c_str();
-	GSettingsHandler->Reports.TextOutput = eOOTextOutput->Text.c_str();
+	GSettingsHandler->Reports.HTMLCommand = eOOHTMLOutput->Text.c_str();
+	GSettingsHandler->Reports.XMLCommand  = eOOXMLOutput->Text.c_str();
+	GSettingsHandler->Reports.CSVCommand  = eOOCSVOutput->Text.c_str();
+	GSettingsHandler->Reports.TextCommand = eOOTextOutput->Text.c_str();
 
 	GSettingsHandler->Reports.AutoSaveItem[0] = SliderStateToBoolean(cbADR_1->State);
 	GSettingsHandler->Reports.AutoSaveItem[1] = SliderStateToBoolean(cbADR_2->State);
@@ -355,10 +356,11 @@ void __fastcall TForm8::bTestFTPClick(TObject *Sender)
 
 		ftpMain->Put(putfn.c_str(), L"ftptest.htm");
 	}
-	catch(...)
+	catch(std::exception const &ex)
 	{
 		ftperror = -1;
-		// to do log TMSLogger.Error("FTP test exception: " + E.Message + " / " + E.ClassName);
+
+		GLog->AddError(L"FTP test exception: " + Convert::ToWstring(ex.what()));
 	}
 
 	if (ftperror == 0)

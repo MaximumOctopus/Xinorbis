@@ -209,13 +209,13 @@ void __fastcall TFormFileAges::bGoClick(TObject *Sender)
 		switch (cbAttribute->ItemIndex)
 		{
 		case kAttributeCreated:
-			GScanEngine->Data[DataSource].SortByProperty(0);
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 			break;
 		case kAttributeAccessed:
-			GScanEngine->Data[DataSource].SortByProperty(1);
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 			break;
 		case kAttributeModified:
-			GScanEngine->Data[DataSource].SortByProperty(2);
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 			break;
 		}
 
@@ -417,7 +417,7 @@ void __fastcall TFormFileAges::bGoClick(TObject *Sender)
 	}
     }
 
-	if (Row != 1)
+	if (Row > 2)
 	{
 		sgResults->RowCount--;
 	}
@@ -573,11 +573,18 @@ void TFormFileAges::ExportDataCSV(const std::wstring file_name, bool include_hea
 
 	if (bGo->Tag != cbAttribute->ItemIndex)
 	{
-//		case cbAttribute.ItemIndex of
-//		CAttributeCreated  : GScanDetails->Data[DataSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesCreated));
-// to do		CAttributeAccessed : GScanDetails->Data[DataSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
-//		CAttributeModified : GScanDetails[FDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
-//		}
+		switch (cbAttribute->ItemIndex)
+		{
+		case kAttributeCreated:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
+			break;
+		case kAttributeAccessed:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
+            break;
+		case kAttributeModified:
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
+			break;
+		}
 
 		bGo->Tag = cbAttribute->ItemIndex;
 	}
@@ -757,13 +764,13 @@ void TFormFileAges::ExportDataXML(const std::wstring file_name)
 		switch (cbAttribute->ItemIndex)
 		{
 		case kAttributeCreated:
-// to do			GScanDetails[FDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesCreated));
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 			break;
 		case kAttributeAccessed:
-// to do			GScanDetails[FDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 			break;
 		case kAttributeModified:
-// to do			GScanDetails[FDataIndex].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
+			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 			break;
 		}
 

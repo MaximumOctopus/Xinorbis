@@ -8,6 +8,7 @@
 #include "DateUtility.h"
 #include "LanguageHandler.h"
 #include "SearchUtility.h"
+#include "SqlUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
 
@@ -449,6 +450,6 @@ void TForm11::BuildSQLDisplay()
 	{
 		BuildSearchString();
 
-		eSQL->Text = SearchUtility::XinorbisSearchToSQL(L"", L"", L"", SearchString, 0, 500, true).c_str();
+		eSQL->Text = SqlUtility::XinorbisSearchToSQL(L"", L"", L"", SearchString, 0, 500, true).c_str();
 	}
 }

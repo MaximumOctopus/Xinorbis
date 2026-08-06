@@ -6,62 +6,81 @@
 #include "XFormReportSave.h"
 
 #include "ConstantsGui.h"
+#include "Formatting.h"
 #include "FormDetails.h"
+#include "HelpHandler.h"
+#include "LanguageHandler.h"
+#include "LoadDialogs.h"
+#include "SaveDialogs.h"
+#include "ScanEngine.h"
 #include "SettingsHandler.h"
+#include "SystemGlobal.h"
+#include "Utility.h"
 #include "WindowsUtility.h"
 
+extern LanguageHandler *GLanguageHandler;
+extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TForm13 *Form13;
+TFormReportSaves *FormReportSaves;
 //---------------------------------------------------------------------------
-__fastcall TForm13::TForm13(TComponent* Owner)
+__fastcall TFormReportSaves::TFormReportSaves(TComponent* Owner)
 	: TForm(Owner)
 {
 }
 
 
-bool OpenReportSave(int data_source)//aDataIndex : integer;
-					 // var TextOptions : TTextReportOptions; var CSVOptions  : TCSVReportOptions;
-					 // var HTMLOptions : THTMLReportOptions; var XinOptions  : TXinorbisReportOptions;
-					 // var XMLOptions  : TXMLReportOptions; var TreeOptions  : TTreeReportOptions): boolean;
+bool OpenReportSave(int data_source,
+					TextReportOptions &TextOptions, CSVReportOptions &CSVOptions,
+					HTMLReportOptions &HTMLOptions, XinorbisReportOptions &XinOptions,
+					XMLReportOptions &XMLOptions, TreeReportOptions &TreeOptions)
 {
-	Form13 = new TForm13(Application);
+	FormReportSaves = new TFormReportSaves(Application);
 
-	Form13->DataSource = data_source;
+	FormReportSaves->DataSource = data_source;
 
-/* TO DO	  if XMLOptions.XMLData = CDataSummary then
-		rbXMLMode1->Checked = True
-	  else
-		rbXMLMode2->Checked = True;
+	if (XMLOptions.Data == kDataSummary)
+	{
+		FormReportSaves->rbXMLScanData->Checked = true;
+	}
+	else
+	{
+		FormReportSaves->rbXMLFullFileList->Checked = true;
+	}
 
-	  if CSVOptions.CSVData = CDataSummary then
-		rbCSVMode1->Checked = True
-	  else
-		rbCSVMode2->Checked = True; */
+	if (CSVOptions.Data == kDataSummary)
+	{
+		FormReportSaves->rbCSVCategories->Checked = true;
+	}
+	else
+	{
+		FormReportSaves->rbCSVFullFileList->Checked = true;
+	}
 
-	  // =======================================================================
-	  // =======================================================================
+	// =======================================================================
+	// =======================================================================
 
 	bool user_saves = false;
 
-	if (Form13->ShowModal() == mrOk)
+	if (FormReportSaves->ShowModal() == mrOk)
 	{
 		user_saves = true;
 
-		Form13->SaveReports();
+		FormReportSaves->SaveReports();
 	}
 
-	delete Form13;
+	delete FormReportSaves;
 
 	return user_saves;
 }
 
 
 
-void __fastcall TForm13::FormCreate(TObject *Sender)
+void __fastcall TFormReportSaves::FormCreate(TObject *Sender)
 {
    /*	FormDetails fd = GSettingsHandler->LoadFormDetails(_FormReport);
 
@@ -71,29 +90,29 @@ void __fastcall TForm13::FormCreate(TObject *Sender)
 		Top    = fd.H;
 		Width  = fd.Width;
 		Height = fd.Height;
-	}
+	}*/
 
 	Folder = L"";
 
-	Edits[0] = eCSVOutput;
-	Edits[1] = eHTMLReport;
-	Edits[2] = eTextReport;
-	Edits[3] = eTreeReport;
-	Edits[4] = eZSReport;
-	Edits[5] = eXMLOutput;
+	Edits[0] = eCSVFileName;
+	Edits[1] = eHTMLFileName;
+	Edits[2] = eTextFileName;
+	Edits[3] = eTreeFileName;
+	Edits[4] = eXinorbisFileName;
+	Edits[5] = eXMLFileName;
 
-	Checks[0] = cbCSVReport;
-	Checks[1] = cbHTMLReport;
-	Checks[2] = cbTextReport;
-	Checks[3] = cbTreeReport;
-	Checks[4] = cbXinorbisReport;
-	Checks[5] = cbXMLReport;
+	Checks[0] = cbToggleCSV;
+	Checks[1] = cbToggleHTML;
+	Checks[2] = cbToggleText;
+	Checks[3] = cbToggleTree;
+	Checks[4] = cbToggleXinorbis;
+	Checks[5] = cbToggleXML;
 
-	SetLanguage(); */
+	SetLanguage();
 }
 
 
-void __fastcall TForm13::FormClose(TObject *Sender, TCloseAction &Action)
+void __fastcall TFormReportSaves::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	FormDetails fd(kFormReport, Left, Top, Width, Height);
 
@@ -103,55 +122,41 @@ void __fastcall TForm13::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 
-void TForm13::SetLanguage()
+void TFormReportSaves::SetLanguage()
 {
-/*	cbHTMLUnits->Items->Add(GLanguageHandler->Text[kMostConvenient].c_str());
-	cbHTMLUnits->Items->Add(GLanguageHandler->Text[kXBytes].c_str());
-	cbHTMLUnits->Items->Add(GLanguageHandler->Text[kXKilobytes].c_str());
-	cbHTMLUnits->Items->Add(GLanguageHandler->Text[kXMegabytes].c_str());
-	cbHTMLUnits->Items->Add(GLanguageHandler->Text[kXGigabytes].c_str());
-	cbHTMLUnits->ItemIndex = 0;
+	// csv tab
+	lCSVFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
 
-	// ===========================================================================
+	rbCSVCategories->Caption = GLanguageHandler->Text[kCategories].c_str();
+	rbCSVFullFileList->Caption = GLanguageHandler->Text[kFullFileList].c_str();
+	lCSVFFLHelpText->Caption = GLanguageHandler->Text[kThisReportCanBeImported].c_str();
 
-	bSelectAll->Caption         = GLanguageHandler->Text[kSelectAll].c_str();
-	bSelectNone->Caption        = GLanguageHandler->Text[kSelectNone].c_str();
+	cbCSVIncludeColumnTitles->Caption = GLanguageHandler->Text[kIncludeColumnTitles].c_str();
 
-	Caption                     = GLanguageHandler->Text[kSaveReports].c_str();
-	Label1->Caption             = GLanguageHandler->Text[kTreeFilename].c_str();
-	Label2->Caption             = GLanguageHandler->Text[kTextReportFilename].c_str();
-	Label3->Caption             = GLanguageHandler->Text[kXinorbisReportFilename].c_str();
-	Label4->Caption             = GLanguageHandler->Text[kOutputAsHTML].c_str();
-	Label5->Caption             = GLanguageHandler->Text[kOutputAsXML].c_str();
-	rbXMLMode1->Caption         = GLanguageHandler->Text[kScanData].c_str();
-	rbXMLMode2->Caption         = GLanguageHandler->Text[kFullFileList].c_str();
-	Label6->Caption             = GLanguageHandler->Text[kOutputAsCSV].c_str();
-	rbCSVMode1->Caption         = GLanguageHandler->Text[kCategories].c_str();
-	rbCSVMode2->Caption         = GLanguageHandler->Text[kFullFileList].c_str();
-	cbCSVTitles->Caption        = GLanguageHandler->Text[kIncludeColumnTitles].c_str();
-	bGenerateFilenames->Caption = GLanguageHandler->Text[kGenerateFilenames].c_str();
-	bSave->Caption              = GLanguageHandler->Text[kSave].c_str();
-	bCancel->Caption            = GLanguageHandler->Text[kCancel].c_str();
-	bHelp->Caption              = GLanguageHandler->Text[kHelp].c_str();
+	// html tab
+	lHTMLFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
 
-	lHTMLUnits->Caption         = GLanguageHandler->Text[kShowFileSizesAs].c_str();
-
-	tabText->Caption            = GLanguageHandler->Text[kText].c_str();
-	tabTree->Caption            = GLanguageHandler->Text[kTree].c_str();
-
-	cbCSVReport->Caption        = (L"CSV "      + GLanguageHandler->Text[kReport]).c_str();
-	cbHTMLReport->Caption       = (L"HTML "     + GLanguageHandler->Text[kReport]).c_str();
-	cbTextReport->Caption       = GLanguageHandler->Text[kText] + L" " + GLanguageHandler->Text[kReport]).c_str();
-	cbTreeReport->Caption       = GLanguageHandler->Text[kTree] + L" " + GLanguageHandler->Text[kReport]).c_str();
-	cbXinorbisReport->Caption   = (L"Xinorbis " + GLanguageHandler->Text[kReport]).c_str();
-	cbXMLReport->Caption        = (L"XML "      + GLanguageHandler->Text[kReport]).c_str();
-
+	lHTMLLayout->Caption = GLanguageHandler->Text[kReportLayout].c_str();
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kAutoSave].c_str());
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kQuick].c_str());
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kOther].c_str());
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kCustom1].c_str());
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kCustom2].c_str());
 	cbHTMLLayouts->Items->Add(GLanguageHandler->Text[kCustom3].c_str());
+	cbHTMLLayouts->ItemIndex = 2;
+
+	lHTMLFileSize->Caption = GLanguageHandler->Text[kShowFileSizesAs].c_str();
+	cbHTMLFileSize->Items->Add(GLanguageHandler->Text[kMostConvenient].c_str());
+	cbHTMLFileSize->Items->Add(GLanguageHandler->Text[kXBytes].c_str());
+	cbHTMLFileSize->Items->Add(GLanguageHandler->Text[kXKilobytes].c_str());
+	cbHTMLFileSize->Items->Add(GLanguageHandler->Text[kXMegabytes].c_str());
+	cbHTMLFileSize->Items->Add(GLanguageHandler->Text[kXGigabytes].c_str());
+	cbHTMLFileSize->ItemIndex = 0;
+
+	// text tab
+	tsText->Caption = GLanguageHandler->Text[kText].c_str();
+
+	lTextFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
 
 	cbTextLayouts->Items->Add(GLanguageHandler->Text[kAutoSave].c_str());
 	cbTextLayouts->Items->Add(GLanguageHandler->Text[kQuick].c_str());
@@ -159,6 +164,12 @@ void TForm13::SetLanguage()
 	cbTextLayouts->Items->Add(GLanguageHandler->Text[kCustom1].c_str());
 	cbTextLayouts->Items->Add(GLanguageHandler->Text[kCustom2].c_str());
 	cbTextLayouts->Items->Add(GLanguageHandler->Text[kCustom3].c_str());
+	cbTextLayouts->ItemIndex = 2;
+
+	// tree tab
+	tsTree->Caption = GLanguageHandler->Text[kTree].c_str();
+
+	lTreeFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
 
 	cbTreeLayouts->Items->Add(GLanguageHandler->Text[kAutoSave].c_str());
 	cbTreeLayouts->Items->Add(GLanguageHandler->Text[kQuick].c_str());
@@ -166,34 +177,46 @@ void TForm13::SetLanguage()
 	cbTreeLayouts->Items->Add(GLanguageHandler->Text[kCustom1].c_str());
 	cbTreeLayouts->Items->Add(GLanguageHandler->Text[kCustom2].c_str());
 	cbTreeLayouts->Items->Add(GLanguageHandler->Text[kCustom3].c_str());
+	cbTreeLayouts->ItemIndex = 2;
 
+	// xinorbis tab
+	lXinorbisFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
+
+	lXinorbisHelpText->Caption = GLanguageHandler->Text[kThisReportCanBeImported].c_str();
+
+	// xml tab
+	lXMLFileName->Caption = GLanguageHandler->Text[kFileName].c_str();
+
+	rbXMLScanData->Caption = GLanguageHandler->Text[kScanData].c_str();
+	rbXMLFullFileList->Caption = GLanguageHandler->Text[kFullFileList].c_str();
+
+	lXMLLayouts->Caption = GLanguageHandler->Text[kReportLayout].c_str();
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kAutoSave].c_str());
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kQuick].c_str());
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kOther].c_str());
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kCustom1].c_str());
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kCustom2].c_str());
 	cbXMLLayouts->Items->Add(GLanguageHandler->Text[kCustom3].c_str());
-
-	cbHTMLLayouts->ItemIndex = 2;
-	cbTextLayouts->ItemIndex = 2;
-	cbTreeLayouts->ItemIndex = 2;
 	cbXMLLayouts->ItemIndex  = 2;
 
-	Label36->Caption = GLanguageHandler->Text[kReportLayout].c_str();
-	Label35->Caption = GLanguageHandler->Text[kReportLayout].c_str();
-	Label38->Caption = GLanguageHandler->Text[kReportLayout].c_str();
-	Label7->Caption  = GLanguageHandler->Text[kReportLayout].c_str();
+	// top toolbar
+	Caption                     = GLanguageHandler->Text[kSaveReports].c_str();
+	bSelectAll->Caption         = GLanguageHandler->Text[kSelectAll].c_str();
+	bSelectNone->Caption        = GLanguageHandler->Text[kSelectNone].c_str();
 
-	lThisReport1->Caption = GLanguageHandler->Text[kThisReportCanBeImported].c_str();
-	lThisReport2->Caption = GLanguageHandler->Text[kThisReportCanBeImported].c_str();   */
+	// bottom toolbar
+	bGenerateFilenames->Caption = GLanguageHandler->Text[kGenerateFilenames].c_str();
+	bSave->Caption              = GLanguageHandler->Text[kSave].c_str();
+	bCancel->Caption            = GLanguageHandler->Text[kCancel].c_str();
+	bHelp->Caption              = GLanguageHandler->Text[kHelp].c_str();
 }
 
 
-void TForm13::SaveReports()
-{
-/* TO DO 	if (cbCSVReport->Checked)
+void TFormReportSaves::SaveReports()
+{                               /*
+	if (cbToggleCSV->Checked)
 	{
-		CSVOptions.Filename  = CheckFilename(eCSVOutput->Text, ".csv");
+		CSVOptions.Filename  = CheckFilename(eCSVOutput->Text, L".csv");
 		CSVOptions.Category  = -1;
 		CSVOptions.CSVUnits  = CSVUnitsMegabytes;
 		CSVOptions.CSVTitles = cbCSVTitles->Checked;
@@ -212,11 +235,11 @@ void TForm13::SaveReports()
 
 	// =====================================================================
 
-	if cbHTMLReport->Checked then
+	if (cbToggleHTML->Checked)
 	{
 		HTMLOptions.HTMLColours  = XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1].HTMLColours;
 
-		HTMLOptions.Filename     = CheckFilename(eHTMLReport->Text, ".htm");
+		HTMLOptions.Filename     = CheckFilename(eHTMLReport->Text, L".htm");
 		HTMLOptions.HTMLUnits    = cbHTMLUnits.ItemIndex;
 		HTMLOptions.Layout       = XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1].Layout;
 		HTMLOptions.LayoutSize   = XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1].LayoutSize;
@@ -225,9 +248,9 @@ void TForm13::SaveReports()
 
 	// =====================================================================
 
-	if cbTextReport->Checked then
+	if (cbToggleText->Checked)
 	{
-		TextOptions.Filename     = CheckFilename(eTextReport->Text, ".txt");
+		TextOptions.Filename     = CheckFilename(eTextReport->Text, L".txt");
 
 		TextOptions.Layout       = XSettings.Report->TextOptions[cbTextLayouts.ItemIndex + 1].Layout;
 		TextOptions.CategoryList = XSettings.Report->TextOptions[cbTextLayouts.ItemIndex + 1].CategoryList;
@@ -235,9 +258,9 @@ void TForm13::SaveReports()
 
 	// =====================================================================
 
-	if cbTreeReport->Checked then
+	if (cbToggleTree->Checked)
 	{
-		TreeOptions.Filename          = CheckFilename(eTreeReport->Text, ".txt");
+		TreeOptions.Filename          = CheckFilename(eTreeReport->Text, L".txt");
 		TreeOptions.Layout            = XSettings.Report.TreeOptions[cbTreeLayouts.ItemIndex + 1].Layout;
 		TreeOptions.IncludeSize       = XSettings.Report.TreeOptions[cbTreeLayouts.ItemIndex + 1].IncludeSize;
 		TreeOptions.IncludeAttributes = XSettings.Report.TreeOptions[cbTreeLayouts.ItemIndex + 1].IncludeAttributes;
@@ -246,9 +269,9 @@ void TForm13::SaveReports()
 
 	// =====================================================================
 
-	if cbXMLReport->Checked then
+	if (cbToggleXML->Checked)
 	{
-		XMLOptions.Filename = CheckFilename(eXMLOutput->Text, ".xml");
+		XMLOptions.Filename = CheckFilename(eXMLOutput->Text, L".xml");
 
 		if rbXMLMode1->Checked)
 		{
@@ -264,231 +287,70 @@ void TForm13::SaveReports()
 
 	// =====================================================================
 
-	if cbXinorbisReport->Checked
+	if (cbToggleXinorbis->Checked)
 	{
-		XinOptions.Filename = CheckFilename(eZSReport->Text, ".zsr");
+		XinOptions.Filename = CheckFilename(eZSReport->Text, L".zsr");
 
 		XinOptions.Layout = 1;
-	}        */
+	}                  */
 }
 
 
-void TForm13::ChangeFolders(const std::wstring folder)
+void TFormReportSaves::ChangeFolders(const std::wstring folder)
 {
 	for (int t = 0; t < 6; t++)
 	{
 		if (Edits[t]->Text != L"")
 		{
-			std::wstring file_name = ExtractFileName(Edits[t]->Text).c_str();
+			std::wstring file_name = Utility::SplitFileName(Edits[t]->Text.c_str());
 
 			Edits[t]->Text = (folder + file_name).c_str();
 		}
 	}
 }
 
-	/*
-procedure TfrmReport.sbTextReportClick(Sender: TObject);
-var
-  lFileName : string;
 
+void TFormReportSaves::SetSaveStatus()
 {
-  lFileName = TXSaveDialog.Execute(GLanguageHandler->Text[kTextFiles] + " (*.txt)|*.txt",
-									".txt",
-									TUtility.GetDefaultFileName(".txt", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-									GSystemGlobal.AppDataPath);
+	bool status = true;
 
-  if lFileName != "" then {
-	eTextReport->Text = lFileName;
-
-	if not(cbTextReport->Checked) then {
-	  cbTextReportClick(cbTextReport);
+	if (GScanEngine->Data[DataSource].Files.size() == 0)
+	{
+		status = false;
 	}
-  }
+	else
+	{
+		status = false;
+
+		for (int t = 0; t < 5; t++)
+		{
+			if (Checks[t]->Checked)
+			{
+				status = true;
+				break;
+			}
+		}
+	}
+
+	bSave->Enabled = status;
+	bGenerateFilenames->Enabled = status;
 }
-
-
-procedure TfrmReport.sbZSReportClick(Sender: TObject);
-var
-  lFileName : string;
-
-{
-  lFileName = TXSaveDialog.Execute("Xinorbis v2 (*.zsr2)|*.zsr2",
-									".zsr2",
-									TUtility.GetDefaultFileName(".zsr2", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-									GSystemGlobal.AppDataPath);
-
-  if lFileName != "" then {
-    eZSReport->Text = lFileName;
-
-    if not(cbXinorbisReport->Checked) then {
-      cbTextReportClick(cbXinorbisReport);
-    }
-  }
-}
-
-procedure TfrmReport.sbHTMLReportClick(Sender: TObject);
-var
-  lFileName : string;
-
-{
-  lFileName = TXSaveDialog.Execute(GLanguageHandler->Text[kHTMLFiles] + " (*.html, *.htm)|*.html; *.htm",
-                                    ".htm",
-                                    TUtility.GetDefaultFileName(".htm", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-                                    GSystemGlobal.AppDataPath);
-
-  if lFileName != "" then {
-    eHTMLReport->Text = lFileName;
-
-    if not(cbHTMLReport->Checked) then {
-      cbTextReportClick(cbHTMLReport);
-    }
-  }
-}
-
-procedure TfrmReport.SpeedButton1Click(Sender: TObject);
-var
-  lFileName : string;
-
-{
-  lFileName = TXSaveDialog.Execute(GLanguageHandler->Text[kXMLFiles] + " (*.xml)|*.xml",
-                                    ".xml",
-                                    TUtility.GetDefaultFileName(".xml", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-                                    GSystemGlobal.AppDataPath);
-
-  if lFileName != "" then {
-    eXMLOutput->Text = lFileName;
-
-	if not(cbXMLReport->Checked) then {
-      cbTextReportClick(cbXMLReport);
-    }
-  }
-}
-
-procedure TfrmReport.SpeedButton2Click(Sender: TObject);
-var
-  lFileName : string;
-
-{
-  lFileName = TXSaveDialog.Execute(GLanguageHandler->Text[kCSVFiles] + " (*.csv)|*.csv",
-                                    ".csv",
-                                    TUtility.GetDefaultFileName(".csv", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-                                    GSystemGlobal.AppDataPath);
-
-  if lFileName != "" then {
-    eCSVOutput->Text = lFileName;
-
-    if not(cbCSVReport->Checked) then {
-      cbTextReportClick(cbCSVReport);
-    }
-  }
-}
-
-
-
-procedure TfrmReport.cbHTMLLayoutsChange(Sender: TObject);
-{
-  cbHTMLUnits.ItemIndex    = XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1].HTMLUnits;
-
-//  cbHTMLShowImages->Checked = TUtility.FindReportItem(XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1], 0);
-}
-
-
-procedure TfrmReport.cbTextReportClick(Sender: TObject);
- {
-  if TAdvOfficeCheckBox(Sender)->Checked then {
-    TAdvOfficeCheckBox(Sender).Font.Style = [];
-    TAdvOfficeCheckBox(Sender)->Checked    = False;
-
-    TAdvSmoothTabPage(TAdvOfficeCheckBox(Sender).Parent).TabAppearance.Status.Visible = False;
-  end
-  else {
-    TAdvOfficeCheckBox(Sender).Font.Style = [fsBold];
-    TAdvOfficeCheckBox(Sender)->Checked    = True;
-
-    TAdvSmoothTabPage(TAdvOfficeCheckBox(Sender).Parent).TabAppearance.Status.Visible = True;
-  }
-
-  if (cbCSVReport.Enabled or cbHTMLReport.Enabled or cbTextReport.Enabled or cbTreeReport.Enabled or cbXinorbisReport.Enabled or cbXMLReport.Enabled) and
-     (GScanEngine->Data[DataSource].Files.Count != 0) then
-    bSave.Enabled = True
-  else
-    bSave.Enabled = False;
-
-  SetSaveStatus;
-}
-
-
-
-procedure TfrmReport.sbTreeReportClick(Sender: TObject);
-var
-  lFileName : string;
-
-{
-  lFileName = TXSaveDialog.Execute(GLanguageHandler->Text[kTreeFiles] + " (*.xcrtree)|*.xcrtree",
-                                    ".xcrtree",
-                                    TUtility.GetDefaultFileName(".xcrtree", GLanguageHandler->Text[kReport] + "_" + GLanguageHandler->Text[kExport]),
-                                    GSystemGlobal.AppDataPath);
-
-  if lFileName != "" then {
-    eTreeReport->Text = lFileName;
-
-    if not(cbTreeReport->Checked) then {
-      cbTextReportClick(cbTreeReport);
-    }
-  }
-}
-
-
-
-
-
-function TfrmReport.GetFileName(aFolder, aFileName : string): string;
-{
-  if FFolder != "" then
-    Result = FFolder + aFileName
-  else
-    Result = aFolder + aFileName
-}
-
-
-procedure TfrmReport.SetSaveStatus;
-var
-  t : integer;
-  lStatus : boolean;
-
-{
-  if GScanEngine->Data[DataSource].Files.Count = 0 then {
-    lStatus = False;
-  end
-  else {
-    lStatus = False;
-
-    for t = 1 to 6 do {
-      if FChecks[t]->Checked then
-        lStatus = True;
-    }
-  }
-
-  bSave.Enabled              = lStatus;
-  bGenerateFilenames.Enabled = lStatus;
-}
-*/
 
 
 #pragma region Top_Toolbar
-void __fastcall TForm13::bSelectAllClick(TObject *Sender)
+void __fastcall TFormReportSaves::bSelectAllClick(TObject *Sender)
 {
 	SetAll(true);
 }
 
 
-void __fastcall TForm13::bSelectNoneClick(TObject *Sender)
+void __fastcall TFormReportSaves::bSelectNoneClick(TObject *Sender)
 {
 	SetAll(false);
 }
 
 
-void TForm13::SetAll(bool status)
+void TFormReportSaves::SetAll(bool status)
 {
 	/*aStatus = not(aStatus);
 
@@ -512,92 +374,295 @@ void TForm13::SetAll(bool status)
 
 
 #pragma region Bottom_Toolbar
-void __fastcall TForm13::bGenerateFilenamesClick(TObject *Sender)
+void __fastcall TFormReportSaves::bGenerateFilenamesClick(TObject *Sender)
 {
+	auto GetFileName = [&](std::wstring folder, std::wstring file_name) -> std::wstring
+	{
+		if (Folder != L"")
+		{
+			return Folder + file_name;
+		}
+		else
+		{
+			return folder + file_name;
+		}
+	};
+
+
 	std::wstring cname = WindowsUtility::GetComputerNetName();
-									   /* to do
-  eCSVOutput->Text  = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\csv\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".csv");
 
-  eHTMLReport->Text = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\html\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".html");
+	eCSVFileName->Text      = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\csv\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".csv").c_str();
 
-  eTextReport->Text = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\Text\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + GLanguageHandler->Text[kText] + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".txt");
+	eHTMLFileName->Text     = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\html\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".html").c_str();
 
-  eTreeReport->Text = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\Tree\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + GLanguageHandler->Text[kTree] + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".txt");
+	eTextFileName->Text     = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\Text\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  GLanguageHandler->Text[kText] + L"_" + Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" +
+										  Utility::GetTime(DateTimeFormat::File) + L".txt").c_str();
 
-  eZSReport->Text   = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\Xinorbis\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".zsr2");
+	eTreeFileName->Text     = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\Tree\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  GLanguageHandler->Text[kTree] + L"_" + Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" +
+										  Utility::GetTime(DateTimeFormat::File) + L".txt").c_str();
 
-  eXMLOutput->Text  = GetFileName(GSystemGlobal.AppDataPath + "reports\" + cname + "\xml\",
-								  TXFormatting.MakeFilenameCompatible(GScanEngine->Data[DataSource].ScanPath) + "_" + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + "_" + TUtility.GetTime(GETTIMEFORMAT_FILE) + ".xml");
-*/
+	eXinorbisFileName->Text = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\Xinorbis\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".zsr2").c_str();
+
+	eXMLFileName->Text      = GetFileName(GSystemGlobal->AppDataPath + L"reports\\" + cname + L"\\xml\\",
+										  Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+										  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".xml").c_str();
 }
 
 
-void __fastcall TForm13::SpeedButton3Click(TObject *Sender)
+void __fastcall TFormReportSaves::SpeedButton3Click(TObject *Sender)
 {
-	std::wstring folder = L""; // to do WindowsUtility::BrowseForFolder(Handle);
+	std::vector<std::wstring> paths;
 
-	if (!folder.empty())
+	if (WindowsUtility::BrowseForFolder(paths, true, false))
 	{
-		Folder = folder;
+		std::wstring folder = paths[0];
 
-		ChangeFolders(Folder);
+		if (!folder.empty())
+		{
+			Folder = folder;
+
+			ChangeFolders(Folder);
+		}
 	}
 }
 
 
-void __fastcall TForm13::bHelpClick(TObject *Sender)
+void __fastcall TFormReportSaves::bHelpClick(TObject *Sender)
 {
-	// to do THelp.OpenHelpPage("savereporst.htm");
+	HelpHandler::OpenHelpPage(L"savereporst.htm");
 }
 
 
-void __fastcall TForm13::bSaveClick(TObject *Sender)
+void __fastcall TFormReportSaves::bSaveClick(TObject *Sender)
 {
 	std::wstring s = L"";
-																			  /*
-  if (cbTextReport->Checked) and (eTextReport->Text = "") then {
-	s = """ + GLanguageHandler->Text[kText] + " " + GLanguageHandler->Text[kReport] + "" " + GLanguageHandler->Text[kHasBeenSelected];
-  }
 
-  if (cbXinorbisReport->Checked) and (eZSReport->Text = "") then {
-	if s != "" then
-	  s = s + #13 + #13;
+	if (cbToggleText->Checked && eTextFileName->Text != L"")
+	{
+		s = L"\"" + GLanguageHandler->Text[kText] + L" " + GLanguageHandler->Text[kReport] + L"\" " + GLanguageHandler->Text[kHasBeenSelected];
+	}
 
-	s = s + """ + "Xinorbis " + GLanguageHandler->Text[kReport] + "" " + GLanguageHandler->Text[kHasBeenSelected];
-  }
+	if (cbToggleXinorbis->Checked && eXinorbisFileName->Text != L"")
+	{
+		if (s != L"") s + L"\n\n";
 
-  if (cbHTMLReport->Checked) and (eHTMLReport->Text = "") then {
-	if s != "" then
-	  s = s + #13 + #13;
+		s += L"\"Xinorbis " + GLanguageHandler->Text[kReport] + L"\" " + GLanguageHandler->Text[kHasBeenSelected];
+	}
 
-	s = s + ""HTML " + GLanguageHandler->Text[kReport] + "" " + GLanguageHandler->Text[kHasBeenSelected];
-  }
+	if (cbToggleHTML->Checked && eHTMLFileName->Text != L"")
+	{
+		if (s != L"") s + L"\n\n";
 
-  if (cbCSVReport->Checked) and (eCSVOutput->Text = "") then {
-	if s != "" then
-	  s = s + #13 + #13;
+		s += L"\"HTML " + GLanguageHandler->Text[kReport] + L"\" " + GLanguageHandler->Text[kHasBeenSelected];
+	}
 
-	s = s + ""CSV " + GLanguageHandler->Text[kReport] + "" " + GLanguageHandler->Text[kHasBeenSelected];
-  }
+	if (cbToggleCSV->Checked && eCSVFileName->Text != L"")
+	{
+		if (s != L"") s + L"\n\n";
 
-  if (cbXMLReport->Checked) and (eXMLOutput->Text = "") then {
-	if s != "" then
-	  s = s + #13 + #13;
+		s += L"\"CSV " + GLanguageHandler->Text[kReport] + L"\" " + GLanguageHandler->Text[kHasBeenSelected];
+	}
 
-	s = s + ""XML " + GLanguageHandler->Text[kReport] + "" " + GLanguageHandler->Text[kHasBeenSelected];
-  }
+	if (cbToggleXML->Checked && eXMLFileName->Text != L"")
+	{
+		if (s != L"") s + L"\n\n";
 
-  if s = "" then
-	ModalResult = mrOK // surely no mrOK
-  else {
-	if MessageDlg(s + #13 + #13 + GLanguageHandler->Text[kAreYouSureContinue], mtWarning, [mbYes, mbCancel], 0) = mrYes then
-	  ModalResult = mrOK;
-  }                       */
+		s += L"\"XML " + GLanguageHandler->Text[kReport] + L"\" " + GLanguageHandler->Text[kHasBeenSelected];
+	}
+
+	if (s == L"")
+	{
+		///ModalResult = mrOK // surely no mrOK
+	}
+	else
+	{
+		std::wstring message = s + L"\n\n" + GLanguageHandler->Text[kAreYouSureContinue];
+
+		if (MessageDlg(s.c_str(), mtWarning, mbYesNo, 0) == mrYes)
+		{
+			ModalResult = mrOk;
+		}
+	}
 }
 #pragma end_region
 
+
+#pragma region Tab_CSV
+void __fastcall TFormReportSaves::cbToggleCSVClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbCSVFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCSVFiles] + L" (*.csv)|*.csv",
+												  L".csv",
+												  Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eCSVFileName->Text = file_name.c_str();
+
+		if (!cbToggleCSV->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+}
+#pragma end_region
+
+
+#pragma region Tab_HTML
+void __fastcall TFormReportSaves::cbToggleHTMLClickClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbHTMLFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kHTMLFiles] + L" (*.html, *.htm)|*.html; *.htm",
+												  L".htm",
+												  Utility::GetDefaultFileName(L".htm", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eHTMLFileName->Text = file_name.c_str();
+
+		if (!cbToggleHTML->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+
+}
+
+
+void __fastcall TFormReportSaves::cbHTMLLayoutsChange(TObject *Sender)
+{
+	cbHTMLFileSize->ItemIndex = GSettingsHandler->Reports.HTML[cbHTMLLayouts->ItemIndex].Units;
+
+// leave uncommented cbHTMLShowImages->Checked = TUtility.FindReportItem(XSettings.Report.HTMLOptions[cbHTMLLayouts.ItemIndex + 1], 0);
+}
+#pragma end_region
+
+
+#pragma region Tab_Text
+void __fastcall TFormReportSaves::cbToggleTextClickClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbTextFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.txt)|*.txt",
+												  L".txt",
+												  Utility::GetDefaultFileName(L".txt", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eTextFileName->Text = file_name.c_str();
+
+		if (!cbToggleText->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+}
+#pragma end_region
+
+
+#pragma region Tab_Tree
+void __fastcall TFormReportSaves::cbToggleTreeClickClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbTreeFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTreeFiles] + L" (*.xcrtree)|*.xcrtree",
+												  L".xcrtree",
+												  Utility::GetDefaultFileName(L".xcrtree", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eTreeFileName->Text = file_name.c_str();
+
+		if (!cbToggleTree->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+}
+#pragma end_region
+
+
+#pragma region Tab_Xinorbis
+void __fastcall TFormReportSaves::cbToggleXinorbisClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbXinorbisFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(L"Xinorbis v2 (*.zsr2)|*.zsr2",
+												  L".zsr2",
+												  Utility::GetDefaultFileName(L".zsr2", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eXinorbisFileName->Text = file_name.c_str();
+
+		if (!cbToggleXinorbis->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+}
+#pragma end_region
+
+
+#pragma region Tab_XML
+void __fastcall TFormReportSaves::cbToggleXMLClick(TObject *Sender)
+{
+	SetSaveStatus();
+}
+
+
+void __fastcall TFormReportSaves::sbXMLFolderClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kXMLFiles] + L" (*.xml)|*.xml",
+												  L".xml",
+												  Utility::GetDefaultFileName(L".xml", GLanguageHandler->Text[kReport] + L"_" + GLanguageHandler->Text[kExport]),
+												  GSystemGlobal->AppDataPath);
+
+	if (!file_name.empty())
+	{
+		eXMLFileName->Text = file_name.c_str();
+
+		if (!cbToggleXML->Checked)
+		{
+			SetSaveStatus();
+		}
+	}
+}
+#pragma end_region

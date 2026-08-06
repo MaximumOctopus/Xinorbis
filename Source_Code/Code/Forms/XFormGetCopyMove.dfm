@@ -2,8 +2,7 @@ object FormGetCopyMove: TFormGetCopyMove
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'FormGetCopyMove'
-  ClientHeight = 87
+  ClientHeight = 86
   ClientWidth = 450
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

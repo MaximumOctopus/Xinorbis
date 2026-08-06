@@ -11,6 +11,8 @@
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Menus.hpp>
+
+#include <vector>
 //---------------------------------------------------------------------------
 class TForm15 : public TForm
 {
@@ -45,11 +47,14 @@ private:
 
 	void Init();
 
-	void ToggleSave();
-
 public:
 	__fastcall TForm15(TComponent* Owner);
+
+	void ToggleSave();
 };
+
+void OpenExcludedFolders(std::vector<std::wstring> &, bool&);
+
 //---------------------------------------------------------------------------
 extern PACKAGE TForm15 *Form15;
 //---------------------------------------------------------------------------
