@@ -1,6 +1,6 @@
 A C++ rewrite of Xinorbis is currently in progress. Beta version due Summer/Autumn 2026.
 
-I'll be uploading the code reguarly (at least once a week) as I work through the rewrite/remaster.
+I'll be uploading the code regularly (at least once a week) as I work through the rewrite/remaster.
 
 I'm adding raw functionality first, then once that's working, I'll start tidying and adding the remainder of the missing features.
 
@@ -9,6 +9,14 @@ I don't expect a feature-complete version until the end of 2026. There won't be 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
 
 Database functions are not going to be part of the initial release.
+
+2026/08/07
+
+Most of the original Delphi code has been rewritten in C++ (excluding the Folder History database functions, but they're going to be based on the FolderScanUltra code). There are still a few functions and dialogs to finish, but the majority of stage 1 is done.
+
+In the last few days I've cut down my informal "to do" list from 161 to 18. But this is not the full picture of what's left!!!
+
+I'm now going to concentrate on one part at a time, starting with FrameSummary and then the FrameProperties display (one of the core parts of the application).
 
 2026/07/26
 
