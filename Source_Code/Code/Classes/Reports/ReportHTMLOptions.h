@@ -15,6 +15,7 @@
 
 #include "ConstantsData.h"
 #include "ConstantsReports.h"
+#include "HTMLColours.h"
 #include <string>
 
 
@@ -31,8 +32,7 @@ struct HTMLReportOptions
 	bool CategoryList[kFileCategoriesCount] = { 0 };
 	bool AutoOpen = false;
 
-    int HTMLColours[11];
-	int HTMLMonoBargraph = 0;
+	HTMLColours Colours;
 
 	bool DeepScan = false;
 

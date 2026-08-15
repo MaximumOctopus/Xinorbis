@@ -34,8 +34,8 @@ namespace ReportXinorbis
 		data.push_back(L"XReport2\n");
 
 		data.push_back(GScanEngine->Data[DataSource].Path.String + L"\n");
-		data.push_back(GScanEngine->Data[DataSource].FolderCount + L"\n");
-		data.push_back(GScanEngine->Data[DataSource].FileCount + L"\n");
+		data.push_back(std::to_wstring(GScanEngine->Data[DataSource].FolderCount) + L"\n");
+		data.push_back(std::to_wstring(GScanEngine->Data[DataSource].FileCount) + L"\n");
 		data.push_back(Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].TotalSize) + L"\n");
 		data.push_back(Utility::GetDate(DateTimeFormat::Display) + L", " + Utility::GetTime(DateTimeFormat::Display) + L"\n");
 		data.push_back(L"0\n");
@@ -63,23 +63,23 @@ namespace ReportXinorbis
 				data.push_back(L"{file\n");
 
 				data.push_back(file->Name + L"\n");
-				data.push_back(file->FilePathIndex + L"\n");
-				data.push_back(file->Size + L"\n");
-				data.push_back(file->SizeOnDisk + L"\n");
-				data.push_back(file->DateCreated + L"\n");
-				data.push_back(file->DateAccessed + L"\n");
-				data.push_back(file->DateModified + L"\n");
-				data.push_back(file->TimeCreated + L"\n");
-				data.push_back(file->TimeAccessed + L"\n");
-				data.push_back(file->TimeModified + L"\n");
-				data.push_back(file->Category + L"\n");
-				data.push_back((file->Attributes & FILE_ATTRIBUTE_READONLY) + L"\n");
-				data.push_back((file->Attributes & FILE_ATTRIBUTE_HIDDEN) + L"\n");
-				data.push_back((file->Attributes & FILE_ATTRIBUTE_SYSTEM) + L"\n");
-				data.push_back((file->Attributes & FILE_ATTRIBUTE_ARCHIVE) + L"\n");
-				data.push_back(file->Temp + L"\n");
+				data.push_back(std::to_wstring(file->FilePathIndex) + L"\n");
+				data.push_back(std::to_wstring(file->Size) + L"\n");
+				data.push_back(std::to_wstring(file->SizeOnDisk) + L"\n");
+				data.push_back(std::to_wstring(file->DateCreated) + L"\n");
+				data.push_back(std::to_wstring(file->DateAccessed) + L"\n");
+				data.push_back(std::to_wstring(file->DateModified) + L"\n");
+				data.push_back(std::to_wstring(file->TimeCreated) + L"\n");
+				data.push_back(std::to_wstring(file->TimeAccessed) + L"\n");
+				data.push_back(std::to_wstring(file->TimeModified) + L"\n");
+				data.push_back(std::to_wstring(file->Category) + L"\n");
+				data.push_back(std::to_wstring(file->Attributes & FILE_ATTRIBUTE_READONLY) + L"\n");
+				data.push_back(std::to_wstring(file->Attributes & FILE_ATTRIBUTE_HIDDEN) + L"\n");
+				data.push_back(std::to_wstring(file->Attributes & FILE_ATTRIBUTE_SYSTEM) + L"\n");
+				data.push_back(std::to_wstring(file->Attributes & FILE_ATTRIBUTE_ARCHIVE) + L"\n");
+				data.push_back(std::to_wstring(file->Temp) + L"\n");
 				data.push_back(GScanEngine->Data[DataSource].Users[file->Owner]->Name + L"\n");
-				data.push_back(file->Attributes + L"\n");
+				data.push_back(std::to_wstring(file->Attributes) + L"\n");
 
 				data.push_back(L"}\n");
 			}

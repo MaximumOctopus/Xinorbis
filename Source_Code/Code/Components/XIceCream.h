@@ -27,13 +27,18 @@ public:
 	int Width = 0;
 	std::wstring Hint = L"";
 
-	int Colour1 = 0xff8800;
-	int Colour2 = 0xff8800;
+	int DisplayNameWidth = 0;
+
+	int ColourTop = 0xff8800;
+	int ColourMiddle = 0xff8800;
+	int ColourBottom = 0xff8800;
 };
 
 
 class XIceCream
 {
+	enum class ColourMode { kBrighten = 0, kDarken };
+
 	std::vector<XSprinkle*> Sprinkles[2];
 
 	TPaintBox *PaintBox = nullptr;
@@ -41,11 +46,18 @@ class XIceCream
 	TComponent *Owner = nullptr;
 	TWinControl *Canvas = nullptr;
 
+	int DisplayNamesTotalWidth[2] = { 0, 0 };
+
 	bool Busy = false;
 
 	int DataSource = 0;
 
-	int CreateShade(int);
+	int IdCubeSize = 15;
+	int IdCubeY = 40;
+
+	int TextY = 0;
+
+	int CreateShade(int, ColourMode);
 
 	void __fastcall PaintBoxUpdate(TObject *Sender);
 
@@ -63,4 +75,8 @@ public:
 	void Update();
 
 	void SetSource(int);
+
+	void Swap();
+
+    std::wstring Debug();
 };

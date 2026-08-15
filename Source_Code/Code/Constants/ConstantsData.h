@@ -25,7 +25,9 @@ static const int kDataFolderHistory = 2;
 static const int kReportTypeCount  =  6;
 static const int kQuickFolderCount = 20;
 
-static const int kAutoSaveItemCount = 6;
+static const int kAutoSaveItemCount = 8;
+
+static const int kMaximumRecentScans = 25;
 
 // extra file attribute constants
 

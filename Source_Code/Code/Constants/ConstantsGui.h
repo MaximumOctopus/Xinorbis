@@ -108,6 +108,12 @@ static const int ksgnIntegerSize   = 14;
 static const int ksgnCategoryIndex = 15;
 static const int ksgnIntegetSoD    = 16;
 
+//
+
+static const int kChartTypeUnknown    = 0;
+static const int kChartTypePie        = 1;
+static const int kChartTypeBar        = 2;
+static const int kChartTypeHorizontal = 3;
 
   //                                   glyph,column
 static const int TableColumnLookup[56] = { 2,3, 3,4, 4,5, 5,6,              	//  0-3  = search page

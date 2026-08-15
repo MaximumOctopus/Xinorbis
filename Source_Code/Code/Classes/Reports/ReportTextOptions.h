@@ -23,6 +23,8 @@ struct TextReportOptions
 	std::wstring Layout = L"";
 	bool CategoryList[kFileCategoriesCount] = { false };
 
+    std::wstring Special = L"";
+
 	bool DeepScan = false;
 
 	bool AutoOpen = false;

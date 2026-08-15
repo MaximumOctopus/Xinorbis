@@ -22,6 +22,8 @@ static const int kHTMLItemsCount = 17;
 static const int kTextItemsCount = 17;
 static const int kXMLItemsCount = 17;
 
+static const int kMaxCSVFields = 20;
+
 static const int kReportLayoutUnknown = 0;
 static const int kReportLayoutAutoSave = 1;
 static const int kReportLayoutQuick    = 2;
@@ -130,7 +132,7 @@ static const int kGridColIColour     = 12;
 static const int kFieldIgnore             = 0;
 static const int kFieldFullFilePath       = 1;
 static const int kFieldFileSizeBytes      = 2;
-static const int kFieldFileSizeOnDIsk     = 3;
+static const int kFieldFileSizeOnDisk     = 3;
 static const int kFieldCreatedDDMMYYYY    = 4;
 static const int kFieldCreatedMMDDYYYY    = 5;
 static const int kFieldModifiedDDMMYYYY   = 6;

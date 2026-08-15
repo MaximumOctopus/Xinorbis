@@ -27,5 +27,7 @@ public:
 	int P3 = -1;
 	int P4 = -1;
 
+    FormDetails();
+
 	FormDetails(int, int, int, int, int);
 };

@@ -36,7 +36,7 @@ public:
 	{
 		if (total_count != 0)
 		{
-			PercentCount = (double)Count / (double)total_count;
+			PercentCount = ((double)Count / (double)total_count) * 100;
 			PercentCountString = Convert::DoubleToPercent(PercentCount);
 		}
 		else
@@ -47,7 +47,7 @@ public:
 
 		if (total_size != 0)
 		{
-			PercentSize = (double)Size / (double)total_size;
+			PercentSize = ((double)Size / (double)total_size) * 100;
 			PercentSizeString = Convert::DoubleToPercent(PercentSize);
 		}
 		else

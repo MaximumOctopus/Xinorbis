@@ -52,6 +52,16 @@ struct SearchData
 };
 
 
+// used for "refresh"ing
+struct LastScan
+{
+	bool ProcessData = false;
+	std::wstring Folder = L"";
+
+	ExecutionParameters Ex;
+};
+
+
 class ScanEngine
 {
 private:
@@ -65,8 +75,6 @@ private:
 	void InitLanguage();
 
 	void PopulateDiskStat();
-
-	std::wstring GetScanPathFromFolderList();
 
 	[[nodiscard]] bool Import(bool, bool, bool, bool);
 	[[nodiscard]] bool Scan(bool, bool, bool, bool);
@@ -83,6 +91,8 @@ private:
 	int FindUser(std::wstring);
 
 public:
+
+	LastScan Last;
 
     int DataSource = 0;
 
@@ -102,6 +112,8 @@ public:
 
 	std::chrono::system_clock::time_point StartTime;
 
+    std::wstring ProcessTime = L"";
+
 	// ======================================================================
 
 	ScanEngine();
@@ -109,6 +121,8 @@ public:
 	void ClearData();
 
 	bool Execute(bool, const std::wstring, ExecutionParameters);
+
+	void Refresh();
 
 	void ListRoot() const;
 
@@ -121,6 +135,10 @@ public:
 	void PopulateSortedFiles();
 
     SizeOfFolder SizeOfFolderNav(const std::wstring, const std::wstring);
+
+	// ======================================================================
+
+	bool ImportFromCSVCustom(const std::wstring, int, CSVDataFormat, bool, bool, bool);
 
 	// ======================================================================
 

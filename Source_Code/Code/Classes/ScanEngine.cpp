@@ -65,50 +65,6 @@ ScanEngine::ScanEngine()
 
 	Data[0].Source = ScanSource::LiveScan;
 	Data[1].Source = ScanSource::SearchResults;
-
-	std::wstring scan_source;
-
-	/*
-	if (input.back() == L'\"') // folder path may contain erroneous quote char
-	{
-		scan_source = input.substr(0, input.length() - 1);
-	}
-	else
-	{
-		scan_source = input;
-	}
-
-	switch (Data.Source)
-	{
-	case ScanSource::None:
-		break;
-	case ScanSource::LiveScan:
-		if (WindowsUtility::DirectoryExists(scan_source))
-		{
-			Path.String = scan_source + L"\\";
-
-			Path.Set = true;
-		}
-		else
-		{
-			Path.Set = false;
-		}
-
-		break;
-	case ScanSource::CSVImport:
-		if (WindowsUtility::FileExists(scan_source))
-		{
-			Path.CSVSource = scan_source;
-
-			Path.Set = true;
-		}
-		else
-		{
-			Path.Set = false;
-		}
-
-		break;
-	}      */
 }
 
 
@@ -188,11 +144,21 @@ void ScanEngine::PopulateDiskStat()
 }
 
 
+void ScanEngine::Refresh()
+{
+	Execute(Last.ProcessData, Last.Folder, Last.Ex);
+}
+
+
 bool ScanEngine::Execute(bool process_data, const std::wstring folder, ExecutionParameters ex)
 {
 	Data[DataSource].Path.Update(folder);
 
 	FilterCategory = ex.FilterByCategory;
+
+	Last.ProcessData = process_data;
+	Last.Folder = folder;
+	Last.Ex = ex;
 
 	switch (Data[DataSource].Source)
 	{
@@ -269,6 +235,12 @@ bool ScanEngine::Scan(bool process_data, bool process_top_100_size, bool process
 		AddUserNotSpecified();
 	}
 
+	std::chrono::system_clock::time_point EndTime = std::chrono::system_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = EndTime - StartTime;
+
+	ProcessTime =  GLanguageHandler->Text[kProcessedIn] + L" " + std::to_wstring(elapsed_seconds.count()) + L" seconds.";
+
 	return true;
 }
 
@@ -319,6 +291,51 @@ bool ScanEngine::Import(bool process_data, bool process_top_100_size, bool proce
 
 	return true;
 }
+
+
+bool ScanEngine::ImportFromCSVCustom(const std::wstring file_name, int data_source, CSVDataFormat csvdf,
+	bool process_file_dates, bool process_top_101_size, bool process_top_101_date)
+{
+	if (Data[data_source].LoadFromCustomCSV(file_name, csvdf, true))
+	{
+		DataSource = data_source;
+
+		PostScan();
+
+		if (GSettingsHandler->Optimisations.UseFastAnalysis)
+		{
+			AnalyseFast();
+		}
+		else
+		{
+			Analyse();
+		}
+
+		AnalyseRootFolders();
+
+		AnalysePostExtensionSpread();
+
+		if (process_file_dates)
+		{
+			Data[DataSource].BuildFileDates();
+		}
+
+		if (process_top_101_size)
+		{
+			Data[DataSource].BuildTop100SizeLists();
+		}
+
+		if (process_top_101_date)
+		{
+			Data[DataSource].BuildTop100DateLists();
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 
 
 bool ScanEngine::Analyse()
@@ -462,11 +479,10 @@ bool ScanEngine::Analyse()
 				// Magnitude
 				// ============================================================================
 
+				int bin = 0;
+
 				if (file->Size <= 1024)
 				{
-					TargetData.Magnitude[0].Count++;
-					TargetData.Magnitude[0].Size += file->Size;
-
 					if (file->Size == 0)
 					{
 						TargetData.FileAttributes[kFileType_Null].Count++;
@@ -476,64 +492,57 @@ bool ScanEngine::Analyse()
 				}
 				else if (file->Size <= 1048576)
 				{
-					TargetData.Magnitude[1].Count++;
-					TargetData.Magnitude[1].Size += file->Size;
+					bin = 1;
 				}
 				else if (file->Size <= 10485760)
 				{
-					TargetData.Magnitude[2].Count++;
-					TargetData.Magnitude[2].Size += file->Size;
+					bin = 2;
 				}
 				else if (file->Size <= 52428800)
 				{
-					TargetData.Magnitude[3].Count++;
-					TargetData.Magnitude[3].Size += file->Size;
+					bin = 3;
 				}
 				else if (file->Size <= 104857600)
 				{
-					TargetData.Magnitude[4].Count++;
-					TargetData.Magnitude[4].Size += file->Size;
+					bin = 4;
 				}
 				else if (file->Size <= 157286400)
 				{
-					TargetData.Magnitude[5].Count++;
-					TargetData.Magnitude[5].Size += file->Size;
+					bin = 5;
 				}
 				else if (file->Size <= 209715200)
 				{
-					TargetData.Magnitude[6].Count++;
-					TargetData.Magnitude[6].Size += file->Size;
+					bin = 6;
 				}
 				else if (file->Size <= 262144000)
 				{
-					TargetData.Magnitude[7].Count++;
-					TargetData.Magnitude[7].Size += file->Size;
+					bin = 7;
 				}
 				else if (file->Size <= 524288000)
 				{
-					TargetData.Magnitude[8].Count++;
-					TargetData.Magnitude[8].Size += file->Size;
+					bin = 8;
 				}
 				else if (file->Size <= 1048576000)
 				{
-					TargetData.Magnitude[9].Count++;
-					TargetData.Magnitude[9].Size += file->Size;
+					bin = 9;
 				}
 				else if (file->Size <= 2097152000)
 				{
-					TargetData.Magnitude[10].Count++;
-					TargetData.Magnitude[10].Size += file->Size;
+					bin = 10;
 				}
 				else if (file->Size <= 5242880000)
 				{
-					TargetData.Magnitude[11].Count++;
-					TargetData.Magnitude[11].Size += file->Size;
+					bin = 11;
 				}
 				else
 				{
-					TargetData.Magnitude[12].Count++;
-					TargetData.Magnitude[12].Size += file->Size;
+					bin = 12;
 				}
+
+				TargetData.Magnitude[bin].Count++;
+				TargetData.Magnitude[bin].Size += file->Size;
+
+				file->MagnitudeBin = bin;
 
 				// =======================================================================
 				// process usernames -----------------------------------------------------

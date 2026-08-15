@@ -10,6 +10,11 @@
 #include "FormDetails.h"
 
 
+FormDetails::FormDetails()
+{
+}
+
+
 FormDetails::FormDetails(int id, int x, int y, int w, int h)
 {
 	FormId = id;

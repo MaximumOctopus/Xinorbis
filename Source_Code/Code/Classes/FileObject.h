@@ -28,6 +28,8 @@ public:
 
 	unsigned __int64 Size = 0;
 
+    int MagnitudeBin = 0;                   // which of the 13 Magnitude categories the file belongs to
+
     int SizeOnDisk = 0;
     int DateCreated = 0;	// yyyymmdd
     int DateAccessed = 0;	// yyyymmdd

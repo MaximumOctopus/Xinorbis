@@ -71,22 +71,22 @@ namespace ReportHTML
 		data->push_back(L"<meta name=\"debug\" content=\"" + std::to_wstring(options.LayoutSize) + L"\">\n");
 		data->push_back(L"<style type=\"text/css\">\n");
 		data->push_back(L"<!--\n");
-		data->push_back(L"A:link {color:#" + Convert::WebColour(options.HTMLColours[0]) + L"; text-decoration: none;}\n");
-		data->push_back(L"A:visited {color:#" + Convert::WebColour(options.HTMLColours[0]) + L"; text-decoration: none;}\n");
-		data->push_back(L"A:hover {color:#" + Convert::WebColour(options.HTMLColours[1]) + L"; text-decoration: underline;}\n");
-		data->push_back(L"A:active {color:#" + Convert::WebColour(options.HTMLColours[0]) + L"; text-decoration: none;}\n");
-		data->push_back(L".C4G {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; color:#" + Convert::WebColour(options.HTMLColours[3]) + L";}\n");
-		data->push_back(L".C4CB {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; font-weight: bold; color:#" + Convert::WebColour(options.HTMLColours[3]) + L";}\n");
-		data->push_back(L".C4C {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; color:#" + Convert::WebColour(options.HTMLColours[3]) + L";}\n");
-		data->push_back(L".C4L {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:left; color:#" + Convert::WebColour(options.HTMLColours[3]) + L";}\n");
-		data->push_back(L".C4R {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:right; color:#" + Convert::WebColour(options.HTMLColours[3]) + L";}\n");
-		data->push_back(L".C7G {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; color:#" + Convert::WebColour(options.HTMLColours[6]) + L";}\n");
-		data->push_back(L".C7CB {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; font-weight: bold; color:#" + Convert::WebColour(options.HTMLColours[6]) + L";}\n");
-		data->push_back(L".C7C {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; color:#" + Convert::WebColour(options.HTMLColours[6]) + L";}\n");
+		data->push_back(L"A:link {color:#" + Convert::WebColour(options.Colours.Colour[0]) + L"; text-decoration: none;}\n");
+		data->push_back(L"A:visited {color:#" + Convert::WebColour(options.Colours.Colour[0]) + L"; text-decoration: none;}\n");
+		data->push_back(L"A:hover {color:#" + Convert::WebColour(options.Colours.Colour[1]) + L"; text-decoration: underline;}\n");
+		data->push_back(L"A:active {color:#" + Convert::WebColour(options.Colours.Colour[0]) + L"; text-decoration: none;}\n");
+		data->push_back(L".C4G {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; color:#" + Convert::WebColour(options.Colours.Colour[3]) + L";}\n");
+		data->push_back(L".C4CB {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; font-weight: bold; color:#" + Convert::WebColour(options.Colours.Colour[3]) + L";}\n");
+		data->push_back(L".C4C {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; color:#" + Convert::WebColour(options.Colours.Colour[3]) + L";}\n");
+		data->push_back(L".C4L {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:left; color:#" + Convert::WebColour(options.Colours.Colour[3]) + L";}\n");
+		data->push_back(L".C4R {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:right; color:#" + Convert::WebColour(options.Colours.Colour[3]) + L";}\n");
+		data->push_back(L".C7G {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; color:#" + Convert::WebColour(options.Colours.Colour[6]) + L";}\n");
+		data->push_back(L".C7CB {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; font-weight: bold; color:#" + Convert::WebColour(options.Colours.Colour[6]) + L";}\n");
+		data->push_back(L".C7C {font-family: Geneva, Arial, Helvetica, san-serif; font-size:10pt; text-align:center; color:#" + Convert::WebColour(options.Colours.Colour[6]) + L";}\n");
 		data->push_back(L".XCB {text-align:center; font-weight: bold;}\n");
 		data->push_back(L"-->\n");
 		data->push_back(L"</style></head>\n");
-		data->push_back(L"<body leftmargin=\"5\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[2]) + L"\" text=\"#" + Convert::WebColour(options.HTMLColours[7]) + L"\" topmargin=\"5\">\n");
+		data->push_back(L"<body leftmargin=\"5\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[2]) + L"\" text=\"#" + Convert::WebColour(options.Colours.Colour[7]) + L"\" topmargin=\"5\">\n");
 		// ===========================================================================
 
 		if (options.Layout[0])
@@ -159,11 +159,11 @@ namespace ReportHTML
 		// footer table. always gets added
 
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">\n");
+		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">\n");
 		data->push_back(L"<td align=\"center\" class=\"C7G\">\n");
 		data->push_back(L"<a href=\"mailto:paul@freshney.org\">paul@freshney.org</a> / <a href=\"https://github.com/MaximumOctopus/FolderScanUltra\" target=\"_blank\">https://github.com/MaximumOctopus/FolderScanUltra</a></td>\n");
 		data->push_back(L"</tr>\n");
-		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\" class=\"C7G\"><td align=\"center\">(c) Paul Alan Freshney 2002-" + Utility::CurrentYear() + L"</td></tr>");
+		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\" class=\"C7G\"><td align=\"center\">(c) Paul Alan Freshney 2002-" + Utility::CurrentYear() + L"</td></tr>");
 		data->push_back(L"</table></body></html>\n");
 	}
 
@@ -213,7 +213,7 @@ namespace ReportHTML
 							Convert::DoubleToPercent((double)deep.FolderData[s].FileCount / (double)GScanEngine->Data[DataSource].FileCount),
 							Convert::GetSizeString(options.Units, deep.FolderData[s].Size),
 							Convert::DoubleToPercent((double)deep.FolderData[s].Size / (double)GScanEngine->Data[DataSource].TotalSize),
-							options.HTMLColours[4],
+							options.Colours.Colour[4],
 							(((double)deep.FolderData[s].FileCount / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)largeCount),
 							(((double)deep.FolderData[s].Size / (double)GScanEngine->Data[DataSource].TotalSize) * 100) * ((double)kReportSizes[kBarGraph] / (double)largeSize),
 							options
@@ -241,7 +241,7 @@ namespace ReportHTML
 		// == header table ============================================================
 		// ============================================================================
 
-		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 		data->push_back(L"<tr class=\"C4G\">\n");
 
 		data->push_back(L"<td class=\"C4C\"><b>FolderScanUltra " + __XVersion + L"</b> " + GLanguageHandler->Text[kReportFor] +
@@ -274,8 +274,8 @@ namespace ReportHTML
 		// == navigation table ========================================================
 		// ============================================================================
 
-		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">" +
-			L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\"><td class=\"C7G\"><strong>Menu</strong></td></tr>" +
+		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">" +
+			L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\"><td class=\"C7G\"><strong>Menu</strong></td></tr>" +
 			L"<tr class=\"C4C\"><td>" + menu_string + L"</td></tr></table>\n");
 
 		InsertSpacingTable(data);
@@ -396,7 +396,7 @@ namespace ReportHTML
 						Convert::DoubleToPercent((double)GScanEngine->Data[DataSource].FileAttributes[t].Count / (double)GScanEngine->Data[DataSource].FileCount),
 						Convert::GetSizeString(options.Units, GScanEngine->Data[DataSource].FileAttributes[t].Size),
 						Convert::DoubleToPercent((double)GScanEngine->Data[DataSource].FileAttributes[t].Size / (double)GScanEngine->Data[DataSource].TotalSize),
-						options.HTMLColours[4],
+						options.Colours.Colour[4],
 						(((double)GScanEngine->Data[DataSource].FileAttributes[t].Count / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)large1),
 						(((double)GScanEngine->Data[DataSource].FileAttributes[t].Size / (double)GScanEngine->Data[DataSource].TotalSize) * 100) * ((double)kReportSizes[kBarGraph] / (double)large2),
 						options
@@ -449,7 +449,7 @@ namespace ReportHTML
 						Convert::DoubleToPercent((double)user->Count / (double)GScanEngine->Data[DataSource].FileCount),
 						Convert::GetSizeString(options.Units, user->Size),
 						Convert::DoubleToPercent((double)user->Size / (double)GScanEngine->Data[DataSource].TotalSize),
-						options.HTMLColours[4],
+						options.Colours.Colour[4],
 						(((double)user->Count / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)large1),
 						((double)(user->Size / (double)GScanEngine->Data[DataSource].TotalSize) * 100) * ((double)kReportSizes[kBarGraph] / (double)large2),
 						options
@@ -469,11 +469,11 @@ namespace ReportHTML
 		int rowidx = 0;
 
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\"><td height=\"13\"><a name=\"op7\" /><b>" + GLanguageHandler->Text[kTempFiles] + L"</b></td></tr>\n");
+		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\"><td height=\"13\"><a name=\"op7\" /><b>" + GLanguageHandler->Text[kTempFiles] + L"</b></td></tr>\n");
 
 		if (GScanEngine->Data[DataSource].TemporaryFiles.size() == 0)
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\" class=\"C4G\"><td colspan=\"7\" height=\"13\">" + GLanguageHandler->Text[kNoneFound] + L"</td></tr>\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\" class=\"C4G\"><td colspan=\"7\" height=\"13\">" + GLanguageHandler->Text[kNoneFound] + L"</td></tr>\n");
 		}
 		else
 		{
@@ -481,11 +481,11 @@ namespace ReportHTML
 			{
 				if (t % 2 == 0)
 				{
-					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 				}
 				else
 				{
-					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 				}
 
 				data->push_back(L"<td height=\"13\">" + GScanEngine->Data[DataSource].TemporaryFiles[t] + L"</td>\n");
@@ -557,7 +557,7 @@ namespace ReportHTML
 											Convert::DoubleToPercent((double)tfx->Count / (double)GScanEngine->Data[DataSource].FileCount),
 											Convert::GetSizeString(options.Units, tfx->Size),
 											Convert::DoubleToPercent((double)tfx->Size / (double)GScanEngine->Data[DataSource].TotalSize),
-											options.HTMLColours[4],
+											options.Colours.Colour[4],
 											(((double)tfx->Count / (double)GScanEngine->Data[DataSource].FileCount) * 100)* ((double)kReportSizes[kBarGraph] / (double)large1),
 											(((double)tfx->Size / (double)GScanEngine->Data[DataSource].TotalSize) * 100)* ((double)kReportSizes[kBarGraph] / (double)large2),
 											options
@@ -599,11 +599,11 @@ namespace ReportHTML
 										// ==================================================================
 										if (rowidx % 2 != 0)
 										{
-											data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+											data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 										}
 										else
 										{
-											data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+											data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 										}
 
 										rowidx++;
@@ -625,11 +625,11 @@ namespace ReportHTML
 
 										if (large1 != 0)
 										{
-											data->push_back(L"<table width=\"" + std::to_wstring(std::round((((double)GFileExtensionHandler->Extensions[z]->Count / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)large1))) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
+											data->push_back(L"<table width=\"" + std::to_wstring(std::round((((double)GFileExtensionHandler->Extensions[z]->Count / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)large1))) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
 										}
 										else
 										{
-											data->push_back(L"<table width=\"1\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
+											data->push_back(L"<table width=\"1\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
 										}
 
 										data->push_back(L"<tr><td></td></tr></table></td>\n");
@@ -642,11 +642,11 @@ namespace ReportHTML
 
 										if (large2 != 0)
 										{
-											data->push_back(L"<table width=\"" + std::to_wstring(std::round((double)percentage * ((double)kReportSizes[kBarGraph] / (double)large2))) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
+											data->push_back(L"<table width=\"" + std::to_wstring(std::round((double)percentage * ((double)kReportSizes[kBarGraph] / (double)large2))) + L"\" border=\"0\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
 										}
 										else
 										{
-											data->push_back(L"<table width=\"1\" border=\"0\" bgcolor = \"#" + Convert::WebColour(options.HTMLColours[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
+											data->push_back(L"<table width=\"1\" border=\"0\" bgcolor = \"#" + Convert::WebColour(options.Colours.Colour[4]) + L"\" height=\"8\" cellpadding=\"0\" cellspacing=\"0\">\n");
 										}
 
 										data->push_back(L"<tr><td></td></tr>\n");
@@ -662,7 +662,7 @@ namespace ReportHTML
 
 						if (linecount == 0)
 						{
-							data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\"><td colspan=\"7\" height=\"13\" class=\"C4G\">" + GLanguageHandler->Text[kNoneFound] + L".</td></tr>\n");
+							data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\"><td colspan=\"7\" height=\"13\" class=\"C4G\">" + GLanguageHandler->Text[kNoneFound] + L".</td></tr>\n");
 						}
 
 						data->push_back(L"</table>\n");
@@ -736,8 +736,8 @@ namespace ReportHTML
 		// == quick info table ========================================================
 		// ============================================================================
 
-		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" height=\"180\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
-		data->push_back(L"<tr><td width=\"100%\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\" class=\"C7G\"><strong>" + GLanguageHandler->Text[kSummary] + L"</strong></td></tr>\n");
+		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" height=\"180\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
+		data->push_back(L"<tr><td width=\"100%\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\" class=\"C7G\"><strong>" + GLanguageHandler->Text[kSummary] + L"</strong></td></tr>\n");
 		data->push_back(L"<tr>\n");
 		data->push_back(L"<td>\n");
 		data->push_back(L"<table width=\"100%\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
@@ -821,8 +821,8 @@ namespace ReportHTML
 			}
 		}
 
-		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
-		data->push_back(L"<tr><td width=\"100%\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\" class=\"C7G\"><strong>Excluded Folders</strong></td></tr>\n");
+		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
+		data->push_back(L"<tr><td width=\"100%\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\" class=\"C7G\"><strong>Excluded Folders</strong></td></tr>\n");
 		data->push_back(L"<tr class=\"C4L\"><td>Folder Pattern List: <strong>" + FolderList + L"</strong></td></tr>\n");
 		data->push_back(L"<tr class=\"C4L\"><td>&nbsp;</td></tr>\n");
 		data->push_back(L"<tr class=\"C4L\"><td>Excluded <strong>" + std::to_wstring(GScanEngine->Data[DataSource].Path.ExcludedFolderCount) + L"</strong> folders (top level)</td></tr>\n");
@@ -865,9 +865,9 @@ namespace ReportHTML
 			{
 				if (rootfolder->Count != 0)
 				 {
-					if (options.HTMLMonoBargraph)
+					if (options.Colours.MonoBargraph)
 					{
-						colour = options.HTMLColours[4];
+						colour = options.Colours.Colour[4];
 					}
 					else
 					{
@@ -941,9 +941,9 @@ namespace ReportHTML
 				{
 					if (rootfolder->Count != 0)
 					{
-						if (options.HTMLMonoBargraph)
+						if (options.Colours.MonoBargraph)
 						{
-							colour = options.HTMLColours[4];
+							colour = options.Colours.Colour[4];
 						}
 						else
 						{
@@ -1011,9 +1011,9 @@ namespace ReportHTML
 					{
 						if (rootfolder->Count != 0)
 						{
-							if (options.HTMLMonoBargraph)
+							if (options.Colours.MonoBargraph)
 							{
-								colour = options.HTMLColours[4];
+								colour = options.Colours.Colour[4];
 							}
 							else
 							{
@@ -1085,7 +1085,7 @@ namespace ReportHTML
 				GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name,
 				Convert::GetSizeString(options.Units, file->Size),
 				GScanEngine->Data[DataSource].Users[file->Owner]->Name,
-				options.HTMLColours[4],
+				options.Colours.Colour[4],
 				tableWidth,
                 options
 				);
@@ -1102,8 +1102,8 @@ namespace ReportHTML
 	void ReportTop101Smallest(std::vector<std::wstring> *data, HTMLReportOptions &options, int DataSource)
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">" +
-			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\"><td colspan=\"2\" height=\"13\"><a name=\"op14\"/><b>" + GLanguageHandler->Text[kTop101] + L"(" + GLanguageHandler->Text[kSmallest] + L")</b></td></tr>" +
-			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" +
+			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\"><td colspan=\"2\" height=\"13\"><a name=\"op14\"/><b>" + GLanguageHandler->Text[kTop101] + L"(" + GLanguageHandler->Text[kSmallest] + L")</b></td></tr>" +
+			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" +
 			L"<td height=\"13\" width=\"685\"><b>" + GLanguageHandler->Text[kFiles] + L"</b></td>" +
 			L"<td height=\"13\" width=\"85\"><b>" + GLanguageHandler->Text[kSize] + L"</b></td>" +
 			L"</tr>\n");
@@ -1114,11 +1114,11 @@ namespace ReportHTML
 		{
 			if (mod % 2 != 0)
 			{
-				data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+				data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 			}
 			else
 			{
-				data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+				data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 			}
 
 			data->push_back(L"<td height=\"13\" width=\"685\">" + GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name + L"</td>\n");
@@ -1254,7 +1254,7 @@ namespace ReportHTML
 						Convert::DoubleToPercent((double)fdo->Count / (double)GScanEngine->Data[DataSource].FileCount),
 						Convert::GetSizeString(options.Units, fdo->Size),
 						aspc,
-						options.HTMLColours[4],
+						options.Colours.Colour[4],
 						(((double)fdo->Count / (double)GScanEngine->Data[DataSource].FileCount) * 100) * ((double)kReportSizes[kBarGraph] / (double)large1),
 						aspcgraph,
 						options
@@ -1279,11 +1279,11 @@ namespace ReportHTML
 		int rowidx = 0;
 
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\"><td height=\"13\"><a name=\"op7\" /><b>" + GLanguageHandler->Text[kNullFiles] + L"</b></td></tr>\n");
+		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\"><td height=\"13\"><a name=\"op7\" /><b>" + GLanguageHandler->Text[kNullFiles] + L"</b></td></tr>\n");
 
 		if (GScanEngine->Data[DataSource].NullFiles.size() == 0)
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\" class=\"C4G\"><td colspan=\"7\" height=\"13\">" + GLanguageHandler->Text[kNoneFound] + L"</td></tr>\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\" class=\"C4G\"><td colspan=\"7\" height=\"13\">" + GLanguageHandler->Text[kNoneFound] + L"</td></tr>\n");
 		}
 		else
 		{
@@ -1291,11 +1291,11 @@ namespace ReportHTML
 			{
 				if (t % 2 == 0)
 				{
-					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 				}
 				else
 				{
-					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 				}
 
 				data->push_back(L"<td height=\"13\">" + GScanEngine->Data[DataSource].NullFiles[t] + L"</td>\n");
@@ -1343,12 +1343,12 @@ namespace ReportHTML
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\">" +
 			L"<tr class=\"C7CB\">" +
-			L"<td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" + GLanguageHandler->Text[kQuantity] + L"</td>" +
-			L"<td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" + GLanguageHandler->Text[kSize] + L"</td>" +
+			L"<td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" + GLanguageHandler->Text[kQuantity] + L"</td>" +
+			L"<td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" + GLanguageHandler->Text[kSize] + L"</td>" +
 			L"</tr>" +
 			L"<tr>" +
-			L"<td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\"><div align=\"center\" id=\"" + id1 + L"\"></td>" +
-			L"<td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\"><div align=\"center\" id=\"" + id2 + L"\"></td>" +
+			L"<td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\"><div align=\"center\" id=\"" + id1 + L"\"></td>" +
+			L"<td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\"><div align=\"center\" id=\"" + id2 + L"\"></td>" +
 			L"</tr>" +
 			L"</table>\n");
 	}
@@ -1358,9 +1358,9 @@ namespace ReportHTML
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\">" +
 			L"<tr class=\"C7CB\">" +
-			L"<td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" + GLanguageHandler->Text[title_language_id] + L"</td>" +
+			L"<td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" + GLanguageHandler->Text[title_language_id] + L"</td>" +
 			L"</tr>" +
-			L"<tr><td bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\"><div align=\"center\" id=\"" + id + L"\"></td></tr>" +
+			L"<tr><td bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\"><div align=\"center\" id=\"" + id + L"\"></td></tr>" +
 			L"</table>\n");
 	}
 
@@ -1608,8 +1608,8 @@ namespace ReportHTML
 	void FourColumnTableDoubleTitleHeader(std::vector<std::wstring> *data, std::wstring anchor, std::wstring title_top, std::wstring title_bottom, std::wstring col1, std::wstring col2, HTMLReportOptions &options)
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">" +
-			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\"><td colspan=\"4\" height=\"13\"><a name=\"" + anchor + L"\" /><b>" + title_top + L"</b></td></tr>" +
-			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" +
+			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\"><td colspan=\"4\" height=\"13\"><a name=\"" + anchor + L"\" /><b>" + title_top + L"</b></td></tr>" +
+			L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" +
 			L"<td height=\"13\" width=\"910\"><b>" + title_bottom + L"</b></td>" +
 			L"<td height=\"13\" width=\"160\" class=\"XCB\">&nbsp;</td>" +
 			L"<td height=\"13\" width=\"90\" class=\"XCB\">" + col1 + L"</td>" +
@@ -1622,11 +1622,11 @@ namespace ReportHTML
 	{
 		if (row % 2 != 0)
 		{
-			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 		}
 		else
 		{
-			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 		}
 
 		data->push_back(L"<td height=\"13\">" + col1 + L"</td>\n");
@@ -1644,10 +1644,10 @@ namespace ReportHTML
 	void FourColumnTableDoubleTitleHeaderNoGraph(std::vector<std::wstring> *data, std::wstring anchor, std::wstring title_top, std::wstring title_bottom, std::wstring col1, std::wstring col2, std::wstring col3, HTMLReportOptions &options)
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">\n");
+		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">\n");
 		data->push_back(L"<td colspan=\"4\" height=\"13\"><a name=\"" + anchor + L"\" /><b>" + title_top + L"</b></td>\n");
 		data->push_back(L"</tr>\n");
-		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">\n");
+		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">\n");
 		data->push_back(L"<td height=\"13\" width=\"980\"><b>" + title_bottom + L"</b></td>\n");
 		data->push_back(L"<td height=\"13\" width=\"90\" align=\"center\"><b>" + col1 + L"</b></td>\n");
 		data->push_back(L"<td height=\"13\" width=\"90\" align=\"center\"><b>" + col2 + L"</b></td>\n");
@@ -1659,11 +1659,11 @@ namespace ReportHTML
 	{
 		if (row % 2 != 0)
 		{
-			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 		}
 		else
 		{
-			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+			data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 		}
 
 		data->push_back(L"<td height=\"13\">" + col1 + L"</td>\n");
@@ -1677,7 +1677,7 @@ namespace ReportHTML
 	void SevenColumnTableHeader(std::vector<std::wstring> *data, std::wstring anchor, std::wstring title, HTMLReportOptions &options)
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">" +
+		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">" +
 			L"<td width=\"150\" height=\"13\" class=\"C7G\"> <a name=\"" + anchor + L"\" /><b>" + title + L"</b></td>" +
 			L"<td width=\"90\" height=\"13\" class=\"C7CB\">" + GLanguageHandler->Text[kQuantity] + L"</td>" +
 			L"<td width=\"80\" height=\"13\" class=\"C7CB\">" + GLanguageHandler->Text[kAsPercent] + L"</td>" +
@@ -1693,11 +1693,11 @@ namespace ReportHTML
 	{
 		if (row % 2 != 0)
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 		}
 		else
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 		}
 
 		data->push_back(L"<td class=\"C4L\">" + caption + L"</td>\n");
@@ -1720,11 +1720,11 @@ namespace ReportHTML
 	{
 		if (row % 2 != 0)
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[9]) + L"\">\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[9]) + L"\">\n");
 		}
 		else
 		{
-			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[10]) + L"\">\n");
+			data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 		}
 
 		data->push_back(L"<td class=\"C4L\">" + caption + L"</td>\n");
@@ -1746,10 +1746,10 @@ namespace ReportHTML
 	void SevenColumnTableDoubleTitleHeader(std::vector<std::wstring> *data, std::wstring anchor, std::wstring title_top, std::wstring title_bottom, HTMLReportOptions &options)
 	{
 		data->push_back(L"<table align=\"center\" width=\"" + std::to_wstring(kReportSizes[kTableWidth]) + L"\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\">\n");
-		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">\n");
+		data->push_back(L"<tr class=\"C7G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">\n");
 		data->push_back(L"<td colspan=\"7\" width=\"387\" height=\"20\"><a name=\"" + anchor + L"\"</a><b>" + title_top + L"</b></td>\n");
 		data->push_back(L"</tr>\n");
-		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.HTMLColours[5]) + L"\">\n");
+		data->push_back(L"<tr bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[5]) + L"\">\n");
 		data->push_back(L"<td width=\"150\" height=\"13\" class=\"C7G\"><a name=\"op3\" /><b>" + GLanguageHandler->Text[kYear] + L"</b></td>\n");
 		data->push_back(L"<td width=\"90\" height=\"13\" class=\"C7G\"><div align=\"center\"><b>" + GLanguageHandler->Text[kQuantity] + L"</b></div></td>\n");
 		data->push_back(L"<td width=\"80\" height=\"13\" class=\"C7G\"><div align=\"center\"><b>" + GLanguageHandler->Text[kAsPercent] + L"</b></div></td>\n");

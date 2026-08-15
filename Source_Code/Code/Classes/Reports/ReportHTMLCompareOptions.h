@@ -12,22 +12,12 @@
 
 #pragma once
 
-#include <string>
 
-
-static const int XMLReportOptionsCount = 11;
-
-
-struct XMLReportOptions
+struct HTMLCompareReportOptions
 {
 	std::wstring FileName = L"";
+	int Units = 0;
 	std::wstring Layout = L"";
 
-    std::wstring Special = L"";
-
-	bool OutputOptions[10];
-
-	int Data = 0;
-
-    bool AutoOpen = false;
+	int LayoutSize = 3;	// 1 = 800x600, 2 = 1024x768, 3 = 1280x960
 };

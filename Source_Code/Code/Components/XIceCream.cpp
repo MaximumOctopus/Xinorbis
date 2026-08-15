@@ -19,8 +19,12 @@ XIceCream::XIceCream(TComponent *owner, TWinControl *Zig)
 	Canvas = Zig;
 
 	PaintBox = new TPaintBox(owner);
+	PaintBox->Font->Color = clWhite;
 	PaintBox->Parent = Canvas;
-    PaintBox->Align = alClient;
+	PaintBox->Align = alClient;
+	PaintBox->OnPaint = PaintBoxUpdate;
+
+	TextY = std::round(((double)IdCubeSize - (double)PaintBox->Canvas->TextHeight(L"Yg")) / 2);
 }
 
 
@@ -29,9 +33,32 @@ XIceCream::~XIceCream()
 }
 
 
-int XIceCream::CreateShade(int input_colour)
+// colour in Windows BGR format
+int XIceCream::CreateShade(int input_colour, ColourMode mode)
 {
-    return 0;
+	int bx = (input_colour & 0xFF0000) >> 16;
+	int gx = (input_colour & 0x00FF00) >> 8;
+	int rx = (input_colour & 0x0000FF);
+
+	switch (mode)
+	{
+	case ColourMode::kBrighten:
+		rx = (int)(double(rx) * 1.25);
+		gx = (int)(double(gx) * 1.25);
+		bx = (int)(double(bx) * 1.25);
+
+		if (rx > 255) rx = 255;
+		if (gx > 255) gx = 255;
+		if (bx > 255) bx = 255;
+		break;
+	case ColourMode::kDarken:
+		rx = (int)(double(rx) * 0.75);
+		gx = (int)(double(gx) * 0.75);
+		bx = (int)(double(bx) * 0.75);
+        break;
+	}
+
+	return (bx << 16) + (gx << 8) + rx;
 }
 
 
@@ -59,8 +86,9 @@ void XIceCream::Add(int data_source, double value, const std::wstring display, c
 	s->DisplayName = display;
 	s->Hint = hint;
 
-	s->Colour1 = colour;
-	s->Colour2 = CreateShade(colour);
+	s->ColourTop = CreateShade(colour, ColourMode::kBrighten);
+	s->ColourMiddle = colour;
+	s->ColourBottom = CreateShade(colour, ColourMode::kDarken);
 
     Sprinkles[data_source].push_back(s);
 }
@@ -76,39 +104,97 @@ void XIceCream::End()
 
 void XIceCream::Update()
 {
-	int total_width = 0;
-
-	for (int s = 0; s < Sprinkles[DataSource].size() - 1; s++)
+	for (int d = 0; d < 2; d++)
 	{
-		Sprinkles[DataSource][s]->Width = (int)((Sprinkles[DataSource][s]->Value / 100) * (double)PaintBox->Width);
+		int total_width = 0;
+		DisplayNamesTotalWidth[d] = 0;
 
-		total_width + Sprinkles[DataSource][s]->Width;
+		if (Sprinkles[d].size() == 0) continue;
+
+		for (int s = 0; s < Sprinkles[d].size(); s++)
+		{
+			if (s != Sprinkles[d].size() -1)
+			{
+				Sprinkles[d][s]->Width = (int)((Sprinkles[d][s]->Value / 100) * (double)PaintBox->Width);
+
+				total_width + Sprinkles[d][s]->Width;
+			}
+
+			Sprinkles[d][s]->DisplayNameWidth = PaintBox->Canvas->TextWidth(Sprinkles[d][s]->DisplayName.c_str());
+
+			DisplayNamesTotalWidth[d] += Sprinkles[d][s]->DisplayNameWidth;
+		}
+
+   		Sprinkles[d].back()->Width = PaintBox->Width - total_width;
 	}
 
-	Sprinkles[DataSource].back()->Width = PaintBox->Width - total_width;
+	PaintBox->Invalidate();
 }
 
 
 void __fastcall XIceCream::PaintBoxUpdate(TObject *Sender)
 {
-	int x = 0;
+	if (Sprinkles[DataSource].size() == 0 || Busy) return;
+
+	int sprinkle_x = 0;
+	int text_x = std::round((PaintBox->Width - (DisplayNamesTotalWidth[DataSource] + (Sprinkles[DataSource].size() * (IdCubeSize + 5)) + ((Sprinkles[DataSource].size() - 1) * 10))) / 2);
 
 	for (XSprinkle *s : Sprinkles[DataSource])
 	{
-		PaintBox->Canvas->Brush->Color = TColor(s->Colour1);
+		PaintBox->Canvas->Brush->Color = TColor(s->ColourTop);
+		PaintBox->Canvas->FillRect(Rect(sprinkle_x, 0, sprinkle_x + s->Width, 5));
 
-		PaintBox->Canvas->FillRect(Rect(x, 0, x + s->Width, PaintBox->Height));
+		PaintBox->Canvas->Brush->Color = TColor(s->ColourMiddle);
+		PaintBox->Canvas->FillRect(Rect(sprinkle_x, 5, sprinkle_x + s->Width, 25));
 
-        x += s->Width;
-    }
+		PaintBox->Canvas->Brush->Color = TColor(s->ColourBottom);
+		PaintBox->Canvas->FillRect(Rect(sprinkle_x, 25, sprinkle_x + s->Width, 30));
+
+		sprinkle_x += s->Width;
+
+		PaintBox->Canvas->Brush->Color = TColor(s->ColourMiddle);
+		PaintBox->Canvas->FillRect(Rect(text_x, IdCubeY, text_x + IdCubeSize, IdCubeY + IdCubeSize));
+
+		text_x += IdCubeSize + 5;
+
+		PaintBox->Canvas->Brush->Color = PaintBox->Color;
+		PaintBox->Canvas->Pen->Color = clNone;
+		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY, s->DisplayName.c_str());
+
+		text_x += s->DisplayNameWidth + 10;
+	}
 }
 
 
 void XIceCream::SetSource(int source)
 {
-	DataSource = source;
+	if (Sprinkles[source].size() != 0)
+	{
+		DataSource = source;
 
-    Update();
+		Update();
+
+		PaintBox->Invalidate();
+    }
+}
+
+
+void XIceCream::Swap()
+{
+	if (DataSource == 0)
+	{
+		if (Sprinkles[1].size() != 0) DataSource = 1;
+	}
+	else
+	{
+		if (Sprinkles[0].size() != 0) DataSource = 0;
+	}
 
 	PaintBox->Invalidate();
+}
+
+
+std::wstring XIceCream::Debug()
+{
+	return L"DataSet #1: " + std::to_wstring(Sprinkles[0].size()) + L"; DataSet #2: " + std::to_wstring(Sprinkles[1].size()) + L"; Using: #" + std::to_wstring(DataSource) + L";";
 }

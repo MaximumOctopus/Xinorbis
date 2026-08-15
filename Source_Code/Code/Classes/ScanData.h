@@ -113,7 +113,7 @@ class ScanData
 {
 	void AddUserNotSpecified();
 
-    bool LoadFromCustomCSV(const std::wstring, CSVDataFormat);
+	std::wstring GetScanPathFromFolderList();
 
 public:
 
@@ -125,9 +125,9 @@ public:
 
 	ScanSource Source = ScanSource::None;
 
-    ScanPath Path;
+	ScanPath Path;
 
-    std::wstring ScanTable = L"";
+	std::wstring ScanTable = L"";
 
 	int FileCount = 0;
 	int FolderCount = 0;
@@ -136,7 +136,7 @@ public:
 	unsigned __int64 AverageFileSize = 0;
 	float AverageFilesPerFolder = 0;
 
-   	Disk DiskStats;
+	Disk DiskStats;
 
 	ConsolidatedData Magnitude[kMagnitudesCount];
 	ConsolidatedData FileAttributes[kAttributesCount];
@@ -176,9 +176,6 @@ public:
 	// folder_name must terminate with "\"
 	int GetFullFolderIndex(const std::wstring);
 
-
-	std::wstring GetScanPathFromFolderList();
-
 	void PopulateSortedFiles();
 
 	// searches for a single term within file name
@@ -210,7 +207,7 @@ public:
 	FileObject* ImportRow(const std::wstring);
 	bool ImportFromCSV(const std::wstring);
 
-	bool ImportFromCSVCustom(const std::wstring, CSVDataFormat);
+	bool LoadFromCustomCSV(const std::wstring, CSVDataFormat, bool);
 
 	// Export settings
 	std::wstring ToJSON();
