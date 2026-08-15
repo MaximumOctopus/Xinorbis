@@ -20,6 +20,7 @@
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
 #include <Vcl.Buttons.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class TFormMain : public TForm
 {
@@ -207,6 +208,8 @@ __published:	// IDE-managed Components
 	TMenuItem *miDateReport;
 	TSpeedButton *sbSourceLive;
 	TSpeedButton *sbSourceFolderHistory;
+	TImage *iScanWarning;
+	TMenuItem *miXinorbisReport;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
@@ -298,11 +301,19 @@ __published:	// IDE-managed Components
 	void __fastcall miXMLReportClick(TObject *Sender);
 	void __fastcall sbSourceLiveClick(TObject *Sender);
 	void __fastcall sbSourceFolderHistoryClick(TObject *Sender);
+	void __fastcall miXinorbisReportClick(TObject *Sender);
 private:
 
 	constexpr static int kSideMenuWelcomeCount  = 2;
 	constexpr static int kSideMenuTasksCount    = 8;
 	constexpr static int kSideMenuAdvancedCount = 3;
+
+	constexpr static int kToolbarSaveOff   = 0;
+	constexpr static int kToolbarSaveOn    = 9;
+	constexpr static int kToolbarPrefsOff  = 1;
+	constexpr static int kToolbarPrefsOn   = 10;
+	constexpr static int kToolbarWizardOff = 5;
+	constexpr static int kToolbarWizardOn  = 8;
 
 	std::vector<std::wstring> NavigationHistory;
 	std::vector<std::wstring> MenuStrings;
@@ -331,8 +342,6 @@ private:
 
 	void ToggleSoftwareStatus(int, bool);
     void UpdateLeftPanelStatus();
-
-	void LoadMenu(TPopupMenu *, const std::wstring);
 
 	void DoNavigationHistoryAction(const std::wstring);
 

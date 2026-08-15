@@ -64,14 +64,19 @@
 #include "GuiUtility.h"
 #include "HelpHandler.h"
 #include "LanguageHandler.h"
+#include "Log.h"
 #include "main.h"
 #include "ReportHandler.h"
+#include "ReportSummary.h"
+#include "SaveDialogs.h"
 #include "ScanEngine.h"
+#include "ScanHistoryHandler.h"
 #include "SettingsHandler.h"
 #include "SplashHandler.h"
 #include "SystemGlobal.h"
 #include "Utility.h"
 #include "WindowsUtility.h"
+#include "XZip.h"
 
 #include "XFormAbout.h"
 #include "XFormCategoryColours.h"
@@ -105,11 +110,14 @@
 
 extern FileExtensionHandler *GFileExtensionHandler;
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern ReportHandler *GReportHandler;
 extern ScanEngine *GScanEngine;
+extern ScanHistoryHandler *GScanHistoryHandler;
 extern SettingsHandler *GSettingsHandler;
 extern SplashHandler *GSplashHandler;
 extern SystemGlobal *GSystemGlobal;
+extern XZip *GXZip;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -144,47 +152,13 @@ void __fastcall TFormMain::FormConstrainedResize(TObject *Sender, int &MinWidth,
 
 void __fastcall TFormMain::FormResize(TObject *Sender)
 {
-   /*	sbMain.Panels[0].Width := Width;
-
-	if WindowState = wsNormal)
-	{
-		if (XSettings.Forms.ProgressForm <> nil)
-		{
-			XSettings.MaximiseProgressWindow;
-		}
-	}
-	else
-	{
-		if (XSettings.Forms.ProgressForm <> nil)
-		{
-			XSettings.MinimiseProgressWindow;
-		}
-	}*/
+//
 }
 
 
 void __fastcall TFormMain::FormCloseQuery(TObject *Sender, bool &CanClose)
 {
-   /*	if (GUpdateFolderHistoryUpdateThread <> Nil)
-	{
-		CanClose = false;
-
-		ShowXDialog(GLanguageHandler->Text[kWarning],
-					GLanguageHandler->Text[kPleaseWaitFolderHistory],
-					XDialogTypeXinorbis);
-	}
-	else if (GWebReportsThread <> Nil)
-	{
-		CanClose = false;
-
-		ShowXDialog(GLanguageHandler->Text[kXinorbisIsBusy],
-					GLanguageHandler->Text[kPleaseWaitWebReports],
-					XDialogTypeXinorbis);
-	}
-	else
-	{ */
-		CanClose = true;
-//	}
+	CanClose = true;
 }
 
 
@@ -203,11 +177,11 @@ void __fastcall TFormMain::FormClose(TObject *Sender, TCloseAction &Action)
 //		FrameReports[dataFolderHistory].SaveSettings;
 //  }
 
+	//	FolderHistoryAvailable.Clear;
+
 	// =========================================================================
 
-//	FolderHistoryAvailable.Clear;
-
-//	XSettings.SaveBasic;
+	GSettingsHandler->Save(Top, Left, Width, Height, GLanguageHandler->GetLanguageSymbol());
 
 	if (GSettingsHandler->Database.UseODBC)
 	{
@@ -285,7 +259,7 @@ void TFormMain::CreateFrames()
 
 
 void TFormMain::CreateFolderHistoryFrame()
-{ /*
+{ /*                                      FolderHistory
   FrameFolderHistory := TFrameFolderHistory.Create(Self);
   FrameFolderHistory.Parent  := Panel2;
   FrameFolderHistory.Visible := False;
@@ -488,7 +462,7 @@ void TFormMain::UpdateGUICustomNames(int data_source)
 
 
 #pragma region Application_Control
-void TFormMain::ToggleSoftwareStatus(int index, bool status) // to do for fsource?
+void TFormMain::ToggleSoftwareStatus(int index, bool status)
 {
 	FrameSelect->bScanNow->Enabled        = status;
 	FrameSelect->eScanPath->Enabled       = status;
@@ -499,13 +473,15 @@ void TFormMain::ToggleSoftwareStatus(int index, bool status) // to do for fsourc
 	FrameSelect->bCombine->Enabled        = status;
 	FrameSelect->bExplore->Enabled        = status;
 
-  /*	GXGuiUtil.SetButtonImageEnabled(tbReportCSV,      CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportHTML,     CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportSummary,  CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportText,     CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportTree,     CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportXML,      CReportOffStart, status);
-	GXGuiUtil.SetButtonImageEnabled(tbReportXinorbis, CReportOffStart, status); */
+	GuiUtility::SetButtonImageEnabled(sbReportSummary,  kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportCSV,      kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportDate,     kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportHTML,     kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportJSON,     kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportText,     kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportTree,     kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportXinorbis, kReportIconOffStart, status);
+	GuiUtility::SetButtonImageEnabled(sbReportXML,      kReportIconOffStart, status);
 
 	for (int t = 0; t < kSideMenuTasksCount; t++)
 	{
@@ -519,22 +495,7 @@ void TFormMain::ToggleSoftwareStatus(int index, bool status) // to do for fsourc
 		AdvancedOptions[t]->Enabled = status;
 	}
 
-/*	if (FrameReports[aDataIndex])
-	{
-		FrameReports[aDataIndex]->pMainReports->Enabled         = status;
-
-		FrameReports[aDataIndex]->rbGraphSize->Enabled          = status;
-		FrameReports[aDataIndex]->rbGraphQuantity->Enabled      = status;
-
-		FrameReports[aDataIndex]->cbTreeSize->Enabled           = status;
-		FrameReports[aDataIndex]->cbTreeQuantity->Enabled       = status;
-
-		FrameReports[aDataIndex]->cbGraphSizeMagnitude->Enabled = status;
-		FrameReports[aDataIndex]->cbGraphQtyMagnitude->Enabled  = status;
-
-		FrameReports[aDataIndex]->rbUsersSize->Enabled          = status;
-		FrameReports[aDataIndex]->rbUsersQuantity->Enabled      = status;
-	} */
+	FrameProperties->ToggleStatus(status);
 }
 
 
@@ -593,40 +554,41 @@ void TFormMain::UpdateLeftPanelStatus()
 #pragma region Application_Menu
 void TFormMain::UpdateMainMenu()
 {
-/*	miOpenLastReport.Enabled            := (GReportUtility.LastReportFilename <> '');
-	miCopyLastReportToClipboard.Enabled := (GReportUtility.LastReportFilename <> '');
+	miVOpenLastReport->Enabled            = (!GReportHandler->Last.FileName.empty());
+	miRCopyLastReportToClipboard->Enabled = (!GReportHandler->Last.FileName.empty());
 
 	bool status = (GScanEngine->Data[DataSource].Files.size() != 0);
 
-	miHTMLReport->Enabled       = status;
-	miXMLReport->Enabled        = status;
-	miCSVReport->Enabled        = status;
-	miTextReport->Enabled       = status;
-	miXinorbisReport->Enabled   = status;
-	miTreeReport->Enabled       = status;
+	miCSVReport->Enabled           = status;
+	miDateReport->Enabled          = status;
+	miHTMLReport->Enabled          = status;
+	miTextReport->Enabled          = status;
+	miXinorbisReport->Enabled      = status;
+	miTreeReport->Enabled          = status;
+	miXMLReport->Enabled           = status;
 
-	miSaveReports->Enabled      = status;
-	miSearchMain->Enabled       = status;
-	miSearchWizard->Enabled     = status;
+	miFSaveReports->Enabled        = status;
+	miSSearch->Enabled             = status;
+	miSWizard->Enabled             = status;
 
-	miDFileSize->Enabled        = status;
-	miDDuplicatesName->Enabled  = status;
-	miDDuplicatesSize->Enabled  = status;
-	miMoreFolderDetail->Enabled = status;
-	miFileAges->Enabled         = status;
+	miDFileSizeSpread->Enabled     = status;
+	miDDuplicatesFileName->Enabled = status;
+	miDDuplicatesFileSize->Enabled = status;
+	miDFolderDetail->Enabled       = status;
+	miDFileAge->Enabled            =  status;
 
-	miTabTable->Enabled         = status;
-	miTabTree->Enabled          = status;
-	miTabOther->Enabled         = status;
-	miTabFolders->Enabled       = status;
-	miTabMagnitude->Enabled     = status;
-	miTabFileDates->Enabled     = status;
-	miTabHistory->Enabled       = status;
-	miTabTop50->Enabled         = status;
-	miTabNullFiles->Enabled     = status;
-	miTabUsers->Enabled         = status;
-	miTabTemp->Enabled          = status;
-	miTabNameLength->Enabled    = status; */
+	miTabTable->Enabled            = status;
+	miTabTree->Enabled             = status;
+	miTabOther->Enabled            = status;
+	miTabFolders->Enabled          = status;
+	miTabMagnitude->Enabled        = status;
+	miTabFileDates->Enabled        = status;
+	miTabHistory->Enabled          = status;
+	miTabTop101->Enabled           = status;
+	miTabNullFiles->Enabled        = status;
+	miTabUsers->Enabled            = status;
+	miTabTemp->Enabled             = status;
+	miTabNameLength->Enabled       = status;
 }
 #pragma end_region
 
@@ -744,7 +706,7 @@ void TFormMain::OnTutorialBarChange(const std::wstring text)
 
 void TFormMain::OnResetDisplay(int status)
 {
-	if (FrameMap->DataSource == kDataFolderHistory)      // to do!  i think this should be source aware!
+	if (FrameMap->DataSource == kDataFolderHistory)
 	{
 		FrameMap->Clear();
 	}
@@ -884,7 +846,7 @@ void TFormMain::DoPreferenceChanges()
 
 
 void TFormMain::RequestNewScan(const std::wstring path, int data_source, bool from_file)
-{             /* TO DO
+{             /* to do
 	if (from_file)
 	{
 		if Pos('.zsr2', aNewPath) <> 0)
@@ -940,13 +902,13 @@ void TFormMain::RequestNewSearch(const std::wstring search, int data_source)
 
 
 void TFormMain::BuildMainFromCSV(const std::wstring file_name, int data_source)         // check this needs dataindex, dont think it does
- { /*
+ { /*                   to do
 	CSVDataFormat csvdf = OpenCSVDataFormat(file_name);
 
-	if ret.Fields[0] <> -1 then begin
-
-		GScanEngine->Data[DataSource].ImportFromCSVCustom(file_name, csvdf);
-
+	if ret.Fields[0] <> -1)
+	{
+		if (GScanEngine->ImportFromCSVCustom(file_name, data_source, csvdf, true, true, true))
+		{
 		// update all of the displays, most of these have helper functions that handle eg updating comboboxes...
 
 		GSystemGlobal.drivespacemax  := 0;
@@ -1033,7 +995,7 @@ void TFormMain::BuildMainFromCSV(const std::wstring file_name, int data_source) 
 
 
 void TFormMain::CombineScan()   // use FSouce when reactivating code
-{ /*
+{ /*       to do
 //  t : integer;
 
 begin
@@ -1114,185 +1076,55 @@ void __fastcall TFormMain::sbSourceFolderHistoryClick(TObject *Sender)
 
 
 void TFormMain::NewSourceAvailable(int source)
-{         /*
-	case aSource of
+{
+	switch (source)
 	{
-	dataLatestScan    : begin
-						  tbSourceLive.Enabled := True;
+	case kDataScan:
+		sbSourceLive->Enabled = true;
 
-						  tbSourceLiveClick(Nil);
-						end;
+		sbSourceLiveClick(NULL);
+		break;
+	case kDataFolderHistory:
+		sbSourceFolderHistory->Enabled = true;
 
-	dataFolderHistory : begin
-						  tbSourceFolderHistory.Enabled := True;
-
-						  tbSourceFolderHistoryClick(Nil);
-						end;
-	}   */
+		sbSourceFolderHistoryClick(NULL);
+		break;
+	}
 }
 
 
 void TFormMain::ActivateSource(int source)
-{/*
-	case aSource of
+{
+	switch (source)
 	{
-	dataLatestScan    : begin
-						  DeactivateSource(dataFolderHistory);
+	case kDataScan:
+		DeactivateSource(kDataFolderHistory);
 
-						  tbSourceLive.Color   := clMoneyGreen;
-						  tbSourceLive.ColorTo := clNone;
-						end;
+		sbSourceLive->Enabled = true;
+		break;
+	case kDataFolderHistory:
+		DeactivateSource(kDataScan);
 
-	dataFolderHistory : begin
-						  DeactivateSource(dataLatestScan);
-
-						  tbSourceFolderHistory.Color   := clMoneyGreen;
-						  tbSourceFolderHistory.ColorTo := clNone;
-						end;
+		sbSourceFolderHistory->Enabled = true;
+		break;
 	}
 
-	UpdateMainMenu;
+	UpdateMainMenu();
 
-	DoNavigationHistoryAction(NavigationHistory[tbHome.Tag]); */
+	DoNavigationHistoryAction(NavigationHistory[sbHome->Tag]);
 }
 
 
 void TFormMain::DeactivateSource(int source)
-{/*
-	case aSource of
-	{
-	dataLatestScan    : begin
-						  tbSourceLive.Color   := clBtnFace;
-						  tbSourceLive.ColorTo := clNone;
-						end;
-
-	dataFolderHistory : begin
-						  tbSourceFolderHistory.Color   := clBtnFace;
-						  tbSourceFolderHistory.ColorTo := clNone;
-						end;
-	}*/
-}
-#pragma end_region
-
-
-#pragma region Menu_Utility
-void TFormMain::LoadMenu(TPopupMenu *pum, const std::wstring file_name)
 {
-	TMenuItem *LastNode = nullptr;
-
-	std::wifstream file(file_name);
-
-	if (file)
+	switch (source)
 	{
-		std::wstring s(L"");
-
-		while (std::getline(file, s))
-		{
-			if (!s.empty())
-			{
-				switch (s[1])
-				{
-				case L'-':
-				{
-					TMenuItem *mi = new TMenuItem(pum);
-					mi->Caption = L"-";
-
-					if (LastNode == nullptr)
-					{
-						pum->Items->Add(mi);
-					}
-					else
-					{
-						LastNode->Add(mi);
-					}
-
-					break;
-				}
-				case L'{':
-				{
-					TMenuItem *mi = new TMenuItem(pum);
-					mi->Caption = s.substr(1).c_str();
-					mi->Enabled = false;
-
-					if (LastNode == nullptr)
-					{
-						pum->Items->Add(mi);
-					}
-					else
-					{
-						LastNode->Add(mi);
-					}
-					break;
-				}
-				case L'[':
-				{
-					TMenuItem *mi = new TMenuItem(pum);
-					mi->Caption = s.substr(1).c_str();
-					mi->Enabled = true;
-
-					if (LastNode == nullptr)
-					{
-						pum->Items->Add(mi);
-					}
-					else
-					{
-						LastNode->Add(mi);
-					}
-
-					LastNode = mi;
-					break;
-				}
-				case L'.':
-				{
-					TMenuItem *mi = new TMenuItem(pum);
-
-					auto ix = s.find(L'=');
-
-					if (ix != std::wstring::npos)
-					{
-						mi->Caption = s.substr(0, ix - 1).c_str();
-
-						MenuStrings.push_back(s.substr(ix + 1).c_str());
-
-						if (pum == FrameSearch->puQuickSearch)
-						{
-// to do							mi->OnClick = FrameSearch->miQuickSearchClick;
-						}
-						else
-						{
-							//mi->OnClick = FrameFolderHistory->miQuickSearchClick; to doto do
-						}
-
-						mi->Tag = MenuStrings.size() - 1;
-					}
-					else
-					{
-						mi->Caption = s.substr(0, ix - 1).c_str();
-					}
-
-					mi->Enabled = true;
-
-					if (LastNode == nullptr)
-					{
-						pum->Items->Add(mi);
-					}
-					else
-					{
-						LastNode->Add(mi);
-					}
-					break;
-				}
-				case L'*':
-				{
-					LastNode = LastNode->Parent;
-
-					break;
-				}
-				}
-			}
-		}
-
-		file.close();
+	case kDataScan:
+		sbSourceLive->Enabled = false;
+		break;
+	case kDataFolderHistory:
+		sbSourceFolderHistory->Enabled = false;
+		break;
 	}
 }
 #pragma end_region
@@ -1373,77 +1205,82 @@ void TFormMain::PostScan()
 {
 	FrameSummary->Update();
 
+	FrameSummary->SetProcessTime(GScanEngine->ProcessTime);
+
 	FrameProperties->Update();
 
-    /*  ToggleSoftwareStatus(aDataIndex, True);
+	ToggleSoftwareStatus(DataSource, true);
 
-  HideProcessWindow;
+	Screen->Cursor = crDefault;
 
-  Screen.Cursor := crDefault;
+	// == only add if directory ================================================
 
-  // == only add if directory ================================================
+	if (GScanEngine->Data[DataSource].Source != ScanSource::FolderHistory &&
+		GScanEngine->Data[DataSource].Source != ScanSource::FileXinorbisDetailed &&
+		GScanEngine->Data[DataSource].Source != ScanSource::FileXinorbis2Detailed)
+	{
+		if (GScanEngine->Data[DataSource].Path.String.size() >= 3)
+		{
+			GScanHistoryHandler->Add(GScanEngine->Data[DataSource].Path.String,
+									 Convert::VectorToString(GScanEngine->ExcludedFiles),
+									 Convert::VectorToString(GScanEngine->ExcludedFolders));
 
-  if not(GXinorbisScan.StopScan) then begin
-	if (GScanDetails[aDataIndex].ScanSource <> ScanSourceFolderHistory) and
-	   (GScanDetails[aDataIndex].ScanSource <> ScanSourceFileXinDetailed) and
-	   (GScanDetails[aDataIndex].ScanSource <> ScanSourceFileXin2Detailed) then begin
-	  if length(GScanDetails[aDataIndex].ScanPath) >= 3 then begin
-		AddToScanHistory(GScanDetails[aDataIndex].ScanPath, TConvert.DateToYYYYMMDDI(Now), TConvert.TimeToString(Now, True),
-						 TUtility.ExcludedFilesToString, TUtility.ExcludedFoldersToString);
+			FrameSelect->BuildScanHistory(0);
+		}
+	}
 
-		FrameSelect.BuildScanHistoryTable(0);
-	  end;
-	end;
+	switch (GSettingsHandler->General.PostScanMode)
+	{
+	case kPostScanNothing:
+		// do nothing
+		break;
+	case kPostScanSummary:
+		lTaskID1Click(lTaskID1);
+		break;
+	case kPostScanInformation:
+		lTaskID1Click(lTaskID2);
 
-	case XSettings.General.PostScanMode of
-	  CPostScanNothing     : {}; // do nothing
-	  CPostScanSummary     : lTaskID1Click(lTaskID1);
-	  CPostScanInformation : begin
-							   lTaskID1Click(lTaskID2);
+		FrameProperties->SetTab(GSettingsHandler->General.PostScanIPPage);
+		break;
+	case kPostScanStructure:
+		lTaskID1Click(lTaskID3);
+		break;
+	}
 
-							   FrameReports[aDataIndex].ActivePage := XSettings.General.PostScanIPPage;
-							 end;
-	  CPostScanStructure   : lTaskID1Click(lTaskID3);
-	end;
-
-	if (GScanDetails[aDataIndex].FileAttributes[FileType_RecallOnOpen, 0] <> 0) or
-	   (GScanDetails[aDataIndex].FileAttributes[FileType_RecallOnDataAccess, 0] <> 0) or
-	   (GScanDetails[aDataIndex].FileAttributes[FileType_Offline, 0] <> 0) then begin
-	  tbPostScanWarning.Visible := True;
-	  tbPostScanWarning.Hint    := XText[rsReportContainsVirtualFiles];
-	end
+	if (GScanEngine->Data[DataSource].FileAttributes[kFileType_RecallOnOpen].Count != 0 ||
+		GScanEngine->Data[DataSource].FileAttributes[kFileType_RecallOnDataAccess].Count != 0 ||
+		GScanEngine->Data[DataSource].FileAttributes[kFileType_Offline].Count != 0)
+	{
+		iScanWarning->Visible = true;
+		iScanWarning->Hint    = GLanguageHandler->Text[kReportContainsVirtualFiles].c_str();
+	}
 	else
-	  tbPostScanWarning.Visible := False;
-  end
-  else begin
-	tbPostScanWarning.Visible := True;
-	tbPostScanWarning.Hint    := XText[rsScanStoppedBeforeComplete];
-  end;
+	{
+		iScanWarning->Visible = false;
+	}
 
-  // ===========================================================================
+	// =========================================================================
 
-  if not(GXinorbisScan.StopScan) then begin
-	FrameReports[aDataIndex].pMainReportsChange(Nil);
+	UpdateMainMenu();
 
-	FrameSummary[aDataIndex].lSProcessTime.Caption := XText[rsProcessedIn] + ' ' + TUtility.TimeElapsed(Now - GScanDetails[aDataIndex].TimeStarted);
-
-	GXinorbisScan.StopScan := False;
-  end
-  else
-	IfScanCancelled(aDataIndex);
-
-  UpdateMainMenu;
-
-  case GScanDetails[aDataIndex].ScanSource of
-	ScanSourceLive,
-	ScanSourceLiveShare        : TMSLogger.Info('Scan of "' + FrameSelect.ePath.Text + '" finished');
-	ScanSourceFileXinNormal,
-	ScanSourceFileCSV,
-	ScanSourceFileXinDetailed,
-	ScanSourceFileXin2Detailed : TMSLogger.Info('Import of "' + GScanDetails[aDataIndex].Filename + '" finished');
-	ScanSourceFolderHistory    : TMSLogger.Info('Loaded from Folder History table "' + GScanDetails[aDataIndex].ScanTable + '".');
-	ScanSourceSearchResults    : {};
-  end; */
+	switch (GScanEngine->Data[DataSource].Source)
+	{
+	case ScanSource::LiveScan:
+	case ScanSource::LiveShare:
+		GLog->Add(L"Scan of \"" + GScanEngine->Last.Folder + L"\" finished");
+		break;
+	case ScanSource::FileXinorbisNormal:
+	case ScanSource::FileCSV:
+	case ScanSource::FileXinorbisDetailed:
+	case ScanSource::FileXinorbis2Detailed:
+		GLog->Add(L"Import of \"" + GScanEngine->Last.Folder + L"\" finished");
+		break;
+	case ScanSource::FolderHistory:
+		GLog->Add(L"Loaded from Folder History table \"" + GScanEngine->Data[DataSource].ScanTable + L"\".");
+		break;
+	case ScanSource::SearchResults:
+		break;
+	}
 }
 #pragma end_region
 
@@ -1465,11 +1302,18 @@ void __fastcall TFormMain::tbRefreshClick(TObject *Sender)
 {
 //  ShowProcessWindow;
 
-//  if FSource <> dataFolderHistory then                         // to do, make refresh work with folder history
+	if (DataSource == kDataScan)
+	{
+		GScanEngine->Refresh();
+	}
+	else
+	{
+//  if FSource <> dataFolderHistory then                         // make refresh work with folder history
 //	if GScanDetails[FSource].Files.Count <> 0 then begin
 //	  XinorbisScan(FSource, GScanDetails[FSource].ScanPath, '', ScanTypeRefresh, GScanDetails[FSource].ScanSource);
 //	end;
 //end;
+	}
 
 //  HideProcessWindow;
 }
@@ -1595,287 +1439,200 @@ void __fastcall TFormMain::sbToggleVirtualFilesClick(TObject *Sender)
 void __fastcall TFormMain::sbReportSummaryMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-		/*
-procedure TfrmMain.lReportSummaryMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  lFileName : string;
+	if (sbReportSummary->Enabled)
+	{
+		std::wstring path = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\summary\\quick\\";
+		std::wstring file_name = L"";
 
-begin
-  if tbReportSummary.Enabled then begin
-	if FrameFolderHistory.Visible then begin
+		bool auto_open = false;
 
-	  lFileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\summary\quick\' +
-				   TXFormatting.MakeFileNameCompatible(GScanDetails[FSource].ScanPath) + '_' +
-				   TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' +
-				   TUtility.GetTime(GETTIMEFORMAT_FILE) +
-				   '.txt';
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-	  GReportSummary.SaveSummary(FSource, lFileName);
+		if (FrameProperties->Visible || FrameSummary->Visible)
+		{
+			file_name = Formatting::MakeFileNameCompatible(GScanEngine->Data[FrameProperties->DataSource].Path.String) + L"_" +
+									Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+									L".txt";
 
-	  GReportUtility.SetLastReport(FSource, lFileName, GScanDetails[FSource].ScanPath, ReportSummary, LayoutUnknown);
-	end
-	else begin
-	  lFileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\summary\quick\' +
-				   TXFormatting.MakeFileNameCompatible(GScanDetails[FSource].ScanPath) + '_' +
-				   TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' +
-				   TUtility.GetTime(GETTIMEFORMAT_FILE) +
-				   '.txt';
+			 ReportSummary::Generate(path + file_name, FrameProperties->DataSource,
+									 FrameProperties->sgNullFiles, FrameProperties->sgNullFolders,
+									 FrameProperties->sgFolders, FrameProperties->sgTop101Big, FrameProperties->sgUsers);
+		}
+/*		else if (FrameFolderHistory->Visible)
+		{
+			file_name = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName + L"\\summary\\quick\\" +
+						Formatting::MakeFileNameCompatible(GScanEngine->Data[data_source].ScanPath) + L"_" +
+						Utility::GetDate(GETTIMEFORMAT_YYYYMMDD) + L"_" +
+						Utility::GetTime(GETTIMEFORMAT_FILE) +
+						L".txt";
 
-	  GReportSummary.SaveSummary(FSource, lFileName);
-
-	  GReportUtility.SetLastReport(FSource, lFileName, GScanDetails[FSource].ScanPath, ReportSummary, LayoutUnknown);
-	end;
-  end;
-
-  if (Button = mbMiddle) then begin
-	miOpenLastReportClick(Nil);
-  end; */
+			data_source = FrameFolderHistory->DataSource;
+		} */
+	}
 }
-//---------------------------------------------------------------------------
+
 
 void __fastcall TFormMain::sbReportCSVMouseDown(TObject *Sender, TMouseButton Button,
 		  TShiftState Shift, int X, int Y)
 {
- /*
-procedure TfrmMain.lReportCSVMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
- var
-  DT : string;
-  lFileName : string;
-  tempCSVOptions : TCSVReportOptions;
-  lCSVOutput : TStringList;
-  lSource : integer;
+	if (sbReportCSV->Enabled)
+	{
+		std::wstring path = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\csv\\quick\\";
+		int data_source = 0;
 
- begin
-  if tbReportCSV.Enabled then begin
-    if FrameFolderHistory.Visible then begin
+		bool auto_open = false;
 
-      TLabel(Sender).Font.Style := [fsBold];
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-      lFileName := TXSaveDialog.Execute(XText[rsCSVFiles] + ' (*.csv)|*.csv',
-                                        '.csv',
-										TUtility.GetDefaultFileName('.csv', 'csv_' + XText[rsReport]),
-                                        GSystemGlobal.AppDataPath);
+		CSVReportOptions csvro = GSettingsHandler->Reports.CSV[kReportLayoutQuick];
 
-      if lFileName <> '' then begin
-        DT := TConvert.DateTimeFToYYYYMMDDHHMMSS(FrameFolderHistory.FolderHistoryItemSelected);
+		csvro.Data = kDataFileList;
 
-        ExportTableToCSV(lFileName, TMD5.Generate(UpperCase(FrameFolderHistory.SelectedPath)) + DT + FrameFolderHistory.SelectedComputer);
+		if (FrameProperties->Visible || FrameSummary->Visible)
+		{
+			csvro.FileName = path +
+							 Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+							 Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+							 L".csv";
 
-		GReportUtility.SetLastReport(FSource, lFileName, GScanDetails[FSource].ScanPath, ReportCSV, LayoutUnknown);
+			data_source = FrameProperties->DataSource;
+		}
+		else if (FrameSearch->Visible)
+		{
+			csvro.FileName = path +
+							 Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+							 Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+							 L"_" + GLanguageHandler->Text[kSearch] + L".csv";
 
-        sbMain.Panels[0].Text := XText[rsCSVReportSavedAs] + ': <b>' + lFileName + '</b>';
-      end;
+			data_source = FrameSearch->DataSource;
+		}
 
-      TLabel(Sender).Font.Style := [];
-    end
-    else begin
-	  tempCSVOptions := XSettings.Report.CSVOptions[kReportLayoutQuick];
-
-      if FrameSearch.Visible then begin
-        if (GScanDetails[dataSearch].FileCount <> 0) then begin
-          lSource   := dataSearch;
-
-          if FrameSearch.ActivePage = 1 then begin
-            lFileName := '_' + XText[rsSearch] + '.csv';
-          end
-          else begin
-            tempCSVOptions.CSVData := CDataFileList;
-
-			lFileName := '_' + XText[rsSearch] + '.csv';
-          end
-        end
-        else begin
-          ShowXDialog(XText[rsWarning],
-                      XText[rsNoDataToExport],
-                      XDialogTypeWarning);
-
-          Exit;
-        end;
-      end
-      else begin
-        lSource   := FSource;
-
-        lFileName := '.csv';
-	  end;
-
-      tempCSVOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\csv\quick\' +
-                                 TXFormatting.MakeFileNameCompatible(GScanDetails[lSource].ScanPath) + '_' +
-                                 TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) +
-                                 lFileName;
-
-      tempCSVOptions.Category := -1;
-
-      lCSVOutput := TStringList.Create;
-
-	  GReportCSV.GenerateCSVReport(lSource, lCSVOutput, tempCSVOptions, kReportLayoutQuick);
-
-      FreeAndNil(lCSVOutput);
-    end;
-  end;
-
-  if (Button = mbMiddle) then begin
-    miOpenLastReportClick(Nil);
-  end;
-end;       */
+		GReportHandler->SaveCSV(csvro, data_source, false, auto_open);
+    }
 }
-//---------------------------------------------------------------------------
+
 
 void __fastcall TFormMain::sbReportDateMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
 //
 }
-//---------------------------------------------------------------------------
+
 
 void __fastcall TFormMain::sbReportHTMLMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
+		  TShiftState Shift, int X, int Y)
 {
-/*
-procedure TfrmMain.lReportHTMLMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
- var
-  lFileName : string;
-  tempHTMLOptions : THTMLReportOptions;
-  lReportOutput : TStringList;
+	if (sbReportHTML->Enabled)
+	{
+		std::wstring path = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\html\\quick\\";
+		std::wstring file_name = L"";
 
- begin
-  tempHTMLOptions := XSettings.Report.HTMLOptions[LayoutQuick];
+		bool auto_open = false;
 
-  if FrameFolderHistory.Visible then begin
-    Assert(Sender <> Nil, 'lFHReportHTMLMouseDown :: sender is nil');
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-    TLabel(Sender).Font.Style := [fsBold];
+		if (FrameProperties->Visible || FrameSummary->Visible)
+		{
+			HTMLReportOptions htmlro = GSettingsHandler->Reports.HTML[kReportLayoutQuick];
 
-	if FrameFolderHistory.ActivePage = TabFHCompare then begin
-      lFileName := TXFormatting.MakeFileNameCompatible(FrameFolderHistory.SelectedPath) + '_' + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) + '.htm';
+			file_name = Formatting::MakeFileNameCompatible(GLanguageHandler->Text[kSearchResults] + L"_" + GScanEngine->Data[FrameSearch->DataSource].Path.String) + L"_" +
+						L"_" +
+						Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+						L"_" + GLanguageHandler->Text[kSearch] + L".htm";
 
-      XSettings.Report.HTMLCompareOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\HTML_Compare\quick\' + lFileName;
+			htmlro.FileName = path + file_name;
 
-      GReportHTML.GenerateHTMLCompareReport(XSettings.Report.HTMLCompareOptions,
-                                            FrameFolderHistory.SelectedPath, FrameFolderHistory.eFHCompareSearch.Text, FrameFolderHistory.bFHCompareLeft.Caption, FrameFolderHistory.bFHCompareRight.Caption,
-                                            FrameFolderHistory.QuickCompareA, FrameFolderHistory.QuickCompareB,
-                                            FrameFolderHistory.sgFHCompareLeft, FrameFolderHistory.sgFHCompareRight);
+			GReportHandler->SaveHTML(htmlro, FrameProperties->DataSource, false, auto_open);
+		}
+		else if (FrameSearch->Visible)
+		{
+			if (FrameSearch->CurrentTab() == 0)
+			{
+				file_name = Formatting::MakeFileNameCompatible(GLanguageHandler->Text[kSearchResults] + L"_" + GScanEngine->Data[FrameSearch->DataSource].Path.String) + L"_" +
+							L"_" +
+							Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+							L"_" + GLanguageHandler->Text[kSearch] + L".htm";
 
-      if XSettings.Report.HTMLCompareOutput <> '' then
-        TXWindows.ExecuteFile(0, '"' + XSettings.Report.HTMLCompareOutput + '"', '"' + GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\HTML_Compare\quick\' + lFileName + '"', '')
-      else
-        TXWindows.ExecuteFile(0, '"' + GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\HTML_Compare\quick\' + lFileName + '"', '', '');
+				GReportHandler->SaveHTMLFileList(FrameSearch->DataSource,
+												 path + file_name,
+												 GLanguageHandler->Text[kSearchResults] + L" \"" + FrameSearch->GetSearchText() + L"\"");
+			}
+			else
+			{
+				HTMLReportOptions htmlro = GSettingsHandler->Reports.HTML[kReportLayoutQuick];
 
-      sbMain.Panels[0].Text := XText[rsHTMLCReportSavedAs] + ': <b>' + GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\HTML_Compare\quick\' + lFileName + '</b>';
-    end
-    else begin
-      lFileName := TXFormatting.MakeFileNameCompatible(FrameFolderHistory.SelectedPath) + '_' + TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) + '.htm';
+				file_name = Formatting::MakeFileNameCompatible(GLanguageHandler->Text[kSearchResults] + L"_" + GScanEngine->Data[FrameSearch->DataSource].Path.String) + L"_" +
+							Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+							L"_" + GLanguageHandler->Text[kSearch] + L".htm";
 
-      tempHTMLOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\HTML\quick\FH_' + lFileName;
+				htmlro.FileName = path + file_name;
 
-      GReportHTML.GenerateHTMLReport(FSource, tempHTMLOptions, FrameFolderHistory.bFHISelect.Caption);
-    end;
-
-    TLabel(Sender).Font.Style := [];
-  end
-  else begin
-    if FrameSearch.Visible then begin
-      if (GScanDetails[dataSearch].FileCount <> 0) then begin
-        if FrameSearch.ActivePage = 1 then begin
-          tempHTMLOptions.FileName := TXFormatting.MakeFileNameCompatible(XText[rsSearchResults] + '_' + GScanDetails[dataSearch].ScanPath) + '_' +
-                                      TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) + '_' + XText[rsSearch] + '.htm';
-
-		  BuildOpenHTMLReport(dataSearch, tempHTMLOptions);
-        end
-        else begin
-          lFileName := TXFormatting.MakeFileNameCompatible(XText[rsSearchResults] + '_' + GScanDetails[dataSearch].ScanPath) + '_' +
-                     TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) + '_' + XText[rsSearch] + '.htm';
-
-          lReportOutput := TStringList.Create;
-
-          GReportHTML.GenerateHTMLFileReport(dataSearch, lReportOutput, XText[rsSearchResults] + ' "' + FrameSearch.SearchText + '"', lFileName);
-
-          FreeAndNil(lReportOutput);
-        end;
-      end
-      else begin
-        ShowXDialog(XText[rsWarning],
-                    XText[rsNoDataToExport],
-                    XDialogTypeWarning);
-
-        Exit;
-      end;
-    end
-    else begin
-      BuildOpenHTMLReport(FSource, tempHTMLOptions);
-    end;
-  end;
-
-  if (Button = mbMiddle) then begin
-	miOpenLastReportClick(Nil);
-  end;
-end;    */
+				GReportHandler->SaveHTML(htmlro, FrameSearch->DataSource, false, auto_open);
+			}
+		}
+	}
 }
 
 
 void __fastcall TFormMain::sbReportJSONMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
+		  TShiftState Shift, int X, int Y)
 {
-//
+	if (sbReportJSON->Enabled)
+	{
+    }
 }
 
 
 void __fastcall TFormMain::sbReportTextMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-  /*
-procedure TfrmMain.lReportTextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  tempTextOptions : TTextReportOptions;
-  lCSVOptions  : TCSVReportOptions;
-  lHTMLOptions : THTMLReportOptions;
-  lXinOptions  : TXinorbisReportOptions;
-  lXMLOptions  : TXMLReportOptions;
-  lTreeOptions : TTreeReportOptions;
-  lSource : integer;
-  lFileName : string;
+	if (sbReportText->Enabled)
+	{
+		std::wstring path = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\text\\quick\\";
+		std::wstring file_name = L"";
+		int data_source = 0;
 
-begin
-  tempTextOptions := XSettings.Report.TextOptions[kReportLayoutQuick];
+		bool auto_open = false;
 
-  if Button = mbMiddle then
-    tempTextOptions.TextAutoOpen := True;
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-  if FrameFolderHistory.Visible then begin
-    tempTextOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\text\quick\' + TXFormatting.MakeFileNameCompatible(GScanDetails[FSource].ScanPath) + '_' +
-                                TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) + '.txt';
+		TextReportOptions tro = GSettingsHandler->Reports.Text[kReportLayoutQuick];
 
-    FrameFolderHistory.SaveReports(tempTextOptions, lCSVOptions, lHTMLOptions, lXinOptions, lXMLOptions, lTreeOptions);
-  end
-  else begin
-    if FrameSearch.Visible then begin
-      lFileName := '_' + XText[rsSearch] + '.txt';
+		if (FrameProperties->Visible || FrameSummary->Visible)
+		{
+			tro.FileName = path +
+						   Formatting::MakeFileNameCompatible(GScanEngine->Data[data_source].Path.String) + L"_" +
+						   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".txt";
+		}
+		else if (FrameSearch->Visible)
+		{
+			data_source = FrameSearch->DataSource;
 
-      tempTextOptions.Special := FrameSearch.SearchText;
+			tro.FileName = path +
+			               Formatting::MakeFileNameCompatible(GScanEngine->Data[data_source].Path.String) + L"_" +
+						   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+						   L"_" + GLanguageHandler->Text[kSearch] + L".txt";
 
-      if FrameSearch.ActivePage = 1 then begin
-        lSource   := dataSearch;
-      end
-      else begin
-        lSource   := FSource;
-      end;
-    end
-    else begin
-      lSource   := FSource;
+			tro.Special = FrameSearch->GetSearchText();
+		}
 
-      lFileName := '.txt';
-    end;
-
-    tempTextOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\text\quick\' + TXFormatting.MakeFileNameCompatible(GScanDetails[lSource].ScanPath) + '_' +
-                                TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) +
-                                lFileName;
-
-    FrameReports[lSource].SaveReports(tempTextOptions, lCSVOptions, lHTMLOptions, lXinOptions, lXMLOptions, lTreeOptions);
-  end;
-
-  if tempTextOptions.TextAutoOpen then
-    miOpenLastReportClick(Nil);
-end;*/
+		if (!tro.FileName.empty())
+		{
+			GReportHandler->SaveText(tro, data_source, false, auto_open);
+		}
+	}
 }
 
 
@@ -1893,8 +1650,7 @@ void __fastcall TFormMain::sbReportTreeMouseDown(TObject *Sender, TMouseButton B
 
 		TreeReportOptions tro = GSettingsHandler->Reports.Tree[kReportLayoutQuick];
 
-		tro.FileName = GSystemGlobal->AppDataPath + L"reports\\" +
-					   WindowsUtility::GetComputerNetName() + L"\\tree\\quick\\" +
+		tro.FileName = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\tree\\quick\\" +
 					   Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
 					   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".txt";
 
@@ -1906,125 +1662,69 @@ void __fastcall TFormMain::sbReportTreeMouseDown(TObject *Sender, TMouseButton B
 void __fastcall TFormMain::sbReportXinorbisMouseDown(TObject *Sender, TMouseButton Button,
 		  TShiftState Shift, int X, int Y)
 {
-	 /*
-procedure TfrmMain.lReportXinorbisMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
- var
-  lTextOptions : TTextReportOptions;
-  lCSVOptions  : TCSVReportOptions;
-  lHTMLOptions : THTMLReportOptions;
-  lXMLOptions  : TXMLReportOptions;
-  lTreeOptions : TTreeReportOptions;
-  tempXinorbisOptions : TXinorbisReportOptions;
+	if (sbReportXinorbis->Enabled)
+	{
+		bool auto_open = false;
 
- begin
-  tempXinorbisOptions := XSettings.Report.XinorbisOptions[LayoutQuick];
-  tempXinorbisOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\xinorbis\quick\' + TXFormatting.MakeFileNameCompatible(GScanDetails[FSource].ScanPath) + '_' +
-								  TUtility.GetDate(DateTimeFormat::YYYYMMDD) + '_' + TUtility.GetTime(DateTimeFormat::File) + '.zsr2';
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-  if Button = mbMiddle then
-	tempXinorbisOptions.XinorbisAutoOpen := True;
+		XinorbisReportOptions xro = GSettingsHandler->Reports.Xinorbis[kReportLayoutQuick];
 
-  if FrameReports[FSource].SaveReports(lTextOptions, lCSVOptions, lHTMLOptions, tempXinorbisOptions, lXMLOptions, lTreeOptions) then
-	GReportUtility.SetLastReport(FSource, lTreeOptions.Filename, GScanDetails[FSource].ScanPath, ReportTree, LayoutUnknown);
+		xro.FileName = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\xinorbis\\quick\\" +
+					   Formatting::MakeFileNameCompatible(GScanEngine->Data[DataSource].Path.String) + L"_" +
+					   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".zsr2";
 
-  if tempXinorbisOptions.XinorbisAutoOpen then
-	miOpenLastReportClick(Nil);
-end;  */
-
+		GReportHandler->SaveXinorbis(xro, DataSource, false, auto_open);
+    }
 }
 
 
 void __fastcall TFormMain::sbReportXMLMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
-{                                   /*
-procedure TfrmMain.lReportXMLMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  DT : string;
-  lFileName : string;
-  tempXMLOptions : TXMLReportOptions;
-  lReportOutput : TStringList;
-  lSource : integer;
+		  TShiftState Shift, int X, int Y)
+{
+	if (sbReportXML->Enabled)
+	{
+		std::wstring path = GSystemGlobal->AppDataPath + L"reports\\" + WindowsUtility::GetComputerNetName() + L"\\xml\\quick\\";
+		std::wstring file_name = L"";
+		int data_source = 0;
 
-begin
-  if tbReportXML.Enabled then begin
-	if FrameFolderHistory.Visible then begin
+		bool auto_open = false;
 
-	  TLabel(Sender).Font.Style := [fsBold];
+		if (Shift.Contains(ssMiddle))
+		{
+			auto_open = true;
+		}
 
-	  if (FrameFolderHistory.tpFHMain.ActivePageIndex = TabFHMainSearch) and
-		 (FrameFolderHistory.tsFHSearch.ActivePageIndex = TabFHCompare) then begin
-		sbFHCXMLReportClick(nil);
-	  end
-	  else begin
-		lFileName := TXSaveDialog.Execute(XText[rsXMLFiles] + ' (*.xml)|*.xml',
-										  '.xml',
-										  TUtility.GetDefaultFileName('.xml', 'xml_' + XText[rsReport]),
-										  GSystemGlobal.AppDataPath);
+		XMLReportOptions xmlro = GSettingsHandler->Reports.XML[kReportLayoutQuick];
 
-		if lFileName <> '' then begin
-		  DT := TConvert.DateTimeFToYYYYMMDDHHMMSS(FrameFolderHistory.FolderHistoryItemSelected);
+		if (FrameProperties->Visible || FrameSummary->Visible)
+		{
+			xmlro.FileName = path +
+							 Formatting::MakeFileNameCompatible(GScanEngine->Data[data_source].Path.String) + L"_" +
+							 Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".xml";
+		}
+		else if (FrameSearch->Visible)
+		{
+			data_source = FrameSearch->DataSource;
 
-		  ExportTableToXML(lFileName, TMD5.Generate(UpperCase(FrameFolderHistory.SelectedPath)) + DT + FrameFolderHistory.SelectedComputer);
+			xmlro.FileName = path +
+							 Formatting::MakeFileNameCompatible(GScanEngine->Data[data_source].Path.String) + L"_" +
+							 Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) +
+							 L"_" + GLanguageHandler->Text[kSearch] + L".xml";
 
-		  GReportUtility.SetLastReport(FSource, lFileName, GScanDetails[FSource].ScanPath, ReportXML, LayoutUnknown);
+			xmlro.Special = FrameSearch->GetSearchText();
 
-		  sbMain.Panels[0].Text := XText[rsXMLReportSavedAs] + ': <b>' + lFileName + '</b>';
-		end;
-	  end;
+			if (FrameSearch->CurrentTab() == 0)
+			{
+				xmlro.Data = kDataFileList;
+			}
+		}
 
-	  TLabel(Sender).Font.Style := [];
-	end
-	else begin
-	  tempXMLOptions := XSettings.Report.XMLOptions[LayoutQuick];
-
-	  if FrameSearch.Visible then begin
-		if (GScanDetails[dataSearch].FileCount <> 0) then begin
-
-		  lSource   := dataSearch;
-
-		  lFileName := '_' + XText[rsSearch] + '.xml';
-
-		  tempXMLOptions.Special := FrameSearch.SearchText;
-
-		  if FrameSearch.ActivePage = 1 then begin
-		  end
-		  else begin
-			tempXMLOptions.XMLData := CDataFileList;
-		  end;
-		end
-		else begin
-		  ShowXDialog(XText[rsWarning],
-					  XText[rsNoDataToExport],
-					  XDialogTypeWarning);
-
-		  Exit;
-		end;
-	  end
-	  else begin
-		lSource   := FSource;
-
-		lFileName := '.xml';
-	  end;
-
-	  tempXMLOptions.FileName := GSystemGlobal.AppDataPath + 'reports\' + TXWindows.GetComputerNetName + '\xml\quick\' + TXFormatting.MakeFileNameCompatible(GScanDetails[lSource].ScanPath) + '_' +
-								 TUtility.GetDate(GETTIMEFORMAT_YYYYMMDD) + '_' + TUtility.GetTime(GETTIMEFORMAT_FILE) +
-								 lFileName;
-
-	  lReportOutput := TStringList.Create;
-
-	  if tempXMLOptions.XMLData = CDataSummary then
-		GReportXML.GenerateXMLOutput(lSource, tempXMLOptions, lReportOutput)
-	  else
-		GReportXML.GenerateXMLOutputFileList(tempXMLOptions.FileName, lReportOutput, lSource, kReportLayoutQuick);
-
-	  FreeAndNil(lReportOutput);
-	end;
-  end;
-
-  if (Button = mbMiddle) and not(tempXMLOptions.XMLAutoOpen) then begin
-	miOpenLastReportClick(Nil);
-  end;
-end; */
+		GReportHandler->SaveXML(xmlro, data_source, false, auto_open);
+	}
 }
 
 
@@ -2230,7 +1930,7 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 		 // FrameReports.pMainReports.ActivePageIndex := aTaskSubID;
 
 		break;
-/*	case 3:
+/*	case 3:     folder history stuff
 		if (GUpdateFolderHistoryUpdateThread <> Nil) then begin
 			   ShowXDialog(XText[kWarning], XText[kleaseWaitFolderHistory], XDialogTypeXinorbis);
 			 end
@@ -2315,7 +2015,7 @@ void TFormMain::SetTasksDisplay(int task_id)
 
 void TFormMain::HandleResizing(int NewPanelInFront)
 {
-	if (PanelInFront != NewPanelInFront/* || PanelSource != Source*/)
+	if (PanelInFront != NewPanelInFront)
 	{
 		switch (PanelInFront)
 		{
@@ -2623,19 +2323,13 @@ void __fastcall TFormMain::miVOpenLastReportClick(TObject *Sender)
 
 void __fastcall TFormMain::miRCopyLastReportToClipboardClick(TObject *Sender)
 {
-/*  lDocument : TStringList;
-
-  if GReportUtility.LastReportFilename <> '' then begin
-	lDocument := TStringList.Create;
-
-	lDocument.LoadFromFile(GReportUtility.LastReportFilename);
-
-	Clipboard.AsText := lDocument.Text;
-
-	lDocument.Free;
-
-    put this in reporthandler: CopyReportToClipboard(file_name)
-  end;*/
+	if (!GReportHandler->Last.FileName.empty())
+	{
+		if (FileExists(GReportHandler->Last.FileName.c_str()))
+		{
+			GReportHandler->CopyReportToClipboard(GReportHandler->Last.FileName);
+		}
+	}
 }
 
 
@@ -2745,6 +2439,12 @@ void __fastcall TFormMain::miXMLReportClick(TObject *Sender)
 {
 	sbReportXMLMouseDown(sbReportXML, mbLeft, TShiftState() << ssLeft, 0, 0);
 }
+
+
+void __fastcall TFormMain::miXinorbisReportClick(TObject *Sender)
+{
+//
+}
 #pragma end_region
 
 
@@ -2756,25 +2456,16 @@ void __fastcall TFormMain::miTFolderHistoryInfoClick(TObject *Sender)
 
 
 void __fastcall TFormMain::miTBackupXinorbisClick(TObject *Sender)
-{     /*
-procedure TfrmMain.miBackupDataClick(Sender: TObject);
-var
- lFileName : string;
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
+												  L".zip",
+												  GSystemGlobal->ExePath,
+												  L"XinorbisBackup_" + Convert::DateToYYYYMMDDS(Now()) + L".zip");
 
-begin
-  lFileName := TXSaveDialog.Execute(XText[rsCompressedFiles] + ' (*.zip)|*.zip',
-									'.zip',
-									'XinorbisBackup_' + TConvert.DateToYYYYMMDD(Now) + '.zip',
-									GSystemGlobal.AppDataPath);
-
-  if lFileName <> '' then begin
-	ShowZipProcessWindow;
-
-	XinorbisZip.ZipFolder(lFileName, GSystemGlobal.AppDataPath);
-
-	HideZipProcessWindow;
-  end;
-end;*/
+	if (!file_name.empty())
+	{
+		GXZip->Folder(file_name, GSystemGlobal->AppDataPath);
+	}
 }
 
 
@@ -2858,8 +2549,7 @@ void __fastcall TFormMain::miHHelpClick(TObject *Sender)
 
 void __fastcall TFormMain::miHContextHelpClick(TObject *Sender)
 {
-	int FHSubIndex = 0;
-	 /* to do
+	 /* folder history
 	switch (FrameReports->pcProperties->ActivePageIndex)
 	{
 	case kTabFHMainStats:
@@ -2868,12 +2558,15 @@ void __fastcall TFormMain::miHContextHelpClick(TObject *Sender)
 	case TabFHMainSearch:
 		lFHSubIndex := FrameFolderHistory.tsFHSearch.ActivePageIndex;
 		break;
-	}
+	}                 */
 
-	HelpHandler::OpenContextHelpPage(NavigationHistory[tbHome.Tag],
-									FrameReports[FSource].pMainReports.ActivePageIndex,
-									FrameFolderHistory.tpFHMain.ActivePageIndex,
-									lFHSubIndex); */
+	if (NavigationHistory.size() != 0)
+	{
+		HelpHandler::OpenContextHelpPage(NavigationHistory[sbHome->Tag],
+										 FrameProperties->CurrentTab(),
+										 -1,
+										 0);
+    }
 }
 
 
@@ -2911,6 +2604,74 @@ void __fastcall TFormMain::miHCheckForUpdatesClick(TObject *Sender)
 {
 	OpenCheckForNewVersion(__XVersion, __XDate, false);
 }
+#pragma end_region
+
+
+#pragma region Folder_History
+/*void TFormMain.TryBuildFolderHistoryAvailable;
+begin
+  if (XSettings.HistorySettings.Enabled) and (XSettings.System.UserEnabledFH) then begin
+	FrameFolderHistory.BuildFolderHistoryAvailable;
+  end
+  else begin
+	lWelcomeFolderHistory.Enabled := False;
+	lWelcomeFolderHistory.Hint    := 'Disabled, enable through Settings->General';
+  end;
+end;
+
+procedure TfrmMain.UpdateFolderHistoryOnTerminate(Sender: TObject);
+ begin
+  if GUpdateFolderHistoryUpdateThread.Error <> '' then begin
+	ShowXDialog(XText[rsErrorSaving] + ': ' + XText[rsFolderHistory] + ' Database',
+				GUpdateFolderHistoryUpdateThread.Error,
+				XDialogTypeWarning);
+
+	TMSLogger.Info(GUpdateFolderHistoryUpdateThread.Error);
+  end;
+
+  GUpdateFolderHistoryUpdateThread := Nil;
+
+  FrameFolderHistory.BuildFolderHistory(TXWindows.GetComputerNetName, FrameSelect.ePath.Text);
+
+  if FrameFolderHistory.clbFolderHistory.Count <> 0 then begin
+	FrameFolderHistory.clbFolderHistory.Checked[0] := True;
+	FrameFolderHistory.clbFolderHistory.ItemIndex  := 0;
+	FrameFolderHistory.rbFHCountClick(Nil);
+  end;
+
+  lWelcomeFolderHistory.Font.Color := clWindowText;
+  lWelcomeFolderHistory.Caption    := XText[rsFolderHistory];
+
+  TMSLogger.Info('Folder History Update Finished.');
+end;
+
+procedure TfrmMain.ProcessUpdateFolderHistoryFile;
+ begin
+  TFolderHistoryUtility.UpdateFolderHistoryFile(dataLatestScan, FrameSelect.ePath.Text);
+
+  if XSettings.HistorySettings.FullLogging then begin
+	lWelcomeFolderHistory.Font.Color := clGreen;
+
+	TMSLogger.Info('Folder History Update Started');
+
+	GUpdateFolderHistoryUpdateThread := TUpdateFolderHistoryUpdateThread.Create(True);
+	GUpdateFolderHistoryUpdateThread.OnTerminate := UpdateFolderHistoryOnTerminate;
+	GUpdateFolderHistoryUpdateThread.SetData(GScanDetails[dataLatestScan].ScanMD5 +
+											 GScanDetails[dataLatestScan].ScanDateInt +
+											 TXWindows.GetComputerNetName,
+											 XSettings.Database.ODBConnectionString,
+											 XSettings.Database.UseODBC,
+											 lWelcomeFolderHistory);
+	GUpdateFolderHistoryUpdateThread.Start;
+  end;
+end;
+
+void TFormMain::ScanFromFolderHistory(const aScanPath, aTableName : string; aFileHistoryDate : string);
+}
+  XinorbisScan(dataFolderHistory, aScanPath, aTableName, ScanTypeNormal, ScanSourceFolderHistory);
+
+  GScanDetails[dataFolderHistory].ScanDateFHStr := aFileHistoryDate;
+}               */
 #pragma end_region
 
 
@@ -2999,13 +2760,6 @@ void TFormMain::AutoSaveReports(int data_source)
 }
 
 /*
-  CToolbarSaveOff   = 0;
-  CToolbarSaveOn    = 9;
-  CToolbarPrefsOff  = 1;
-  CToolbarPrefsOn   = 10;
-  CToolbarWizardOff = 5;
-  CToolbarWizardOn  = 8;
-
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
@@ -3020,14 +2774,6 @@ begin
   GXGuiUtil := TGuiUtil.Create(GSystemGlobal.ExePath + 'data\system\images\');
 
   Randomize;
-
-
-  XinorbisZip           := TZipFiles.Create;
-
-  CreateObjects;
-
-  XSettings.LoadBasic;
-
   CreateReportObjects; // needs to be before frames!
 
   CreateFrames;
@@ -3196,82 +2942,5 @@ procedure TfrmMain.CreateSearchFrame;
 									  FrameSearch.ReportFrame.sgTop50Big,
 									  FrameSearch.ReportFrame.sgUsers);
 end;
-
-procedure TfrmMain.TryBuildFolderHistoryAvailable;
-begin
-  if (XSettings.HistorySettings.Enabled) and (XSettings.System.UserEnabledFH) then begin
-	FrameFolderHistory.BuildFolderHistoryAvailable;
-  end
-  else begin
-	lWelcomeFolderHistory.Enabled := False;
-	lWelcomeFolderHistory.Hint    := 'Disabled, enable through Settings->General';
-  end;
-end;
-
-procedure TfrmMain.UpdateFolderHistoryOnTerminate(Sender: TObject);
- begin
-  if GUpdateFolderHistoryUpdateThread.Error <> '' then begin
-	ShowXDialog(XText[rsErrorSaving] + ': ' + XText[rsFolderHistory] + ' Database',
-				GUpdateFolderHistoryUpdateThread.Error,
-				XDialogTypeWarning);
-
-	TMSLogger.Info(GUpdateFolderHistoryUpdateThread.Error);
-  end;
-
-  GUpdateFolderHistoryUpdateThread := Nil;
-
-  FrameFolderHistory.BuildFolderHistory(TXWindows.GetComputerNetName, FrameSelect.ePath.Text);
-
-  if FrameFolderHistory.clbFolderHistory.Count <> 0 then begin
-	FrameFolderHistory.clbFolderHistory.Checked[0] := True;
-	FrameFolderHistory.clbFolderHistory.ItemIndex  := 0;
-	FrameFolderHistory.rbFHCountClick(Nil);
-  end;
-
-  lWelcomeFolderHistory.Font.Color := clWindowText;
-  lWelcomeFolderHistory.Caption    := XText[rsFolderHistory];
-
-  TMSLogger.Info('Folder History Update Finished.');
-end;
-
-procedure TfrmMain.ProcessUpdateFolderHistoryFile;
- begin
-  TFolderHistoryUtility.UpdateFolderHistoryFile(dataLatestScan, FrameSelect.ePath.Text);
-
-  if XSettings.HistorySettings.FullLogging then begin
-	lWelcomeFolderHistory.Font.Color := clGreen;
-
-	TMSLogger.Info('Folder History Update Started');
-
-	GUpdateFolderHistoryUpdateThread := TUpdateFolderHistoryUpdateThread.Create(True);
-	GUpdateFolderHistoryUpdateThread.OnTerminate := UpdateFolderHistoryOnTerminate;
-	GUpdateFolderHistoryUpdateThread.SetData(GScanDetails[dataLatestScan].ScanMD5 +
-											 GScanDetails[dataLatestScan].ScanDateInt +
-											 TXWindows.GetComputerNetName,
-											 XSettings.Database.ODBConnectionString,
-											 XSettings.Database.UseODBC,
-											 lWelcomeFolderHistory);
-	GUpdateFolderHistoryUpdateThread.Start;
-  end;
-end;
-
-procedure TfrmMain.ScanFromFolderHistory(const aScanPath, aTableName : string; aFileHistoryDate : string);
-begin
-  XinorbisScan(dataFolderHistory, aScanPath, aTableName, ScanTypeNormal, ScanSourceFolderHistory);
-
-  GScanDetails[dataFolderHistory].ScanDateFHStr := aFileHistoryDate;
-end;
-
-function  TfrmMain.IsFolderHistoryRunning: boolean;
-begin
-  Result := GUpdateFolderHistoryUpdateThread <> Nil;
-end;
-
-
-procedure TfrmMain.ScanOnProgress(const aCount : integer);
-begin
-  XSettings.Forms.ProgressForm.SetStatus3(IntToStr(aCount));
-end;
-
 
 5569 :: 4438 */
