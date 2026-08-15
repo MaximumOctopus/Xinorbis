@@ -10,6 +10,14 @@ There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logi
 
 Database functions are not going to be part of the initial release.
 
+2026/08/16
+
+I think all of the original code (except for the database (folder history) stuff and a few other small random things) has now been rewritten in C++. The CategoryBar replacement has also been written (it's called XIceCream and it looks great). I put together a new to-do list of 88 items, which is now <20 (though most of these are grid- or folder history-related).
+
+Although the code is written, there are still holes in the logic regarding updating the UI (etc.) because I've altered the way a lot of this works (or removed it entirely so I can rewrite it as I test) and I'm planning on making a lot more changes. 
+
+I'm going to spend the next week or two testing and bug fixing. See you soon!
+
 2026/08/07
 
 Most of the original Delphi code has been rewritten in C++ (excluding the Folder History database functions, but they're going to be based on the FolderScanUltra code). There are still a few functions and dialogs to finish, but the majority of stage 1 is done.
