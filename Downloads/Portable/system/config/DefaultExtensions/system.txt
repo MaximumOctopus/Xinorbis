@@ -1,0 +1,16 @@
+bin
+cfg
+dat
+db
+dll
+drv
+ds_store
+inf
+ini
+lib
+lnk
+log
+obj
+ocx
+sys
+vxd
