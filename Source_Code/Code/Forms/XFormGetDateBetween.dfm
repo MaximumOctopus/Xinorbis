@@ -1,14 +1,72 @@
 object Form6: TForm6
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'Form6'
-  ClientHeight = 441
-  ClientWidth = 624
+  ClientHeight = 251
+  ClientWidth = 519
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnCreate = FormCreate
   TextHeight = 15
+  object Bevel1: TBevel
+    Left = 8
+    Top = 8
+    Width = 505
+    Height = 209
+    Shape = bsFrame
+  end
+  object Label1: TLabel
+    Left = 24
+    Top = 24
+    Width = 31
+    Height = 15
+    Caption = 'From:'
+  end
+  object Label2: TLabel
+    Left = 272
+    Top = 21
+    Width = 15
+    Height = 15
+    Caption = 'To:'
+  end
+  object BitBtn1: TBitBtn
+    Left = 357
+    Top = 223
+    Width = 75
+    Height = 25
+    Caption = '&OK'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object BitBtn2: TBitBtn
+    Left = 438
+    Top = 223
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object mcFrom: TMonthCalendar
+    Left = 24
+    Top = 40
+    Width = 225
+    Height = 161
+    Date = 39691.000000000000000000
+    TabOrder = 2
+  end
+  object mcTo: TMonthCalendar
+    Left = 272
+    Top = 40
+    Width = 225
+    Height = 161
+    Date = 39691.000000000000000000
+    TabOrder = 3
+  end
 end

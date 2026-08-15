@@ -273,7 +273,7 @@ object FormReportSaves: TFormReportSaves
     Top = 31
     Width = 754
     Height = 260
-    ActivePage = tsXML
+    ActivePage = tsCSV
     Align = alClient
     TabOrder = 2
     object tsCSV: TTabSheet

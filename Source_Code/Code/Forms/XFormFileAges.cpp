@@ -10,18 +10,21 @@
 #include "ConstantsSystem.h"
 #include "DateUtility.h"
 #include "Formatting.h"
+#include "FormDetails.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
+#include "SettingsHandler.h"
 #include "SystemGlobal.h"
 #include "Utility.h"
 
 #include "XFormFileAges.h"
 
-extern LanguageHandler* GLanguageHandler;
-extern ScanEngine* GScanEngine;
-extern SystemGlobal* GSystemGlobal;
+extern LanguageHandler *GLanguageHandler;
+extern ScanEngine *GScanEngine;
+extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -140,15 +143,15 @@ void TFormFileAges::Init()
 
 	// ===========================================================================
 
-	//fd := XSettings.LoadFormDetails(_FormFileAges);
+	FormDetails fd = GSettingsHandler->LoadFormDetails(kFormFileAges);
 
-//  if (fd.formID <> -1)
-//  {
-//	Left             := fd.x;
-//	Top              := fd.y;
-//    Width            := fd.w;
-//    Height           := fd.h;
-//	}
+	if (fd.FormId != 1)
+	{
+		Left   = fd.X;
+		Top	   = fd.Y;
+		Width  = fd.Width;
+		Height = fd.Height;
+	}
 }
 
 //    FULSP : TUpdateLeftStatusPanel;
@@ -157,7 +160,7 @@ void TFormFileAges::Init()
 //  end;
 
 
-/*procedure TfrmFileAges.sgResultsCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);
+/*procedure TfrmFileAges.sgResultsCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);    to do
 begin
   if Acol = 4 then begin
     DoSort := False; // stops the component for sorting automatically
@@ -236,16 +239,16 @@ void __fastcall TFormFileAges::bGoClick(TObject *Sender)
 	switch (cbInterval->ItemIndex)
 	{
 	case kIntervalDay:
-		StartDate = Convert::DateToYYYYMMDDI(IncDay(Now(), -xcount));          // day
+		StartDate = Convert::DateToYYYYMMDDI(IncDay(Now(), -xcount));
 		break;
 	case kIntervalWeek:
-		StartDate = Convert::DateToYYYYMMDDI(IncWeek(Now(), -xcount));         // week
+		StartDate = Convert::DateToYYYYMMDDI(IncWeek(Now(), -xcount));
 		break;
 	case kIntervalMonth:
-		StartDate = Convert::DateToYYYYMMDDI(IncMonth(Now(), -xcount));        // month
+		StartDate = Convert::DateToYYYYMMDDI(IncMonth(Now(), -xcount));
 		break;
 	case kIntervalYear:
-		StartDate = Convert::DateToYYYYMMDDI(IncMonth(Now(), -(12 * xcount))); // year
+		StartDate = Convert::DateToYYYYMMDDI(IncMonth(Now(), -(12 * xcount)));
 		break;
 
 	default:

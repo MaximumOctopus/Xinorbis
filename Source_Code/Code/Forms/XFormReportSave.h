@@ -106,11 +106,20 @@ private:
 	TCheckBox *Checks[6];
 	TEdit *Edits[6];
 
+	CSVReportOptions CSVOptions;
+	HTMLReportOptions HTMLOptions;
+	TextReportOptions TextOptions;
+	TreeReportOptions TreeOptions;
+	XinorbisReportOptions XinOptions;
+	XMLReportOptions XMLOptions;
+
     void SetLanguage();
 
     void ChangeFolders(const std::wstring);
 
-    void SetSaveStatus();
+	std::wstring CheckFileName(const std::wstring, const std::wstring);
+
+	void SetSaveStatus();
 
 	void SetAll(bool);
 
@@ -119,13 +128,11 @@ public:
 
 	int DataSource = 0;
 
-    void SaveReports();
+	int UpdateReports();
+	void SaveReports();
 };
 
-bool OpenReportSave(int,
-					TextReportOptions&, CSVReportOptions&,
-					HTMLReportOptions&, XinorbisReportOptions&,
-					XMLReportOptions&, TreeReportOptions&);
+bool OpenReportSave(int);
 
 //---------------------------------------------------------------------------
 extern PACKAGE TFormReportSaves *FormReportSaves;

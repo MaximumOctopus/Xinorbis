@@ -15,12 +15,14 @@
 #include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
+#include "Log.h"
 #include "SaveDialogs.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
 
 extern FileExtensionHandler *GFileExtensionHandler;
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
 
@@ -345,7 +347,7 @@ void __fastcall TFormFileAssociations::sbRDClick(TObject *Sender)
 		// clear the file-extension caches first
 		GFileExtensionHandler->Extensions.clear();
 
-		GFileExtensionHandler->LoadDefaultFileExtensions(GSystemGlobal->ExePath);
+		GFileExtensionHandler->LoadFileExtensions(GSystemGlobal->ExePath, false);
 
 		// =========================================================================
 
@@ -373,15 +375,15 @@ void __fastcall TFormFileAssociations::sbRDClick(TObject *Sender)
 void TFormFileAssociations::BuildList(int index)
 {
 	//-- save current -----------------------------------------------------------
-	if (CurrentIndex != -1)
+	if (index != -1)
 	{
 		int t = GFileExtensionHandler->Extensions.size() - 1;
 
-		/*while (t >= 0);
+		while (t >= 0)
 		{
-			if (GFileExtensionHandler->Extensions[t].Category == CurrentIndex)
+			if (GFileExtensionHandler->Extensions[t]->Category == index)
 			{
-				GFileExtensionHandler->Extensions.Remove(t);
+				GFileExtensionHandler->Extensions.erase(GFileExtensionHandler->Extensions.begin() + t);
 			}
 			else
 			{
@@ -393,13 +395,11 @@ void TFormFileAssociations::BuildList(int index)
 		{
 			for (int t = 0; t < lbExtList->Items->Count; t++)
 			{
-				FileExtension *tfx = new FileExtension();
-				tfx->Name     = lbExtList->Items->Strings[t];
-				tfx->Category = CurrentIndex;
+				FileExtension *tfx = new FileExtension(lbExtList->Items->Strings[t].c_str(), index);
 
 				GFileExtensionHandler->Extensions.push_back(tfx);
 			}
-		} */
+		}
 	}
 
 	//-- load new idx  -----------------------------------------------------------
@@ -448,50 +448,32 @@ void TFormFileAssociations::BuildList(int index)
 
 
 void TFormFileAssociations::SaveCustomNames()
-{             /*
-	Reg: TRegistry;
-	changed : boolean;
-	config : TIniFile;
+{
+	bool haschanged = false;
 
-	changed = False;
-
-	for t = 1 to 10 do {
-	if OldCustomNames[t] != TypeDescriptions[t + 9]  changed = True;
+	for (int t = 0; t < 10; t++)
+	{
+		if (OldCustomNames[t] != GLanguageHandler->TypeDescriptions[10 + t])
+		{
+			haschanged = true;
+		}
 	}
 
-	if changed  {
-	for t = 1 to 10 do
-	  TypeDescriptions[t + 9] = OldCustomNames[t];
+	if (!haschanged) return;
 
-	if (XSettings.customsettings.SettingsSaveLocation = SaveLocationRegistry)  {
-	  Reg = TRegistry.Create(KEY_WRITE);
+	if (GSettingsHandler->OpenSettings(false))
+	{
+		for (int t = 0; t < 10; t++)
+		{
+			GLanguageHandler->TypeDescriptions[10 + t] == OldCustomNames[t];
 
-	  try
-		Reg.RootKey = HKEY_CURRENT_USER;
-		Reg.OpenKey('\software\' + XinorbisRegistryKey, True);
-
-		for t = 1 to 10 do {
-		  Reg.WriteString('Custom' + IntToStr(t), TypeDescriptions[t + 9]);
+			GSettingsHandler->WriteString(L"TypeDescriptions", L"TypeDescriptions" + std::to_wstring(t + 1), GLanguageHandler->TypeDescriptions[10 + t]);
 		}
-	  finally
-		Reg.Free;
-	  }
-	end
-	else {
-	  config = TINIFile.Create(GSystemGlobal.ExePath + 'custom.ini');
 
-	  try
-		try
-		  for t = 1 to 10 do
-			config.WriteString('TypeDescriptions', 'TypeDescriptions' + IntToStr(t), TypeDescriptions[t + 9]);
-		except
-		  on e : exception do {
-			GLog->AddError(L"Error saving custom names. " + e.ClassName + L" / " + e.Message);
-		  }
-		}
-	  finally
-		config.Free;
-	  }
+		GSettingsHandler->CloseSettings();
 	}
-	}      */
-} // 589
+	else
+	{
+		GLog->AddError(L"Error saving Custom Type Descriptions.");
+	}
+}

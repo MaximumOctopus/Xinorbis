@@ -255,70 +255,6 @@ void __fastcall TForm16::cbContainingTextClick(TObject *Sender)
 #pragma end_region
 
 
-
-/*
-
-
-procedure TfrmExplore.sgExploreGetAlignment(Sender: TObject; ARow,
-  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
-{
-  if (ACol = colFileCount) or (ACol = colSize) then
-    HAlign = taRightJustify
-  else
-    HAlign = taLeftJustify;
-}
-
-
-procedure TfrmExplore.sgExploreGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if gdSelected in AState then
-	ABrush.Color = CGridColourSelected
-  else {
-    if Odd(ARow) then
-      ABrush.Color = CGridColourOn
-    else
-	  ABrush.Color = CGridColourOff;
-  }
-}
-
-
-
-procedure TfrmExplore.sgExploreCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);
- {
-  if (Acol = colFilesAsPercent) then {
-    DoSort = False;
-
-    with TAdvStringGrid(Sender) do {
-      if SortSettings.Direction = sdDescending then
-        SortSettings.Direction = sdAscending
-      else
-        SortSettings.Direction = sdDescending;
-
-      Sortsettings.Column = colFileCount;
-      QSort;
-      SortSettings.Column = Acol;
-    }
-  end
-  else if (Acol = colSize) or (ACol = colSizeAsPercent) then {
-    DoSort = False;
-
-    with TAdvStringGrid(Sender) do {
-      if SortSettings.Direction = sdDescending then
-        SortSettings.Direction = sdAscending
-      else
-        SortSettings.Direction = sdDescending;
-
-      Sortsettings.Column = colSizeCache;
-      QSort;
-      SortSettings.Column = Acol;
-    }
-  }
-}
-
-
-
-*/
 void __fastcall TForm16::sbBackClick(TObject *Sender)
 {
 	DirectoryList.pop_back();
@@ -362,44 +298,41 @@ void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol
 	switch (ACol)
 	{
 	case kColIcon:
-		//ilExplore.Draw(TAdvStringGrid(Sender).Canvas, Rect.Left + 1, Rect.Top, 0, True);
+		ilExplore->Draw(sgExplore->Canvas, Rect.Left + 1, Rect.Top, 0, true);
 		break;
 	case kColFilesAsPercent:
-		/*TAdvStringGrid(Sender).Canvas.Brush.Color = XSettings.Navigation.BarColours[5];
-		TAdvStringGrid(Sender).Canvas.Rectangle(Rect);
+		sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+		sgExplore->Canvas->Rectangle(Rect);
 
-		if TAdvStringGrid(Sender)->Cells[colFileCountPCache, ARow] != "0" then {
-		  zRect.Top    = Rect.Top + 1;
-		  zRect.Bottom = Rect.Bottom - 1;
-		  zRect.Left   = Rect.Left + 1;
-		  zRect.Right  = Rect.Left + StrToInt(TAdvStringGrid(Sender)->Cells[colFileCountPCache, ARow]);
-
-		  TAdvStringGrid(Sender).Canvas.Brush.Color = XSettings.Navigation.BarColours[6];
-		  TAdvStringGrid(Sender).Canvas.FillRect(zRect);
+		if (sgExplore->Cells[kColFileCountPCache][ARow] != L"0")
+		{
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+			sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
+											  Rect.Top + 1,
+											  Rect.Left + sgExplore->Cells[kColFileCountPCache][ARow].ToInt(),
+											  Rect.Bottom - 1));
 		}
 
-		TAdvStringGrid(Sender).Canvas.Brush.Style = bsClear;
-		TAdvStringGrid(Sender).Canvas.Font.Color  = clBlack;
-		TAdvStringGrid(Sender).Canvas.TextOut(Rect.Left + 5, Rect.Top + 3, TAdvStringGrid(Sender)->Cells[colFilesAsPercent, ARow]); */
+		sgExplore->Canvas->Brush->Style = bsClear;
+		sgExplore->Canvas->Font->Color  = clBlack;
+		sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColFilesAsPercent][ARow]);
 		break;
 	case kColSizeAsPercent:
-		/*TAdvStringGrid(Sender).Canvas.Brush.Color = XSettings.Navigation.BarColours[5];
-		TAdvStringGrid(Sender).Canvas.Rectangle(Rect);
+		sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+		sgExplore->Canvas->Rectangle(Rect);
 
-		if (TAdvStringGrid(Sender)->Cells[colSizePCache, ARow] != "0")
+		if (sgExplore->Cells[kColSizePCache][ARow] != L"0")
 		{
-			zRect.Top    = Rect.Top + 1;
-			zRect.Bottom = Rect.Bottom - 1;
-			zRect.Left   = Rect.Left + 1;
-			zRect.Right  = Rect.Left + StrToInt(TAdvStringGrid(Sender)->Cells[colSizePCache, ARow]);
-
-			TAdvStringGrid(Sender).Canvas.Brush.Color = XSettings.Navigation.BarColours[6];
-			TAdvStringGrid(Sender).Canvas.FillRect(zRect);
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+			sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
+											  Rect.Top + 1,
+											  Rect.Left + sgExplore->Cells[kColSizePCache][ARow].ToInt(),
+											  Rect.Bottom - 1));
 		}
 
-		TAdvStringGrid(Sender).Canvas.Brush.Style = bsClear;
-		TAdvStringGrid(Sender).Canvas.Font.Color  = clBlack;
-		TAdvStringGrid(Sender).Canvas.TextOut(Rect.Left + 5, Rect.Top + 3, TAdvStringGrid(Sender)->Cells[colSizeAsPercent, ARow]);*/
+		sgExplore->Canvas->Brush->Style = bsClear;
+		sgExplore->Canvas->Font->Color = clBlack;
+		sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColSizeAsPercent][ARow]);
 		break;
 	}
 }
@@ -864,4 +797,69 @@ void __fastcall TForm16::cbCreated1Change(TObject *Sender)
 	{
 		DateControls[cb->Tag]->Enabled = false;
 	}
-}//950
+}
+
+
+/*    to do
+
+
+procedure TfrmExplore.sgExploreGetAlignment(Sender: TObject; ARow,
+  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
+{
+  if (ACol = colFileCount) or (ACol = colSize) then
+    HAlign = taRightJustify
+  else
+    HAlign = taLeftJustify;
+}
+
+
+procedure TfrmExplore.sgExploreGetCellColor(Sender: TObject; ARow,
+  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+{
+  if gdSelected in AState then
+	ABrush.Color = CGridColourSelected
+  else {
+    if Odd(ARow) then
+      ABrush.Color = CGridColourOn
+    else
+	  ABrush.Color = CGridColourOff;
+  }
+}
+
+
+
+procedure TfrmExplore.sgExploreCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);
+ {
+  if (Acol = colFilesAsPercent) then {
+    DoSort = False;
+
+    with TAdvStringGrid(Sender) do {
+      if SortSettings.Direction = sdDescending then
+        SortSettings.Direction = sdAscending
+      else
+        SortSettings.Direction = sdDescending;
+
+      Sortsettings.Column = colFileCount;
+      QSort;
+      SortSettings.Column = Acol;
+    }
+  end
+  else if (Acol = colSize) or (ACol = colSizeAsPercent) then {
+    DoSort = False;
+
+    with TAdvStringGrid(Sender) do {
+      if SortSettings.Direction = sdDescending then
+        SortSettings.Direction = sdAscending
+      else
+        SortSettings.Direction = sdDescending;
+
+      Sortsettings.Column = colSizeCache;
+      QSort;
+      SortSettings.Column = Acol;
+    }
+  }
+}
+
+
+
+*/

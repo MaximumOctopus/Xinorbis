@@ -15,6 +15,7 @@
 #include "FormDetails.h"
 #include "HelpHandler.h"
 #include "LanguageHandler.h"
+#include "Log.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
@@ -23,6 +24,7 @@
 #include "WindowsUtility.h"
 
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
@@ -326,22 +328,20 @@ void TFormFileSpread::BuildFileSpread()
 	}
 	else
 	{
-/*	    int UserUId := TUtility.FindUserIndex(FDataIndex, cbUsers.Items[cbUsers.ItemIndex]);
+		int UserId = GScanEngine->Data[DataSource].FindUser(cbUsers->Items->Strings[cbUsers->ItemIndex].c_str());
 
-		for t := 0 to GScanEngine[FDataIndex].Files.Count - 1)
+		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-			xfo := GScanEngine[FDataIndex].Files.Items[t];
-
-			if (faDirectory and xfo.Attributes) <> faDirectory)
+			if (!(faDirectory & file->Attributes))
 			{
-				if (xfo.owner = userid)
+				if (file->Owner == UserId)
 				{
-					x := Floor(xfo.FileSize / Coeff);
+					int box = std::floor(file->Size / Coeff);
 
-					Spread[x]++;
+					Spread[box]++;
 				}
 			}
-		} */
+		}
 	}
 
 	int MaxHit = 0;
@@ -635,27 +635,28 @@ void TFormFileSpread::ExportData(const std::wstring file_name)
 {
 	if (vtcSpread->SeriesList[0].Count != 0)
 	{
-/*		AssignFile(tf, aFilename);
-		{$I-}
-		Rewrite(tf);
-		{$I+}
+		std::ofstream file(file_name);
 
-		if (IOResult <> 0) then begin
-			  GLog->AddError(L"Error writing CSV file \"" + file_name + L"\".");
-		end
+		if (file)
+		{
+			file << Formatting::to_utf8(L"RangeFromBytes,RangeToBytes,Range,Quantity\n");
+
+			for (int t = 0; t < vtcSpread->SeriesList[0].Count; t++)
+			{
+				 std::wstring s = std::to_wstring(t * Coeff) + L"," +
+								  std::to_wstring((t * Coeff) + Coeff - 1) + L"," +
+								  L"\"" + Convert::ConvertToUsefulUnit(t * Coeff) + L" -> " + Convert::ConvertToUsefulUnit((t * Coeff) + Coeff - 1) + L"\"," +
+								  std::to_wstring(vtcSpread->SeriesList->Items[0]->YValue[t]);
+
+                 file << Formatting::to_utf8(s + L"\n");
+			}
+
+			file.close();
+		}
 		else
 		{
-			   writeln(tf, 'RangeFromBytes,RangeToBytes,Range,Quantity');
-
-			for t := 0 to vtcSpread.SeriesList[0].Count - 1 do begin
-				 writeln(tf, IntToStr(t * coeff) + ',' +
-						 IntToStr((t * coeff) + coeff - 1) + ',' +
-						 '"' + TConvert.ConvertToUsefulUnit(t * coeff) + ' -> ' + TConvert.ConvertToUsefulUnit((t * coeff) + coeff - 1) + '",' +
-						 FloatToStr(vtcSpread.SeriesList[0].YValue[t]));
-			end;
-
-			CloseFile(tf);
-		 end; */
+			GLog->AddError(L"Error writing CSV file \"" + file_name + L"\".");
+		}
 	}
 	else
 	{

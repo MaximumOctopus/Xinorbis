@@ -10,6 +10,8 @@ object Form21: TForm21
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
   TextHeight = 15
   object lSelected: TLabel
     Left = 7
@@ -126,7 +128,7 @@ object Form21: TForm21
       Height = 5
       Shape = bsTopLine
     end
-    object SpinEdit1: TSpinEdit
+    object seYear: TSpinEdit
       Left = 7
       Top = 32
       Width = 92
@@ -135,6 +137,9 @@ object Form21: TForm21
       MinValue = 2000
       TabOrder = 0
       Value = 2015
+      OnChange = seYearChange
+      OnEnter = seYearEnter
+      OnExit = seYearExit
     end
     object cbTimes: TListBox
       Left = 8
@@ -143,6 +148,7 @@ object Form21: TForm21
       Height = 112
       ItemHeight = 15
       TabOrder = 1
+      OnClick = cbTimesClick
     end
   end
   object Panel2: TPanel
@@ -289,6 +295,15 @@ object Form21: TForm21
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
+    end
+    object sgCalendar: TStringGrid
+      Left = 64
+      Top = 22
+      Width = 665
+      Height = 307
+      TabOrder = 0
+      OnDrawCell = sgCalendarDrawCell
+      OnSelectCell = sgCalendarSelectCell
     end
   end
 end

@@ -13,4 +13,24 @@ __fastcall TForm7::TForm7(TComponent* Owner)
 	: TForm(Owner)
 {
 }
-//---------------------------------------------------------------------------
+
+
+TDateTime GetDate()
+{
+	Form7 = new TForm7(Application);
+
+	if (Form7->ShowModal() == mrOk)
+	{
+
+	}
+
+	delete Form7;
+
+	return Now();
+}
+
+
+void __fastcall TForm7::FormCreate(TObject *Sender)
+{
+	cMain->Date = Now();
+}
