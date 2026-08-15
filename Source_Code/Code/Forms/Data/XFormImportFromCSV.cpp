@@ -3,7 +3,10 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <fstream>
+
 #include "XFormImportFromCSV.h"
+#include "XFormXinorbisDialog.h"
 
 #include "ConstantsReports.h"
 #include "HelpHandler.h"
@@ -59,7 +62,7 @@ void __fastcall TFormImportCSV::FormShow(TObject *Sender)
 {
 	lFileName->Caption = FileName.c_str();
 
-	ProcessSuccessful = ProcessFile();
+	ProcessSuccessful = ProcessFile(FileName);
 }
 
 
@@ -154,7 +157,7 @@ void __fastcall TFormImportCSV::bAutoClick(TObject *Sender)
 	cbType2->ItemIndex  = kFieldFullFilePath;
 	cbType3->ItemIndex  = kFieldIgnore;
 	cbType4->ItemIndex  = kFieldFileSizeBytes;
-	cbType5->ItemIndex  = kFieldFileSizeOnDIsk;
+	cbType5->ItemIndex  = kFieldFileSizeOnDisk;
 	cbType6->ItemIndex  = kFieldCreatedDDMMYYYY;
 	cbType7->ItemIndex  = kFieldModifiedDDMMYYYY;
 	cbType8->ItemIndex  = kFieldAccessedDDMMYYYY;
@@ -191,113 +194,123 @@ void __fastcall TFormImportCSV::bHelpClick(TObject *Sender)
 }
 
 
-bool TFormImportCSV::ProcessFile()
-{ /*
- var
-  tf : TextFile;
-  s,r : string;
-  t,i : integer;
-  inquotes, processthisfield : boolean;
+bool TFormImportCSV::ProcessFile(const std::wstring file_name)
+{
+	std::wstring s = ReadTopTwoLines(file_name);
 
-
-	if (!ReadTopTwoLines())
-	{
-		return;
-	}
-
-	FieldCount = GetFieldCount(s);
-
-    r                = '';
-    i                = 0;
-    inquotes         = False;
-    processthisfield = False;
-
-    for t = 1 to length(s) do begin
-
-      case s[t] of
-		'"' : begin
-                if inquotes then begin
-                  case s[t + 1] of
-					',' : inquotes = False;
-                  else
-                    r = r + s[t];
-                  end;
-                end
-                else
-                  inquotes = not(inquotes);
-              end;
-        ',' : begin
-                if not(inquotes) then
-                  processthisfield = True;
-              end;
-      else
-        r = r + s[t];
-      end;
-
-      if processthisfield then begin
-        if i <= MaxCSVFields then begin
-          LabelList[i]->Caption = r;
-          LabelList[i].Visible = True;
-          ComboList[i].Visible = True;
-        end;
-
-        processthisfield = False;
-
-        r = '';
-
-        inc(i);
-      end;
-    end;
-
-    if i <= MaxCSVFields then begin
-      LabelList[i]->Caption = r;
-	  LabelList[i].Visible = True;
-      ComboList[i].Visible = True;
-    end;
-  end
-	else
+	if (s.empty())
 	{
 		ShowXDialog(GLanguageHandler->Text[kWarning],
 					GLanguageHandler->Text[kBadCSVFile],
 					XDialogTypeWarning);
-	}*/
 
-	return false;
+		return false;
+	}
+
+	std::wstring Field = L"";
+	int FieldId = 0;
+	bool InQuotes = false;
+	bool ProcessField = false;
+
+	for (int t = 0; t < s.size(); t++)
+	{
+		switch (s[t])
+		{
+		case L'\"':
+			InQuotes = !InQuotes;
+			break;
+		case L',':
+			if (!InQuotes)
+			{
+				ProcessField = true;
+			}
+			break;
+
+		default:
+			Field += s[t];
+		}
+
+		if (ProcessField)
+		{
+			if (FieldId <= kMaxCSVFields)
+			{
+				LabelList[FieldId]->Caption = Field.c_str();
+				LabelList[FieldId]->Visible = true;
+				ComboList[FieldId]->Visible = true;
+			}
+
+			ProcessField = false;
+
+			Field = L"";
+
+			FieldId++;
+		}
+	}
+
+	if (!Field.empty())
+	{
+		if (FieldId <= kMaxCSVFields)
+		{
+			LabelList[FieldId]->Caption = Field.c_str();
+			LabelList[FieldId]->Visible = true;
+			ComboList[FieldId]->Visible = true;
+		}
+	}
+
+	return true;
 }
 
 
-bool TFormImportCSV::ReadTopTwoLines()
+std::wstring TFormImportCSV::ReadTopTwoLines(const std::wstring file_name)
 {
-	return false;
+	std::wifstream file(file_name);
+
+	std::wstring output = L"";
+
+	if (file)
+	{
+		bool found = false;
+
+		std::wstring s = L"";
+
+		while (!found && std::getline(file, s))
+		{
+			if (!s.empty())
+			{
+				if (GetFieldCount(s) > 1)
+				{
+					output = s;
+					found = false;
+				}
+			}
+		}
+
+		file.close();
+	}
+
+	return output;
 }
 
 
 int TFormImportCSV::GetFieldCount(const std::wstring row)
 {
 	int count = 0;
-/*
-  t : integer;
-  count : integer;
-  inString : boolean;
+	bool instring = false;
 
-begin
-  count    = 1;
-  inString = False;
+	for (int t = 0; t < row.size(); t++)
+	{
+		if (row[t] == L'\"')
+		{
+			instring = !instring;
+		}
+		else if (row[t] == L',')
+		{
+			if (!instring)
+			{
+				count++;
+			}
+		}
+	}
 
-  for t = 1 to length(aRow) do begin
-	if aRow[t] = '"' then begin
-	  if inString then
-		inString = False
-	  else
-		inString = True;
-	end
-	else if aRow[t] = ',' then begin
-	  if not(inString) then
-		inc(count);
-	end;
-  end;
-
-  Result = count;  */
-
-	return count;
+	return count + 1;
 }

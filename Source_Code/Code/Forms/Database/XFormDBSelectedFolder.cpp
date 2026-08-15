@@ -15,7 +15,7 @@ __fastcall TForm20::TForm20(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 
-/*
+/*    folder history
 
 {
   (c) Paul Alan Freshney 2002-2020

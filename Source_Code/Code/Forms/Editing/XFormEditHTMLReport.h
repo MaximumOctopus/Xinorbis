@@ -7,7 +7,6 @@
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
-#include <SHDocVw.hpp>
 #include <Vcl.Buttons.hpp>
 #include <Vcl.CheckLst.hpp>
 #include <Vcl.ExtCtrls.hpp>
@@ -16,12 +15,15 @@
 #include "ConstantsReports.h"
 #include "ReportHTMLOptions.h"
 #include <Vcl.Dialogs.hpp>
+#include <Vcl.Edge.hpp>
+#include <Winapi.ActiveX.hpp>
+#include <Winapi.WebView2.hpp>
+#include <Vcl.WinXCtrls.hpp>
 
 //---------------------------------------------------------------------------
 class TFormEditHTMLReport : public TForm
 {
 __published:	// IDE-managed Components
-	TWebBrowser *wbHTML;
 	TPanel *Panel3;
 	TPanel *Panel2;
 	TSpeedButton *sbSave;
@@ -99,6 +101,8 @@ __published:	// IDE-managed Components
 	TComboBox *cbHTMLUnits;
 	TCheckBox *cbAutoRefresh;
 	TColorDialog *cdHTML;
+	TEdgeBrowser *wbHTML;
+	TToggleSwitch *tsSingleColour;
 	void __fastcall lbSummaryLayoutClick(TObject *Sender);
 	void __fastcall lSI1Click(TObject *Sender);
 	void __fastcall SpeedButton1Click(TObject *Sender);

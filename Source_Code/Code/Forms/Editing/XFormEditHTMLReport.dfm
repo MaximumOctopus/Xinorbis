@@ -14,27 +14,13 @@ object FormEditHTMLReport: TFormEditHTMLReport
   OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 15
-  object wbHTML: TWebBrowser
-    Left = 545
-    Top = 0
-    Width = 573
-    Height = 600
-    Align = alClient
-    TabOrder = 0
-    ControlData = {
-      4C000000393B0000033E00000000000000000000000000000000000000000000
-      000000004C000000000000000000000001000000E0D057007335CF11AE690800
-      2B2E126208000000000000004C0000000114020000000000C000000000000046
-      8000000000000000000000000000000000000000000000000000000000000000
-      00000000000000000100000000000000000000000000000000000000}
-  end
   object Panel3: TPanel
     Left = 0
     Top = 0
     Width = 545
     Height = 600
     Align = alLeft
-    TabOrder = 1
+    TabOrder = 0
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -1074,8 +1060,26 @@ object FormEditHTMLReport: TFormEditHTMLReport
           Height = 17
           TabOrder = 4
         end
+        object tsSingleColour: TToggleSwitch
+          Left = 16
+          Top = 176
+          Width = 73
+          Height = 20
+          TabOrder = 5
+        end
       end
     end
+  end
+  object wbHTML: TEdgeBrowser
+    Left = 545
+    Top = 0
+    Width = 573
+    Height = 600
+    Align = alClient
+    TabOrder = 1
+    AllowSingleSignOnUsingOSPrimaryAccount = False
+    TargetCompatibleBrowserVersion = '117.0.2045.28'
+    UserDataFolder = '%LOCALAPPDATA%\bds.exe.WebView2'
   end
   object cdHTML: TColorDialog
     Left = 26

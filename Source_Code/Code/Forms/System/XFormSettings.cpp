@@ -569,47 +569,43 @@ void __fastcall TFormSettings::sgNavigationSideDrawCell(TObject *Sender, System:
 			sgNavigationSide->Canvas->Brush->Color = sNL1->Brush->Color;
 			sgNavigationSide->Canvas->Rectangle(Rect);
 
-			//if (sgNavigationSide->Cells[8, ARow] <> '0' then begin
-			TRect rect;
-			rect.Top    = Rect.Top + 1;
-			rect.Bottom = Rect.Bottom - 1;
-			rect.Left   = Rect.Left + 1;
-			rect.Right  = Rect.Left + ARow * 5;
-
-			sgNavigationSide->Canvas->Brush->Color = sNL2->Brush->Color;
-			sgNavigationSide->Canvas->FillRect(rect);
-			//end;
+			if (sgNavigationSide->Cells[8][ARow] != L"0")
+			{
+				sgNavigationSide->Canvas->Brush->Color = sNL2->Brush->Color;
+				sgNavigationSide->Canvas->FillRect(TRect(Rect.Left + 1,
+														 Rect.Top + 1,
+														 Rect.Left + ARow * 5,
+														 Rect.Bottom - 1));
+			}
 
 			break;
 		}
-/*		  4 : begin
-				TAdvStringGrid(Sender).Canvas.Brush.Color := sNL3.Brush.Color;
-				TAdvStringGrid(Sender).Canvas.Rectangle(Rect);
+		case 4:
+			sgNavigationSide->Canvas->Brush->Color = sNL3->Brush->Color;
+			sgNavigationSide->Canvas->Rectangle(Rect);
 
-				if TAdvStringGrid(Sender).Cells[8, ARow] <> '0' then begin
-				  zRect.Top    := Rect.Top + 1;
-				  zRect.Bottom := Rect.Bottom - 1;
-				  zRect.Left   := Rect.Left + 1;
-				  zRect.Right  := Rect.Left + StrToInt(TAdvStringGrid(Sender).Cells[8, ARow]);
+			if (sgNavigationSide->Cells[8][ARow] != L"0")
+			{
+				sgNavigationSide->Canvas->Brush->Color = sNL4->Brush->Color;
+				sgNavigationSide->Canvas->FillRect(TRect(Rect.Left + 1,
+														 Rect.Top + 1,
+														 Rect.Left + ARow * 5,
+														 Rect.Bottom - 1));
+			}
+			break;
+		case 6:
+			sgNavigationSide->Canvas->Brush->Color = sNL5->Brush->Color;
+			sgNavigationSide->Canvas->Rectangle(Rect);
 
-				  TAdvStringGrid(Sender).Canvas.Brush.Color := sNL4.Brush.Color;
-				  TAdvStringGrid(Sender).Canvas.FillRect(zRect);
-				end;
-			  end;
-		  6 : begin
-				TAdvStringGrid(Sender).Canvas.Brush.Color := sNL5.Brush.Color;
-				TAdvStringGrid(Sender).Canvas.Rectangle(Rect);
-
-				if TAdvStringGrid(Sender).Cells[8, ARow] <> '0' then begin
-				  zRect.Top    := Rect.Top + 1;
-				  zRect.Bottom := Rect.Bottom - 1;
-				  zRect.Left   := Rect.Left + 1;
-				  zRect.Right  := Rect.Left + StrToInt(TAdvStringGrid(Sender).Cells[8, ARow]);
-
-				  TAdvStringGrid(Sender).Canvas.Brush.Color := sNL6.Brush.Color;
-				  TAdvStringGrid(Sender).Canvas.FillRect(zRect);
-				end;
-			  end;           */
+			if (sgNavigationSide->Cells[8][ARow] != L"0")
+			{
+				sgNavigationSide->Canvas->Brush->Color = sNL6->Brush->Color;
+				sgNavigationSide->Canvas->FillRect(TRect(Rect.Left + 1,
+														 Rect.Top + 1,
+														 Rect.Left + sgNavigationSide->Cells[8][ARow].ToInt(),
+														 Rect.Bottom - 1));
+			}
+			break;
 		}
 	}
 }

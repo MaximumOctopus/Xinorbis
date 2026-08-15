@@ -6,9 +6,12 @@
 #include <fstream>
 
 #include "XFormHelp.h"
+#include "XFormXinorbisDialog.h"
 
+#include "LanguageHandler.h"
 #include "SystemGlobal.h"
 
+extern LanguageHandler *GLanguageHandler;
 extern SystemGlobal *GSystemGlobal;
 
 
@@ -141,19 +144,17 @@ void __fastcall TForm1::tvSearchDblClick(TObject *Sender)
 
 
 void __fastcall TForm1::sbSearchClick(TObject *Sender)
-{                        /*
-  processedoutput,ix,ixfp,ixword : string;
-  temp2,temp,t : integer;
-  resultsfound : integer;
-  newlyadded   : TTreeNode;
-  SearchRecPtr, SearchRecPtr2: PSearchRec;
+{
+	int HighestAlphaChar = 0;
+	int LowestAlphaChar  = 255;
 
+    TTreeNode *helpnode = nullptr;
 
 	std::vector<std::wstring> QuickCheck;
 //		quickcheck.Sorted := True;
 	std::vector<std::wstring> SearchTerms;
 													// eSearchQuery.Text
-	auto GenerateListOfTerms = [SearchTerms&](const std::wstring search_query)
+	auto GenerateListOfTerms = [&SearchTerms, &LowestAlphaChar, &HighestAlphaChar](const std::wstring search_query)
 	{
 		std::wstring s = L"";
 
@@ -177,7 +178,7 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 		{
 			std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
-			SearchTerms.push_back(LowerCase(s));
+			SearchTerms.push_back(s);
 
 			if (s[0] > HighestAlphaChar)
 			{
@@ -191,7 +192,7 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 		}
 	};
 
-	auto ResultBuilder = [](const category : string; displaytext : string; page string;var *categorynode : TTreeNode; xicon : integer; whattoadd : string)
+	auto ResultBuilder = [&](const std::wstring category, const std::wstring displaytext, const std::wstring page, TTreeNode *categorynode, int xicon, const std::wstring whattoadd)
 	{
 		if (categorynode == nullptr)
 		{
@@ -200,28 +201,27 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 			categorynode->ImageIndex    = xicon;
 		}
 
-		SearchRecPtr.FilePath := page;
-
-		if quickcheck.IndexOf(whattoadd) = -1)
+		if (std::find(QuickCheck.begin(), QuickCheck.end(), whattoadd) == QuickCheck.end())
 		{
-			newlyadded := tvSearch.Items.AddChildObject(categorynode, displaytext, SearchRecPtr);
+			TTreeObjectPtr = new TTreeObject;
+			TTreeObjectPtr->FilePath = page;
 
-				newlyadded.SelectedIndex := -1;
-				newlyadded.ImageIndex    := -1;
+			TTreeNode *newlyadded = tvSearch->Items->AddChildObject(categorynode, displaytext.c_str(), TTreeObjectPtr);
 
-			quickcheck.add(whattoadd);
+			newlyadded->SelectedIndex = -1;
+			newlyadded->ImageIndex    = -1;
+
+			QuickCheck.push_back(whattoadd);
 		}
 		else
 		{
-			New(SearchRecPtr2);
-
-			for t := 0 to tvSearch.Items.Count - 1)
+			for (int t = 0; t < tvSearch->Items->Count; t++)
 			{
-				if tvSearch.Items[t].Text = displaytext)
+				if (tvSearch->Items->Item[t]->Text == displaytext.c_str())
 				{
-					SearchRecPtr2 := tvSearch.Items[t].Data;
+					//SearchRecPtr2 = tvSearch->Items[t]->Data;
 
-					tvSearch.Items[t].Data := SearchRecPtr2;
+				    //tvSearch->Items[t]->Data = SearchRecPtr2;
 				}
 			}
 		}
@@ -233,23 +233,20 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 
 		GenerateListOfTerms(eSearchQuery->Text.c_str());
 
-		int HighestAlphaChar = 0;
-		int LowestAlphaChar  = 255;
-
 		Cursor = crHourGlass;
 		TTreeNode *HelpNode = nullptr;
 
 		bool isok = true;
 		int MatchesFound = 0;
 
-		tvSearch->Items->Clear()
+		tvSearch->Items->Clear();
 
 		if (IndexCache.size() == 0)
 		{
 			if (!LoadCache(GSystemGlobal->ExePath + L"data\\system\\xinorbis.idx"))
 			{
-				ShowXDialog(GLanguageHandler->Text[kErrorOpening] + L: Search Index",
-							GLanguageHandler->Text[kErrorOpeningXinorbisSystemFile] + L": \n\n",
+				ShowXDialog(GLanguageHandler->Text[kErrorOpening] + L" Search Index",
+							GLanguageHandler->Text[kErrorOpeningXinorbisSystemFile] + L": \n\n"
 							L"\"" + GSystemGlobal->ExePath + L"data\\system\\xinorbis.idx\"",
 							XDialogTypeWarning);
 
@@ -257,26 +254,20 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 			}
 		}
 
-		for (HelpIndexItem *hii : IndexCache);
+		for (HelpIndexItem *hii : IndexCache)
 		{
-		Readln(tf,ix);
-
 			if (hii->FirstChar >= LowestAlphaChar)
 			{
 				//which category does it belong ------------------------------------------
 
-				for TermCount := 0 to SearchTerms.Count - 1)
+				for (int term = 0; term < SearchTerms.size(); term++)
 				{
-					if SearchTerms.Strings[TermCount] = hii->Word)
+					if (SearchTerms[term] == hii->Word)
 					{
-						New(SearchRecPtr);
-
 						ResultBuilder(L"Help",  hii->Category, hii->Page, helpnode, 3, hii->Category + L" a");
 					}
 				}
 			}
-
-			CloseFile(tf);
 		}
 
 		//======================================================================
@@ -285,11 +276,11 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 
 		while (index < tvSearch->Items->Count)
 		{
-			if tvSearch.Items[t].Parent=Nil)
+			if (tvSearch->Items->Item[index]->Parent == nullptr)
 			{
-				if (!tvSearch->Items[t]->HasChildren())
+				if (!tvSearch->Items->Item[index]->HasChildren)
 				{
-					tvSearch->Items[t]->Delete();
+					tvSearch->Items->Item[index]->Delete();
 				}
 				else
 				{
@@ -306,7 +297,7 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 
 		for (int t = 0; t < tvSearch->Items->Count; t++)
 		{
-			if (tvSearch->Items[t]->Parent != nullptr)
+			if (tvSearch->Items->Item[t]->Parent != nullptr)
 			{
 				MatchesFound++;
 			}
@@ -325,15 +316,13 @@ void __fastcall TForm1::sbSearchClick(TObject *Sender)
 			lSearchResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(MatchesFound)).c_str();
 		}
 
-		eSearchQuery.Color := clWhite;
+		eSearchQuery->Color = clWhite;
 
-		tvSearch.AlphaSort(true);
-		tvSearch.FullExpand;
+		tvSearch->AlphaSort(true);
+		tvSearch->FullExpand();
 
-		Cursor := crDefault;
-
-		quickcheck.Free;
-	}                   */
+		Cursor = crDefault;
+	}
 }
 
 

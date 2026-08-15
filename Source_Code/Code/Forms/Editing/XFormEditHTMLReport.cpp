@@ -9,6 +9,8 @@
 #include "Convert.h"
 #include "FormDetails.h"
 #include "HelpHandler.h"
+#include "HTMLPreview.h"
+#include "Log.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "SaveDialogs.h"
@@ -16,6 +18,7 @@
 #include "SystemGlobal.h"
 
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
 
@@ -306,7 +309,7 @@ void __fastcall TFormEditHTMLReport::sbSaveClick(TObject *Sender)
 
 	for (int t = 0; t < kHTMLColoursCount; t++)
 	{
-		InternalReport.HTMLColours[t] = HTMLColoursArray[t]->Brush->Color;
+		InternalReport.Colours.Colour[t] = HTMLColoursArray[t]->Brush->Color;
 
 		if (OneOffCustom)
 		{
@@ -333,48 +336,30 @@ void __fastcall TFormEditHTMLReport::sbRemoveClick(TObject *Sender)
 
 void __fastcall TFormEditHTMLReport::sbPreviewClick(TObject *Sender)
 {
-/*
-  Doc: Variant;
-  lColours : THTMLColours;
-  t : integer;
-
-{
-	HTMLColours colours;
-
-	for t = 1 to HTMLColoursCount)
+	for (int t = 0; t < kHTMLColoursCount; t++)
 	{
-		lColours.Colour[t] = HTMLColoursArray[t]->Brush->Color;
+		InternalReport.Colours.Colour[t] = HTMLColoursArray[t]->Brush->Color;
 	}
 
-	if cbOOSingleColour.State = ssOn)
+	if (tsSingleColour->State == tssOn)
 	{
-		lColours.MonoBargraph = True
+		InternalReport.Colours.MonoBargraph = true;
 	}
 	else
 	{
-		lColours.MonoBargraph = False;
+		InternalReport.Colours.MonoBargraph = false;
 	}
 
-	BuildReport(FTempReport);
-
-	// =========================================================================
-
-	if NOT Assigned(wbHTML.Document)
-	{
-		wbHTML.Navigate("about:blank");
-	}
+	BuildReport(InternalReport);
 
 	try
 	{
-		Doc = wbHTML.Document;
-		Doc.Clear;
-		Doc.Write(THTMLPreview.Get(FTempReport, lColours));
-		Doc.Close;
+		wbHTML->NavigateToString(HTMLPreview::Get(InternalReport, InternalReport.Colours).c_str());
 	}
 	catch(...)
 	{
 		GLog->AddError(L"Error writing out preview HTML file.");
-	} */
+	}
 }
 
 
@@ -503,7 +488,7 @@ void TFormEditHTMLReport::BuildTopHalf()
 
 	for (int t = 0; t < 20; t++)
 	{
-		if (InternalReport.CategoryList[t] == L'1')
+		if (InternalReport.CategoryList[t])
 		{
 			clbCategoryOptions->Checked[t] = true;
 		}
@@ -521,7 +506,7 @@ void TFormEditHTMLReport::BuildBottomHalf()
 
 	for (int t = 0; t < kHTMLItemsCount; t++)
 	{
-		HTMLColoursArray[t]->Brush->Color = TColor(GSettingsHandler->Reports.HTML[cbHTMLLayouts->ItemIndex].HTMLColours[t]);
+		HTMLColoursArray[t]->Brush->Color = TColor(GSettingsHandler->Reports.HTML[cbHTMLLayouts->ItemIndex].Colours.Colour[t]);
 	}
 }
 
@@ -577,46 +562,44 @@ void TFormEditHTMLReport::BuildReport(HTMLReportOptions htmlro)
 
 void TFormEditHTMLReport::LoadHTMLColours(const std::wstring file_name)
 {
-/*  config = TINIFile.Create(filename);
+	if (GSettingsHandler->OpenSettings(true))
+	{
+		sHTMLColour1->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"LinkNormal",       0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour2->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"LinkHover",        0x00FFFFFF, 0x00FFFFFF));
 
-  try
-	sHTMLColour1->Brush->Color  = config.ReadInteger("Main", "LinkNormal",       $00FFFFFF);
-	sHTMLColour2->Brush->Color  = config.ReadInteger("Main", "LinkHover",        $00FFFFFF);
+		sHTMLColour3->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"PageBackground",   0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour9->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"GraphBackground",  0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour4->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"TextColour",       0x00FFFFFF, 0x00FFFFFF));
 
-	sHTMLColour3->Brush->Color  = config.ReadInteger("Main", "PageBackground",   $00FFFFFF);
-	sHTMLColour9->Brush->Color  = config.ReadInteger("Main", "GraphBackground",  $00FFFFFF);
-	sHTMLColour4->Brush->Color  = config.ReadInteger("Main", "TextColour",       $00FFFFFF);
+		sHTMLColour6->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"TableHeader",      0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour10->Brush->Color = TColor(GSettingsHandler->ReadInteger(L"Main", L"TableBackground",  0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour11->Brush->Color = TColor(GSettingsHandler->ReadInteger(L"Main", L"TableBackground2", 0x00CCCCCC, 0x00FFFFFF));
+		sHTMLColour7->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"TableTextColour",  0x00FFFFFF, 0x00FFFFFF));
+		sHTMLColour8->Brush->Color  = TColor(GSettingsHandler->ReadInteger(L"Main", L"TableTextColour2", 0x00FFFFFF, 0x00FFFFFF));
 
-	sHTMLColour6->Brush->Color  = config.ReadInteger("Main", "TableHeader",      $00FFFFFF);
-	sHTMLColour10->Brush->Color = config.ReadInteger("Main", "TableBackground",  $00FFFFFF);
-	sHTMLColour11->Brush->Color = config.ReadInteger("Main", "TableBackground2", $00CCCCCC);
-	sHTMLColour7->Brush->Color  = config.ReadInteger("Main", "TableTextColour",  $00FFFFFF);
-	sHTMLColour8->Brush->Color  = config.ReadInteger("Main", "TableTextColour2", $00FFFFFF);
-  finally
-	config.Free;
-  } */
+		GSettingsHandler->CloseSettings();
+	}
 }
 
 
 void TFormEditHTMLReport::SaveHTMLColours(const std::wstring file_name)
 {
-/*  config = TINIFile.Create(filename);
+	if (GSettingsHandler->OpenSettings(false))
+	{
+		GSettingsHandler->WriteInteger(L"Main", L"LinkNormal",       sHTMLColour1->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"LinkHover",        sHTMLColour2->Brush->Color);
 
-  try
-    config.WriteInteger("Main", "LinkNormal",       sHTMLColour1->Brush->Color);
-    config.WriteInteger("Main", "LinkHover",        sHTMLColour2->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"PageBackground",   sHTMLColour3->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"GraphBackground",  sHTMLColour9->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TextColour",       sHTMLColour4->Brush->Color);
 
-    config.WriteInteger("Main", "PageBackground",   sHTMLColour3->Brush->Color);
-    config.WriteInteger("Main", "GraphBackground",  sHTMLColour9->Brush->Color);
-    config.WriteInteger("Main", "TextColour",       sHTMLColour4->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TableHeader",      sHTMLColour6->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TableBackground",  sHTMLColour10->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TableBackground2", sHTMLColour11->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TableTextColour",  sHTMLColour7->Brush->Color);
+		GSettingsHandler->WriteInteger(L"Main", L"TableTextColour2", sHTMLColour8->Brush->Color);
 
-    config.WriteInteger("Main", "TableHeader",      sHTMLColour6->Brush->Color);
-    config.WriteInteger("Main", "TableBackground",  sHTMLColour10->Brush->Color);
-    config.WriteInteger("Main", "TableBackground2", sHTMLColour11->Brush->Color);
-    config.WriteInteger("Main", "TableTextColour",  sHTMLColour7->Brush->Color);
-    config.WriteInteger("Main", "TableTextColour2", sHTMLColour8->Brush->Color);
-  finally
-    config.Free;
-  }            */
+		GSettingsHandler->CloseSettings();
+	}
 }
 

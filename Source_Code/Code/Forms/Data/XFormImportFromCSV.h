@@ -9,6 +9,7 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.Buttons.hpp>
 
+#include "ConstantsReports.h"
 #include "CSVDataFormat.h"
 
 //---------------------------------------------------------------------------
@@ -73,10 +74,10 @@ __published:	// IDE-managed Components
 	void __fastcall FormShow(TObject *Sender);
 private:
 
-    std::wstring CSVRow[2] = { L"", L"" };
+	std::wstring CSVRow[2] = { L"", L"" };
 
-	TLabel* LabelList[20];
-	TComboBox* ComboList[20];
+	TLabel* LabelList[kMaxCSVFields];
+	TComboBox* ComboList[kMaxCSVFields];
 
     bool ProcessSuccessful = false;
 
@@ -84,9 +85,9 @@ private:
 
 	void Init();
 
-	bool ProcessFile();
+	bool ProcessFile(const std::wstring);
 
-	bool ReadTopTwoLines();
+	std::wstring ReadTopTwoLines(const std::wstring);
 
     int GetFieldCount(const std::wstring);
 

@@ -68,7 +68,7 @@ void __fastcall TForm19::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 
-/*
+/*    folder history
 const
   CColumnDateTime  = 120;
   CColumnTableName = 350;
@@ -246,7 +246,7 @@ void __fastcall TForm19::sbShowNamesClick(TObject *Sender)
 
 
 void __fastcall TForm19::sbDeleteTableClick(TObject *Sender)
-{                                        /* to do
+{                                        /*  folder history
 	if (sgDatabase->Selection.Top > 0)
 	{
 		if (MessageDlg(GLanguageHandler->Text[kDeleteFHAreYouSure].c_str(), mtWarning, mbYesNo], 0) == mrYes)
@@ -288,7 +288,7 @@ void __fastcall TForm19::bExportCSVClick(TObject *Sender)
 												  GSystemGlobal->AppDataPath);
 
 	if (!file_name.empty())
-	{  /* to do when database folder history implemented...
+	{  /* to do when database folder history implemented...      folder history
 		if (!ExportTableToCSV(file_name, sgDatabase->Cells[3][sgDatabase->Selection.Top].c_str()))
 		{
 			ShowXDialog(GLanguageHandler->Text[kErrorSavingReport] + L" (CSV)",
@@ -332,7 +332,7 @@ void __fastcall TForm19::sbSearchClick(TObject *Sender)
 
 void __fastcall TForm19::Image1Click(TObject *Sender)
 {
-	/*Windows.ExecuteFile(0, '"' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\' + '"', '', ''); */
+	WindowsUtility::ExecuteFile(L"\"" + GSystemGlobal->AppDataPath + L"FolderHistory\\Database\\" + L"\"", L"");
 }
 
 
