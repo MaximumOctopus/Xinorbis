@@ -62,6 +62,7 @@ public:
 				  TextReportOptions&, TreeReportOptions&, XinorbisReportOptions&, XMLReportOptions&);
 
 	bool CopyReportToClipboard(std::vector<std::wstring> *data);
+	bool CopyReportToClipboard(const std::wstring);
 
 	int GetReportType(const std::wstring);
 

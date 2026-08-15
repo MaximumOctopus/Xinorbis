@@ -20,7 +20,7 @@
 
 namespace HTMLPreview
 {
-	void Get(std::vector<std::wstring> &, HTMLReportOptions &, HTMLColours &);
+	std::wstring Get(HTMLReportOptions &, HTMLColours &);
 
 	void BuildMenuList(std::vector<std::wstring> &);
 

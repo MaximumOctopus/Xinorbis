@@ -19,13 +19,18 @@
 
 namespace Registry
 {
-	[[nodiscard]] std::wstring ReadRegistryString(HKEY, std::wstring, std::wstring);
+	LONG Open(HKEY&, const std::wstring, bool);
+	LONG Close(HKEY&);
 
-	[[nodiscard]] int ReadRegistryInteger(HKEY, std::wstring, int);
+	std::wstring ReadString(HKEY, std::wstring, std::wstring);
 
-	[[nodiscard]] bool ReadRegistryBool(HKEY, std::wstring, bool);
+	int ReadInteger(HKEY, std::wstring, int);
 
-	[[nodiscard]] bool WriteRegistryString(HKEY, const std::wstring&, const std::wstring&);
+	bool ReadBool(HKEY, std::wstring, bool);
 
-	[[nodiscard]] bool DeleteRegistry(HKEY, const std::wstring&);
+	bool WriteInteger(HKEY hKey, const std::wstring&, int);
+
+	bool WriteString(HKEY, const std::wstring&, const std::wstring&);
+
+	bool Delete(HKEY, const std::wstring&);
 }

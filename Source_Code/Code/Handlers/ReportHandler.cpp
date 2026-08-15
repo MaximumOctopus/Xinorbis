@@ -11,8 +11,10 @@
 // =====================================================================
 
 #include <algorithm>
+#include <fstream>
 
 #include "ConstantsReports.h"
+#include "Formatting.h"
 #include "ReportHandler.h"
 
 #include "ReportCSV.h"
@@ -27,13 +29,33 @@ ReportHandler *GReportHandler;
 
 bool ReportHandler::SaveReport(const std::wstring file_name, std::vector<std::wstring> *data)
 {
+	std::ofstream file(file_name);
+
+	if (file)
+	{
+		for (std::wstring s : *data)
+		{
+			file << Formatting::to_utf8(s + L"\n");
+		}
+
+		file.close();
+
+		return true;
+    }
+
 	return false;
 }
 
 
-bool ReportHandler::CopyReportToClipboard(std::vector<std::wstring> *)
+bool ReportHandler::CopyReportToClipboard(std::vector<std::wstring>*)
 {
 	return false;
+}
+
+
+bool ReportHandler::CopyReportToClipboard(const std::wstring file_name)
+{
+	//
 }
 
 

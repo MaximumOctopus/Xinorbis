@@ -17,6 +17,7 @@
 #include "ConstantsGui.h"
 #include "ConstantsParameters.h"
 #include "ConstantsReports.h"
+#include "ConstantsSystem.h"
 #include "Ini.h"
 #include "Registry.h"
 #include "SettingsHandler.h"
@@ -32,17 +33,9 @@ SettingsHandler::SettingsHandler()
 {
 	Custom.SettingsSaveLocation  = SettingsSource::Registry;
 
-	SetDefaults();
-
-	//System.Debug = false;
-
-	//System.Loaded = false;
-
 	//if (LoadCustomSettings())
    //	{
-   //		LoadLanguage();
-
-  //		System.Loaded = LoadBasic();
+	System.Loaded = Load();
   //	}
 
 	SetupFormat();
@@ -127,11 +120,11 @@ bool SettingsHandler::SaveDefaults()
 		// == File History                                                          ==
 		// ===========================================================================
 
-		for (int t = 1; t <= 2; t++)
+		for (int x = 0; x < 2; x++)
 		{
-			for (int z = 1; z <= 6; z++)
+			for (int y = 0; y < 6; y++)
 			{
-				WriteBool(L"FHCompare", L"X" + std::to_wstring(t) + L"Y" + std::to_wstring(z), false);
+				WriteBool(L"FHCompare", L"X" + std::to_wstring(x + 1) + L"Y" + std::to_wstring(y + 1), false);
 			}
 		}
 
@@ -355,35 +348,25 @@ bool SettingsHandler::OpenSettings(bool read_only)
 		{
 			return true;
 		}
+	}
+	else
+	{
+		if (read_only)
+		{
+			LONG dwRet;
 
-		return false;
-    }
-    else
-    {
-        if (read_only)
-        {
-            LONG dwRet;
-
-            dwRet = RegOpenKeyEx(HKEY_CURRENT_USER,
-                                 L"software\\maximumoctopus\\FolderScanUltra",
-                                 NULL,
-                                 KEY_QUERY_VALUE,
-                                 &hKey);
-
-            if (dwRet != ERROR_SUCCESS)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
+			if (Registry::Open(hKey, L"software\\" + __XRegistryPath, true) != ERROR_SUCCESS)
+			{
+				return true;
+			}
+		}
+		else
+		{
 			return true;
-        }
-    }
+		}
+	}
+
+	return false;
 }
 
 
@@ -429,7 +412,7 @@ bool SettingsHandler::LoadCustomSettings()
 }
 
 
-bool SettingsHandler::LoadBasic()
+bool SettingsHandler::Load()
 {
 	// ===========================================================================
     // ===========================================================================
@@ -439,11 +422,20 @@ bool SettingsHandler::LoadBasic()
 
 	if (OpenSettings(true))
 	{
-		// ===========================================================================
-		// ===========================================================================
-		// == Load Settings                                                         ==
-		// ===========================================================================
-		// ===========================================================================
+		// =====================================================================
+		// =====================================================================
+		// == Load Settings                                                   ==
+		// =====================================================================
+		// =====================================================================
+
+		FDMain.X      = ReadInteger(L"Prefs", L"Main_Top", 5, -1);
+		FDMain.Y      = ReadInteger(L"Prefs", L"Main_Left", 5, -1);
+		FDMain.Width  = ReadInteger(L"Prefs", L"Main_Width", 1016, 1016);
+		FDMain.Height = ReadInteger(L"Prefs", L"Main_Height", 700, 700);
+
+		System.Tutorial = ReadBool(L"Prefs", L"Tutorial", true);
+
+		//
 
 		for (int r = 0; r < kReportTypeCount; r++)
 		{
@@ -458,17 +450,17 @@ bool SettingsHandler::LoadBasic()
 			Reports.HTML[r].LayoutSize   = ReadIntegerInputCheck(L"Prefs", L"HTMLOptions" + std::to_wstring(r) + L"_LayoutSize", 3, 1, 3);
 			Reports.HTML[r].LoadCategoryList(ReadString(L"Prefs", L"HTMLOptions" + std::to_wstring(r) + L"_CategoryList", L"1111111111111111111"));
 
-			Reports.HTML[r].HTMLColours[0]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour1" , 0x990000, -1);  // link normal
-			Reports.HTML[r].HTMLColours[1]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour2" , 0x000000, -1);  // link hover
-			Reports.HTML[r].HTMLColours[2]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour3",  0xFFFFFF, -1);  // background colour
-			Reports.HTML[r].HTMLColours[3]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour4",  0x990000, -1);  // text colour
-			Reports.HTML[r].HTMLColours[4]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour5",  0x0000FF, -1);  // bargraph colour
-			Reports.HTML[r].HTMLColours[5]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour6",  0xFF9900, -1);  // table background
-			Reports.HTML[r].HTMLColours[6]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour7",  0xFFFFFF, -1);  // table colour1
-			Reports.HTML[r].HTMLColours[7]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour8",  0x000000, -1);  // table colour2
-			Reports.HTML[r].HTMLColours[8]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour9",  0xFFFFFF, -1);  // graph background
-			Reports.HTML[r].HTMLColours[9]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour10", 0xDDDDDD, -1);  // table body background
-			Reports.HTML[r].HTMLColours[10] = ReadInteger(L"Prefs", L"Prefs_HTMLColour11", 0xCCCCCC, -1);  // table body background II
+			Reports.HTML[r].Colours.Colour[0]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour1" , 0x990000, -1);  // link normal
+			Reports.HTML[r].Colours.Colour[1]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour2" , 0x000000, -1);  // link hover
+			Reports.HTML[r].Colours.Colour[2]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour3",  0xFFFFFF, -1);  // background colour
+			Reports.HTML[r].Colours.Colour[3]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour4",  0x990000, -1);  // text colour
+			Reports.HTML[r].Colours.Colour[4]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour5",  0x0000FF, -1);  // bargraph colour
+			Reports.HTML[r].Colours.Colour[5]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour6",  0xFF9900, -1);  // table background
+			Reports.HTML[r].Colours.Colour[6]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour7",  0xFFFFFF, -1);  // table colour1
+			Reports.HTML[r].Colours.Colour[7]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour8",  0x000000, -1);  // table colour2
+			Reports.HTML[r].Colours.Colour[8]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour9",  0xFFFFFF, -1);  // graph background
+			Reports.HTML[r].Colours.Colour[9]  = ReadInteger(L"Prefs", L"Prefs_HTMLColour10", 0xDDDDDD, -1);  // table body background
+			Reports.HTML[r].Colours.Colour[10] = ReadInteger(L"Prefs", L"Prefs_HTMLColour11", 0xCCCCCC, -1);  // table body background II
 
 			Reports.Text[r].Layout = ReadString(L"Prefs", L"TextOptions" + std::to_wstring(r) + L"_Layout", L"1:2:3:4:5:6:7:8:9:12:13:14:15:");
 			Reports.Text[r].LoadCategoryList(ReadString(L"Prefs", L"TextOptions" + std::to_wstring(r) + L"_CategoryList", L"1111111111111111111"));
@@ -485,17 +477,115 @@ bool SettingsHandler::LoadBasic()
 			Reports.Xinorbis[r].Layout = ReadInteger(L"Prefs", L"XinorbisOptions" + std::to_wstring(r) + L"_Layout",  0, -1);
 		}
 
-		// ===========================================================================
-		// ==                                                                       ==
-		// ===========================================================================
+		Reports.Summary.Layout = ReadString(L"Prefs", L"SummarayLayout", L"1:2:3:4:5:6:7:8:9:10:");
 
+		Reports.CSVCommand = ReadString(L"Prefs", L"Prefs_CSVOutput", L"");
+		Reports.DateCommand = ReadString(L"Prefs", L"Prefs_DateVOutput", L"");
+		Reports.HTMLCommand = ReadString(L"Prefs", L"Prefs_HTMLOutput", L"");
+		Reports.JSONCommand = ReadString(L"Prefs", L"Prefs_JSONOutput", L"");
+		Reports.SummaryCommand = ReadString(L"Prefs", L"Prefs_SummaryOutput", L"");
+		Reports.TextCommand = ReadString(L"Prefs", L"Prefs_TextOutput", L"");
+		Reports.TreeCommand = ReadString(L"Prefs", L"Prefs_TreeOutput", L"");
+		Reports.XinorbisCommand = ReadString(L"Prefs", L"Prefs_XinorbisOutput", L"");
+		Reports.XMLCommand = ReadString(L"Prefs", L"Prefs_XMLOutput", L"");
+
+		Reports.HTMLCompareCommand = ReadString(L"Prefs", L"Prefs_HTMLCompareOutput", L"");
+
+		Reports.HTMLCompare.Units  = ReadIntegerInputCheck(L"Prefs", L"HTMLCompareOptions1_HTMLUnits", 0, 0, 3);
+		Reports.HTMLCompare.Layout = ReadString(L"Prefs", L"HTMLCompareOptions1_Layout", L"0:1:2:3:4:");
+
+		Reports.AutoSaveMode = ReadBool(L"Prefs", L"Prefs_ASMode", false);
+		Reports.AutoSaveOrganise = ReadBool(L"Prefs", L"Prefs_ASOrganise", false);
+
+		for (int t = 0; t < kAutoSaveItemCount; t++)
+		{
+			Reports.AutoSaveItem[t] = ReadBool(L"Prefs", L"Prefs_AutoSaveDrive" + std::to_wstring(t + 1), false);
+		}
+
+		// =====================================================================
+		// == Chart Options                                                   ==
+		// =====================================================================
+
+		//Charts.Options.ChartStyles   = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartStyle", DefaultChartStyles[t], 0, 1);
+
+		Chart.ChartFrom     = ReadInteger(          L"Prefs", L"Prefs_ChartX8_a", 0x00333333, -1); // check
+		Chart.ChartTo       = ReadInteger(          L"Prefs", L"Prefs_ChartX8_b", 0x00333333, -1);
+		Chart.ChartGradient = ReadBool(             L"Prefs", L"Prefs_ChartX8_c", false);
+
+		Chart.Zoom          = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_d", 100, 0, 150);
+		Chart.Explode       = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_e", 0, 0, 150);
+		Chart.MarkColour    = ReadInteger(          L"Prefs", L"Prefs_ChartX8_f", 0x00FFFFFF, -1);
+		Chart.ShowMarks     = ReadBool(             L"Prefs", L"Prefs_ChartX8_g", true);
+		Chart.MarksType     = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_h", 2, 0, 4);
+		Chart.Elevation     = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_i", 315, 315, 315);
+		Chart.LabelOptions  = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_j", 0, 0, 8);
+		Chart.XAxisDelta    = ReadIntegerInputCheck(L"Prefs", L"Prefs_ChartX8_k", 0, 0, 0);
+		Chart.ShowLegend    = ReadBool(             L"Prefs", L"Prefs_ChartX8_m", True);
+
+		Chart.TitleColour   = ReadInteger(          L"Prefs", L"Prefs_ChartX8_l", 0x00FFFFFF, -1);
+
+		// =====================================================================
+		// ==  appearance and navigation colours                              ==
+		// =====================================================================
+
+		Appearance.RowHeight       = ReadIntegerInputCheck(L"Prefs", L"RowHeight", 17, 15, 40);
+		Appearance.TableBandColour = ReadInteger(L"Prefs", L"TableBandColour", 0x00F9FFF9, -1);
+
+		Appearance.BarColours[0] = ReadInteger(L"Prefs", L"NavColour1", 0x00EEEEEE, -1);
+		Appearance.BarColours[1] = ReadInteger(L"Prefs", L"NavColour2", 0x00FF4422, -1);
+		Appearance.BarColours[2] = ReadInteger(L"Prefs", L"NavColour3", 0x00EEEEEE, -1);
+		Appearance.BarColours[3] = ReadInteger(L"Prefs", L"NavColour4", 0x00FF44FF, -1);
+		Appearance.BarColours[4] = ReadInteger(L"Prefs", L"NavColour5", 0x00DEDDFF, -1);
+		Appearance.BarColours[5] = ReadInteger(L"Prefs", L"NavColour6", 0x005603F1, -1);
+
+		// =====================================================================
+		// == Tab Display Options                                             ==
+		// =====================================================================
+
+		for (int t = 0; t < 4; t++)
+		{
+			std::wstring option = ReadString(L"Prefs", L"TabDisplayOptions" + std::to_wstring(t), L"011111111111111111111");
+
+			for (int z = 0; z < option.size(); z++)
+			{
+				if (option[z] == L'1')
+				{
+					TabDisplay[t].Option[z].Value = true;
+				}
+				else
+				{
+					TabDisplay[t].Option[z].Value = false;
+				}
+			}
+		}
+
+		for (int t = 0; t < 2; t++)
+		{
+			Navigation.Display[t] = ReadString(L"Prefs", L"NavigateDisplayOptions" + std::to_wstring(t), L"11111111111111111111");
+
+			if (Navigation.Display[t].size() != 20)
+			{
+				Navigation.Display[t] = L"11111111111111111111";
+			}
+		}
+
+		// =====================================================================
+		// ==                                                                 ==
+		// =====================================================================
+
+		Optimisations.AddToDate           = ReadBool(L"Prefs", L"AddToDate", false);
+		Optimisations.AddToDateLimit      = ReadBool(L"Prefs", L"AddToDateLimit", false);
+		Optimisations.AddToDateLimitCount = ReadInteger(L"Prefs", L"AddToDateLimitCount", 1000, -1);
+
+		Optimisations.BuildDateTree = ReadBool(L"Prefs", L"BuildDateTree", false);
+		Optimisations.GetTempFiles = ReadBool(L"Prefs", L"GetTempFiles", false);
+		Optimisations.GetUserDetails = ReadBool(L"Prefs", L"GetUserDetails", false);
+		Optimisations.JustInTimeDisplay = ReadBool(L"Prefs", L"JustInTimeDisplay", true);
 		Optimisations.ProgressUpdate = ReadIntegerInputCheck(L"Prefs", L"ProgressUpdate", 1, 0, 5);
 
-		Optimisations.GetUserDetails = ReadBool(L"Prefs", L"GetUserDetails", false);
-
-		// ===========================================================================
-		// ==                                                                       ==
-		// ===========================================================================
+		// =====================================================================
+		// ==                                                                 ==
+		// =====================================================================
 
 		int fd = ReadIntegerInputCheck(L"Prefs", L"DateFormat", 0, 0, 4);
 
@@ -518,326 +608,92 @@ bool SettingsHandler::LoadBasic()
 			break;
 		}
 
-		// ===========================================================================
-        /*
-        var
-  tsho   : TScanHistoryObject;
-  t,z    : integer;
-  s      : string;
-  tf     : TextFile;
-
-begin
-  // ===========================================================================
-  // ===========================================================================
-  // == Initialise                                                            ==
-  // ===========================================================================
-  // ===========================================================================
-
-  if OpenSettings(True) then begin
-
-    // ===========================================================================
-    // ===========================================================================
-    // == Donation Stuff :(                                                     ==
-    // ===========================================================================
-    // ===========================================================================
-
-    XSettings.System.RunX = ReadIntegerFromSettings(L"Prefs", L"RunX", 0, -1);
-
-    // ===========================================================================
-    // ===========================================================================
-    // == Load Settings                                                         ==
-    // ===========================================================================
-    // ===========================================================================
-
-    with frmMain do begin
-      Top        = ReadIntegerFromSettings(L"Prefs", L"Main_Top", 5, -1);
-      Left       = ReadIntegerFromSettings(L"Prefs", L"Main_Left", 5, -1);
-      Width      = ReadIntegerFromSettings(L"Prefs", L"Main_Width", 1016, 1016);
-      Height     = ReadIntegerFromSettings(L"Prefs", L"Main_Height", 700, 700);
-
-      System.Tutorial   = ReadBoolFromSettings(L"Prefs", L"Tutorial", True);
-
-      pTutorial.Visible = System.Tutorial;
-    end;
-
-    // ===========================================================================
-    // == Chart Options                                                         ==
-    // ===========================================================================
-
-    //Charts.Options.ChartStyles   = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartStyle", DefaultChartStyles[t], 0, 1);
-
-	Charts.Options.ChartFrom     = ReadIntegerFromSettings(          'Prefs", L"Prefs_ChartX8_a", $00333333, -1); // check
-    Charts.Options.ChartTo       = ReadIntegerFromSettings(          'Prefs", L"Prefs_ChartX8_b", $00333333, -1);
-	Charts.Options.ChartGradient = ReadBoolFromSettings(             'Prefs", L"Prefs_ChartX8_c", False);
-
-    Charts.Options.Zoom          = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_d", 100, 0, 150);
-    Charts.Options.Explode       = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_e", 0, 0, 150);
-    Charts.Options.MarkColour    = ReadIntegerFromSettings(          'Prefs", L"Prefs_ChartX8_f", $00FFFFFF, -1);
-    Charts.Options.ShowMarks     = ReadBoolFromSettings(             'Prefs", L"Prefs_ChartX8_g", True);
-    Charts.Options.MarksType     = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_h", 2, 0, 4);
-    Charts.Options.Elevation     = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_i", 315, 315, 315);
-    Charts.Options.LabelOptions  = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_j", 0, 0, 8);
-    Charts.Options.XAxisDelta    = ReadIntegerFromSettingsInputCheck(L"Prefs", L"Prefs_ChartX8_k", 0, 0, 0);
-    Charts.Options.ShowLegend    = ReadBoolFromSettings(             'Prefs", L"Prefs_ChartX8_m", True);
-
-    Charts.Options.TitleColour   = ReadIntegerFromSettings(          'Prefs", L"Prefs_ChartX8_l", $00FFFFFF, -1);
-
-    // ===========================================================================
-    // == File History                                                          ==
-    // ===========================================================================
-
-    for t = 1 to 2 do begin
-      for z = 1 to 6 do begin
-		FHCompare[t, z] = ReadBoolFromSettings(L"FHCompare", L"X' + std::to_wstring(t) + 'Y' + std::to_wstring(z), False);
-      end;
-    end;
-
-    // ===========================================================================
-    // ==  navigation colours                                                   ==
-    // ===========================================================================
-
-    Navigation.BarColours[1] = ReadIntegerFromSettings(L"Prefs", L"NavColour1", $00EEEEEE, -1);
-    Navigation.BarColours[2] = ReadIntegerFromSettings(L"Prefs", L"NavColour2", $00FF4422, -1);
-    Navigation.BarColours[3] = ReadIntegerFromSettings(L"Prefs", L"NavColour3", $00EEEEEE, -1);
-	Navigation.BarColours[4] = ReadIntegerFromSettings(L"Prefs", L"NavColour4", $00FF44FF, -1);
-    Navigation.BarColours[5] = ReadIntegerFromSettings(L"Prefs", L"NavColour5", $00DEDDFF, -1);
-    Navigation.BarColours[6] = ReadIntegerFromSettings(L"Prefs", L"NavColour6", $005603F1, -1);
-
-    // ===========================================================================
-    // == Tab Display Options                                                   ==
-    // ===========================================================================
-
-    for t = 0 to 3 do
-      TabDisplayOptions[t]      = ReadStringFromSettings(L"Prefs", L"TabDisplayOptions' + std::to_wstring(t), L"011111111111111111111');
-
-    for t = 0 to 1 do
-    begin
-	  Navigation.DisplayOptions[t] = ReadStringFromSettings(L"Prefs", L"NavigateDisplayOptions' + std::to_wstring(t), L"11111111111111111111');
-
-      if length(Navigation.DisplayOptions[t]) <> 20 then
-        Navigation.DisplayOptions[t] = '11111111111111111111';
-    end;
-
-    // ===========================================================================
-    // == FTP                                                                   ==
-    // ===========================================================================
-
-    for t = 1 to ftpOptionsCount do
-      ftpOptions[t] = ReadStringFromSettings(L"Prefs", L"ftpOptions' + std::to_wstring(t), L"');
-
-    // ===========================================================================
-    // ==                                                                       ==
-    // ===========================================================================
-
-    Optimisations.JustInTimeDisplay       = ReadBoolFromSettings(L"Prefs", L"JustInTimeDisplay", True);
-    Optimisations.ProgressUpdate          = ReadIntegerFromSettingsInputCheck(L"Prefs", L"ProgressUpdate", 1, 0, 5);
-
-	ProgressPercentage                    = ProgressUpdates[Optimisations.ProgressUpdate, 0];
-    ProgressFileCount                     = ProgressUpdates[Optimisations.ProgressUpdate, 1];
-
-    Optimisations.AddToDate               = ReadBoolFromSettings(L"Prefs", L"AddToDate", False);
-    Optimisations.AddToDateLimit          = ReadBoolFromSettings(L"Prefs", L"AddToDateLimit", False);
-    Optimisations.AddToDateLimitCount     = ReadIntegerFromSettings(L"Prefs", L"AddToDateLimitCount", 1000, -1);
-
-    Optimisations.BuildDateTree           = ReadBoolFromSettings(L"Prefs", L"BuildDateTree", False);
-    Optimisations.GetUserDetails          = ReadBoolFromSettings(L"Prefs", L"GetUserDetails", False);
-    Optimisations.GetTempFiles            = ReadBoolFromSettings(L"Prefs", L"GetTempFiles", False);
-
-    // ===========================================================================
-    // ==                                                                       ==
-    // ===========================================================================
-
-    General.TableBandColour         = ReadIntegerFromSettings(L"Prefs", L"TableBandColour", $00F9FFF9, -1);
-    General.RowHeight               = ReadIntegerFromSettingsInputCheck(L"Prefs", L"RowHeight", 17, 15, 40);
-
-    General.DateFormat              = ReadIntegerFromSettingsInputCheck(L"Prefs", L"DateFormat", 0, 0, 4);
-    General.MaxSearchResults        = ReadIntegerFromSettings(L"Prefs", L"MaxSearchResults", 20000, 20000);
-
-    General.CustomViewer            = ReadStringFromSettings(L"Prefs", L"CustomViewer", L"notepad.exe');
-
-    General.SaveLog                 = ReadBoolFromSettings(L"Prefs", L"SaveLog",        False);
-
-    General.PostScanMode            = ReadIntegerFromSettingsInputCheck(L"Prefs", L"PostScanMode", CPostScanSummary, 0, 3);
-    General.PostScanIPPage          = ReadIntegerFromSettingsInputCheck(L"Prefs", L"PostScanIPPage", 0, 0, 10);
-
-    HandleMultipleExt               = ReadIntegerFromSettingsInputCheck(L"Prefs", L"HandleMultipleExt", 0, 0, 2);
-    Report.AutoSaveMode             = ReadBoolFromSettings(L"Prefs", L"Prefs_ASMode", false);
-    Report.AutoSaveOrganise         = ReadBoolFromSettings(L"Prefs", L"Prefs_ASOrganise", false);
-
-    for t = 1 to AutoSaveItemCount do
-	  Report.AutoSaveItem[t] = ReadBoolFromSettings(L"Prefs", L"Prefs_AutoSaveDrive' + std::to_wstring(t), False);
-
-    General.AutoCheckUpdate         = ReadBoolFromSettings(L"Prefs", L"Prefs_AutoCheckUpdate", True);
-
-    Report.HTMLOutput              = ReadStringFromSettings(L"Prefs", L"Prefs_HTMLOutput", L"');
-    Report.HTMLCompareOutput       = ReadStringFromSettings(L"Prefs", L"Prefs_HTMLCompareOutput", L"');
-    Report.XMLOutput               = ReadStringFromSettings(L"Prefs", L"Prefs_XMLOutput", L"notepad');
-
-    Report.TextOutput              = ReadStringFromSettings(L"Prefs", L"Prefs_TextOutput", L"notepad');
-
-
-
-	Report.HTMLCompareOptions.HTMLUnits            = ReadIntegerFromSettingsInputCheck(L"Prefs", L"HTMLCompareOptions' + std::to_wstring(1) + '_HTMLUnits", 0, 0, 3);
-	Report.HTMLCompareOptions.Layout               = ReadStringFromSettings(L"Prefs",  'HTMLCompareOptions' + std::to_wstring(1) + '_Layout", L"0:1:2:3:4:');
-
-    Report.SummaryLayout                           = ReadStringFromSettings(L"Prefs",  'SummarayLayout",  '1:2:3:4:5:6:7:8:9:10:');
-
-    // ===========================================================================
-    // ==  History                                                              ==
-    // ===========================================================================
-
-    HistorySettings.Enabled     = ReadBoolFromSettings(L"Prefs", L"Prefs_HistorySettings_Enabled", True);
-    HistorySettings.FullLogging = ReadBoolFromSettings(L"Prefs", L"Prefs_HistorySettings_FullLogging", True);
-    HistorySettings.SQLinSearch = ReadBoolFromSettings(L"Prefs", L"Prefs_HistorySettings_SQLinSearch", False);
-
-    GSystemGlobal.FileCategoryColors[0] = $00FFFFFF; // for folders
-
-    for t = 1 to __FileCategoriesCount do
-	  GSystemGlobal.FileCategoryColors[t] = ReadIntegerFromSettings(L"Prefs", L"ChartColour' + std::to_wstring(t), DefaultDisplayColours[t], -1);
-
-    // ===========================================================================
-    // == Quick Folders                                                         ==
-    // ===========================================================================
-
-    for t = 1 to QuickFolderCount do begin
-	  s = ReadStringFromSettings(L"Prefs", L"Prefs_QuickFolder' + std::to_wstring(t), L"');
-
-      if s <> '' then begin
-        XSQuickFolder[t] = s;
-      end;
-    end;
-
-    // ===========================================================================
-    // ==                                                                       ==
-    // ===========================================================================
-
-    for t = 1 to 10 do
-      TypeDescriptions[t + 9] = ReadStringFromSettings(L"TypeDescriptions", L"TypeDescriptions' + std::to_wstring(t), defaultextfn[t + 9]);
-
-    // ===========================================================================
-    // == Close                                                                 ==
-    // ===========================================================================
-
-    CloseSettings;
-  end;
-
-  // ===========================================================================
-  // == Update                                                                ==
-  // ===========================================================================
-
-  if (customsettings.SettingsSaveLocation = SaveLocationConfigIni) then begin
-    if FileExists(GSystemGlobal.AppDataPath + 'scanhistory.dat') then begin
-      try
-		AssignFile(tf, GSystemGlobal.AppDataPath + 'scanhistory.dat');
-        Reset(tf);
-
-        While not(eof(tf)) do begin
-          tsho = TScanHistoryObject.Create;
-
-          readln(tf, s);
-          tsho.Path           = s;
-
-          readln(tf, s);
-          tsho.DateI          = StrToIntDef(s, 19000101);
-
-          readln(tf, s);
-          tsho.TimeI          = s;
-
-          readln(tf, s);
-          tsho.ExcludeFiles   = s;
-
-          readln(tf, s);
-          tsho.ExcludeFolders = s;
-
-          ScanHistory.Add(tsho);
-        end;
-      finally
-        CloseFile(tf);
-      end;
-    end;
-  end
-  else begin
-    FReg = TRegistry.Create(KEY_READ);
-
-    try
-      FReg.RootKey = HKEY_CURRENT_USER;
-      FReg.OpenKey(L"\software\' + XinorbisRegistryKey + '\SinglePaths", True);
-
-	  t = 0;
-	  While FReg.ValueExists(L"PathX' + std::to_wstring(t)) do begin
-        tsho = TScanHistoryObject.Create;
-
-		tsho.Path           = FReg.ReadString(L"PathX' + std::to_wstring(t));
-		tsho.DateI          = StrToIntDef(FReg.ReadString(L"PathY' + std::to_wstring(t)), 19000101);
-		tsho.TimeI          = FReg.ReadString(L"PathZ' + std::to_wstring(t));
-		tsho.ExcludeFiles   = FReg.ReadString(L"PathE1' + std::to_wstring(t));
-        tsho.ExcludeFolders = FReg.ReadString(L"PathE2' + std::to_wstring(t));
-
-        ScanHistory.Add(tsho);
-
-        inc(t);
-      end;
-
-    finally
-      FReg.Free;
-    end;
-
-	// ===========================================================================
-    // ===========================================================================
-
-    FReg = TRegistry.Create(KEY_READ);
-
-    try
-      FReg.RootKey = HKEY_CURRENT_USER;
-      if FReg.OpenKey(L"\software\' + XinorbisRegistryKey + '\ChartColours", False) then begin
-        GSystemGlobal.FileCategoryColors[0] = $00FFFFFF; // for folders
-
-        for t = 1 to __FileCategoriesCount do begin
-		  if FReg.ValueExists(L"ChartColour' + std::to_wstring(t)) then
-            GSystemGlobal.FileCategoryColors[t] = FReg.ReadInteger(L"ChartColour' + std::to_wstring(t))
-          else
-            GSystemGlobal.FileCategoryColors[t] = DefaultDisplayColours[t];
-        end;
-      end
-      else begin
-        GSystemGlobal.FileCategoryColors[0] = $00FFFFFF; // for folders
-        for t = 1 to __FileCategoriesCount do begin
-          GSystemGlobal.FileCategoryColors[t] = DefaultDisplayColours[t];
-        end;
-      end;
-    finally
-      FReg.Free;
-    end;
-  end;
-
-  // ===========================================================================
-  // ===========================================================================
-
-  //FileExtensionList.Clear;
-
-  Result = -1;
-		*/
-
+		// =====================================================================
+		// ==                                                                 ==
+		// =====================================================================
+
+		General.MaxSearchResults = ReadInteger(L"Prefs", L"MaxSearchResults", 20000, 20000);
+
+		General.CustomViewer            = ReadString(L"Prefs", L"CustomViewer", L"notepad.exe");
+
+		General.SaveLog                 = ReadBool(L"Prefs", L"SaveLog", false);
+
+		General.PostScanMode            = ReadIntegerInputCheck(L"Prefs", L"PostScanMode", kPostScanSummary, 0, 3);
+		General.PostScanIPPage          = ReadIntegerInputCheck(L"Prefs", L"PostScanIPPage", 0, 0, 10);
+
+		General.AutoCheckUpdate         = ReadBool(L"Prefs", L"Prefs_AutoCheckUpdate", true);
+
+		// =====================================================================
+		// ==                                                                 ==
+		// =====================================================================
+
+		FileCategoryColors[0] = 0x00FFFFFF; // for folders
+
+		for (int t = 1; t < kFileCategoriesCount; t++)
+		{
+			FileCategoryColors[t] = ReadInteger(L"Prefs", L"ChartColour" + std::to_wstring(t), kDefaultDisplayColours[t], -1);
+		}
+
+		// =====================================================================
+		// == FTP                                                             ==
+		// =====================================================================
+
+		FTP.Options[kFTPOptionHost] = ReadString(L"Prefs", L"ftpOptions0", L"");
+		FTP.Options[kFTPOptionUserName] = ReadString(L"Prefs", L"ftpOptions1", L"");
+		FTP.Options[kFTPOptionPassword] = ReadString(L"Prefs", L"ftpOptions2", L"");
+		FTP.Options[kFTPOptionRemoteFolder] = ReadString(L"Prefs", L"ftpOptions3", L"");
+		FTP.Options[kFTPOptionActualLink] = ReadString(L"Prefs", L"ftpOptions4", L"");
+		FTP.Options[kFTPOptionInitialFolder] = ReadString(L"Prefs", L"ftpOptions5", L"");
+
+		// =====================================================================
+		// == Quick Folders                                                   ==
+		// =====================================================================
+
+		for (int t = 0; t < kQuickFolderCount; t++)
+		{
+			std::wstring s = ReadString(L"Prefs", L"Prefs_QuickFolder" + std::to_wstring(t), L"");
+
+			if (!s.empty())
+			{
+				QuickFolders[t] = s;
+			}
+		}
+
+		// =====================================================================
+		// == Folder History                                                  ==
+		// =====================================================================
+
+		History.Enabled     = ReadBool(L"Prefs", L"Prefs_HistorySettings_Enabled", true);
+		History.FullLogging = ReadBool(L"Prefs", L"Prefs_HistorySettings_FullLogging", true);
+		History.SQLinSearch = ReadBool(L"Prefs", L"Prefs_HistorySettings_SQLinSearch", false);
+
+		for (int x = 0; x < 2; x++)
+		{
+			for (int y = 0; y < 6; y++)
+			{
+				FolderHistory.Compare[x][y] = ReadBool(L"FHCompare", L"X" + std::to_wstring(x + 1) + L"Y" + std::to_wstring(y + 1), false);
+			}
+		}
 
 		CloseSettings();
 	}
 	else
 	{
-		// ===========================================================================
+		// =====================================================================
 
         for (int r = 0; r < kReportTypeCount; r++)
 		{
-			Reports.HTML[r].HTMLColours[0]  = 0x990000;  // link normal
-			Reports.HTML[r].HTMLColours[1]  = 0x000000;  // link hover
-			Reports.HTML[r].HTMLColours[2]  = 0xFFFFFF;  // background colour
-			Reports.HTML[r].HTMLColours[3]  = 0x990000;  // text colour
-			Reports.HTML[r].HTMLColours[4]  = 0x0000FF;  // bargraph colour
-			Reports.HTML[r].HTMLColours[5]  = 0xFF9900;  // table background
-			Reports.HTML[r].HTMLColours[6]  = 0xFFFFFF;  // table colour1
-			Reports.HTML[r].HTMLColours[7]  = 0x000000;  // table colour2
-			Reports.HTML[r].HTMLColours[8]  = 0xFFFFFF;  // graph background
-			Reports.HTML[r].HTMLColours[9]  = 0xDDDDDD;  // table body background
-			Reports.HTML[r].HTMLColours[10] = 0xCCCCCC;  // table body background II
+			Reports.HTML[r].Colours.Colour[0]  = 0x990000;  // link normal
+			Reports.HTML[r].Colours.Colour[1]  = 0x000000;  // link hover
+			Reports.HTML[r].Colours.Colour[2]  = 0xFFFFFF;  // background colour
+			Reports.HTML[r].Colours.Colour[3]  = 0x990000;  // text colour
+			Reports.HTML[r].Colours.Colour[4]  = 0x0000FF;  // bargraph colour
+			Reports.HTML[r].Colours.Colour[5]  = 0xFF9900;  // table background
+			Reports.HTML[r].Colours.Colour[6]  = 0xFFFFFF;  // table colour1
+			Reports.HTML[r].Colours.Colour[7]  = 0x000000;  // table colour2
+			Reports.HTML[r].Colours.Colour[8]  = 0xFFFFFF;  // graph background
+			Reports.HTML[r].Colours.Colour[9]  = 0xDDDDDD;  // table body background
+			Reports.HTML[r].Colours.Colour[10] = 0xCCCCCC;  // table body background II
 		}
 
 		FileCategoryColors[0]  = 0x00FFFFFF; // for folders
@@ -860,6 +716,211 @@ begin
 	}
 
     return true;
+}
+
+
+bool SettingsHandler::Save(int X, int Y, int W, int H, const std::wstring current_language)
+{
+	// ===========================================================================
+	// ===========================================================================
+	// == Initialise                                                            ==
+	// ===========================================================================
+	// ===========================================================================
+
+	if (OpenSettings(false))
+	{
+		// ===========================================================================
+		// == Window                                                                ==
+		// ===========================================================================
+
+		WriteInteger(L"Prefs", L"Main_Top", X);
+		WriteInteger(L"Prefs", L"Main_Left", Y);
+		WriteInteger(L"Prefs", L"Main_Width", W);
+		WriteInteger(L"Prefs", L"Main_Height", H);
+
+		WriteBool(L"Prefs", L"Tutorial", System.Tutorial);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		WriteBool(L"Prefs",    L"BuildDateTree",       Optimisations.BuildDateTree);
+		WriteBool(L"Prefs",    L"GetUserDetails",      Optimisations.GetUserDetails);
+		WriteBool(L"Prefs",    L"GetTempFiles",        Optimisations.GetTempFiles);
+
+		WriteInteger(L"Prefs", L"TableBandColour",     Appearance.TableBandColour);
+		WriteInteger(L"Prefs", L"RowHeight",           Appearance.RowHeight);
+		WriteInteger(L"Prefs", L"DateFormat",          General.DateFormatToInt());
+		WriteInteger(L"Prefs", L"MaxSearchResults",    General.MaxSearchResults);
+
+		WriteString(L"Prefs",  L"CustomViewer",        General.CustomViewer);
+
+		WriteBool(L"Prefs",    L"SaveLog",             General.SaveLog);
+
+		WriteString(L"Prefs", L"Language",             current_language);
+		WriteInteger(L"Prefs", L"ProgressUpdate",      Optimisations.ProgressUpdate);
+		WriteInteger(L"Prefs", L"PostScanMode",        General.PostScanMode);
+		WriteInteger(L"Prefs", L"PostScanIPPage",      General.PostScanIPPage);
+		WriteBool(L"Prefs",    L"Prefs_ASMode",        Reports.AutoSaveMode);
+		WriteBool(L"Prefs",    L"Prefs_ASOrganise",    Reports.AutoSaveOrganise);
+		WriteBool(L"Prefs",    L"JustInTimeDisplay",   Optimisations.JustInTimeDisplay);
+
+		WriteBool(L"Prefs",    L"AddToDate",           Optimisations.AddToDate);
+		WriteBool(L"Prefs",    L"AddToDateLimit",      Optimisations.AddToDateLimit);
+		WriteInteger(L"Prefs", L"AddToDateLimitCount", Optimisations.AddToDateLimitCount);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		for (int t = 0; t < kAutoSaveItemCount; t++)
+		{
+			WriteBool(L"Prefs", L"Prefs_AutoSaveDrive" + std::to_wstring(t), Reports.AutoSaveItem[t]);
+		}
+
+		WriteBool(L"Prefs", L"Prefs_AutoCheckUpdate", General.AutoCheckUpdate);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		WriteString(L"Prefs", L"Prefs_HTMLOutput", Reports.HTMLCommand);
+		WriteString(L"Prefs", L"Prefs_HTMLCompareOutput", Reports.HTMLCompareCommand);
+
+		for (int t = 0; t < kReportTypeCount; t++)
+		{
+			for (int x = 0; x < kFileCategoriesCount; x++)
+			{
+				WriteBool(L"Prefs",  L"HTMLOptions" + std::to_wstring(t) + L"_CategoryList" + std::to_wstring(x),   Reports.HTML[t].CategoryList[x]);
+				WriteBool(L"Prefs",  L"TextOptions" + std::to_wstring(t) + L"_CategoryList" + std::to_wstring(x), Reports.Text[t].CategoryList[x]);
+				WriteBool(L"Prefs",  L"TreeOptions" + std::to_wstring(t) + L"_CategoryList" + std::to_wstring(x), Reports.Tree[t].CategoryList[t]);
+			}
+
+			WriteInteger(L"Prefs", L"HTMLOptions" + std::to_wstring(t) + L"_HTMLUnits",         Reports.HTML[t].Units);
+			WriteString(L"Prefs",  L"HTMLOptions" + std::to_wstring(t) + L"_Layout",            Reports.HTML[t].Layout);
+
+			WriteInteger(L"Prefs", L"HTMLOptions" + std::to_wstring(t) + L"_LayoutSize",        Reports.HTML[t].LayoutSize);
+
+			for (int x = 0; x < kHTMLColoursCount; x++)
+			{
+				WriteInteger(L"Prefs", L"Prefs_Report" + std::to_wstring(t) + L"HTMLColour" + std::to_wstring(x), Reports.HTML[t].Colours.Colour[x]);
+			}
+
+			WriteString(L"Prefs",  L"TextOptions" + std::to_wstring(t) + L"_Layout",            Reports.Text[t].Layout);
+
+			WriteString(L"Prefs",  L"TreeOptions" + std::to_wstring(t) + L"_Layout",            Reports.Tree[t].Layout);
+			WriteBool(L"Prefs",    L"TreeOptions" + std::to_wstring(t) + L"_IncludeSize",       Reports.Tree[t].IncludeSize);
+			WriteBool(L"Prefs",    L"TreeOptions" + std::to_wstring(t) + L"_IncludeAttributes", Reports.Tree[t].IncludeAttributes);
+
+			WriteString(L"Prefs",  L"XMLOptions" + std::to_wstring(t) + L"_Layout",             Reports.XML[t].Layout);
+			WriteInteger(L"Prefs", L"Prefs_XMLData" + std::to_wstring(t) + L"_Data",            Reports.XML[t].Data);
+			WriteBool(L"Prefs",    L"Prefs_XMLData" + std::to_wstring(t) + L"_Open",            Reports.XML[t].AutoOpen);
+
+			WriteInteger(L"Prefs", L"XinorbisOptions" + std::to_wstring(t) + L"_Layout",        Reports.Xinorbis[t].Layout);
+		}
+
+		WriteInteger(L"Prefs", L"HTMLCompareOptions" + std::to_wstring(1) + L"_HTMLUnits",    Reports.HTMLCompare.Units);
+		WriteString(L"Prefs",  L"HTMLCompareOptions" + std::to_wstring(1) + L"_Layout",       Reports.HTMLCompare.Layout);
+
+		WriteString(L"Prefs", L"Prefs_XMLOutput",  Reports.XMLCommand);
+		WriteString(L"Prefs", L"Prefs_TextOutput", Reports.TextCommand);
+
+		WriteInteger(L"Prefs", L"Prefs_OtherCSVUnits",     Reports.CSV[kReportLayoutAutoSave].Units);
+		WriteBool(L"Prefs",    L"Prefs_OtherCSVTitles",    Reports.CSV[kReportLayoutAutoSave].Titles);
+		WriteInteger(L"Prefs", L"Prefs_OtherCSVData",      Reports.CSV[kReportLayoutAutoSave].Data);
+		WriteInteger(L"Prefs", L"Prefs_OtherCSVSeparator", Reports.CSV[kReportLayoutAutoSave].Separator);
+
+		WriteInteger(L"Prefs", L"Prefs_CSVUnits",           Reports.CSV[kReportLayoutQuick].Units);
+		WriteBool(L"Prefs",    L"Prefs_CSVTitles",         Reports.CSV[kReportLayoutQuick].Titles);
+		WriteInteger(L"Prefs", L"Prefs_CSVData",           Reports.CSV[kReportLayoutQuick].Data);
+		WriteInteger(L"Prefs", L"Prefs_CSVSeparator",      Reports.CSV[kReportLayoutQuick].Separator);
+		WriteBool(L"Prefs",    L"Prefs_CSVAutoOpen",       Reports.CSV[kReportLayoutQuick].AutoOpen);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		WriteString(L"Prefs", L"SummaryLayout", Reports.Summary.Layout);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		WriteBool(L"Prefs", L"Prefs_HistorySettings_Enabled",     History.Enabled);
+		WriteBool(L"Prefs", L"Prefs_HistorySettings_FullLogging", History.FullLogging);
+		WriteBool(L"Prefs", L"Prefs_HistorySettings_SQLinSearch", History.SQLinSearch);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_a",  Chart.ChartFrom);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_b",  Chart.ChartTo);
+		WriteBool(L"Prefs",    L"Prefs_ChartX8_c",  Chart.ChartGradient);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_d",  Chart.Zoom);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_e",  Chart.Explode);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_f",  Chart.MarkColour);
+		WriteBool(L"Prefs",    L"Prefs_ChartX8_g",  Chart.ShowMarks);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_h",  Chart.MarksType);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_i",  Chart.Elevation);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_j",  Chart.LabelOptions);
+		WriteBool(L"Prefs",    L"Prefs_ChartX8_m",  Chart.ShowLegend);
+
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_k",  Chart.XAxisDelta);
+		WriteInteger(L"Prefs", L"Prefs_ChartX8_l",  Chart.TitleColour);
+
+		for (int t = 0; t < kQuickFolderCount; t++)
+		{
+			WriteString(L"Prefs", L"Prefs_QuickFolder" + std::to_wstring(t), QuickFolders[t]);
+		}
+
+		FileCategoryColors[0] = 0x00FFFFFF; // for folders
+
+		for (int t = 0; t < kFileCategoriesCount; t++)
+		{
+			WriteInteger(L"Prefs", L"ChartColour" + std::to_wstring(t), FileCategoryColors[t]);
+		}
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		for (int t = 0; t < 6; t++)
+		{
+			WriteInteger(L"Prefs", L"NavColour" + std::to_wstring(t), Navigation.BarColours[t]);
+		}
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		for (int t = 0; t < 3; t++)
+		{
+			for (int x = 0; x < 22; x++)
+			{
+				WriteString(L"Prefs", L"TabDisplayOptions" + std::to_wstring(t), TabDisplay[t].Option[x].Name);
+				WriteInteger(L"Prefs", L"TabDisplayOptions" + std::to_wstring(t), TabDisplay[t].Option[x].Value);
+			}
+		}
+
+		WriteString(L"Prefs", L"NavigateDisplayOptions0", Navigation.Display[0]);
+		WriteString(L"Prefs", L"NavigateDisplayOptions1", Navigation.Display[1]);
+
+		// ===========================================================================
+		// ==                                                                       ==
+		// ===========================================================================
+
+		for (int t = 0; t < kFTPOptionsCount; t++)
+		{
+			WriteString(L"Prefs", L"ftpOptions" + std::to_wstring(t), FTP.Options[t]);
+		}
+
+		// ===========================================================================
+		// == Close                                                                 ==
+		// ===========================================================================
+
+		CloseSettings();
+	}
 }
 
 
@@ -987,7 +1048,7 @@ std::wstring SettingsHandler::ReadString(const std::wstring section, const std::
     }
     else
     {
-        return Registry::ReadRegistryString(hKey, name, default_value);
+		return Registry::ReadString(hKey, name, default_value);
     }
 }
 
@@ -1009,8 +1070,8 @@ int SettingsHandler::ReadInteger(const std::wstring section, const std::wstring 
     }
     else
     {
-		setting = Registry::ReadRegistryInteger(hKey, name, default_value);
-    }
+		setting = Registry::ReadInteger(hKey, name, default_value);
+	}
 
     if (setting == 0)
     {
@@ -1047,7 +1108,7 @@ int SettingsHandler::ReadIntegerInputCheck(const std::wstring section, const std
 	}
 	else
 	{
-		int setting = Registry::ReadRegistryInteger(hKey, name, default_value);
+		int setting = Registry::ReadInteger(hKey, name, default_value);
 
 		if ((setting < min) || (setting > max))
 		{
@@ -1069,7 +1130,7 @@ bool SettingsHandler::ReadBool(const std::wstring section, const std::wstring na
 	}
 	else
 	{
-		return Registry::ReadRegistryBool(hKey, name, default_value);
+		return Registry::ReadBool(hKey, name, default_value);
 	}
 }
 
@@ -1093,121 +1154,119 @@ FormDetails SettingsHandler::LoadFormDetails(int FormId)
 {
 	FormDetails fd(FormId, -1, -1, -1, -1);
 
-/*	if (customsettings.SettingsSaveLocation == SaveLocationConfigIni)
+	if (Custom.SettingsSaveLocation == SettingsSource::ConfigIni)
 	{
-		try
-		  config = TINIFile.Create(GSystemGlobal.ExePath + L"custom.ini");
-
-		  if config.SectionExists(L"Form_" + std::to_wstring(formID)) then begin
-			Result.x  = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"w", -1);
-			Result.y  = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"y", -1);
-			Result.w  = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"w", -1);
-			Result.h  = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"h", -1);
-			Result.p1 = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"p1", -1);
-			Result.p2 = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"p2", -1);
-			Result.p3 = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"p3", -1);
-			Result.p4 = config.ReadInteger(L"Form_" + std::to_wstring(formID), L"p4", -1);
-		  end
-		  else
-			Result.formID = -1;
-		finally
-		  config.Free;
-		end;
+		if (OpenSettings(true))
+		{
+			fd.X = ReadInteger(L"Form_" + std::to_wstring(FormId), L"x", -1, -1);
+			fd.Y = ReadInteger(L"Form_" + std::to_wstring(FormId), L"y", -1, -1);
+			fd.Width = ReadInteger(L"Form_" + std::to_wstring(FormId), L"w", -1, -1);
+			fd.Height = ReadInteger(L"Form_" + std::to_wstring(FormId), L"h", -1, -1);
+			fd.P1 = ReadInteger(L"Form_" + std::to_wstring(FormId), L"p1", -1, -1);
+			fd.P2 = ReadInteger(L"Form_" + std::to_wstring(FormId), L"p2", -1, -1);
+			fd.P3 = ReadInteger(L"Form_" + std::to_wstring(FormId), L"p3", -1, -1);
+			fd.P4 = ReadInteger(L"Form_" + std::to_wstring(FormId), L"p4", -1, -1);
+		}
+		else
+		{
+			fd.FormId = -1;
+        }
 	}
 	else
 	{
-		Reg = TRegistry.Create(KEY_READ);
+		HKEY hKey;
 
-		Reg.RootKey = HKEY_CURRENT_USER;
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath + L"\\Form_" + std::to_wstring(FormId), false) == ERROR_SUCCESS)
+		{
+			fd.X = Registry::ReadInteger(hKey, L"x", -1);
+			fd.Y = Registry::ReadInteger(hKey, L"x", -1);
+			fd.Width = Registry::ReadInteger(hKey, L"w", -1);
+			fd.Height = Registry::ReadInteger(hKey, L"h", -1);
+			fd.P1 = Registry::ReadInteger(hKey, L"p1", -1);
+			fd.P2 = Registry::ReadInteger(hKey, L"p2", -1);
+			fd.P3 = Registry::ReadInteger(hKey, L"p3", -1);
+			fd.P4 = Registry::ReadInteger(hKey, L"p4", -1);
 
-		if Reg.KeyExists(L"\\software\\" + XinorbisRegistryKey + L"\\Form_" + std::to_wstring(formID)) then begin
-		  Reg.OpenKey(L"\\software\\" + XinorbisRegistryKey + L"\\Form_" + std::to_wstring(formID), False);
-
-		  Result.x  = Reg.ReadInteger(L"x");
-		  Result.y  = Reg.ReadInteger(L"y");
-		  Result.w  = Reg.ReadInteger(L"w");
-		  Result.h  = Reg.ReadInteger(L"h");
-		  Result.p1 = Reg.ReadInteger(L"p1");
-		  Result.p2 = Reg.ReadInteger(L"p2");
-		  Result.p3 = Reg.ReadInteger(L"p3");
-		  Result.p4 = Reg.ReadInteger(L"p4");
-		end
+			Registry::Close(hKey);
+		}
 		else
-		  Result.formID = -1;
-
-		Reg.CloseKey;
-		Reg.Free;
-	}                */
+		{
+			fd.FormId = -1;
+		}
+	}
 
 	return fd;
 }
 
 
 void SettingsHandler::SaveFormDetails(FormDetails &fd)
-{            /*
-	if (customsettings.SettingsSaveLocation = SaveLocationConfigIni)
+{
+	if (Custom.SettingsSaveLocation == SettingsSource::ConfigIni)
 	{
-		try
-		  config = TINIFile.Create(GSystemGlobal.ExePath + L"custom.ini");
-
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"w",  FormDetails.x);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"y",  FormDetails.y);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"w",  FormDetails.w);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"h",  FormDetails.h);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"p1", FormDetails.p1);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"p2", FormDetails.p2);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"p3", FormDetails.p3);
-		  config.WriteInteger(L"Form_" + std::to_wstring(FormDetails.formID), L"p4", FormDetails.p4);
-		finally
-		  config.Free;
-		end;
+		if (OpenSettings(false))
+		{
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"x", fd.X);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"y", fd.Y);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"w", fd.Width);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"h", fd.Height);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"p1", fd.P1);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"p2", fd.P2);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"p3", fd.P3);
+			WriteInteger(L"Form_" + std::to_wstring(fd.FormId), L"p4", fd.P4);
+		}
+		else
+		{
+            fd.FormId = -1;
+		}
 	}
 	else
 	{
-		Reg = TRegistry.Create(KEY_WRITE);
+		HKEY hKey;
 
-		Reg.RootKey = HKEY_CURRENT_USER;
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath + L"\\Form_" + std::to_wstring(fd.FormId), true) == ERROR_SUCCESS)
+		{
+			Registry::WriteInteger(hKey, L"x", fd.X);
+			Registry::WriteInteger(hKey, L"y", fd.Y);
+			Registry::WriteInteger(hKey, L"w", fd.Width);
+			Registry::WriteInteger(hKey, L"h", fd.Height);
+			Registry::WriteInteger(hKey, L"p1", fd.P1);
+			Registry::WriteInteger(hKey, L"p2", fd.P2);
+			Registry::WriteInteger(hKey, L"p3", fd.P3);
+			Registry::WriteInteger(hKey, L"p4", fd.P4);
 
-		Reg.OpenKey(L"\\software\\" + XinorbisRegistryKey + L"\\Form_" + std::to_wstring(FormDetails.formID), True);
-
-		Reg.WriteInteger(L"x",  FormDetails.x);
-		Reg.WriteInteger(L"y",  FormDetails.y);
-		Reg.WriteInteger(L"w",  FormDetails.w);
-		Reg.WriteInteger(L"h",  FormDetails.h);
-		Reg.WriteInteger(L"p1", FormDetails.p1);
-		Reg.WriteInteger(L"p2", FormDetails.p2);
-		Reg.WriteInteger(L"p3", FormDetails.p3);
-		Reg.WriteInteger(L"p4", FormDetails.p4);
-
-		Reg.CloseKey;
-		Reg.Free;
-	}         */
+			Registry::Close(hKey);
+		}
+	}
 }
 
 
 bool SettingsHandler::ClearFormDetails(int FormId)
-{    /*
-	if (customsettings.SettingsSaveLocation = SaveLocationConfigIni)
+{
+	if (Custom.SettingsSaveLocation == SettingsSource::ConfigIni)
 	{
-		try
-		  config = TINIFile.Create(GSystemGlobal.ExePath + L"custom.ini");
+		Ini *ini = new Ini(GSystemGlobal->ExePath + L"\\custom.ini");
 
-		  config.EraseSection(L"Form_" + std::to_wstring(aFormID));
-		finally
-		  config.Free;
-		end;
+		if (ini->DeleteSection(L"Form_" + std::to_wstring(FormId)))
+		{
+			ini->SaveFile(GSystemGlobal->ExePath + L"\\custom.ini");
+		}
+
+		delete ini;
 	}
 	else
 	{
-		Reg = TRegistry.Create(KEY_WRITE);
+		HKEY hKey;
 
-		Reg.RootKey = HKEY_CURRENT_USER;
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath + L"\\Form_" + std::to_wstring(FormId), true) == ERROR_SUCCESS)
+		{
+			if (Registry::Delete(hKey, L"\\software\\" + __XRegistryPath + L"\\Form_" + std::to_wstring(FormId)) != ERROR_SUCCESS)
+			{
+                // error
+			}
 
-		Reg.DeleteKey(L"\\software\\" + XinorbisRegistryKey + L"\\Form_" + std::to_wstring(aFormID));
-
-		Reg.CloseKey;
-		Reg.Free;
-	}  */
+			Registry::Close(hKey);
+		}
+	}
 
     return false;
 }

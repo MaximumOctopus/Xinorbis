@@ -12,9 +12,17 @@
 
 #include <fstream>
 
+#include "ConstantsSystem.h"
+#include "Registry.h"
 #include "ScanHistoryHandler.h"
 
 ScanHistoryHandler *GScanHistoryHandler;
+
+
+ScanHistoryHandler::~ScanHistoryHandler()
+{
+	Save();
+}
 
 
 void ScanHistoryHandler::Add(const std::wstring path, const std::wstring exclude_files, const std::wstring exclude_folders)
@@ -27,6 +35,9 @@ bool ScanHistoryHandler::Load(const std::wstring path, bool from_file)
 {
 	if (from_file)
 	{
+		FilePath = path;
+        FromFile = from_file;
+
 		std::wifstream file(path);
 
 		if (file)
@@ -89,30 +100,39 @@ bool ScanHistoryHandler::Load(const std::wstring path, bool from_file)
 		}
 	}
 	else
-	{ /*
-		FReg := TRegistry.Create(KEY_READ);
+	{
+		HKEY hKey;
 
-		try
-		  FReg.RootKey := HKEY_CURRENT_USER;
-		  FReg.OpenKey('\software\' + XinorbisRegistryKey + '\SinglePaths', True);
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath + L"\\SinglePaths", true) != ERROR_SUCCESS)
+		{
+			bool success = true;
+			int ordinal = 0;
 
-		  t := 0;
-		  While FReg.ValueExists('PathX' + IntToStr(t)) do begin
-			tsho := TScanHistoryObject.Create;
+			do
+			{
+				std::wstring path = Registry::ReadString(hKey, L"PathX" + std::to_wstring(ordinal), L"");
 
-			tsho.Path           := FReg.ReadString('PathX' + IntToStr(t));
-			tsho.DateI          := StrToIntDef(FReg.ReadString('PathY' + IntToStr(t)), 19000101);
-			tsho.TimeI          := FReg.ReadString('PathZ' + IntToStr(t));
-			tsho.ExcludeFiles   := FReg.ReadString('PathE1' + IntToStr(t));
-			tsho.ExcludeFolders := FReg.ReadString('PathE2' + IntToStr(t));
+				if (!path.empty())
+				{
+					ScanHistoryItem *shi = new ScanHistoryItem();
+					shi->Path = path;
+					shi->Date = Registry::ReadInteger(hKey, L"PathY" + std::to_wstring(ordinal), 19900101);
+					shi->Time = Registry::ReadString(hKey, L"PathZ" + std::to_wstring(ordinal), L"00:00");
+					shi->ExcludeFiles = Registry::ReadString(hKey, L"PathE1" + std::to_wstring(ordinal), L"");
+					shi->ExcludeFolders = Registry::ReadString(hKey, L"PathE2" + std::to_wstring(ordinal), L"");
 
-			ScanHistory.Add(tsho);
+					History.push_back(shi);
 
-			inc(t);
-		  end;
+				}
+				else
+				{
+					success = false;
+				}
+			}
+			while (success);
 
-		finally
-		  FReg.Free; */
+			Registry::Close(hKey);
+        }
 	}
 
 	return false;
@@ -123,19 +143,18 @@ void ScanHistoryHandler::Clear()
 {
 	History.clear();
 
-/*	Reg = TRegistry.Create(KEY_WRITE);
+	HKEY hKey;
 
-	try
-	  Reg.RootKey = HKEY_CURRENT_USER;
-	  Reg.DeleteKey('\software\' + XinorbisRegistryKey + L"\SinglePaths');
-	finally
-	 Reg.Free;
-	end;
-  end; TO DO DO DO */
+	if (Registry::Open(hKey, L"\\software\"" + __XRegistryPath + L"\\SinglePaths", false) == ERROR_SUCCESS)
+	{
+		Registry::Delete(hKey, L"\\software\"" + __XRegistryPath + L"\\SinglePaths");
+
+		Registry::Close(hKey);
+	}
 }
 
 
-bool ScanHistoryHandler::Save(const std::wstring path, bool from_file)
+bool ScanHistoryHandler::Save()
 {
     return false;
 }

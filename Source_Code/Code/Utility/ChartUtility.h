@@ -34,9 +34,12 @@ namespace ChartUtility
 
 	void SaveChartToPNG(TChart*, const std::wstring);
 
+    void SetChartTo(TChart*, int);
+
+	void ChangeChartToBar(TChart*, bool);
+	void ChangeChartToHorizontalBar(TChart*, bool);
 	void ChangeChartToPie(TChart*);
 
-	void ChangeChartToHorizontalBar(TChart*, bool);
 
 	ChartType GetChartType(TChart *);
 	int GetChartTypeInt(TChart *);

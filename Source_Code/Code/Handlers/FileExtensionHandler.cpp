@@ -18,6 +18,8 @@
 #include "ConstantsReports.h"
 #include "FileExtension.h"
 #include "FileExtensionHandler.h"
+#include "Formatting.h"
+#include "Registry.h"
 #include "Utility.h"
 
 FileExtensionHandler* GFileExtensionHandler;
@@ -27,15 +29,24 @@ bool sortByName (FileExtension *lhs, FileExtension *rhs) {return lhs->Name < rhs
 
 FileExtensionHandler::FileExtensionHandler(const std::wstring folder)
 {
-	LoadDefaultFileExtensions(folder);
+	LoadFileExtensions(folder, false);
 }
 
 
-bool FileExtensionHandler::LoadDefaultFileExtensions(const std::wstring folder)
+bool FileExtensionHandler::LoadFileExtensions(const std::wstring folder, bool force_default)
 {
+	Extensions.clear();
+
+	std::wstring path = folder;
+
+	if (force_default)
+	{
+		path += L"DefaultExtensions\\";
+	}
+
 	for (int t = 0; t < kFileCategoriesCount; t++)
 	{
-		std::wstring FileName = folder + L"system\\config\\DefaultExtensions\\" + kFileExtensionFileName[t] + L".txt";
+		std::wstring FileName = path + L"system\\config\\" + kFileExtensionFileName[t] + L".txt";
 
 		std::wifstream file(FileName);
 
@@ -104,85 +115,57 @@ void FileExtensionHandler::Sort()
 }
 
 
-bool FileExtensionHandler::SaveFileExtensionLists(const std::wstring path, bool mode)
+bool FileExtensionHandler::SaveFileExtensionLists(const std::wstring path, bool to_registry, bool to_local_path)
 {
-/*
-function TFileExtensionsObject.SaveFileExtensionLists(aSaveMode : boolean): boolean;
- var
-  t,z,x,i : integer;
-  Reg : TRegistry;
-  tf : TextFile;
+	if (to_registry)
+	{
+		HKEY hKey;
 
- begin
-  Result := True;
+		for (int z = 0; z < kFileCategoriesCount; z++)
+		{
+			if (Registry::Open(hKey, L"\\software\\MaximumOctopus\\\Xinorbis10\\FileExt" + std::to_wstring(z), true) == ERROR_SUCCESS)
+			{
+				for (int c = 0; c < Extensions.size(); c++)
+				{
+					if (Extensions[c]->Category == z)
+					{
+						Registry::WriteString(hKey, L"Ext" + std::to_wstring(c), Extensions[c]->Name);
+					}
+				}
 
-  if aSaveMode = SaveLocationRegistry then begin
+				Registry::WriteString(hKey, L"Ext" + std::to_wstring(Extensions.size()), L":");
 
-    Reg := TRegistry.Create(KEY_WRITE);
-    try
-      Reg.RootKey := HKEY_CURRENT_USER;
+				Registry::Close(hKey);
+            }
+        }
+	}
 
-      for z := 0 to __FileCategoriesCount do begin
-        Reg.OpenKey('\software\' + XinorbisRegistryKey + '\FileExt' + IntToStr(z), True);
+	if (to_local_path)
+	{
+		for (int z = 0; z < kFileCategoriesCount; z++)
+		{
+			std::ofstream file(path + L"system\\config\\" + kFileExtensionFileName[z] + L".txt");
 
-        t := 1;
+			if (file)
+			{
+				for (int c = 0; c < Extensions.size(); c++)
+				{
+					if (Extensions[c]->Category == z)
+					{
+						file << Formatting::to_utf8(Extensions[c]->Name + L"\n");
+					}
+				}
 
-        for i := 0 to CategoryExtensions.Count - 1 do begin
-          if CategoryExtensions[i].Category = z then begin
-			Reg.WriteString('Ext' + IntToStr(t), CategoryExtensions[i].Name);
+				file.close();
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
 
-            inc(t);
-          end;
-        end;
-
-        // remove any keys that shouldn't be there as they've been deleted / re-organised -------
-        for x := t to 300 do begin
-          Reg.DeleteValue('Ext' + IntToStr(x));
-        end;
-        // --------------------------------------------------------------------------------------
-      end
-    finally
-      Reg.Free;
-    end;
-
-    Reg := TRegistry.Create(KEY_WRITE);
-    try
-      Reg.RootKey := HKEY_CURRENT_USER;
-      Reg.OpenKey('\software\' + XinorbisRegistryKey + '\ChartColours', True);
-
-      for t := 1 to __FileCategoriesCount do
-        Reg.WriteInteger('ChartColour' + IntToStr(t), GSystemGlobal.FileCategoryColors[t]);
-    finally
-      Reg.Free;
-    end;
-  end
-  else begin
-    for z := 0 to __FileCategoriesCount do begin
-
-	  AssignFile(tf, path + 'system\\config\\DefaultExtensions\\' + defaultextfn[z] + '.txt');
-
-      {$I-}
-      Rewrite(tf);
-
-      if IOResult <> 0 then begin
-        Result := False;
-
-        TMSLogger.Error('Error saving "' + GSystemGlobal.ExePath + 'data\' + defaultextfn[z] + '.txt".');
-      end
-      else begin
-        for i := 0 to CategoryExtensions.Count - 1 do begin
-          if CategoryExtensions[i].Category = z then
-            Writeln(tf, CategoryExtensions[i].Name);
-        end;
-
-        CloseFile(tf);
-      end;
-      {$I+}
-    end;
-  end;
-end;*/
-
-	return false; // to
+    return true;
 }
 
 

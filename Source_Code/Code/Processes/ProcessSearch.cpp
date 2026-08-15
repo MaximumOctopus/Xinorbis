@@ -295,14 +295,14 @@ int ProcessSearch::Execute(Command command)
 							{
 								std::wstring parameter(SearchTerms[x].substr(1));
 
-								if (filename.find(parameter) == filename.size() - SearchTerms[x].size() + 2) // to do check!
+								if (filename.find(parameter) == filename.size() - SearchTerms[x].size() - 1)
 								{
 									Found = true;
 								}
 							}
 							else if (z == SearchTerms[x].size() - 1)
 							{
-								std::wstring parameter(SearchTerms[x].substr(0, SearchTerms[x].size() - 1));
+								std::wstring parameter(SearchTerms[x].substr(0, SearchTerms[x].size() - 2));
 
 								if (filename.find(parameter) != std::wstring::npos)
 								{

@@ -10,10 +10,12 @@
 //
 // =====================================================================
 
+#include <Vcl.Graphics.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 #include <VCLTee.Series.hpp>
 
 #include "ChartUtility.h"
+#include "ConstantsGui.h"
 #include "SettingsHandler.h"
 
 extern SettingsHandler *GSettingsHandler;
@@ -96,7 +98,48 @@ void ChartUtility::SaveChartToPNG(TChart *chart, const std::wstring file_name)
 }
 
 
-void ChartUtility::ChangeChartToPie(TChart* chart)
+void ChartUtility::SetChartTo(TChart *chart, int new_type)
+{
+	switch (new_type)
+	{
+	case kChartTypeUnknown:
+		break;
+	case kChartTypePie:
+		ChangeChartToPie(chart);
+		break;
+	case kChartTypeBar:
+		ChangeChartToBar(chart, false);
+		break;
+	case kChartTypeHorizontal:
+		ChangeChartToHorizontalBar(chart, false);
+		break;
+	}
+}
+
+
+void ChartUtility::ChangeChartToBar(TChart *chart, bool is_folder_list)
+{
+	if (GetChartType(chart) != ChartType::kBar)
+	{
+		TChartSeries *old = chart->Series[0];
+
+		ChangeSeriesType(old, __classid(TBarSeries));
+
+		if (is_folder_list)
+		{
+			chart->Series[0]->Marks->Style = smsXValue;
+		}
+		else
+		{
+			chart->Series[0]->Marks->Style = smsPercent;
+		}
+
+		chart->View3D = false;
+	}
+}
+
+
+void ChartUtility::ChangeChartToPie(TChart *chart)
 {
 	if (GetChartType(chart) != ChartType::kPie)
 	{
@@ -185,31 +228,18 @@ int ChartUtility::GetChartTypeInt(TChart *chart)
 
 void ChartUtility::CopyChartToClipboard(TChart *chart)
 {
-/*
-	bmp : TBitmap;
-	zig : TRect;
+	if (chart != nullptr)
+	{
+		TBitmap *bm = new TBitmap();
+		bm->Width = chart->Width;
+		bm->Height = chart->Height;
 
-	begin
-	Assert(chart <> Nil, 'CopyChartToClipboard :: Chart nil!');
+		chart->Draw(bm->Canvas, Rect(0, 0, bm->Width, bm->Height));
 
-	if chart <> nil then begin
-	bmp := TBitmap.Create;
-	bmp.Width  := chart.width;
-	bmp.Height := chart.Height;
+		Clipboard()->Assign(bm);
 
-	try
-	  zig.Top    := 0;
-	  zig.Left   := 0;
-	  zig.Right  := bmp.width;
-	  zig.Bottom := bmp.Height;
-
-	  chart.Draw(bmp.Canvas, zig);
-
-	  Clipboard.Assign(bmp);
-	finally
-	  bmp.Free;
-	end;
-	end; */
+		delete bm;
+	}
 }
 
 

@@ -31,13 +31,13 @@ public:
 
 	FileExtensionHandler(const std::wstring);
 
-	bool LoadDefaultFileExtensions(const std::wstring);
+	bool LoadFileExtensions(const std::wstring, bool);
 
 	bool LoadDescriptions(const std::wstring);
 
 	void Sort();
 
-	bool SaveFileExtensionLists(const std::wstring, bool);
+	bool SaveFileExtensionLists(const std::wstring, bool, bool);
 
 	int GetExtensionCategoryIDFromName(const std::wstring);
 	ExtensionSearch GetExtensionCategoryID(const std::wstring);

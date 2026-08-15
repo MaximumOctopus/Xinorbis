@@ -270,7 +270,7 @@ namespace Utility
 
 			if (file_name.find(L"$XD") != std::wstring::npos)
 			{
-				pfn = ReplaceString(pfn, L"$XD", GSystemGlobal->ExePath[1] + L":");
+				pfn = ReplaceString(pfn, L"$XD", GSystemGlobal->ExePath.substr(0, 2));
 			}
 
 			if (file_name.find(L"$XF") != std::wstring::npos)

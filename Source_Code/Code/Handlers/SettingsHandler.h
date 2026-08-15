@@ -25,6 +25,7 @@
 #include "ReportCSVOptions.h"
 #include "ReportDateOptions.h"
 #include "ReportHTMLOptions.h"
+#include "ReportHTMLCompareOptions.h"
 #include "ReportJSONOptions.h"
 #include "ReportSummaryOptions.h"
 #include "ReportTextOptions.h"
@@ -42,6 +43,12 @@ struct CustomSettings
 	SettingsSource SettingsSaveLocation = SettingsSource::None;
 
 	bool CopyPreferences = false;
+};
+
+
+struct FolderHistorySettings
+{
+	bool Compare[2][6];
 };
 
 
@@ -79,13 +86,40 @@ struct GeneralSettings
 	int PostScanMode = 0;
 	int PostScanIPPage = 0;
 
+	bool SaveLog = false;
+
 	std::wstring CustomViewer = L"";
+
+	int DateFormatToInt()
+	{
+		switch (FormatDate)
+		{
+		case DateFormat::kSlashDDMMYYYY:
+			return 0;
+		case DateFormat::kSlashMMDDYYYY:
+			return 1;
+		case DateFormat::kSlashYYYYMMDD:
+			return 2;
+		case DateFormat::kHyphenDDMMYYYY:
+			return 3;
+		case DateFormat::kHyphenMMDDYYYY:
+			return 4;
+		case DateFormat::kYYYYMMDD:
+			return 5;
+		};
+
+        return 2;
+	}
 };
 
 
 struct HistorySettings
 {
 	bool Enabled = false;
+
+	bool FullLogging = false;
+
+    bool SQLinSearch = false;
 };
 
 
@@ -129,15 +163,19 @@ struct ReportSettings
 	std::wstring XinorbisCommand = L"";
 	std::wstring XMLCommand = L"";
 
+	std::wstring HTMLCompareCommand = L"";
+
 	CSVReportOptions CSV[kReportTypeCount];
 	DateReportOptions Date[kReportTypeCount];
 	HTMLReportOptions HTML[kReportTypeCount];
 	JSONReportOptions JSON[kReportTypeCount];
-    SummaryReportOptions Summary;
+	SummaryReportOptions Summary;
 	TextReportOptions Text[kReportTypeCount];
 	TreeReportOptions Tree[kReportTypeCount];
 	XinorbisReportOptions Xinorbis[kReportTypeCount];
 	XMLReportOptions XML[kReportTypeCount];
+
+	HTMLCompareReportOptions HTMLCompare;
 
 	bool AutoSaveMode = false;
 	bool AutoSaveOrganise = false;
@@ -148,6 +186,8 @@ struct ReportSettings
 struct AppearanceSettings
 {
 	int RowHeight = 17;
+
+	int TableBandColour = 0;
 
 	int BarColours[6] = { 0, 0, 0, 0, 0, 0 };
 };
@@ -162,7 +202,9 @@ struct SystemSettings
 	LanguageType CurrentLanguage = LanguageType::kUndefined;
 	int HandleMultipleExt = 0;
 
-    bool Tutorial = false;
+	bool Tutorial = false;
+
+    int RunX = 0;
 
 	bool Debug = false;
 };
@@ -199,13 +241,15 @@ class SettingsHandler
 
     bool ClearFormDetails(int);
 
-	bool LoadBasic();
+	bool Load();
 	bool LoadCustomSettings();
 	bool LoadLanguage();
 
 	int LanguageToInt(LanguageType);
 
 public:
+
+	FormDetails FDMain;
 
 	TFormatSettings XinorbisFormat;
 
@@ -216,10 +260,11 @@ public:
 	AppearanceSettings Appearance;
 	CustomSettings Custom;
 	DatabaseSettings Database;
-    HistorySettings History;
+	FolderHistorySettings FolderHistory;
+	HistorySettings History;
 	GeneralSettings General;
 	OptimisationSettings Optimisations;
-    NavigationOptions Navigation;
+	NavigationOptions Navigation;
 	ReportSettings Reports;
 	SystemSettings System;
 	FTPSettings FTP;
@@ -228,7 +273,7 @@ public:
 	int ProgressPercentage = 10;
 	int ProgressFileCount = 10000;
 
-    std::wstring QuickFolders[kQuickFolderCount];
+	std::wstring QuickFolders[kQuickFolderCount];
 
 	int FileCategoryColors[kFileCategoriesCount]; // 0 is a hack for "folders"
 
@@ -242,6 +287,8 @@ public:
 	bool SaveDefaults();
 
 	SettingsHandler();
+
+    bool Save(int, int, int, int, const std::wstring);
 
 	bool OpenSettings(bool);
 	bool CloseSettings();

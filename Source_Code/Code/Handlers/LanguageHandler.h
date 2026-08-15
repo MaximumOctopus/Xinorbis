@@ -78,4 +78,6 @@ public:
 	std::wstring GetLanguageSymbol(LanguageType);
 	std::wstring GetLanguageSymbol(void);
 	LanguageType OrdinalToLanguageSymbol(int);
+
+    int CategoryIdFromDescription(const std::wstring);
 };

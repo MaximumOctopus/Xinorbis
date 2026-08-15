@@ -22,8 +22,10 @@ extern LanguageHandler *GLanguageHandler;
 extern SettingsHandler *GSettingsHandler;
 
 
-void HTMLPreview::Get(std::vector<std::wstring> &output, HTMLReportOptions &options, HTMLColours &colour)
+std::wstring HTMLPreview::Get(HTMLReportOptions &options, HTMLColours &colour)
 {
+	std::vector<std::wstring> output;
+
 	std::vector<std::wstring> Menu;
 
 	std::wstring align = L"";
@@ -81,6 +83,15 @@ void HTMLPreview::Get(std::vector<std::wstring> &output, HTMLReportOptions &opti
 	output.push_back(L"</tr>");
 	output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[6]) + L"\" class=\"C7G\"><td align=\"center\">(c) Paul Alan Freshney 2002-" + DateUtility::CurrentYear() + L"</td></tr>");
 	output.push_back(L"</table></body></html>");
+
+	std::wstring html = L"";
+
+	for (int t = 0; t < output.size(); t++)
+	{
+		html += output[t];
+	}
+
+    return html;
 }
 
 
@@ -212,11 +223,11 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		{
 			if (t % 2)
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[9]) + L"\">");
 			}
 			else
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
 			}
 
 			output.push_back(   L"<td width=\"100\" class=\"C4G\">");
@@ -262,11 +273,11 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		{
 			if (t % 2)
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">)");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[9]) + L"\">)");
 			}
 			else
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
             }
 
 			output.push_back(   L"<td width=\"100\" class=\"C4\"><div align=\"left\">" + GLanguageHandler->TypeDescriptions[t] + L"</div></td>");
@@ -319,11 +330,11 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 
 			if (t & 2)
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[9]) + L"\">");
 			}
 			else
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
 			}
 
 			output.push_back(   L"<td width=\"387\" class=\"C4G\"><div align=\"left\">Preview Folder #" + std::to_wstring(t) + L"</div></td>");
@@ -361,11 +372,11 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		{
 			if (t % 2)
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[9]) + L"\">");
 			}
 			else
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
 			}
 
 			output.push_back(   L"<td width=\"100\" class=\"C4G\"><div align=\"left\">" + kMagnitudeLabelsShort[t] + L"</div></td>");
@@ -451,7 +462,7 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		output.push_back(L"</table>");
 		output.push_back(L"</td>");
 		output.push_back(L"</tr>");
-		output.push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+		output.push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
 		output.push_back(L"<td width=\"100\" height=\"13\">Mrs. S Quirrel</td>");
 		output.push_back(L"<td width=\"64\" height=\"13\"><div align=\"center\">123</div></td>");
 		output.push_back(L"<td width=\"64\" height=\"13\"><div align=\"center\">24</div></td>");
@@ -491,11 +502,11 @@ void HTMLPreview::AddHTMLReportItem(std::vector<std::wstring> &output, std::vect
 		{
 			if (t % 2)
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[9]) + L"\">");
 			}
 			else
 			{
-				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[11]) + L"\">");
+				output.push_back(L"<tr bgcolor=\"#" + Convert::WebColour(colour.Colour[10]) + L"\">");
 			}
 
 			output.push_back(L"<td width=\"100\" class=\"C4G\"><div align=\"left\">" + std::to_wstring(t * 5) + L"</div></td>");

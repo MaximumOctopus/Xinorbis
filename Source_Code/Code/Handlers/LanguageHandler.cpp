@@ -412,3 +412,21 @@ std::wstring LanguageHandler::GetUnit(int unit)
 
 	return L"?";
 }
+
+
+int LanguageHandler::CategoryIdFromDescription(const std::wstring name)
+{
+	for (int t = 0; t < 20; t++)
+	{
+		std::wstring tdlc = name;
+
+		std::transform(tdlc.begin(), tdlc.end(), tdlc.begin(), ::tolower);
+
+		if (TypeDescriptions[t] == tdlc)
+		{
+			return t;
+		}
+	}
+
+    return -1;
+}

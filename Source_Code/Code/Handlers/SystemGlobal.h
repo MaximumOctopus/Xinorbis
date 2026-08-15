@@ -21,7 +21,7 @@ class SystemGlobal
 
 	void Init();
 
-	bool InstallationCheck();
+	bool InstallationCheck(const std::wstring);
 
 public:
 

@@ -10,216 +10,164 @@
 //
 // =====================================================================
 
+#include "ConstantsGui.h"
+#include "Convert.h"
 #include "NavigateRightSide.h"
+#include "ScanEngine.h"
+#include "SettingsHandler.h"
+
+extern ScanEngine *GScanEngine;
+extern SettingsHandler *GSettingsHandler;
 
 
-/*
+void NavigateRightSide::SetData(TStringGrid* grid, int data_source, int from_folder_id, unsigned __int64 p, bool filter_changed)
 {
-  (c) Paul Alan Freshney 2002-2020
-  (c) Aardvark Digital 2002
-  (c) Maximum Octopus Limted 2020
-
-  www.freshney.org :: paul@freshney.org :: maximumoctopus.com :: xinorbis.com
-
-  Last Modified: January 11th 2020
+	DataSource = data_source;
+	FromFolderId = from_folder_id;
+	FolderSize = p;
+	OutputGrid = grid;
+	FilterChanged = filter_changed;
 }
 
 
-unit X.Thread.NavigateRight;
+void NavigateRightSide::Execute()
+{
+	std::wstring s = L"";
+	int orderx = 0;
+	unsigned __int64 FileSize = 0;
+	int FileCount   = 0;
+	int FolderCount = 0;
 
-interface
+    SizeOfFolder sof;
 
-uses
-  Classes, AdvGrid, SyncObjs,
+	if (GScanEngine->Data[DataSource].Files.size() == 0) return;
 
-  X.ScanAnalysis, X.CSizeOfFolder, X.SystemGlobal;
+	//TGridUtility.ClearStringGird(Grid, False);
 
+	GScanEngine->FolderStructure.push_back(GScanEngine->Data[DataSource].Folders[FromFolderId] + L"?" + std::to_wstring(FolderSize));
 
-type
-  TNavigateRightThread = class(TThread)
-  private
-    FFileSize    : Int64;
-    FFileCount   : integer;
-    FFolderCount : integer;
-  public
-    procedure SetData(aSource, aFromfolderID : integer; p : int64; g : TAdvStringGrid; aFilterChanged : boolean);
+	GScanEngine->CurrentNavigationSideLocation = GScanEngine->Data[DataSource].Folders[FromFolderId];
 
-    destructor Destroy; override;
+	int row = 1;
 
-    property FileSize    : Int64   read FFileSize;
-    property FileCount   : integer read FFileCount;
-    property FolderCount : integer read FFolderCount;
-  protected
-    FSource      : integer;
+	for (FileObject *file : GScanEngine->Data[DataSource].Files)
+	{
+		if (file->FilePathIndex == FromFolderId)
+		{
+			if (faDirectory & file->Attributes ||
+				GSettingsHandler->Navigation.Display[1][file->Category] == L'1')
+			{
+				if (!(faDirectory & file->Attributes))  // file
+				{
+					OutputGrid->Cells[ksgnFileName][row] = file->Name.c_str();
 
-    fromfolderID : integer;
-    foldersize   : int64;
-    Grid         : TAdvStringGrid;
-    FFilterChanged : boolean;
+					OutputGrid->Cells[ksgnStringSize][row]  = Convert::ConvertToUsefulUnit(file->Size).c_str();
+					OutputGrid->Cells[ksgnIntegerSize][row] = std::to_wstring(file->Size).c_str();
 
-    procedure Execute; override;
-  end;
+					FileSize += file->Size;
 
-implementation
+					if (FolderSize != 0)
+					{
+						OutputGrid->Cells[ksgnStringPCent][row]  = Convert::DoubleToPercent(file->Size / FolderSize).c_str();
+						OutputGrid->Cells[ksgnIntegerPCent][row] = std::round((file->Size / FolderSize) * 50);
+					}
+					else
+					{
+						OutputGrid->Cells[ksgnStringPCent][row]  = L"100%";
+						OutputGrid->Cells[ksgnIntegerPCent][row] = L"100";
+					}
 
- uses {main,} Contnrs, sysutils,
+					OutputGrid->Cells[ksgnFolderFile][row]     = L"0";
 
-      X.Constants, X.Utility, X.GridUtility, X.Global, X.Settings, X.CFileObject,
-      X.CUserData, X.Conversions, X.GlobalObjects;
+					OutputGrid->Cells[ksgnCreatedDate][row]    = Convert::IntDateToString(file->DateCreated).c_str();
+					OutputGrid->Cells[ksgnAccessedDate][row]   = Convert::IntDateToString(file->DateAccessed).c_str();
+					OutputGrid->Cells[ksgnModifiedDate][row]   = Convert::IntDateToString(file->DateModified).c_str();
+					OutputGrid->Cells[ksgnUserName][row]       = GScanEngine->Data[DataSource].Users[file->Owner]->Name.c_str();
 
+					s = L"----";
+					if (faArchive & file->Attributes)  s[0] = L'A';
+					if (faReadOnly & file->Attributes) s[1] = L'R';
+					if (faSysFile & file->Attributes)  s[2] = L'S';
+					if (faHidden & file->Attributes)   s[3] = L'H';
 
-destructor TNavigateRightThread.Destroy;
-begin
-  inherited;
-end;
+					OutputGrid->Cells[ksgnAttributes][row]     = s.c_str();
 
+					OutputGrid->Cells[ksgnSizeOnDisk][row]     = Convert::ConvertToUsefulUnit(file->SizeOnDisk).c_str();
+					OutputGrid->Cells[ksgnIntegetSoD][row]     = file->SizeOnDisk;
 
-procedure TNavigateRightThread.SetData(aSource, aFromfolderID : integer; p : int64; g : TAdvStringGrid; aFilterChanged : boolean);
- begin
-  FSource        := aSource;
-  fromfolderID   := aFromfolderID;
-  foldersize     := p;
-  Grid           := g;
-  FFilterChanged := aFilterChanged;
-end;
+					OutputGrid->Cells[ksgnOrderIndex][row]     = orderx + 500000;
 
+					OutputGrid->Cells[ksgnCategoryIndex][row]  = file->Category;
 
-procedure TNavigateRightThread.Execute;
-var
-  i, orderx, rowidx : integer;
-  s : string;
-  tsof : TSizeOfFolder;
+					FileCount++;
+				}
+				else   // folder
+				{
+					// cache the results in the FileSize & FileSizeOnDisk parameters of the file object as these aren"t used for folders
+					// ===================================================================================================================
+					if (file->Size == 0 || FilterChanged)
+					{
+						sof = GScanEngine->SizeOfFolderNav(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name,
+														   GSettingsHandler->Navigation.Display[1]);
 
-begin
-  s            := '';
-  i            := 0;
-  orderx       := 0;
-  FFileSize    := 0;
-  FFileCount   := 0;
-  FFolderCount := 0;
+						file->Size = sof.Size;
+						file->SizeOnDisk = sof.SizeOnDisk;
+					}
+					else
+					{
+						sof.Size = file->Size;
+						sof.SizeOnDisk = file->SizeOnDisk;
+					}
 
-  if GScanDetails[FSource].Files.Count > 0 then begin
-    TGridUtility.ClearStringGird(Grid, False);
+					OutputGrid->Cells[ksgnFileName][row]   = file->Name.c_str();
 
-    GSystemGlobal.FolderStructure.Add(GScanDetails[FSource].Folders[fromfolderID] + '?' + IntToStr(foldersize));
+					OutputGrid->Cells[ksgnStringSize][row] = Convert::ConvertToUsefulUnit(sof.Size).c_str();
 
-    GSystemGlobal.CurrentNavigationSideLocation := GScanDetails[FSource].Folders[fromfolderID];
+					s = L"----";
+					if (faArchive & file->Attributes)  s[0] = L'A';
+					if (faReadOnly & file->Attributes) s[1] = L'R';
+					if (faSysFile & file->Attributes)  s[2] = L'S';
+					if (faHidden & file->Attributes)   s[3] = L'H';
 
-    while i < GScanDetails[FSource].Files.Count do begin
-      if GScanDetails[FSource].Files.Items[i].FilePathIndex = fromfolderID then begin
+					OutputGrid->Cells[ksgnAttributes][row]     = s.c_str();
 
-        rowidx := Grid.RowCount - 1;
+					OutputGrid->Cells[ksgnSizeOnDisk][row]     = Convert::ConvertToUsefulUnit(sof.SizeOnDisk).c_str();
+					OutputGrid->Cells[ksgnIntegetSoD][row]     = sof.SizeOnDisk;
 
-        if ((faDirectory and GScanDetails[FSource].Files.Items[i].Attributes) = faDirectory) or
-           (XSettings.Navigation.DisplayOptions[1][GScanDetails[FSource].Files.Items[i].FileCategory] = '1') then begin
+					OutputGrid->Cells[ksgnCreatedDate][row]    = Convert::IntDateToString(file->DateCreated).c_str();
+					OutputGrid->Cells[ksgnAccessedDate][row]   = Convert::IntDateToString(file->DateAccessed).c_str();
+					OutputGrid->Cells[ksgnModifiedDate][row]   = Convert::IntDateToString(file->DateModified).c_str();
+					OutputGrid->Cells[ksgnUserName][row]       = GScanEngine->Data[DataSource].Users[file->Owner]->Name.c_str();
 
-          if ((faDirectory and GScanDetails[FSource].Files.Items[i].Attributes) <> faDirectory) then begin  // file
-            Grid.Cells[sgnFileName, rowidx]       := GScanDetails[FSource].Files.Items[i].FileName;
+					if (FolderSize != 0)
+					{
+						OutputGrid->Cells[ksgnStringPCent][row]  = Convert::DoubleToPercent(sof.Size / FolderSize).c_str();
+						OutputGrid->Cells[ksgnIntegerPCent][row] = std::round((sof.Size / FolderSize) * 50);
+					}
+					else
+					{
+						OutputGrid->Cells[ksgnStringPCent][row]  = L"100%";
+						OutputGrid->Cells[ksgnIntegerPCent][row] = L"100";
+					}
 
-            Grid.Cells[sgnStringSize, rowidx]     := TConvert.ConvertToUsefulUnit(GScanDetails[FSource].Files.Items[i].FileSize);
-            Grid.Cells[sgnIntegerSize, rowidx]    := IntToStr(GScanDetails[FSource].Files.Items[i].FileSize);
+					OutputGrid->Cells[ksgnIntegerSize][row]    = sof.Size;
 
-            inc(FFileSize, GScanDetails[FSource].Files.Items[i].FileSize);
+					FileSize += sof.Size;
 
-            if foldersize <> 0 then begin
-              Grid.Cells[sgnStringPCent, rowidx]  := TConvert.RealToPercent(GScanDetails[FSource].Files.Items[i].FileSize / foldersize);
-              Grid.Cells[sgnIntegerPCent, rowidx] := IntToStr(Round((GScanDetails[FSource].Files.Items[i].FileSize / foldersize) * 50));
-            end
-            else begin
-              Grid.Cells[sgnStringPCent, rowidx]   := '100%';
-              Grid.Cells[sgnIntegerPCent, rowidx] := '100';
-            end;
+					OutputGrid->Cells[ksgnFolderFile][row]     = L"1";
+					OutputGrid->Cells[ksgnOrderIndex][row]     = orderx;
 
-            Grid.Cells[sgnFolderFile, rowidx]     := '0';
+					OutputGrid->Cells[ksgnCategoryIndex][row]  = L"0";
 
-            Grid.Cells[sgnCreatedDate, rowidx]    := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateC);
-            Grid.Cells[sgnAccessedDate, rowidx]   := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateA);
-            Grid.Cells[sgnModifiedDate, rowidx]   := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateM);
-            Grid.Cells[sgnUserName, rowidx]       := GScanDetails[FSource].Users[GScanDetails[FSource].Files.Items[i].Owner].Name;
+					FolderCount++;
+				}
 
-            s := '----';
-            if ((Sysutils.faArchive and  GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faArchive) then  s[1] := 'A';
-            if ((Sysutils.faReadOnly and GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faReadOnly) then s[2] := 'R';
-            if ((Sysutils.faSysFile and  GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faSysFile) then  s[3] := 'S';
-            if ((Sysutils.faHidden and   GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faHidden) then   s[4] := 'H';
+				OutputGrid->RowCount++;
 
-            Grid.Cells[sgnAttributes, rowidx]     := s;
+				row++;
 
-            Grid.Cells[sgnSizeOnDisk, rowidx]     := TConvert.ConvertToUsefulUnit(GScanDetails[FSource].Files.Items[i].FileSizeOnDisk);
-            Grid.Cells[sgnIntegetSoD, rowidx]     := IntToStr(GScanDetails[FSource].Files.Items[i].FileSizeOnDisk);
-
-            Grid.Cells[sgnOrderIndex, rowidx]     := IntToStr(orderx + 50000);
-
-            Grid.Cells[sgnCategoryIndex, rowidx]  := IntToStr(GScanDetails[FSource].Files.Items[i].FileCategory);
-
-            inc(FFileCount);
-          end
-          else begin   // folder
-            // cache the results in the FileSize and FileSizeOnDisk parameters of the file object as these aren't used for folders
-            // ===================================================================================================================
-            if ((GScanDetails[FSource].Files.Items[i].FileSize = 0) or (FFilterChanged)) then begin
-
-              tsof := GXinorbisScan.SizeOfFolderNav(1, GScanDetails[FSource].Folders[GScanDetails[FSource].Files.Items[i].FilePathIndex] + GScanDetails[FSource].Files.Items[i].FileName);
-
-              GScanDetails[FSource].Files.Items[i].FileSize       := tsof.Data[XFileSize];
-              GScanDetails[FSource].Files.Items[i].FileSizeOnDisk := tsof.Data[XFileUsed];
-            end
-            else begin
-              tsof.Data[XFileSize] := GScanDetails[FSource].Files.Items[i].FileSize;
-              tsof.Data[XFileUsed] := GScanDetails[FSource].Files.Items[i].FileSizeOnDisk;
-            end;
-
-            Grid.Cells[sgnFileName, rowidx]   := GScanDetails[FSource].Files.Items[i].FileName;
-
-            Grid.Cells[sgnStringSize, rowidx] := TConvert.ConvertToUsefulUnit(tsof.Data[XFileUsed]);
-
-            s := '----';
-            if ((Sysutils.faArchive and  GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faArchive) then  s[1] := 'A';
-            if ((Sysutils.faReadOnly and GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faReadOnly) then s[2] := 'R';
-            if ((Sysutils.faSysFile and  GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faSysFile) then  s[3] := 'S';
-            if ((Sysutils.faHidden and   GScanDetails[FSource].Files.Items[i].Attributes) = Sysutils.faHidden) then   s[4] := 'H';
-
-            Grid.Cells[sgnAttributes, rowidx]     := s;
-
-            Grid.Cells[sgnSizeOnDisk, rowidx]     := TConvert.ConvertToUsefulUnit(tsof.Data[XSpaceUsed]);
-            Grid.Cells[sgnIntegetSoD, rowidx]     := IntToStr(tsof.Data[XSpaceUsed]);
-
-            Grid.Cells[sgnCreatedDate, rowidx]    := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateC);
-            Grid.Cells[sgnAccessedDate, rowidx]   := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateA);
-            Grid.Cells[sgnModifiedDate, rowidx]   := TConvert.IntDateToString(GScanDetails[FSource].Files.Items[i].FileDateM);
-            Grid.Cells[sgnUserName, rowidx]       := GScanDetails[FSource].Users[GScanDetails[FSource].Files.Items[i].Owner].Name;
-
-            if foldersize <> 0 then begin
-              Grid.Cells[sgnStringPCent, rowidx]  := TConvert.RealToPercent(tsof.Data[XFileUsed] / foldersize);
-              Grid.Cells[sgnIntegerPCent, rowidx] := IntToStr(Round((tsof.Data[XFileUsed] / foldersize) * 50));
-            end
-            else begin
-              Grid.Cells[sgnStringPCent, rowidx]  := '100%';
-              Grid.Cells[sgnIntegerPCent, rowidx] := '100';
-            end;
-
-            Grid.Cells[sgnIntegerSize, rowidx]    := IntToStr(tsof.Data[XFileUsed]);
-
-            inc(FFileSize, tsof.Data[XFileUsed]);
-
-            Grid.Cells[sgnFolderFile, rowidx]     := '1';
-            Grid.Cells[sgnOrderIndex, rowidx]     := IntToStr(orderx);
-
-            Grid.Cells[sgnCategoryIndex, rowidx]  := '0';
-
-            inc(FFolderCount);
-          end;
-
-          Grid.RowCount := Grid.RowCount + 1;
-
-          inc(orderx);
-        end;
-      end;
-
-      inc(i);
-    end;
-
-    // =========================================================================
-  end;
-end;
-*/
+				orderx++;
+			}
+		}
+	}
+}

@@ -17,7 +17,37 @@
 #include "Registry.h"
 
 
-std::wstring Registry::ReadRegistryString(HKEY hKey, std::wstring key_name, std::wstring aDefaultValue)
+LONG Registry::Open(HKEY &hKey, const std::wstring subKey, bool create)
+{
+	if (create)
+	{
+        DWORD disposition;  // REG_CREATED_NEW_KEY or REG_OPENED_EXISTING_KEY
+
+		return RegCreateKeyEx(HKEY_CURRENT_USER,
+							  subKey.c_str(),
+							  0,
+							  NULL,
+							  REG_OPTION_NON_VOLATILE,
+							  KEY_ALL_ACCESS,
+							  NULL,
+							  &hKey, &disposition);
+	}
+
+	return RegOpenKeyEx(HKEY_CURRENT_USER,
+						subKey.c_str(),
+						NULL,
+						KEY_QUERY_VALUE,
+						&hKey);
+}
+
+
+LONG Registry::Close(HKEY &hKey)
+{
+	return RegCloseKey(hKey);
+}
+
+
+std::wstring Registry::ReadString(HKEY hKey, std::wstring key_name, std::wstring aDefaultValue)
 {
 	const DWORD SIZE = 1024;
 	wchar_t szValue[SIZE];
@@ -40,7 +70,7 @@ std::wstring Registry::ReadRegistryString(HKEY hKey, std::wstring key_name, std:
 }
 
 
-int Registry::ReadRegistryInteger(HKEY hKey, std::wstring key_name, int default_value)
+int Registry::ReadInteger(HKEY hKey, std::wstring key_name, int default_value)
 {
 	DWORD dwBufferSize(sizeof(DWORD));
 	DWORD nResult(0);
@@ -62,7 +92,7 @@ int Registry::ReadRegistryInteger(HKEY hKey, std::wstring key_name, int default_
 }
 
 
-bool Registry::ReadRegistryBool(HKEY hKey, std::wstring key_name, bool default_value)
+bool Registry::ReadBool(HKEY hKey, std::wstring key_name, bool default_value)
 {
 	DWORD val = 0;
 	DWORD valSize = sizeof(DWORD);
@@ -83,18 +113,31 @@ bool Registry::ReadRegistryBool(HKEY hKey, std::wstring key_name, bool default_v
 }
 
 
-bool Registry::WriteRegistryString(HKEY hKey, const std::wstring& key_name, const std::wstring& value)
+bool Registry::WriteInteger(HKEY hKey, const std::wstring& key_name, int value)
 {
+	std::wstring intv = std::to_wstring(value);
+
 	return (RegSetValueExW(hKey,
-		                   key_name.c_str(),
-		                   0,
-		                   REG_SZ,
-		                   (LPBYTE)(value.c_str()),
-		                   (value.size() + 1) * sizeof(wchar_t)) == ERROR_SUCCESS);
+						   key_name.c_str(),
+						   0,
+						   REG_SZ,
+						   (LPBYTE)(intv.c_str()),
+						   (intv.size() + 1) * sizeof(wchar_t)) == ERROR_SUCCESS);
 }
 
 
-bool Registry::DeleteRegistry(HKEY hKey, const std::wstring& key_name)
+bool Registry::WriteString(HKEY hKey, const std::wstring& key_name, const std::wstring& value)
+{
+	return (RegSetValueExW(hKey,
+						   key_name.c_str(),
+						   0,
+						   REG_SZ,
+						   (LPBYTE)(value.c_str()),
+						   (value.size() + 1) * sizeof(wchar_t)) == ERROR_SUCCESS);
+}
+
+
+bool Registry::Delete(HKEY hKey, const std::wstring& key_name)
 {
 	return (RegDeleteValue(hKey, key_name.c_str()) == ERROR_SUCCESS);
 }

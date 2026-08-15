@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "ConstantsData.h"
+#include "ConstantsSystem.h"
 #include "Convert.h"
 #include "DriveDetails.h"
 #include "LanguageHandler.h"
@@ -41,28 +42,22 @@ bool WindowsUtility::AddToContextMenu(const std::wstring path)
 	{
 		HKEY hKey;
 
-		LONG dwRet = RegOpenKeyEx(HKEY_CLASSES_ROOT,
-			L"\\software\\maximumoctopus\\Xinorbis",
-			NULL,
-			KEY_SET_VALUE,
-			&hKey);
-
-		if (dwRet != ERROR_SUCCESS)
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath, true) != ERROR_SUCCESS)
 		{
 			return false;
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis", L"Examine this folder with Xinorbis"))
+		if (!Registry::WriteString(hKey, L"\\directory\\shell\\Xinorbis", L"Examine this folder with Xinorbis"))
 		{
 			//GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\" to registry.\n";
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis\\Command", L"\"" + path + L"\" \"%1\""))
+		if (!Registry::WriteString(hKey, L"\\directory\\shell\\Xinorbis\\Command", L"\"" + path + L"\" \"%1\""))
 		{
 		   //	GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\\Command\" to registry.\n";
 		}
 
-		if (!Registry::WriteRegistryString(hKey, L"\\directory\\shell\\Xinorbis\\DefaultIcon", L"\"" + path + L", 0\""))
+		if (!Registry::WriteString(hKey, L"\\directory\\shell\\Xinorbis\\DefaultIcon", L"\"" + path + L", 0\""))
 		{
 			//GLog->Add( << L"Unable to add \"\\directory\\shell\\Xinorbis\\DefaultIcon\" to registry.\n";
 		}
@@ -82,28 +77,22 @@ bool WindowsUtility::RemoveFromContextMenu()
 	{
 		HKEY hKey;
 
-		LONG dwRet = RegOpenKeyEx(HKEY_CLASSES_ROOT,
-			L"\\software\\maximumoctopus\\FolderScanUltra",
-			NULL,
-			KEY_SET_VALUE,
-			&hKey);
-
-		if (dwRet != ERROR_SUCCESS)
+		if (Registry::Open(hKey, L"\\software\\" + __XRegistryPath, false) != ERROR_SUCCESS)
 		{
 			return false;
 		}
 
-		if (!Registry::DeleteRegistry(hKey, L"\\directory\\shell\\FolderScanUltra"))
+		if (!Registry::Delete(hKey, L"\\directory\\shell\\FolderScanUltra"))
 		{
 		   //	GLog->Add( << L"Unable to delete \"\\directory\\shell\\FolderScanUltra\"\n";
 		}
 
-		if (!Registry::DeleteRegistry(hKey, L"\\directory\\shell\\FolderScanUltra\\Command"))
+		if (!Registry::Delete(hKey, L"\\directory\\shell\\FolderScanUltra\\Command"))
 		{
 		  //GLog->Add(<< L"Unable to delete \"\\directory\\shell\\FolderScanUltra\\Command\"\n";
 		}
 
-		if (!Registry::DeleteRegistry(hKey, L"\\directory\\shell\\FolderScanUltra\\DefaultIcon"))
+		if (!Registry::Delete(hKey, L"\\directory\\shell\\FolderScanUltra\\DefaultIcon"))
 		{
 		  //GLog->Add(<< L"Unable to delete \"\\directory\\shell\\FolderScanUltra\\DefaultIcon\"\n";
 
@@ -398,62 +387,86 @@ void WindowsUtility::ExecuteFile(const std::wstring path, const std::wstring par
 
 
 // http://msdn.microsoft.com/en-us/library/bb762494.aspx
+// https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderpath
 std::wstring WindowsUtility::GetSpecialFolder(int folder)
-{          /*
-var
-  szPath: array [0..MAX_PATH] of Char;
-  xcopy, temp : string;
-  t : integer;
-  go : boolean;
+{
+	wchar_t* path = nullptr;
 
- begin
-  Assert((xID >= 1) and (xID <= 11), 'GetSpecialFolder :: Invalid ID');
+	std::wstring output = L"";
 
-  case xID of
-     1 : SHGetFolderPath(0, CSIDL_PROGRAM_FILES,    0, 0, @szPath[0]);
-     2 : SHGetFolderPath(0, CSIDL_PROGRAM_FILESX86, 0, 0, @szPath[0]);
-     3 : SHGetFolderPath(0, CSIDL_WINDOWS,          0, 0, @szPath[0]);
-     4 : begin // users
-           SHGetFolderPath(0, $0028, 0, 0, @szPath[0]);
+	HRESULT result;
 
-           xcopy := SzPath;
-           temp  := '';
-           go    := false;
+	switch (folder)
+	{
+	case 1:
+		result = SHGetKnownFolderPath(FOLDERID_ProgramFiles, 0, NULL, &path);
+		break;
+	case 2:
+		result = SHGetKnownFolderPath(FOLDERID_ProgramFilesX86, 0, NULL, &path);
+		break;
+	case 3:
+		result = SHGetKnownFolderPath(FOLDERID_Windows, 0, NULL, &path);
+		break;
+	case 4:
+	{
+		result = SHGetKnownFolderPath(FOLDERID_UsersFiles, 0, NULL, &path);
 
-           t     := length(xcopy);
+		if (SUCCEEDED(result))
+		{
+			output = std::wstring(path);
 
-           while t > 0 do begin
-             if go then
-               temp := xcopy[t] + temp;
+			auto index = output.rfind(L'\\');
 
-             if xcopy[t] = '\' then go := True;
+			if (index != std::wstring::npos)
+			{
+				output = output.substr(0, index);
+			}
+		}
 
-             dec(t);
-           end;
-         end;
-     5 : SHGetFolderPath(0, $0028, 0, 0, @szPath[0]);
-     6 : SHGetFolderPath(0, $000D, 0, 0, @szPath[0]);
-     7 : SHGetFolderPath(0, $0027, 0, 0, @szPath[0]);
-     8 : SHGetFolderPath(0, $0005, 0, 0, @szPath[0]);
-     9 : SHGetFolderPath(0, $000E, 0, 0, @szPath[0]);
-    10 : begin
-           ShGetSpecialFolderPath(0, szPath, $0028, FALSE);
+		break;
+	}
+	case 5:
+		result = SHGetKnownFolderPath(FOLDERID_UsersFiles, 0, NULL, &path);
+		break;
+	case 6:
+		result = SHGetKnownFolderPath(FOLDERID_Music, 0, NULL, &path);
+		break;
+	case 7:
+		result = SHGetKnownFolderPath(FOLDERID_Pictures, 0, NULL, &path);
+		break;
+	case 8:
+		result = SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &path);
+		break;
+	case 9:
+		result = SHGetKnownFolderPath(FOLDERID_Videos, 0, NULL, &path);
+		break;
+	case 10 :
+	{
+		result = SHGetKnownFolderPath(FOLDERID_UsersFiles, 0, NULL, &path);
 
-           temp := szPath + '\xinorbis';
-         end;
-    11 : begin
-           ShGetSpecialFolderPath(0, szPath, CSIDL_PERSONAL, FALSE);
+		output = std::wstring(path) + L"\\xinorbis";
+		break;
+	}
+	case 11:
+	{
+		result = SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &path);
 
-           temp := szPath + '\MaximumOctopus\xinorbis';
-         end;
-  end;
+		output = std::wstring(path) + L"\\MaximumOctopus\\xinorbis";
+		break;
+	}
+	}
 
-  if (xID <> 4) and (xID < 10) then
-    temp := SzPath;
+	if (SUCCEEDED(result))
+	{
+		if (output.empty())
+		{
+			output = std::wstring(path);
+		}
 
-  Result := temp + '\';      */
+		CoTaskMemFree(path);
+	}
 
-    return L"to do";
+	return output + L"\\";
 }
 
 

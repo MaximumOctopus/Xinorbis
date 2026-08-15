@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "Formatting.h"
 #include "Ini.h"
 
 Ini::Ini(const std::wstring file_name)
@@ -47,6 +48,26 @@ bool Ini::LoadFile(const std::wstring file_name)
 	}
 
 	return false;
+}
+
+
+bool Ini::SaveFile(const std::wstring file_name)
+{
+	std::ofstream file(file_name);
+
+	if (file)
+	{
+		for (int i = 0; i < Lines.size(); i++)
+		{
+			file << Formatting::to_utf8(Lines[i] + L"\n");
+		}
+
+		file.close();
+
+		return true;
+	}
+
+    return false;
 }
 
 
@@ -207,4 +228,63 @@ std::wstring Ini::NormaliseEntry(const std::wstring line)
 	}
 
 	return output;
+}
+
+
+int Ini::FindSection(const std::wstring name)
+{
+	for (int i = 0; i < Lines.size(); i++)
+	{
+		if (!Lines[i].empty())
+		{
+			std::size_t bo = Lines[i].find(L"[");
+			std::size_t bc = Lines[i].find(L"]");
+
+			std::wstring section = Lines[i].substr(bo + 1, bc - 1);
+
+			if (section == name)
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+
+bool Ini::DeleteSection(const std::wstring name)
+{
+	std::wstring namelc = name;
+	std::transform(namelc.begin(), namelc.end(), namelc.begin(), ::tolower);
+
+	int start = FindSection(namelc);
+
+	if (start != -1)
+	{
+		int end = Lines.size() - 1;
+
+		for (int i = start + 1; i < Lines.size(); i++)
+		{
+			if (!Lines[i].empty())
+			{
+				if (Lines[i][0] == L'[')
+				{
+					end = i;
+					break;
+				}
+			}
+			else
+			{
+				end = i;
+				break;
+			}
+		}
+
+		Lines.erase(Lines.begin() + start, Lines.begin() + end);
+
+        return true;
+	}
+
+	return false;
 }

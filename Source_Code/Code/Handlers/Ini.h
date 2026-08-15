@@ -26,11 +26,14 @@ private:
 
 	[[nodiscard]] bool LoadFile(const std::wstring);
 
-    std::wstring NormaliseEntry(const std::wstring);
+	std::wstring NormaliseEntry(const std::wstring);
+
+    int FindSection(const std::wstring);
 
 public:
 
 	bool Loaded = false;
+	bool HasEdits = false;
 
 	bool LastKeyExist = false;
 
@@ -38,6 +41,10 @@ public:
 
 	Ini(const std::wstring);
 
+	bool SaveFile(const std::wstring);
+
 	[[nodiscard]] std::wstring ReadString(const std::wstring, std::wstring, const std::wstring);
 	[[nodiscard]] int ReadInteger(std::wstring, std::wstring, int);
+
+	bool DeleteSection(const std::wstring);
 };

@@ -374,6 +374,18 @@ int Convert::DateToYYYYMMDDI(TDateTime dt)
 }
 
 
+std::wstring Convert::DateToYYYYMMDDS(TDateTime dt)
+{
+	unsigned short yy = 0;
+	unsigned short mm = 0;
+	unsigned short dd = 0;
+
+	dt.DecodeDate(&yy, &mm, &dd);
+
+	return std::to_wstring((yy * 10000) + (mm * 100) + dd);
+}
+
+
 // +/- day count
 int Convert::TodayPlusDaysToYYYYMMDD(int days)
 {
@@ -498,10 +510,30 @@ std::wstring Convert::IntDateToString(int dx)
 	case DateFormat::kHyphenMMDDYYYY:
 		return month + L"-" + day + L"-" + year;   // mm-dd-yyyy
 	case DateFormat::kYYYYMMDD:
-        return year + month + day;
+		return year + month + day;
 	}
 
 	return L"01/01/1990";
+}
+
+
+std::wstring Convert::DateTimeFToYYYYMMDD(const std::wstring d)
+{
+	switch (GSettingsHandler->General.FormatDate)
+	{
+	case DateFormat::kSlashDDMMYYYY:
+	case DateFormat::kHyphenDDMMYYYY:
+		return d.substr(6, 4) + d.substr(3, 2) + d.substr(0, 2);
+	case DateFormat::kSlashMMDDYYYY:
+	case DateFormat::kHyphenMMDDYYYY:
+		return d.substr(6, 4) + d.substr(0, 2) + d.substr(3, 2);
+	case DateFormat::kSlashYYYYMMDD:
+		return d.substr(0, 4) + d.substr(5, 2) + d.substr(8, 2);
+	case DateFormat::kYYYYMMDD:
+		return d.substr(0, 4) + d.substr(4, 2) + d.substr(6, 2);
+	}
+
+	return L"19900101";
 }
 
 
@@ -596,20 +628,34 @@ std::wstring Convert::YYYYMMDDToMonthDayYear(int date)
 	return GLanguageHandler->Months[mm - 1] + L" " + yyyymmdd.substr(6, 2) + L" " + yyyymmdd.substr(0, 4);
 }
 
+
 std::wstring Convert::YYYYMMDDToMonthYear(int date)
 {
 	std::wstring yyyymmdd = std::to_wstring(date);
 
 	int mm = std::stoi(yyyymmdd.substr(4, 2));
-		
+
 	return GLanguageHandler->Months[mm - 1] + L" " + yyyymmdd.substr(0, 4);
 }
+
 
 std::wstring Convert::YYYYMMDDToMonth(int date)
 {
 	std::wstring yyyymmdd = std::to_wstring(date);
 
 	return yyyymmdd.substr(0, 4);
+}
+
+
+// mm/dd/yyyy to yyyymmdd
+int Convert::UStoUKDate(const std::wstring input)
+{
+	if (input.size() == 10)
+	{
+		return stoi(input.substr(6, 4) + input.substr(0, 2) + input.substr(3, 2));
+	}
+
+    return 19900101;
 }
 
 // RGB -> BGR
@@ -652,6 +698,19 @@ std::wstring Convert::CreateTableName(const std::wstring ScanDate, const std::ws
 	delete[] y;
 
 	return MD5;
+}
+
+
+std::wstring Convert::VectorToString(std::vector<std::wstring> &data)
+{
+	std::wstring output = L"";
+
+	for (std::wstring s : data)
+	{
+		output += s + L";";
+	}
+
+	return output;
 }
 
 

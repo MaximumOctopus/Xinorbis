@@ -12,8 +12,8 @@
 
 #pragma once
 
-
 #include <string>
+#include <vector>
 #include <Windows.h>
 
 enum class UnitConversion { kUnitKB = 0, kUnitMB, kUnitGB, kUnitTB };
@@ -38,7 +38,10 @@ namespace Convert
 	[[nodiscard]] std::wstring IntToHex(int, int);
 	[[nodiscard]] int DateToYYYYMMDD(const std::wstring);
 	[[nodiscard]] int DateToYYYYMMDDI(TDateTime);
+	std::wstring DateTimeFToYYYYMMDD(const std::wstring);
+    std::wstring DateToYYYYMMDDS(TDateTime);
 	[[nodiscard]] int TodayPlusDaysToYYYYMMDD(int days);
+	int UStoUKDate(const std::wstring);
 
 	[[nodiscard]] int DateFromAnyFormatToYYYYMMDD(const std::wstring);
 	[[nodiscard]] int TimeFromAnyFormatToHHMM(const std::wstring);
@@ -56,6 +59,8 @@ namespace Convert
 	[[nodiscard]] std::wstring ToReportFileName(const std::wstring);
 
 	std::wstring CreateTableName(const std::wstring, const std::wstring, const std::wstring);
+
+    std::wstring VectorToString(std::vector<std::wstring> &data);
 
     std::wstring LowerCase(const std::wstring);
 

@@ -14,24 +14,14 @@
 
 #include <vector>
 
-#include "ScanHistoryItem.h"
 
-
-class ScanHistoryHandler
+class XZip
 {
-	std::wstring FilePath = L"";
-	bool FromFile = true;
-
-	bool Load(const std::wstring, bool);
-	bool Save();
-
 public:
 
-	std::vector<ScanHistoryItem*> History;
+	XZip();
 
-	~ScanHistoryHandler();
+	bool Files(const std::wstring, std::vector<std::wstring>&, const std::wstring);
 
-    void Clear();
-
-	void Add(const std::wstring, const std::wstring, const std::wstring);
+	bool Folder(const std::wstring, const std::wstring);
 };
