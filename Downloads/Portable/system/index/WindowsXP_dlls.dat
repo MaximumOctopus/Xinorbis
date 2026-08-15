@@ -1,0 +1,1170 @@
+aaaamon.dll,Aaaa Monitor DLL
+aaclient.dll,Anywhere access client
+acctres.dll,Microsoft Internet Account Manager Resources
+acledit.dll,Access Control List Editor
+aclui.dll,Security Descriptor Editor
+activeds.dll,ADs Router Layer DLL
+actxprxy.dll,ActiveX Interface Marshaling Library
+admparse.dll,IEAK Global Policy Template Parser
+adptif.dll,IPX Interface via WinSock
+adsldp.dll,ADs LDAP Provider DLL
+adsldpc.dll,ADs LDAP Provider C DLL
+adsmsext.dll,ADs LDAP Provider DLL
+adsnds.dll,ADs NDS Provider DLL
+adsnt.dll,ADs Windows NT Provider DLL
+adsnw.dll,ADs Netware 3.12 Provider DLL
+advapi32.dll,Advanced Windows 32 Base API
+advpack.dll,ADVPACK
+alrsvc.dll,Alerter Service DLL
+amstream.dll,DirectShow Runtime.
+apcups.dll,APC Smart Provider
+apphelp.dll,Application Compatibility Client Library
+appmgmts.dll,Software installation Service
+appmgr.dll,Software Installation Snapin Extenstion
+asferror.dll,ASF Error Definitions
+asycfilt.dll,UNKNOWN
+atkctrs.dll,Windows NT AppleTalk Perfmon Counter dll
+atl.dll,ATL Module for Windows XP (Unicode)
+atmpvcno.dll,Atm Epvc Install DLL
+atrace.dll,Async Trace DLL
+audiosrv.dll,Windows Audio Service
+authz.dll,Authorization Framework
+autodisc.dll,Windows AutoDiscovery API
+avicap32.dll,AVI Capture window class
+avifil32.dll,Microsoft AVI File support library
+avmeter.dll,Metering Controls
+avtapi.dll,TAPI 3.0 Dialer and IP Multicast Conference Viewer
+avwav.dll,Wave Manipulation Component
+azroles.dll,azroles Module
+basesrv.dll,Windows NT BASE API Server DLL
+batmeter.dll,Battery Meter Helper DLL
+batt.dll,Battery Class Installer
+bidispl.dll,Bidispl DLL
+bitsprx2.dll,Background Intelligent Transfer Service Proxy
+bitsprx3.dll,Background Intelligent Transfer Service 2.0 Proxy
+bitsprx4.dll,Background Intelligent Transfer Service 2.5 Proxy
+blackbox.dll,BlackBox DLL
+bootvid.dll,VGA Boot Driver
+browselc.dll,Shell Browser UI Library
+browser.dll,Computer Browser Service DLL
+browseui.dll,Shell Browser UI Library
+browsewm.dll,BrowseWM Player
+bthci.dll,Bluetooth Class Installer
+bthserv.dll,Bluetooth Support Service
+btpanui.dll,Bluetooth PAN User Interface
+c_g18030.dll,GB18030 DBCS-Unicode Conversion DLL
+c_is2022.dll,ISO-2022 Code Page Translation DLL
+c_iscii.dll,ISCII Code Page Translation DLL
+cabinet.dll,Microsoft® Cabinet File API
+cabview.dll,Cabinet File Viewer Shell Extension
+camocx.dll,WIA Camera View DLL
+capesnpn.dll,Microsoft® Certificate Template Management Extension
+cards.dll,Entertainment Pack Cardplaying Helper DLL
+catsrv.dll,UNKNOWN
+catsrvps.dll,UNKNOWN
+catsrvut.dll,UNKNOWN
+ccfgnt.dll,Internet Configuration Library
+cdfview.dll,Channel Definition File Viewer
+cdm.dll,Windows Update CDM Stub
+cdmodem.dll,Modem Connection Driver
+cdosys.dll,Microsoft CDO for Windows Library
+certcli.dll,Microsoft® Certificate Services Client
+certmgr.dll,Certificates snap-in
+cewmdm.dll,Windows CE WMDM Service Provider
+cfgbkend.dll,Configuration Backend Interface
+cfgmgr32.dll,Configuration Manager Forwarder DLL
+chsbrkr.dll,Microsoft Chinese_Simplified Word Breaker Component
+chtbrkr.dll,Microsoft Traditional Chinese Word Breaker
+ciadmin.dll,CI Administration (MMC)
+cic.dll,CIC - MMC controls for Taskpad
+ciodm.dll,Indexing Service Admin Automation Objects
+clb.dll,Column List Box
+clbcatex.dll,UNKNOWN
+clbcatq.dll,UNKNOWN
+cliconfg.dll,SQL Client Configuration Utility DLL
+clusapi.dll,Cluster API Library
+cmcfg32.dll,Microsoft Connection Manager Configuration Dll
+cmdial32.dll,Microsoft Connection Manager
+cmpbk32.dll,Microsoft Connection Manager Phonebook
+cmprops.dll,WMI Snapins
+cmsetacl.dll,Connection Manager ACL update
+cmutil.dll,Microsoft Connection Manager Utility Lib
+cnbjmon.dll,Langage Monitor for Canon Bubble-Jet Printer
+cnetcfg.dll,Connection Manager Library
+cnvfat.dll,FAT File System Conversion Utility DLL
+colbact.dll,UNKNOWN
+comaddin.dll,UNKNOWN
+comcat.dll,Microsoft Component Category Manager Library
+comctl32.dll,Common Controls Library
+comdlg32.dll,Common Dialogs DLL
+compstui.dll,Common Property Sheet User Interface DLL
+comrepl.dll,UNKNOWN
+comres.dll,UNKNOWN
+comsnap.dll,UNKNOWN
+comsvcs.dll,UNKNOWN
+comuid.dll,UNKNOWN
+confmsp.dll,Microsoft IP Conferencing Media Service Provider
+console.dll,Control Panel Console Applet
+corpol.dll,Microsoft COM Runtime Execution Engine
+credssp.dll,TS Single Sign On Security Package
+credui.dll,Credential Manager User Interface
+crtdll.dll,Microsoft C Runtime Library
+crypt32.dll,Crypto API32
+cryptdlg.dll,Microsoft Common Certificate Dialogs
+cryptdll.dll,Cryptography Manager
+cryptext.dll,Crypto Shell Extensions
+cryptnet.dll,Crypto Network Related API
+cryptsvc.dll,Cryptographic Services
+cryptui.dll,Microsoft Trust UI Provider
+cscdll.dll,Offline Network Agent
+cscui.dll,Client Side Caching UI
+csrsrv.dll,Client Server Runtime Process
+csseqchk.dll,CSSeqChk
+ctl3d32.dll,Ctl3D 3D Windows Controls
+d3d8.dll,Microsoft Direct3D
+d3d8thk.dll,Microsoft Direct3D OS Thunk Layer
+d3d9.dll,Microsoft Direct3D
+d3dim.dll,Microsoft Direct3D
+d3dim700.dll,Microsoft Direct3D
+d3dpmesh.dll,Direct3D Progressive Mesh DLL
+d3dramp.dll,Microsoft Direct3D
+d3drm.dll,Direct3D Retained Mode DLL
+d3dxof.dll,DirectX Files DLL
+danim.dll,DirectX Media -- DirectAnimation
+dataclen.dll,Disk Space Cleaner for Windows
+datime.dll,TIME
+davclnt.dll,Web DAV Client DLL
+dbgeng.dll,Symbolic Debugger Engine for Windows 2000
+dbghelp.dll,Windows Image Helper
+dbmsrpcn.dll,ConnectTo RPC Net Library
+dbnetlib.dll,Winsock Oriented Net DLL for SQL Clients
+dbnmpntw.dll,Named Pipes Net DLL for SQL Clients
+dciman32.dll,DCI Manager
+ddraw.dll,Microsoft DirectDraw
+ddrawex.dll,Direct Draw Ex
+deskadp.dll,Advanced display adapter properties
+deskmon.dll,Advanced display monitor properties
+deskperf.dll,Advanced display performance properties
+devenum.dll,Device enumeration.
+devmgr.dll,Device Manager MMC Snapin
+dfrgres.dll,Disk Defragmenter Resource Module
+dfrgsnap.dll,Disk Defragmenter Snap-in Module
+dfrgui.dll,Disk Defragmenter UI Module
+dfsshlex.dll,Distributed File System shell extension
+dgnet.dll,Dgnet Module
+dhcpcsvc.dll,DHCP Client Service
+dhcpmon.dll,DHCP Monitor Dll
+dhcpqec.dll,Microsoft DHCP NAP Enforcement Client
+dhcpsapi.dll,DHCP Server API Stub DLL
+diactfrm.dll,Microsoft DirectInput Mapper Framework
+digest.dll,Digest SSPI Authentication Package
+dimap.dll,Microsoft DirectInput Mapper
+dimsntfy.dll,DIMS Notification Handler
+dimsroam.dll,Key Roaming DIMS Provider DLL
+dinput.dll,Microsoft DirectInput
+dinput8.dll,Microsoft DirectInput
+diskcopy.dll,Windows DiskCopy
+dispex.dll,Microsoft (R) DispEx
+dmband.dll,Microsoft DirectMusic Band
+dmcompos.dll,Microsoft DirectMusic Composer
+dmconfig.dll,Logical Disk Manager Configuration Library
+dmdlgs.dll,Disk Management Snap-in Dialogs
+dmdskmgr.dll,Disk Management Snap-in Support Library
+dmdskres.dll,Disk Management Snap-in Resources
+dmime.dll,Microsoft DirectMusic Interactive Engine
+dmintf.dll,Disk Management DCOM Interface Stub
+dmloader.dll,Microsoft DirectMusic Loader
+dmocx.dll,TreeView OCX
+dmscript.dll,Microsoft DirectMusic Scripting
+dmserver.dll,Logical Disk Manager service dll
+dmstyle.dll,Microsoft DirectMusic Style Engline
+dmsynth.dll,Microsoft DirectMusic Software Synthesizer
+dmusic.dll,Microsoft DirectMusic Core Services
+dmutil.dll,Logical Disk Manager Utility Library
+dnsapi.dll,DNS Client API DLL
+dnsrslvr.dll,DNS Caching Resolver Service
+docprop.dll,OLE DocFile Property Page
+docprop2.dll,Microsoft DocProp Shell Ext
+dot3api.dll,802.3 Autoconfiguration API
+dot3cfg.dll,802.3 Netsh Helper
+dot3dlg.dll,802.3 UI Helper
+dot3gpclnt.dll,802.3 Group Policy Client
+dot3msm.dll,802.3 Media Specific Module
+dot3svc.dll,Wired AutoConfig Service
+dot3ui.dll,802.3 Advanced UI
+dpcdll.dll,Dpcdll Module
+dplay.dll,Microsoft DirectPlay
+dplayx.dll,Microsoft DirectPlay
+dpmodemx.dll,Modem and Serial Connection For DirectPlay
+dpnaddr.dll,Microsoft DirectPlay8 Address
+dpnet.dll,Microsoft DirectPlay
+dpnhpast.dll,Microsoft DirectPlay NAT Helper PAST
+dpnhupnp.dll,Microsoft DirectPlay NAT Helper UPnP
+dpnlobby.dll,Microsoft DirectPlay8 Lobby
+dpnmodem.dll,Microsoft DirectPlay8 Modem Provider
+dpnwsock.dll,Microsoft DirectPlay8 Winsock Provider
+dpserial.dll,Microsoft DirectPlay Modem Service Provider
+dpvacm.dll,Microsoft DirectPlay Voice ACM Provider
+dpvoice.dll,Microsoft DirectPlay Voice
+dpvvox.dll,Microsoft DirectPlay Voice Voxware Provider
+dpwsock.dll,Microsoft DirectPlay Local Net Service Provider
+dpwsockx.dll,Internet TCP/IP and IPX Connection For DirectPlay
+drmclien.dll,DRM Client DLL
+drmstor.dll,DRM Store DLL
+drmv2clt.dll,DRMv2 Client DLL
+drprov.dll,Microsoft Terminal Server Network Provider
+ds32gt.dll,Microsoft Data Access - ODBC Driver Setup Generic Thunk
+dsauth.dll,DS Authorization for Services
+dsdmo.dll,DirectSound Effects
+dsdmoprp.dll,DirectSound Effects Property Pages
+dskquota.dll,Windows Shell Disk Quota Support DLL
+dskquoui.dll,Windows Shell Disk Quota UI DLL
+dsound.dll,DirectSound
+dsound3d.dll,DirectSound3D LUT
+dsprop.dll,Windows Active Directory Property Pages
+dsprpres.dll,Windows Active Directory Property Pages Resources
+dsquery.dll,Directory Service Find
+dssec.dll,Directory Service Security UI
+dssenh.dll,Microsoft Enhanced DSS and Diffie-Hellman Cryptographic Provider
+dsuiext.dll,Directory Service Common UI
+dswave.dll,Microsoft DirectMusic Wave
+duser.dll,Windows DirectUser Engine
+dx7vb.dll,Microsoft DirectX for Visual Basic
+dx8vb.dll,Microsoft DirectX for Visual Basic
+dxdiagn.dll,Microsoft DirectX Diagnostic Tool
+dxmasf.dll,Windows Media Source Filter
+dxtmsft.dll,DirectX Media -- Image DirectX Transforms
+dxtrans.dll,DirectX Media -- DirectX Transform Core
+eapolqec.dll,Microsoft EAPOL NAP Enforcement Client
+eapp3hst.dll,Microsoft ThirdPartyEapDispatcher
+eappcfg.dll,Eap Peer Config
+eappgnui.dll,EAP Generic UI
+eapphost.dll,Microsoft EAPHost Peer service
+eappprxy.dll,Microsoft EAPHost Peer Client DLL
+eapqec.dll,Microsoft EAP NAP Enforcement Client
+eapsvc.dll,Microsoft EAPHost service
+efsadu.dll,File Encryption Utility
+els.dll,Event Viewer Snapin
+encapi.dll,Encoder API
+encdec.dll,XDSCodec & Encypter/Decrypter Tagger Filters.
+ersvc.dll,Windows Error Reporting Service
+es.dll,UNKNOWN
+esent.dll,Server Database Storage Engine
+esent97.dll,Microsoft(R) Windows NT(TM) Server Database Storage Engine
+esentprf.dll,Server Database Storage Performance Library
+eventcls.dll,Microsoft® Volume Shadow Copy Service event class
+eventlog.dll,Event Logging Service
+expsrv.dll,Visual Basic for Applications Runtime - Expression Service
+extmgr.dll,Extensions Manager
+exts.dll,Debugger Extensions
+f3ahvoas.dll,JP Japanese Keyboard Layout for Fujitsu FMV oyayubi-shift keyboard
+faultrep.dll,Windows Error Reporting
+fde.dll,Folder Redirection Snapin Extension
+fdeploy.dll,Folder Redirection Winlogon Extension
+feclient.dll,Windows NT File Encryption Client Interfaces
+filemgmt.dll,Services and Shared Folders
+fldrclnr.dll,Desktop Cleanup Wizard
+fltlib.dll,Filter Library
+fmifs.dll,FM IFS Utility DLL
+fontext.dll,Windows Font Folder
+fontsub.dll,Font Subsetting DLL
+framebuf.dll,Framebuffer Display Driver
+fsusd.dll,File System Camera Devices DLL
+ftlx041e.dll,Thai Wordbreaker
+ftsrch.dll,Microsoft® Full-Text Search
+fwcfg.dll,Windows Firewall Configuration Helper
+gcdef.dll,Game Controllers Default Sheets
+gdi32.dll,GDI Client DLL
+getuname.dll,Unicode name Dll for UCE
+glmf32.dll,OpenGL Metafiling DLL
+glu32.dll,OpenGL Utility Library DLL
+gpedit.dll,GPEdit
+gpkcsp.dll,Gemplus Cryptographic Service Provider
+gpkrsrc.dll,Gemplus Cryptographic Service Provider Resources
+gptext.dll,GPTExt
+HAL.DLL,Hardware Abstraction Layer DLL
+h323msp.dll,Microsoft H.323 Media Service Provider
+hccoin.dll,USB Coinstaller
+hhsetup.dll,Microsoft® HTML Help
+hid.dll,Hid User Library
+hlink.dll,Microsoft Office 2000 component
+hnetcfg.dll,Home Networking Configuration Manager
+hnetmon.dll,Home Networking Monitor DLL
+hnetwiz.dll,Network Setup Wizard
+hotplug.dll,Safely Remove Hardware applet
+httpapi.dll,HTTP Protocol Stack API
+htui.dll,Common halftone Color Adjustment Dialogs,
+iasacct.dll,IAS Accounting Provider
+iasads.dll,IAS Active Directory Data Store
+iashlpr.dll,IAS Surrogate Component
+iasnap.dll,IAS NAP Provider
+iaspolcy.dll,IAS Pipeline
+iasrad.dll,IAS RADIUS Protocol Component
+iasrecst.dll,IAS Jet Database Access
+iassam.dll,IAS NT SAM Provider
+iassdo.dll,IAS SDO Component
+iassvcs.dll,IAS Services Component
+icaapi.dll,DLL Interface to TermDD Device Driver
+icardie.dll,Microsoft Information Card IE Helper
+icfgnt5.dll,Internet Connection Wizard
+icm32.dll,Microsoft Color Management Module (CMM)
+icmp.dll,ICMP DLL
+icmui.dll,Microsoft Color Matching System User Interface DLL
+icwdial.dll,Internet Connection Wizard Autodialer
+icwphbk.dll,Internet Connection Wizard
+idndl.dll,Downlevel DLL
+idq.dll,Indexing Service ISAPI Extension
+ieakeng.dll,Internet Explorer Administration Kit Engine Library
+ieaksie.dll,Internet Explorer Snap-in Extension to Group Policy
+ieakui.dll,Microsoft IEAK Shared UI DLL
+ieapfltr.dll,Microsoft SmartScreen Filter
+iedkcs32.dll,IEAK branding
+ieframe.dll,Internet Explorer
+iepeers.dll,Internet Explorer Peer Objects
+iernonce.dll,Extended RunOnce processing with UI
+iertutil.dll,Run time utility for Internet Explorer
+iesetup.dll,IOD Version Map
+ieui.dll,Internet Explorer UI Engine
+ifmon.dll,IF Monitor DLL
+ifsutil.dll,IFS Utility DLL
+igmpagnt.dll,Microsoft IGMP subagent
+iissuba.dll,Microsoft IIS sub-authentication handler
+ils.dll,User Location Services Component Module
+imagehlp.dll,Windows NT Image Helper
+imeshare.dll,Microsoft Office IME Shared property library.
+imgutil.dll,IE plugin image decoder support DLL
+imjp81k.dll,Microsoft IME
+imm32.dll,Windows XP IMM32 API Client DLL
+inetcfg.dll,Internet Connection Wizard Library
+inetcomm.dll,Microsoft Internet Messaging API
+inetcplc.dll,Internet Control Panel
+inetmib1.dll,Microsoft MIB-II subagent
+inetpp.dll,Internet Print Provider DLL
+inetppui.dll,Internet Print Client DLL
+inetres.dll,Microsoft Internet Messaging API Resources
+infosoft.dll,Wordbreaker and stemmer dll
+initpki.dll,Microsoft Trust Installation and Setup
+input.dll,Text Input DLL
+inseng.dll,Install engine
+iologmsg.dll,IO Logging DLL
+iphlpapi.dll,IP Helper API
+ipmontr.dll,IP Router Monitor DLL
+ipnathlp.dll,Microsoft NAT Helper Components
+ippromon.dll,IP Protocols Monitor DLL
+iprop.dll,OLE PropertySet Implementation
+iprtprio.dll,IP Routing Protocol Priority DLL
+iprtrmgr.dll,IP Router Manager
+ipsecsnp.dll,Internet Protocol Security Policy Management Snap-in for Microsoft Windows 2000
+ipsecsvc.dll,Windows IPSec SPD Server DLL
+ipsmsnap.dll,IP Security Monitor Snapin
+ipv6mon.dll,IPv6 Monitor DLL
+ipxmontr.dll,IPX Router Monitor DLL
+ipxpromn.dll,IPX Router Monitor DLL
+ipxrip.dll,IPX RIP
+ipxrtmgr.dll,IPX ROUTER MANAGER
+ipxsap.dll,SAP Agent DLL
+ipxwan.dll,IPXWAN
+irclass.dll,Infrared Class Coinstaller
+isign32.dll,Internet Signup
+itircl.dll,Microsoft® InfoTech IR Local DLL
+itss.dll,Microsoft® InfoTech Storage System Library
+iuengine.dll,Windows Update Control Engine
+ixsso.dll,Indexing Service Server-side Object
+iyuv_32.dll,Intel Indeo(R) Video YUV Codec
+jet500.dll,JET Engine DLL
+jobexec.dll,Active Setup Job Executer
+jscript.dll,Microsoft (R) JScript
+jsproxy.dll,JScript Proxy Auto-Configuration,
+KBDAL.DLL,Albania Keyboard Layout
+kbd101.dll,JP Japanese Keyboard Layout for 101
+kbd101a.dll,KO Hangeul Keyboard Layout for 101 (Type A)
+kbd101b.dll,KO Hangeul Keyboard Layout for 101(Type B)
+kbd101c.dll,KO Hangeul Keyboard Layout for 101(Type C)
+kbd103.dll,KO Hangeul Keyboard Layout for 103
+kbd106.dll,JP Japanese Keyboard Layout for 106
+kbd106n.dll,JP Japanese Keyboard Layout for 106
+kbda1.dll,Arabic_English_101 Keyboard Layout
+kbda2.dll,Arabic_2 Keyboard Layout
+kbda3.dll,Arabic_French_102 Keyboard Layout
+kbdarme.dll,Eastern Armenian Keyboard Layout
+kbdarmw.dll,Western Armenian Keyboard Layout
+kbdax2.dll,JP Japanese Keyboard Layout for AX2
+kbdaze.dll,Azerbaijan_Cyrillic Keyboard Layout
+kbdazel.dll,Azeri-Latin Keyboard Layout
+kbdbe.dll,Belgian Keyboard Layout
+kbdbene.dll,Belgian Dutch Keyboard Layout
+kbdbhc.dll,Bosnian (Cyrillic) Keyboard Layout
+kbdblr.dll,Belarusian Keyboard Layout
+kbdbr.dll,Brazilian Keyboard Layout
+kbdbu.dll,Bulgarian Keyboard Layout
+kbdca.dll,Canadian Multilingual Keyboard Layout
+kbdcan.dll,Canadian National Standard Keyboard Layout
+kbdcr.dll,Croatian/Slovenian Keyboard Layout
+kbdcz.dll,Czech Keyboard Layout
+kbdcz1.dll,Czech_101 Keyboard Layout
+kbdcz2.dll,Czech_Programmer's Keyboard Layout
+kbdda.dll,Danish Keyboard Layout
+kbddiv1.dll,Divehi Phonetic Keyboard Layout
+kbddiv2.dll,Divehi Typewriter Keyboard Layout
+kbddv.dll,Dvorak US English Keyboard Layout
+kbdes.dll,Spanish Alernate Keyboard Layout
+kbdest.dll,Estonia Keyboard Layout
+kbdfa.dll,Farsi Keyboard Layout
+kbdfc.dll,Canadian French Keyboard Layout
+kbdfi.dll,Finnish Keyboard Layout
+kbdfi1.dll,Finnish-Swedish with Sami Keyboard Layout
+kbdfo.dll,Færoese Keyboard Layout
+kbdfr.dll,French Keyboard Layout
+kbdgae.dll,Gaelic Keyboard Layout
+kbdgeo.dll,Georgian Keyboard Layout
+kbdgkl.dll,Greek_Latin Keyboard Layout
+kbdgr.dll,German Keyboard Layout
+kbdgr1.dll,German_IBM Keyboard Layout
+kbdhe.dll,Greek Keyboard Layout
+kbdhe220.dll,Greek IBM 220 Keyboard Layout
+kbdhe319.dll,Greek IBM 319 Keyboard Layout
+kbdheb.dll,KBDHEB Keyboard Layout
+kbdhela2.dll,Greek IBM 220 Latin Keyboard Layout
+kbdhela3.dll,Greek IBM 319 Latin Keyboard Layout
+kbdhept.dll,Greek_Polytonic Keyboard Layout
+kbdhu.dll,Hungarian Keyboard Layout
+kbdhu1.dll,Hungarian 101-key Keyboard Layout
+kbdibm02.dll,JP Japanese Keyboard Layout for IBM 5576-002/003
+kbdic.dll,Icelandic Keyboard Layout
+kbdinbe1.dll,Bengali (Inscript) Keyboard Layout
+kbdinben.dll,Bengali Keyboard Layout
+kbdindev.dll,Devanagari Keyboard Layout
+kbdinguj.dll,Gujarati Keyboard Layout
+kbdinhin.dll,Hindi Keyboard Layout
+kbdinkan.dll,Kannada Keyboard Layout
+kbdinmal.dll,Malayalam Keyboard Layout Keyboard Layout
+kbdinmar.dll,Marathi Keyboard Layout
+kbdinpun.dll,Punjabi/Gurmukhi Keyboard Layout
+kbdintam.dll,Tamil Keyboard Layout
+kbdintel.dll,Telugu Keyboard Layout
+kbdir.dll,Irish Keyboard Layout
+kbdit.dll,Italian Keyboard Layout
+kbdit142.dll,Italian 142 Keyboard Layout
+kbdiultn.dll,Inuktitut Latin Keyboard Layout
+kbdjpn.dll,JP Japanese Keyboard Layout Stub driver
+kbdkaz.dll,Kazak_Cyrillic Keyboard Layout
+kbdkor.dll,KO Hangeul Keyboard Layout Stub driver
+kbdkyr.dll,Kyrgyz Keyboard Layout
+kbdla.dll,Latin-American Spanish Keyboard Layout
+kbdlk41a.dll,DEC LK411-AJ Keyboard Layout
+kbdlk41j.dll,DEC LK411-JJ Keyboard Layout
+kbdlt.dll,Lithuania Keyboard Layout
+kbdlt1.dll,Lithuanian Keyboard Layout
+kbdlv.dll,Latvia Keyboard Layout
+kbdlv1.dll,Latvia-QWERTY Keyboard Layout
+kbdmac.dll,FYROMacedonian_Cyrillic Keyboard Layout
+kbdmaori.dll,Maori Keyboard Layout
+kbdmlt47.dll,Maltese 47-key Keyboard Layout
+kbdmlt48.dll,Maltese 48-key Keyboard Layout
+kbdmon.dll,Mongolian Keyboard Layout
+kbdne.dll,Dutch Keyboard Layout
+kbdnec.dll,JP Japanese Keyboard Layout for (NEC PC-9800)
+kbdnec95.dll,JP Japanese Keyboard Layout for (NEC PC-9800 Windows 95)
+kbdnecAT.dll,JP Japanese Keyboard Layout for (NEC PC-9800 on PC98-NX)
+kbdnecNT.dll,JP Japanese Keyboard Layout for (NEC PC-9800 Windows XP)
+kbdnepr.dll,Nepali Keyboard Layout
+kbdno.dll,Norwegian Keyboard Layout
+kbdno1.dll,Norwegian with Sami Keyboard Layout
+kbdpash.dll,Pashto (Afghanistan) Keyboard Layout
+kbdpl.dll,Polish Keyboard Layout
+kbdpl1.dll,Polish Programmer's Keyboard Layout
+kbdpo.dll,Portuguese Keyboard Layout
+kbdro.dll,Romanian Keyboard Layout
+kbdru.dll,Russian Keyboard Layout
+kbdru1.dll,Russia(Typewriter) Keyboard Layout
+kbdsf.dll,Swiss French Keyboard Layout
+kbdsg.dll,Swiss German Keyboard Layout
+kbdsl.dll,Slovak Keyboard Layout
+kbdsl1.dll,Slovak(QWERTY) Keyboard Layout
+kbdsmsfi.dll,Sami Extended Finland-Sweden Keyboard Layout
+kbdsmsno.dll,Sami Extended Norway Keyboard Layout
+kbdsp.dll,Spanish Keyboard Layout
+kbdsw.dll,Swedish Keyboard Layout
+kbdsyr1.dll,Syriac Standard Keyboard Layout
+kbdsyr2.dll,Syriac Phoenetic Keyboard Layout
+kbdtat.dll,Tatar_Cyrillic Keyboard Layout
+kbdth0.dll,Thai Kedmanee Keyboard Layout
+kbdth1.dll,Thai Pattachote Keyboard Layout
+kbdth2.dll,Thai Kedmanee (non-ShiftLock) Keyboard Layout
+kbdth3.dll,Thai Pattachote (non-ShiftLock) Keyboard Layout
+kbdtuf.dll,Turkish F Keyboard Layout
+kbdtuq.dll,Turkish Q Keyboard Layout
+kbduk.dll,United Kingdom Keyboard Layout
+kbdukx.dll,United Kingdom Extended Keyboard Layout
+kbdur.dll,Ukrainian Keyboard Layout
+kbdurdu.dll,Urdu Keyboard Layout
+kbdus.dll,United States Keyboard Layout
+kbdusa.dll,US IBM Arabic 238_L Keyboard Layout
+kbdusl.dll,Dvorak Left-Hand US English Keyboard Layout
+kbdusr.dll,Dvorak Right-Hand US English Keyboard Layout
+kbdusx.dll,US Multinational Keyboard Layout
+kbduzb.dll,Uzbek_Cyrillic Keyboard Layout
+kbdvntc.dll,Vietnamese Keyboard Layout
+kbdycc.dll,Serbian_Cyrillic Keyboard Layout
+kbdycl.dll,Serbian_Latin Keyboard Layout
+kd1394.dll,Kernel Debugger IEEE 1394 HW Extension DLL
+kdcom.dll,Kernel Debugger HW Extension DLL
+kerberos.dll,Kerberos Security Package
+kernel32.dll,Windows NT BASE API Client DLL
+keymgr.dll,Stored User Names and Passwords
+kmsvc.dll,Key Management Service
+korwbrkr.dll,Korean WordBreaker
+ksuser.dll,User CSA Library
+l2gpstore.dll,Policy Storage dll
+langwrbk.dll,English wordbreaker
+laprxy.dll,Windows Media Logagent Proxy
+licdll.dll,Licdll Module
+licmgr10.dll,Microsoft® License Manager DLL
+licwmi.dll,Windows Product Activation Configuration WMI provider
+linkinfo.dll,Windows Volume Tracking
+lmhsvc.dll,TCPIP NetBios Transport Services DLL
+lmrt.dll,Liquid Motion Runtime Control
+loadperf.dll,Load & Unload Performance Counters
+localsec.dll,Local Users and Groups MMC Snapin
+localspl.dll,Local Spooler DLL
+localui.dll,Local Monitor UI DLL
+loghours.dll,Schedule Dialog
+lpk.dll,Language Pack
+lprhelp.dll,LPR Print Monitor
+lprmonui.dll,LPR Print Monitor UI
+lsasrv.dll,LSA Server DLL
+lz32.dll,LZ Expand/Compress API DLL
+mag_hook.dll,Microsoft Magnifier hook library file
+mapi32.dll,Extended MAPI 1.0 for Windows NT
+mapistub.dll,Extended MAPI 1.0 for Windows NT
+mcastmib.dll,Microsoft Multicast subagent
+mcd32.dll,OpenGL MCD Client DLL
+mcdsrv32.dll,MCD Server
+mchgrcoi.dll,Medium Changer CoInstaller
+mciavi32.dll,Video For Windows MCI driver
+mcicda.dll,MCI driver for cdaudio devices
+mciole32.dll,MCI OLE DLL
+mciqtz32.dll,DirectShow MCI Driver
+mciseq.dll,MCI driver for MIDI sequencer
+mciwave.dll,MCI driver for waveform audio
+mdhcp.dll,Microsoft MDHCP Client COM Interface
+mdminst.dll,Modem Class Installer
+mf3216.dll,32-bit to 16-bit Metafile Conversion DLL
+mfc40.dll,MFCDLL Shared Library - Retail Version
+mfc40u.dll,MFCDLL Shared Library - Retail Version
+mfc42.dll,MFCDLL Shared Library - Retail Version
+mfc42u.dll,MFCDLL Shared Library - Retail Version
+mfcsubs.dll,UNKNOWN
+mgmtapi.dll,Microsoft SNMP Manager API (uses WinSNMP)
+microsoft.managementconsole.dll,MMCFx
+midimap.dll,Microsoft MIDI Mapper
+miglibnt.dll,NT migration dll support
+mimefilt.dll,Microsoft (R) IMimeFilter Persistent Handler DLL
+mlang.dll,Multi Language Support DLL
+mll_hp.dll,HP Media Label Library
+mll_mtf.dll,MTF (Microsoft Tape Format) Media Label Library
+mll_qic.dll,QIC113 Media Label Library
+mmcbase.dll,MMC Base DLL
+mmcex.dll,MMCEx
+mmcfxcommon.dll,MMCFxCommon
+mmcndmgr.dll,MMC Node Manager DLL
+mmcshext.dll,MMC Shell Extension DLL
+mmdrv.dll,MultiMedia Kernel support Driver
+mmfutil.dll,WMI Snapin Helpers
+mmutilse.dll,Microsoft Multimedia Controls Utilities
+mnmdd.dll,Application Sharing Display Driver
+mobsync.dll,Microsoft Synchronization Manager
+modemui.dll,Windows Modem Properties
+modex.dll,ModeX Display Driver
+moricons.dll,Windows NT Setup Icon Resources Library
+mp43dmod.dll,Windows Media MPEG-4 Video Decoder
+mp4sdmod.dll,Corona Windows Media MPEG-4 S Video Decoder
+mpg4dmod.dll,Corona Windows Media MPEG-4 Video Decoder
+mpr.dll,Multiple Provider Router DLL
+mprapi.dll,Windows NT MP Router Administration DLL
+mprddm.dll,Demand Dial Manager Supervisor
+mprdim.dll,Dynamic Interface Manager
+mprmsg.dll,Multi-Protocol Router Service Messages DLL
+mprui.dll,Multiple Provider
+mqad.dll,Windows NT MQ Client AD Access
+mqcertui.dll,Windows NT Certificate Dialogs
+mqdscli.dll,Windows NT MQ Client Directory Service
+mqgentr.dll,MSMQ Trigger Generic Object
+mqise.dll,MSMQ ISAPI EXTENSION
+mqlogmgr.dll,MS DTC log manager DLL
+mqoa.dll,Message Queuing ActiveX Interface
+mqperf.dll,Windows NT MQ Performance Coutners
+mqqm.dll,Windows NT MQ Queue Manager
+mqrt.dll,Windows NT MQ Run time DLL
+mqrtdep.dll,Message Queueing Dependent Client
+mqsec.dll,Windows NT, MSMQ 2.0 Security
+mqsnap.dll,Windows NT MSMQ Admin
+mqtrig.dll,MSMQ Trigger Object Module
+mqupgrd.dll,MSMQ Upgrade
+mqutil.dll,Windows NT MQ Utility DLL
+msaatext.dll,Active Accessibility text support
+msacm32.dll,Microsoft ACM Audio Filter
+msafd.dll,Microsoft Windows Sockets 2.0 Service Provider
+msapsspc.dll,DPA Client for 32 bit platforms
+msasn1.dll,ASN.1 Runtime APIs
+msaudite.dll,Security Audit Events DLL
+mscat32.dll,MSCAT32 Forwarder DLL
+mscms.dll,Microsoft Color Matching System DLL
+msconf.dll,Conferencing Utility Dll
+mscpx32r.dll,Microsoft Data Access - ODBC Code Page Translator Resources
+mscpxl32.dll,Microsoft Data Access - ODBC Code Page Translator
+msctf.dll,MSCTF Server DLL
+msctfp.dll,MSCTFP Server DLL
+msdadiag.dll,Microsoft Data Access - Built-In Diagnostics
+msdart.dll,Microsoft Data Access - OLE DB Runtime Routines
+msdbg2.dll,Microsoft Visual Studio 7.0 Debugging Proxy/Stub
+msdmo.dll,DMO Runtime
+msdtclog.dll,MS DTC log manager DLL
+msdtcprx.dll,MS DTC OLE Transactions interface proxy DLL
+msdtctm.dll,MS DTC transaction manager DLL
+msdtcuiu.dll,MS DTC administrative component DLL
+msdxmlc.dll,Windows Media Player
+msencode.dll,Microsoft Character Encoder
+msexch40.dll,Microsoft Jet Exchange Isam
+msexcl40.dll,Microsoft Jet Excel Isam
+msfeeds.dll,Microsoft Feeds Manager
+msfeedsbs.dll,Microsoft Feeds Background Sync
+msftedit.dll,Rich Text Edit Control, v4.1
+msgina.dll,Windows NT Logon GINA DLL
+msgsvc.dll,NT Messenger Service
+mshtml.dll,Microsoft (R) HTML Viewer
+mshtmled.dll,Microsoft® HTML Editing Component
+mshtmler.dll,Microsoft® HTML Editing Component's Resource DLL
+msi.dll,Windows Installer
+msident.dll,Microsoft Identity Manager
+msidle.dll,User Idle Monitor
+msidntld.dll,Microsoft Identity Manager
+msieftp.dll,Microsoft Internet Explorer FTP Folder Shell Extension
+msihnd.dll,Windows® installer
+msimg32.dll,GDIEXT Client DLL
+msimsg.dll,Windows® Installer International Messages
+msimtf.dll,Active IMM Server DLL
+msir3jp.dll,Japanese Wordbreaker and Stemmer
+msisip.dll,MSI Signature SIP Provider
+msjet40.dll,Microsoft Jet Engine Library
+msjetoledb40.dll,Microsoft OLE DB Provider for Jet
+msjint40.dll,Microsoft Jet Database Engine International DLL
+msjter40.dll,Microsoft Jet Database Engine Error DLL
+msjtes40.dll,Microsoft Jet Expression Service
+mslbui.dll,LangageBar Add In
+msls31.dll,Microsoft Line Services library file
+msltus40.dll,Microsoft Jet Lotus 1-2-3 Isam
+msnetobj.dll,DRM ActiveX Network Object
+msnsspc.dll,MSN Internet Access
+msobjs.dll,System object audit names
+msoeacct.dll,Microsoft Internet Account Manager
+msoert2.dll,Microsoft Outlook Express RT Lib
+msorc32r.dll,Microsoft Data Access - ODBC Driver for Oracle Resources
+msorcl32.dll,Microsoft Data Access - ODBC Driver for Oracle
+mspatcha.dll,Microsoft(R) Patch Engine
+mspbde40.dll,Microsoft Jet Paradox Isam
+mspmsnsv.dll,Microsoft Media Device Service Provider
+mspmsp.dll,Microsoft Media Device Service Provider
+msports.dll,Ports Class Installer
+msprivs.dll,Microsoft Privilege Translations
+msr2c.dll,Microsoft® Forms DLL
+msr2cenu.dll,Microsoft® Forms DLL
+msratelc.dll,Internet Ratings and Local User Management DLL
+msrating.dll,Internet Ratings and Local User Management DLL
+msrclr40.dll,Microsoft Jet Briefcase Reconciler Library
+msrd2x40.dll,Microsoft (R) Red ISAM
+msrd3x40.dll,Microsoft (R) Red ISAM
+msrecr40.dll,Microsoft Jet Briefcase Reconciler Resource Library
+msrepl40.dll,Microsoft Replication Library
+msrle32.dll,Microsoft RLE Compressor
+mssap.dll,DRM
+msscp.dll,Windows Media Secure Content Provider
+mssha.dll,Microsoft System Health Agent
+msshavmsg.dll,Microsoft System Health Agent Validator Message
+mssign32.dll,Microsoft Trust Signing APIs
+mssip32.dll,MSSIP32 Forwarder DLL
+msswch.dll,msswch
+mstask.dll,Task Scheduler interface DLL
+mstext40.dll,Microsoft Jet Text Isam
+mstime.dll,Microsoft (R) Timed Interactive Multimedia Extensions to HTML
+mstlsapi.dll,Microsoft® Terminal Server Licensing
+mstscax.dll,Terminal Services ActiveX Client
+msutb.dll,MSUTB Server DLL
+msv1_0.dll,Microsoft Authentication Package v1.0
+msvbvm50.dll,Visual Basic Virtual Machine
+msvbvm60.dll,Visual Basic Virtual Machine
+msvcirt.dll,Windows NT IOStreams DLL
+msvcp50.dll,Microsoft (R) C++ Runtime Library
+msvcp60.dll,Microsoft (R) C++ Runtime Library
+msvcrt.dll,Windows NT CRT DLL
+msvcrt20.dll,Microsoft® C Runtime Library
+msvcrt40.dll,VC 4.x CRT DLL (Forwarded to msvcrt.dll)
+msvfw32.dll,Microsoft Video for Windows DLL
+msvidc32.dll,Microsoft Video 1 Compressor
+msvidctl.dll,ActiveX control for streaming video
+msw3prt.dll,ISAPI dll for Web Printing
+mswdat10.dll,Microsoft Jet Sort Tables
+mswebdvd.dll,MSWebDVD Module
+mswmdm.dll,Windows Media Device Manager Core
+mswsock.dll,Microsoft Windows Sockets 2.0 Service Provider
+mswstr10.dll,Microsoft Jet Sort Library
+msxbde40.dll,Microsoft Jet xBASE Isam
+msxml.dll,XML OM for Win32
+msxml2.dll,XML OM for Win32
+msxml2r.dll,XML Resources for Win32
+msxml3.dll,MSXML 3.0 SP9
+msxml3r.dll,XML Resources
+msxml6.dll,MSXML 6.0 SP2
+msxml6r.dll,XML Resources
+msxmlr.dll,XML Resources for Win32
+msyuv.dll,Microsoft UYVY Video Decompressor
+mtxclu.dll,MS DTC amd MTS clustering support DLL
+mtxdm.dll,UNKNOWN
+mtxex.dll,UNKNOWN
+mtxlegih.dll,UNKNOWN
+mtxoci.dll,Microsoft database support DLL for Oracle
+mycomput.dll,Computer Management
+mydocs.dll,My Documents Folder UI
+napipsec.dll,NAP IPSec Enforcement Client
+napmontr.dll,NAP Netsh Helper
+narrhook.dll,Microsoft Narrator Keyboard and WinEvent hook
+ncobjapi.dll,UNKNOWN
+ncxpnt.dll,Netork Setup Wizard Support DLL
+nddeapi.dll,Network DDE Share Management APIs
+nddenb32.dll,Network DDE NetBIOS Interface
+netapi32.dll,Net Win32 API DLL
+netcfgx.dll,Network Configuration Objects
+netevent.dll,Net Event Handler
+neth.dll,Net Help Messages DLL
+netid.dll,System Control Panel Applet; Network ID Page
+netlogon.dll,Net Logon Services DLL
+netman.dll,Network Connections Manager
+netmsg.dll,Net Messages DLL
+netplwiz.dll,Map Network Drives/Network Places Wizard
+netrap.dll,Net Remote Admin Protocol DLL
+netshell.dll,Network Connections Shell
+netui0.dll,NT LM UI Common Code - GUI Classes
+netui1.dll,NT LM UI Common Code - Networking classes
+netui2.dll,NT LM UI Common Code - GUI Classes
+newdev.dll,Add Hardware Device Library
+nlhtml.dll,HTML filter
+nlsdl.dll,Nls Downlevel DLL
+nmevtmsg.dll,NetMeeting Event Logging DLL
+nmmkcert.dll,NMMKCERT Library
+normaliz.dll,Unicode Normalization DLL
+npptools.dll,NPP Tools Helper DLL
+ntdll.dll,NT Layer DLL
+ntdsapi.dll,NT5DS
+ntdsbcli.dll,NT5DS
+ntlanman.dll,Microsoft® Lan Manager
+ntlanui.dll,Lanman Control dll
+ntlanui2.dll,Network object shell UI
+ntlsapi.dll,Microsoft® License Server Interface DLL
+ntmarta.dll,Windows NT MARTA provider
+ntmsapi.dll,Removable Storage Public Interfaces
+ntmsdba.dll,Removable Storage Manager DB Object APIs
+ntmsevt.dll,Removable Storage Manager Event Logger
+ntmsmgr.dll,Removable Storage Service
+ntmssvc.dll,Removable Storage Manager
+ntprint.dll,Spooler Setup DLL
+ntsdexts.dll,Symbolic Debugger Extensions
+ntshrui.dll,Shell extensions for sharing
+ntvdmd.dll,NTVDMD.DLL
+nwapi16.dll,NW Windows/Dos API DLL
+nwapi32.dll,NW Win32 API DLL
+nwcfg.dll,NWC Configuration DLL
+nwevent.dll,Event Messages for Client Service for NetWare
+nwprovau.dll,Client Service for NetWare Provider and Authentication Package DLL
+nwwks.dll,Client Service for Netware
+oakley.dll,Oakley Key Manager
+objsel.dll,Object Picker Dialog
+occache.dll,Object Control Viewer
+ocmanage.dll,Optional Component Manager Library
+odbc32.dll,Microsoft Data Access - ODBC Driver Manager
+odbc32gt.dll,Microsoft Data Access - ODBC Driver Generic Thunk
+odbcbcp.dll,Microsoft BCP for ODBC
+odbcconf.dll,Microsoft Data Access - ODBC Driver Configuration Program
+odbccp32.dll,Microsoft Data Access - ODBC Installer
+odbccr32.dll,Microsoft Data Access - ODBC Cursor Library
+odbccu32.dll,Microsoft Data Access - ODBC Cursor Library
+odbcint.dll,Microsoft Data Access - ODBC Resources
+odbcji32.dll,Microsoft ODBC Desktop Driver Pack 3.5
+odbcjt32.dll,Microsoft ODBC Desktop Driver Pack 3.5
+odbcp32r.dll,Microsoft Data Access - ODBC Driver Manager Resources
+odbctrac.dll,Microsoft Data Access - ODBC Driver Manager Trace
+oddbse32.dll,ODBC (3.0) driver for DBase
+odexl32.dll,ODBC (3.0) driver for Excel
+odfox32.dll,ODBC (3.0) driver for FoxPro
+odpdx32.dll,ODBC (3.0) driver for Paradox
+odtext32.dll,ODBC (3.0) driver for text files
+offfilt.dll,OffFilt
+ole32.dll,Microsoft OLE for Windows
+oleacc.dll,Active Accessibility Core Component
+oleaccrc.dll,Active Accessibility Resource DLL
+oleaut32.dll,UNKNOWN
+olecli32.dll,Object Linking and Embedding Client Library
+olecnv32.dll,Microsoft OLE for Windows
+oledlg.dll,Microsoft Windows(TM) OLE 2.0 User Interface Support
+oleprn.dll,Oleprn DLL
+olepro32.dll,UNKNOWN
+olesvr32.dll,Object Linking and Embedding Server Library
+olethk32.dll,Microsoft OLE for Windows
+onex.dll,IEEE 802.1X supplicant library
+opengl32.dll,OpenGL Client DLL
+osuninst.dll,Uninstall Interface
+p2p.dll,Peer-to-Peer Grouping
+p2pgasvc.dll,Peer-to-Peer Group Authentication Service
+p2pgraph.dll,Peer-to-Peer Graphing
+p2pnetsh.dll,Peer-to-Peer NetSh Helper
+p2psvc.dll,Peer-to-Peer Services
+panmap.dll,PANOSE(tm) Font Mapper
+pautoenr.dll,Auto Enrollment DLL
+pdh.dll,Windows Performance Data Helper DLL
+perfctrs.dll,Performance Counters
+perfdisk.dll,Windows Disk Performance Objects DLL
+perfnet.dll,Windows Network Service Performance Objects DLL
+perfnw.dll,Client Service for Netware Counters
+perfos.dll,Windows System Performance Objects DLL
+perfproc.dll,Windows System Process Performance Objects DLL
+perfts.dll,Windows 2000 Terminal Services Performance Objects
+photometadatahandler.dll,Photo Metadata Handler
+photowiz.dll,Photo Printing Wizard
+pid.dll,Microsoft PID
+pidgen.dll,Pid3.0 generation
+pifmgr.dll,Windows NT PIF Manager Icon Resources Library
+pjlmon.dll,PJL Language monitor
+plustab.dll,Effects Control Panel extension
+pngfilt.dll,IE PNG plugin image decoder
+pnrpnsp.dll,PNRP Name Space Provider
+polstore.dll,Policy Storage dll
+powrprof.dll,Power Profile Helper DLL
+prflbmsg.dll,Perflib Event Messages
+printui.dll,Print UI DLL
+profmap.dll,Userenv
+psapi.dll,Process Status Helper
+psbase.dll,Protected Storage default provider
+pschdprf.dll,Microsoft® Windows(TM) PSched Performance Monitor
+psnppagn.dll,DCOM Proxy for NPPAgent Object
+pstorec.dll,Protected Storage COM interfaces
+pstorsvc.dll,Protected storage server
+qagent.dll,Quarantine Agent Proxy
+qagentrt.dll,Quarantine Agent Service Run-Time
+qasf.dll,DirectShow ASF Support
+qcap.dll,DirectShow Runtime.
+qcliprov.dll,Quarantine Client WMI Provider
+qdv.dll,DirectShow Runtime.
+qdvd.dll,DirectShow DVD PlayBack Runtime.
+qedit.dll,DirectShow Editing.
+qedwipes.dll,DirectShow Editing SMPTE Wipes
+qmgr.dll,Background Intelligent Transfer Service
+qmgrprxy.dll,Background Intelligent Transfer Service Proxy
+qosname.dll,Microsoft Windows GetQosByName Service Provider
+quartz.dll,DirectShow Runtime.
+query.dll,Content Index Utility DLL
+qutil.dll,Quarantine Utilities
+racpldlg.dll,Microsoft Remote Assistance
+rasadhlp.dll,Remote Access AutoDial Helper
+rasapi32.dll,Remote Access API
+rasauto.dll,Remote Access AutoDial Manager
+raschap.dll,Remote Access PPP CHAP
+rasctrs.dll,Windows NT Remote Access Perfmon Counter dll
+rasdlg.dll,Remote Access Common Dialog API
+rasman.dll,Remote Access Connection Manager
+rasmans.dll,Remote Access Connection Manager
+rasmontr.dll,RAS Monitor DLL
+rasmxs.dll,Remote Access Device DLL for modems, PADs and switches
+rasppp.dll,Remote Access PPP
+rasqec.dll,RAS Quarantine Enforcement Client
+rasrad.dll,Remote Access Service NT RADIUS client module
+rassapi.dll,Remote Access Admin APIs dll
+rasser.dll,Remote Access Media DLL for COM ports
+rastapi.dll,Remote Access TAPI Compliance Layer
+rastls.dll,Remote Access PPP EAP-TLS
+rcbdyctl.dll,Microsoft Remote Assistance
+rdchost.dll,RDSHost Client Module
+rdpcfgex.dll,Terminal Server Connection Configuration Extension for the RDP protocol
+rdpdd.dll,RDP Display Driver
+rdpsnd.dll,Terminal Server MultiMedia Driver
+rdpwsx.dll,RDP Extension DLL
+regapi.dll,Registry Configuration APIs
+regsvc.dll,Remote Registry Service
+regwizc.dll,RegWizCtrl Module
+remotepg.dll,Remote Sessions CPL Extension
+rend.dll,Microsoft Rendezvous Control
+resutils.dll,Microsoft Cluster Resource Utility DLL
+rhttpaa.dll,RPC/HTTP Downlevel Side-by-side Runtime
+riched20.dll,Rich Text Edit Control, v3.0
+riched32.dll,Wrapper Dll for Richedit 1.0
+rnr20.dll,Windows Socket2 NameSpace DLL
+routetab.dll,Microsoft Routing Table DLL
+rpcns4.dll,Remote Procedure Call Name Service Client
+rpcrt4.dll,Remote Procedure Call Runtime
+rpcss.dll,Distributed COM Services
+rsaenh.dll,Microsoft Enhanced Cryptographic Provider
+rsfsaps.dll,FSA Proxy / Stub
+rshx32.dll,Security Shell Extension
+rsmps.dll,RSM Proxy Stub
+rsvpmsg.dll,RSVP Messages DLL
+rsvpperf.dll,Microsoft® Windows(TM) RSVP Performance Monitor
+rsvpsp.dll,Microsoft Windows Rsvp 1.0 Service Provider
+rtipxmib.dll,Microsoft Router IPX MIB subagent
+rtm.dll,Routing Table Manager
+rtutils.dll,Routing Utilities
+rwnh.dll,RWNH
+s3legacy.dll,S3 Display Driver
+safrcdlg.dll,Microsoft PCHealth Remote Assistance File Open & Save controls
+safrdm.dll,Microsoft Help Center Desktop Manager
+safrslv.dll,Microsoft Help Center Session Resolver
+samlib.dll,SAM Library DLL
+samsrv.dll,SAM Server DLL
+sbe.dll,DirectShow Stream Buffer Filter.
+sbeio.dll,Stream Buffer IO DLL
+scarddlg.dll,SCardDlg - Smart Card Common Dialog
+scardssp.dll,Smart Card Base Service Providers
+sccbase.dll,Infineon SICRYPT® Base Smart Card CSP
+sccsccp.dll,Infineon SICRYPT® Smart Card Crypto Provider COM Objects
+scecli.dll,Windows Security Configuration Editor Client Engine
+scesrv.dll,Windows Security Configuration Editor Engine
+schannel.dll,TLS / SSL Security Provider
+schedsvc.dll,Task Scheduler Engine
+sclgntfy.dll,Secondary Logon Service Notification DLL
+scredir.dll,Smart Card Redirection for TS
+scrobj.dll,Windows (R) Script Component Runtime
+scrrun.dll,Microsoft (R) Script Runtime
+sdhcinst.dll,Secure Digital Host Controller Class Installer
+sdpblb.dll,Microsoft Sdpblb
+seclogon.dll,Secondary Logon Service DLL
+secur32.dll,Security Support Provider Interface
+security.dll,Security Support Provider Interface
+sendcmsg.dll,Send Console Message
+sendmail.dll,Send Mail
+sens.dll,System Event Notification Service (SENS)
+sensapi.dll,SENS Connectivity API DLL
+senscfg.dll,SENS Setup/Setup Tool
+serialui.dll,Serial Port Property Pages
+servdeps.dll,WMI Snapins
+serwvdrv.dll,Unimodem Serial Wave driver
+setupapi.dll,Windows Setup API
+setupdll.dll,Windows 2000 Setup Dynlink
+sfc.dll,Windows File Protection
+sfc_os.dll,Windows File Protection
+sfcfiles.dll,Windows 2000 System File Checker
+sfmapi.dll,Windows NT Macintosh File Service Client
+shdoclc.dll,Shell Doc Object and Control Library
+shdocvw.dll,Shell Doc Object and Control Library
+shell32.dll,Windows Shell Common Dll
+shellstyle.dll,Windows Shell Style Resource Dll
+shfolder.dll,Shell Folder Service
+shgina.dll,Windows Shell User Logon
+shimeng.dll,Shim Engine DLL
+shimgvw.dll,Windows Picture and Fax Viewer
+shlwapi.dll,Shell Light-weight Utility Library
+shmedia.dll,Media File Property Extractor Shell Extension
+shscrap.dll,Shell scrap object handler
+shsvcs.dll,Windows Shell Services Dll
+sigtab.dll,File Integrity Settings
+sisbkup.dll,Single-Instance Store Backup Support Functions
+skdll.dll,Serial Keys
+slayerxp.dll,Compatibility Tab Shell Extension DLL
+smlogcfg.dll,Performance Logs and Alerts Snap-in
+smtpapi.dll,SMTP Service Client API Stubs
+snmpapi.dll,SNMP Utility Library
+snmpsnap.dll,SNMP snap-in
+softpub.dll,Softpub Forwarder DLL
+spmsg.dll,Service Pack Messages
+spoolss.dll,Spooler SubSystem DLL
+sqlsrv32.dll,Microsoft SQL Server ODBC Driver
+sqlunirl.dll,String Function .DLL for SQL Enterprise Components
+sqlwid.dll,Unicode Function .DLL for SQL Enterprise Components
+sqlwoa.dll,Unicode/ANSI Function .DLL for SQL Enterprise Components
+srclient.dll,SR CLIENT DLL
+srrstr.dll,System Restore Restore Operation Library
+srsvc.dll,System Restore Service
+srvsvc.dll,Server Service DLL
+ssdpapi.dll,SSDP Client API DLL
+ssdpsrv.dll,SSDP Service DLL
+stclient.dll,UNKNOWN
+sti.dll,Still Image Devices client DLL
+sti_ci.dll,Still Image Class Installer
+stobject.dll,Systray shell service object
+storprop.dll,Property Pages for Storage Devices
+streamci.dll,Streaming Device Class Installer
+strmdll.dll,Windows Media Services Streamer Dll
+strmfilt.dll,Stream Filter Library
+svcpack.dll,Windows 2000 Service Pack Setup
+swprv.dll,Microsoft® Volume Shadow Copy Service software provider
+sxs.dll,Fusion 2.5
+synceng.dll,Windows Briefcase Engine
+syncui.dll,Windows Briefcase
+sysinv.dll,Windows System Inventory
+syssetup.dll,Windows NT System Setup
+Thawbrkr.dll,Thai Word Breaker
+t2embed.dll,Microsoft T2Embed Font Embedding
+tapi3.dll,Microsoft TAPI3
+tapi32.dll,Microsoft® Windows(TM) Telephony API Client DLL
+tapiperf.dll,Microsoft® Windows(TM) Telephony Performance Monitor
+tapisrv.dll,Microsoft® Windows(TM) Telephony Server
+tapiui.dll,Microsoft® Windows(TM) Telephony API UI DLL
+tcpmib.dll,Standard TCP/IP Port Monitor Helper DLL
+tcpmon.dll,Standard TCP/IP Port Monitor DLL
+tcpmonui.dll,Standard TCP/IP Port Monitor UI DLL
+termmgr.dll,Microsoft TAPI3 Terminal Manager
+termsrv.dll,Terminal Server Service
+themeui.dll,Windows Theme API
+tlntsvrp.dll,Microsoft Telnet Server Proxy Stub
+traffic.dll,Microsoft Traffic Control 1.0 DLL
+trkwks.dll,Distributed Link Tracking Client
+tsappcmp.dll,Terminal Services Application Compatibility DLL
+tsbyuv.dll,Toshiba Video Codec
+tscfgwmi.dll,Terminal Server Configuration WMI provider
+tsddd.dll,Framebuffer Display Driver
+tsgqec.dll,TSGateway QEC
+tspkg.dll,Web Service Security Package
+twext.dll,Previous Versions property page
+txflog.dll,Simple Kernel-mode File-based Log
+udhisapi.dll,UPnP Device Host ISAPI Extension
+ufat.dll,FAT Utility DLL
+ulib.dll,File Utilities Support DLL
+umandlg.dll,UManDlg DLL
+umdmxfrm.dll,Unimodem Tranform Module
+umpnpmgr.dll,User-mode Plug-and-Play Service
+uniime.dll,Generic IME 5.0 version
+unimdmat.dll,Unimodem Service Provider AT Mini Driver
+uniplat.dll,Unimodem AT Mini Driver Platform Driver for Windows NT
+untfs.dll,NTFS Utility DLL
+upnp.dll,Universal Plug and Play API
+upnphost.dll,UPnP Device Host
+upnpui.dll,UPNP Tray Monitor and Folder
+ureg.dll,Registry Utility DLL
+url.dll,Internet Shortcut Shell Extension DLL
+urlmon.dll,OLE32 Extensions for Win32
+usbmon.dll,Standard Dynamic Printing Port Monitor DLL
+user32.dll,Windows XP USER API Client DLL
+userenv.dll,Userenv
+usp10.dll,Uniscribe Unicode script processor
+utildll.dll,WinStation utility support DLL
+uxtheme.dll,Microsoft UxTheme Library
+vbajet32.dll,Visual Basic for Applications Development Environment - Expression Service Loader
+vbscript.dll,Microsoft (R) VBScript
+vcdex.dll,32-bit MSCDEX Virtual Device Driver
+vdmdbg.dll,VDMDBG.DLL
+verifier.dll,Standard application verifier provider dll
+version.dll,Version Checking and File Installation Libraries
+vfpodbc.dll,vfpodbc
+vga.dll,VGA 16 Colour Display Driver
+vga256.dll,256 Color VGA\SVGA Display Driver
+vga64k.dll,32K/64K color VGA\SVGA Display Driver
+vjoy.dll,32-bit Joystick Virtual Device Driver
+vmsrvc.dll,Virtual Machine Services Library
+vpc-s3.dll,Virtual Machine S3 Display Driver
+vss_ps.dll,Microsoft® Volume Shadow Copy Service proxy/stub
+vssapi.dll,Microsoft® Volume Shadow Copy Requestor/Writer Services API DLL
+vwipxspx.dll,Virtual Dos Machine IPX/SPX Interface Library
+w32time.dll,Windows Time Service
+w32topl.dll,Windows NT Topology Maintenance Tool
+w3ssl.dll,SSL service for HTTP
+wavemsp.dll,Microsoft Wave MSP
+wdigest.dll,Microsoft Digest Access
+webcheck.dll,Web Site Monitor
+webclnt.dll,Web DAV Service DLL
+webhits.dll,Indexing Service Webhits
+webvw.dll,Shell WebView Content & Control Library
+wiadefui.dll,WIA Scanner Default UI
+wiadss.dll,WIA TWAIN compatibility layer
+wiascr.dll,WIA Scripting Layer
+wiaservc.dll,Still Image Devices Service
+wiashext.dll,Imaging Devices Shell Folder UI
+wiavideo.dll,WIA Video
+wiavusd.dll,WIA Video Stream device USD
+win32spl.dll,32-bit Spooler API DLL
+winbrand.dll,Windows Branding Resources
+windowscodecs.dll,Microsoft Windows Codecs Library
+windowscodecsext.dll,Microsoft Windows Codecs Extended Library
+winfax.dll,Microsoft Fax API Support DLL
+winhttp.dll,Windows HTTP Services
+wininet.dll,Internet Extensions for Win32
+winipsec.dll,Windows IPSec SPD Client DLL
+winmm.dll,MCI API DLL
+winntbbu.dll,Windows Setup BillBrd DLL
+winrnr.dll,LDAP RnR Provider DLL
+winscard.dll,Microsoft Smart Card API
+winshfhc.dll,File Risk Estimation
+winsrv.dll,Windows Server DLL
+winsta.dll,Winstation Library
+winstrm.dll,Streams DLL
+wintrust.dll,Microsoft Trust Verification APIs
+wkssvc.dll,Workstation Service DLL
+wlanapi.dll,Windows Wireless LAN 802.11 Client Side API DLL
+wldap32.dll,Win32 LDAP API DLL
+wlnotify.dll,Common DLL to receive Winlogon notifications
+wmadmod.dll,Corona Windows Media Audio Decoder
+wmadmoe.dll,Corona Windows Media Audio 9 Encoder/Transcoder
+wmasf.dll,Windows Media ASF DLL
+wmdmlog.dll,Windows Media Device Manager Logger
+wmdmps.dll,Windows Media Device Manager Proxy Stub
+wmerrenu.dll,Windows Media Services Error Definitions
+wmerror.dll,Windows Media Error Definitions (English)
+wmi.dll,WMI DC and DP functionality
+wmidx.dll,Windows Media Indexer DLL
+wmiprop.dll,WDM Provider Dynamic Property Page CoInstaller
+wmiscmgr.dll,WMI Filter Manager
+wmnetmgr.dll,Windows Media Network Plugin Manager DLL
+wmp.dll,Windows Media Player Core
+wmpasf.dll,Windows Media Filter Shim
+wmpcd.dll,Windows Media Player
+wmpcore.dll,Windows Media Player
+wmpdxm.dll,Windows Media 6.4 Player Shim
+wmphoto.dll,Windows Media Photo Codec
+wmploc.dll,Windows Media Player
+wmpshell.dll,Windows Media Player Launcher
+wmpui.dll,Windows Media Player
+wmsdmod.dll,Windows Media Screen Decoder
+wmsdmoe.dll,Windows Media Screen Encoder
+wmsdmoe2.dll,Corona Windows Media Screen Encoder
+wmspdmod.dll,Windows Media Speech Decoder
+wmspdmoe.dll,Windows Media Speech Encoder
+wmstream.dll,Windows Media Streamer DLL
+wmvcore.dll,Windows Media Playback/Authoring DLL
+wmvdmod.dll,Corona Windows Media Video Decoder
+wmvdmoe2.dll,Corona Windows Media Video Encoder
+wow32.dll,32-bit WOW Subsystem Library
+wowfax.dll,Windows 3.1 Compatible Fax Driver DLL
+wowfaxui.dll,Windows 3.1 Compatible Fax Driver UI DLL
+ws2_32.dll,Windows Socket 2.0 32-Bit DLL
+ws2help.dll,Windows Socket 2.0 Helper for Windows NT
+wscsvc.dll,Windows Security Center Service
+wsecedit.dll,Security Configuration UI Module
+wshatm.dll,Windows Sockets Helper DLL
+wshbth.dll,Windows Sockets Helper DLL
+wshcon.dll,Microsoft (R) Windows Script Controller
+wshext.dll,Microsoft (R) Shell Extension for Windows Script Host
+wship6.dll,IPv6 Helper DLL
+wshisn.dll,NWLINK2 Socket Helper DLL
+wshnetbs.dll,Netbios Windows Sockets Helper DLL
+wshrm.dll,Windows Sockets Helper DLL for PGM
+wshtcpip.dll,Windows Sockets Helper DLL
+wsnmp32.dll,Microsoft WinSNMP v2.0 Manager API
+wsock32.dll,Windows Socket 32-Bit DLL
+wstdecod.dll,WST Decoder Filter
+wtsapi32.dll,Windows Terminal Server SDK APIs
+wuapi.dll,Windows Update Client API
+wuaueng.dll,Windows Update AutoUpdate Engine
+wuaueng1.dll,Windows Update AutoUpdate Engine
+wuauserv.dll,Windows Update AutoUpdate Service
+wucltui.dll,Windows Update Client UI Plugin
+wups.dll,Windows Update client proxy stub
+wuweb.dll,Windows Update Web Control
+wzcdlg.dll,Wireless Zero Configuration Service UI
+wzcsapi.dll,Wireless Zero Configuration service API
+wzcsvc.dll,Wireless Zero Configuration Service
+xactsrv.dll,Downlevel API Server DLL
+xenroll.dll,XEnroll
+xmllite.dll,Microsoft XmlLite Library
+xmlprov.dll,Network Provisioning Service
+xmlprovi.dll,Network Provisioning Service Client API
+xolehlp.dll,MS DTC helper APIs DLL
+xpob2res.dll,Service Pack 2 OOB Messages
+xpsp1res.dll,Service Pack 1 Messages
+xpsp2res.dll,Service Pack 2 Messages
+xpsp3res.dll,Service Pack 3 Messages
+zipfldr.dll,Compressed (zipped) Folders,
