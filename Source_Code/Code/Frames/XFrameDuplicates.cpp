@@ -109,7 +109,7 @@ std::wstring TFrame2::GetSelectedFileName(int tag)
 	return L"";
 }
 
-/*
+/*                to do
 procedure TFrameSearch.sgDuplicatesNameCanSort(Sender: TObject; ACol: Integer;
   var DoSort: Boolean);
 {

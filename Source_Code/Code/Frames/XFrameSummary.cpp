@@ -26,9 +26,17 @@ __fastcall TFrameSummary::TFrameSummary(TComponent* Owner)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TFrameSummary::FrameResize(TObject *Sender)
+{
+	icQuantity->Update();
+	icSize->Update();
+}
+
+
 void TFrameSummary::Init()
 {
 	icQuantity = new XIceCream(this, pICQuantity);
+	icSize = new XIceCream(this, pICSize);
 
 	lSummaryBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	lSummaryByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
@@ -67,12 +75,25 @@ void TFrameSummary::Init()
 }
 
 
+void TFrameSummary::Destroy()
+{
+	delete icQuantity;
+	delete icSize;
+}
+
+
 void TFrameSummary::Update()
 {
 	BuildPreamble();
 	BuildSummaryLabels();
 	BuildGauges();
+	BuildIceCream();
+}
 
+
+void TFrameSummary::SetProcessTime(const std::wstring process_time)
+{
+	lProcessTime->Caption = process_time.c_str();
 }
 
 
@@ -136,33 +157,33 @@ void TFrameSummary::BuildGauges()
 }
 
 
-void TFrameSummary::BuildIceCream(int data_source)
+void TFrameSummary::BuildIceCream()
 {
 	icQuantity->Begin();
 	icSize->Begin();
 
-	for (int t = 1; t < kFileCategoriesCount; t++)
+	for (int t = 0; t < kFileCategoriesCount; t++)
 	{
-		if (GScanEngine->Data[data_source].Files.size() != 0)
+		if (GScanEngine->Data[DataSource].Files.size() != 0)
 		{
-			if (GScanEngine->Data[data_source].ExtensionSpread[t].Count != 0)
+			if (GScanEngine->Data[DataSource].ExtensionSpread[t].Count != 0)
 			{
 				icQuantity->Add(0,
-								GScanEngine->Data[data_source].ExtensionSpread[t].PercentCount,
+								GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount,
 								GLanguageHandler->TypeDescriptions[t],
-								GLanguageHandler->TypeDescriptions[t] + L" (" + std::to_wstring(GScanEngine->Data[data_source].ExtensionSpread[t].Count) + L" " + GLanguageHandler->Text[kFiles] + L")",
+								GLanguageHandler->TypeDescriptions[t] + L" (" + std::to_wstring(GScanEngine->Data[DataSource].ExtensionSpread[t].Count) + L" " + GLanguageHandler->Text[kFiles] + L")",
 								GSettingsHandler->FileCategoryColors[t]);
 			}
 		}
 
-		if (GScanEngine->Data[data_source].TotalSize != 0)
+		if (GScanEngine->Data[DataSource].TotalSize != 0)
 		{
-			if (GScanEngine->Data[data_source].ExtensionSpread[t].Size != 0)
+			if (GScanEngine->Data[DataSource].ExtensionSpread[t].Size != 0)
 			{
 				icSize->Add(0,
-							GScanEngine->Data[data_source].ExtensionSpread[t].PercentSize,
+							GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize,
 							GLanguageHandler->TypeDescriptions[t],
-							GLanguageHandler->TypeDescriptions[t] + L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[data_source].ExtensionSpread[t].Size) + L")",
+							GLanguageHandler->TypeDescriptions[t] + L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size) + L")",
 							GSettingsHandler->FileCategoryColors[t]);
 			}
 		}
@@ -171,3 +192,4 @@ void TFrameSummary::BuildIceCream(int data_source)
 	icQuantity->End();
 	icSize->End();
 }
+

@@ -4,6 +4,7 @@ object FrameSummary: TFrameSummary
   Width = 1032
   Height = 617
   TabOrder = 0
+  OnResize = FrameResize
   object PageControl1: TPageControl
     Left = 0
     Top = 0
@@ -233,19 +234,25 @@ object FrameSummary: TFrameSummary
         Caption = 'Label1'
       end
       object pICQuantity: TPanel
-        Left = 144
-        Top = 318
-        Width = 865
-        Height = 91
+        Left = 80
+        Top = 339
+        Width = 929
+        Height = 63
         Anchors = [akLeft, akTop, akRight]
+        BevelOuter = bvNone
+        Color = 3355443
+        ParentBackground = False
         TabOrder = 0
       end
-      object Panel1: TPanel
-        Left = 144
-        Top = 418
-        Width = 865
-        Height = 91
+      object pICSize: TPanel
+        Left = 80
+        Top = 439
+        Width = 929
+        Height = 63
         Anchors = [akLeft, akTop, akRight]
+        BevelOuter = bvNone
+        Color = 3355443
+        ParentBackground = False
         TabOrder = 1
       end
     end

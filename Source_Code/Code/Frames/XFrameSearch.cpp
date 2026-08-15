@@ -11,12 +11,14 @@
 #include "XFormGetCopyMove.h"
 #include "XFormXinorbisDialog.h"
 
+#include "ConstantsData.h"
 #include "FileExtensionHandler.h"
 #include "GridUtility.h"
 #include "HelpHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "Log.h"
+#include "QuickMenuHandler.h"
 #include "ReportHandler.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
@@ -29,6 +31,7 @@
 extern FileExtensionHandler *GFileExtensionHandler;
 extern Log *GLog;
 extern LanguageHandler *GLanguageHandler;
+extern QuickMenuHandler *GQuickMenuHandler;
 extern ReportHandler *GReportHandler;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
@@ -65,16 +68,16 @@ void __fastcall TFrameSearch::FrameResize(TObject *Sender)
 
 void TFrameSearch::Init()
 {
- /*	SearchDataChanged = False;
+	SearchDataChanged = false;
 
-	GScanEngine[dataSearch].ScanPath = GLanguageHandler->Text[kSearch];
+	GScanEngine->Data[DataTarget].Path.String = GLanguageHandler->Text[kSearch];
 
-	lSearchDetails.Caption = GLanguageHandler->Text[kSearchResults];
+	lSearchDetails->Caption = GLanguageHandler->Text[kSearchResults].c_str();
 
-	lPSearchSize.Caption = GLanguageHandler->Text[kBySize];
+	lGaugeQuantity->Caption = GLanguageHandler->Text[kBySize].c_str();
 
-	lPSearchQuantity.Caption   = GLanguageHandler->Text[kByQuantity];
-*/
+	lGaugeSize->Caption   = GLanguageHandler->Text[kByQuantity].c_str();
+
 	tsSearch->Caption = GLanguageHandler->Text[kSearch].c_str();
 	tsProperties->Caption = GLanguageHandler->Text[kDetail].c_str();
 
@@ -129,6 +132,20 @@ void TFrameSearch::Init()
 
 	miSSave->Caption            = (GLanguageHandler->Text[kSaveAs] + kEllipsis).c_str();
 
+	//
+
+	for (int t = 0; t < puQuickSearch->Items->Count; t++)
+	{
+		if (puQuickSearch->Items[t].Tag != -1)
+		{
+			puQuickSearch->Items[t].OnClick = miQuickSearchClick;
+		}
+	}
+
+	// ===========================================================================================
+
+	ice = new XIceCream(this, pICSearch);
+
 	// ===========================================================================================
 
 	//CreateReportsFrame(dataSearch);
@@ -149,6 +166,11 @@ void TFrameSearch::DeInit()
 	{
         delete SearchEngine;
 	}
+
+	if (ice != nullptr)
+	{
+		delete ice;
+	}
 }
 
 
@@ -167,6 +189,12 @@ void TFrameSearch::ExecuteSearch(const std::wstring search)
 	pcSearch->ActivePageIndex = 0;
 
 	sbGoSearchClick(sbGoSearch);
+}
+
+
+int TFrameSearch::CurrentTab()
+{
+	return pcSearch->ActivePageIndex;
 }
 
 
@@ -201,42 +229,28 @@ void __fastcall TFrameSearch::OnNewResults(unsigned __int64 size, int file_count
 #pragma region Popup_QuickSearch
 void __fastcall TFrameSearch::miQuickSearchClick(TObject *Sender)
 {
-	std::wstring ss = L"";
-	int ix = -1;
+	TMenuItem *mi = (TMenuItem*)Sender;
 
-  /*	if Pos("{", MenuStrings[TMenuItem(Sender).Tag]) != 0)
-	{
-		ss = ParseMenuSearchCommand(MenuStrings[TMenuItem(Sender).Tag])
-	}
-	else if MenuStrings[TMenuItem(Sender).Tag][1] = "$" then
-	{
-		ix = ParseMenuSearchCommandII(MenuStrings[TMenuItem(Sender).Tag])
-	}
-	else
-	{
-		ss = MenuStrings[TMenuItem(Sender).Tag];
-	}
+	QuickMenuAction qma = GQuickMenuHandler->FromMenu(mi->Tag);
 
-	if ix != -1 then
+	switch (qma.Action)
 	{
-		if (ix == 1)
+	case QMAction::kSearchString:
+		eSearch->Text = qma.Search.c_str();
+		eSearchChange(NULL);
+
+		sbGoSearchClick(sbGoSearch);
+		break;
+	case QMAction::kOther:
+		if (qma.SubAction == 1)
 		{
-			if Assigned(FOpenSearchWizard)
+			if (OnOpenSearchWizard)
 			{
-				FOpenSearchWizard(0);
+				OnOpenSearchWizard(0);
 			}
 		}
+		break;
 	}
-	else
-	{
-		if ss != "" then
-		{
-			eSearch->Text = ss;
-			eSearchChange(NULL);
-
-			sbGoSearchClick(sbGoSearch);
-		}
-	}                               */
 }
 #pragma end_region
 
@@ -503,7 +517,7 @@ void __fastcall TFrameSearch::miDeleteSelectedClick(TObject *Sender)
 {
 	if (MessageDlg(GLanguageHandler->Text[kDialog3].c_str(), mtWarning, mbYesNo, 0) == mrYes)
 	{
-    	TMenuItem* mi = (TMenuItem*)Sender;
+		TMenuItem* mi = (TMenuItem*)Sender;
 		TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 		TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
 
@@ -568,105 +582,51 @@ void __fastcall TFrameSearch::sbPageNextClick(TObject *Sender)
 #pragma region Settings
 void TFrameSearch::LoadSettings()
 {
-/*	if GSettingsHandler->OpenSettings(True) then
+	if (GSettingsHandler->OpenSettings(true))
 	{
-		pSearchChart.Width       = GSettingsHandler->ReadIntegerFromSettings("Prefs", "Sizes_pSearchResults", 200, 200);
+		cbSearchShowPath->Checked = GSettingsHandler->ReadBool(L"Prefs", L"Search_ShowPath", true);
 
-		cbSearchShowPath.Checked = GSettingsHandler->ReadBoolFromSettings("Prefs", "Search_ShowPath", True);
-
-		if (GSettingsHandler->customsettings.SettingsSaveLocation = SaveLocationConfigIni) then
+		for (int t = 0; t < kMaximumRecentScans; t++)
 		{
-			for t = 1 to MaximumFolderHistory do
-			{
-				s = GSettingsHandler->ReadStringFromSettings("Prefs", "SearchTerm" + std::to_wstring(t), "");
+			std::wstring s = GSettingsHandler->ReadString(L"Prefs", L"SearchTerm" + std::to_wstring(t + 1), L"");
 
-				if s != "" then
-				{
-					eSearch.Items.Add(s);
-				}
+			if (!s.empty())
+			{
+				eSearch->Items->Add(s.c_str());
 			}
 		}
-		else
-		{
-			lReg = TRegistry.Create(KEY_READ);
 
-			try
-			{
-				lReg.RootKey = HKEY_CURRENT_USER;
-				lReg.OpenKey("\software\" + XinorbisRegistryKey + "\SearchTerm", True);
-
-				t = 0;
-				While lReg.ValueExists("Term" + std::to_wstring(t)) do
-				{
-					eSearch.Items.Add(lReg.ReadString("Term" + std::to_wstring(t)));
-					t++;
-				}
-			}
-			catch(...)
-			{
-				lReg.Free;
-			}
-
-		}
-
-		GSettingsHandler->CloseSettings;
+		GSettingsHandler->CloseSettings();
 	}
 	else
 	{
 		GLog->AddError(L"Error loading settings in FrameSearch");
 	}
 
-	BuildSearchCharts(); */
+	BuildSearchCharts();
 }
 
 
 void TFrameSearch::SaveSettings()
 {
-  /*lReg : TRegistry;
-	if GSettingsHandler->OpenSettings(False) then
+	if (GSettingsHandler->OpenSettings(false))
 	{
-		GSettingsHandler->WriteIntegerToSettings("Prefs", "Sizes_pSearchResults", pSearchChart.Width);
+		GSettingsHandler->WriteBool(L"Prefs", L"Search_ShowPath", cbSearchShowPath->Checked);
 
-		GSettingsHandler->WriteBoolToSettings("Prefs", "Search_ShowPath",         cbSearchShowPath.Checked);
-
-		if (GSettingsHandler->customsettings.SettingsSaveLocation = SaveLocationConfigIni) then {
-			if eSearch.Items.Count != 0 then
-			{
-				for t = 0 to eSearch.Items.Count - 1 do
-				{
-					GSettingsHandler->WriteStringToSettings("Prefs", "SearchTerm" + std::to_wstring(t + 1), eSearch.Items[t]);
-				}
-			}
-		}
-		else
+		if (eSearch->Items->Count != 0)
 		{
-			if eSearch.Items.Count != 0 then
+			for (int t = 0; t < eSearch->Items->Count; t++)
 			{
-				lReg = TRegistry.Create(KEY_WRITE);
-
-				try
-				{
-					lReg.RootKey = HKEY_CURRENT_USER;
-					lReg.OpenKey("\software\" + XinorbisRegistryKey + "\SearchTerm", True);
-
-					for t = 0 to eSearch.Items.Count - 1 do
-					{
-						if t < MaximumFolderHistory then lReg.WriteString("Term" + std::to_wstring(t), eSearch.Items[t]);
-					}
-				}
-				catch(...)
-				{
-					lReg.Free;
-				}
+				GSettingsHandler->WriteString(L"Prefs", L"SearchTerm" + std::to_wstring(t + 1), eSearch->Items->Strings[t].c_str());
 			}
 		}
 
-		GSettingsHandler->CloseSettings;
+		GSettingsHandler->CloseSettings();
 	}
 	else
 	{
 		GLog->AddError(L"Error saving FrameSearch settings");
-	}               */
+	}
 }
 #pragma end_region
 
@@ -843,33 +803,33 @@ void TFrameSearch::UpdateGUI()
 
 
 void TFrameSearch::UpdateSearchGUI()
-{                                       /*
-	lPageNumber->Caption = std::to_wstring(FPageNumber + 1) + " (" + std::to_wstring(FLastPage + 1) + ")";
+{
+	lPageNumber->Caption = (std::to_wstring(PageNumber + 1) + L" (" + std::to_wstring(LastPage) + L")").c_str();
 
-	lShowing.Caption = GLanguageHandler->Text[kShowing] + " " +
-					  std::to_wstring((FPageNumber * GSettingsHandler->General.MaxSearchResults) + 1) +
-					  rsEllipsis + std::to_wstring((FPageNumber * GSettingsHandler->General.MaxSearchResults) + sgSearchResults.RowCount - 1) + " " +
-					  GLanguageHandler->Text[kOf] + " " + std::to_wstring(TotalSearchFilesCount + TotalSearchFoldersCount) + ".";
+	lShowing->Caption = (GLanguageHandler->Text[kShowing] + L" " +
+						 std::to_wstring((PageNumber * GSettingsHandler->General.MaxSearchResults) + 1) +
+						 kEllipsis + std::to_wstring((PageNumber * GSettingsHandler->General.MaxSearchResults) + sgSearchResults->RowCount - 1) + L" " +
+						 GLanguageHandler->Text[kOf] + L" " + std::to_wstring(TotalSearchFilesCount + TotalSearchFoldersCount) + L".").c_str();
 
-	if (PageNumber > FFirstPage)
+	if (PageNumber > FirstPage)
 	{
-		lsPagePrevious->Enabled = True
+		sbPagePrevious->Enabled = true;
 	}
 	else
 	{
-		lsPagePrevious->Enabled = False;
+		sbPagePrevious->Enabled = false;
 	}
 
-	if (FPageNumber < FLastPage)
+	if (PageNumber < LastPage)
 	{
-		lsPageNext->Enabled = True
+		sbPageNext->Enabled = true;
 	}
 	else
 	{
-		lsPageNext->Enabled = False;
+		sbPageNext->Enabled = false;
 	}
 
-	ResizeColumns; */
+	//ResizeColumns();
 }
 
 
@@ -878,70 +838,6 @@ std::wstring TFrameSearch::GetSearchText()
 	return eSearch->Text.c_str();
 }
 
-
-
-/*
-
-const
-  SearchSortColumns     : array[0..6] of integer = (schVFilename, kschISize, 2, 3, 4, 5, 6);
-
-
-function TFrameSearch.GetActivePage: integer;
-{
-  Result = pSearchOptions.ActivePageIndex;
-}
-
-
-procedure TFrameSearch.CreateReportsFrame(aDataIndex : integer);
-{
-  FReportsFrame = TFrameReports.Create(Self);
-  FReportsFrame.Name                        = "FrameReports" + std::to_wstring(aDataIndex);
-  FReportsFrame.Parent                      = tsProperties;
-  FReportsFrame.Source                      = aDataIndex;
-  FReportsFrame.Init;
-  FReportsFrame.Visible                     = True;
-  FReportsFrame.GetLeftOffset               = OnGetLeftOffset;
-  FReportsFrame.GetTopOffset                = OnGetTopOffset;
-
-//  FReportsFrame.OnNewScan                   = RequestNewScan;
-  FReportsFrame.OnNewSearch                 = OnRequestNewSearch;
- {FReportsFrame.OnNewSummary                = RequestNewSummary;
-  FReportsFrame.OnProcessWindowStatusChange = OnProcessWindowStatusChange;
-  FReportsFrame.OnSetStatusBarText          = OnStatusBarChange;
-  FReportsFrame.OnSettingsTab               = OnOpenSettingsTab;
-  FReportsFrame.OnSetTutorialBarText        = OnTutorialBarChange; }
-
-  GReportText.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
-                                   FReportsFrame.sgNullFolders,
-                                   FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small,
-                                   FReportsFrame.sgTop101BigDate,
-                                   FReportsFrame.sgTop101SmallDate);
-
-  GReportXML.SetGrids(aDataIndex,  FReportsFrame.tvFileDates,
-                                   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
-                                   FReportsFrame.cbFileDates,  FReportsFrame.cbFileDatesUsers, FReportsFrame.cbTop101Dates);
-
-
-  GReportHTML.SetGrids(aDataIndex, FReportsFrame.tvFileDates,
-								   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
-                                   FReportsFrame.cbFileDates,  FReportsFrame.cbTop101Dates);
-
-
-  GReportSummary.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
-                                      FReportsFrame.sgNullFolders,
-                                      FReportsFrame.sgDirList,
-                                      FReportsFrame.sgTop50Big,
-                                      FReportsFrame.sgUsers);
-
-  //UpdateGUICustomNames(aDataIndex);
-}
-
-
-
- */
 
 #pragma region Tab_Search
 void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
@@ -1161,60 +1057,42 @@ void __fastcall TFrameSearch::pcSearchChange(TObject *Sender)
 #pragma region Search_Displays
 void TFrameSearch::BuildSearchCharts()
  {
-/*	if (GScanEngine->Data[DataSource].Files.size() != 0 && GScanEngine->Data[DataSource].TotalSize != 0)
+	if (GScanEngine->Data[DataSource].Files.size() != 0 && GScanEngine->Data[DataSource].TotalSize != 0)
 	{
-//		guageSearchQuantity.SetDisplay(((TotalSearchFilesCount + TotalSearchFoldersCount) / (GScanEngine[FSource].FileCount + GScanEngine[FSource].FolderCount)) * 100);
-//		guageSearchSize.SetDisplay(    ((TotalSearchSize) / GScanEngine[FSource].TotalSize) * 100);
+		gaugeQuantity->Progress = ((TotalSearchFilesCount + TotalSearchFoldersCount) / (GScanEngine->Data[DataSource].FileCount + GScanEngine->Data[DataSource].FolderCount)) * 100;
+		gaugeSize->Progress = (TotalSearchSize / GScanEngine->Data[DataSource].TotalSize) * 100;
 
 		UpdateIceCream();
 
-	} */
+	}
 }
 
 
 void TFrameSearch::UpdateIceCream()
-{ /*
-  t : integer;
-  lCapacityItem : TCapacityItem;
+{
+	ice->Begin();
 
- {
-  capacitySearch.Items.Clear;
+	for (int t = 1; t < kFileCategoriesCount; t++)
+	{
+		ice->Add(0, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentCount,
+					GLanguageHandler->TypeDescriptions[t],
+					std::to_wstring(GScanEngine->Data[DataTarget].ExtensionSpread[t].Count) + L" files",
+					GSettingsHandler->FileCategoryColors[t]);
 
-  for t = 1 to __FileCategoriesCount do {
-	if sbSearchThing.Tag = 1 then {
-	  if GScanEngine[dataSearch].Files.Count != 0 then {
-		if ExtSpreadSearch[t, 1] != 0 then {
-		  lCapacityItem             = capacitySearch.Items.Add;
-		  lCapacityItem.Value       = (ExtSpreadSearch[t, 1] / TotalSearchFilesCount) * 100;
-		  lCapacityItem.Color       = GSettingsHandler->FileCategoryColors[t];
-		  lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
-		  lCapacityItem.DisplayName = TypeDescriptions[t];
-		  lCapacityItem.Description = TypeDescriptions[t];
-		  lCapacityItem.Hint        = TypeDescriptions[t] + " (" + IntToStr(ExtSpreadSearch[t, 1]) + " files)";
-		}
-	  }
-	end
-	else {
-	  if TotalSearchSize != 0 then {
-		if ExtSpreadSearch[t, 2] != 0 then {
-		  lCapacityItem             = capacitySearch.Items.Add;
-		  lCapacityItem.Value       = (ExtSpreadSearch[t, 2] / TotalSearchSize) * 100;
-		  lCapacityItem.Color       = GSettingsHandler->FileCategoryColors[t];
-		  lCapacityItem.ColorTo     = GSystemGlobal.FileCategoryColors[t];
-		  lCapacityItem.DisplayName = TypeDescriptions[t];
-		  lCapacityItem.Description = TypeDescriptions[t];
-		  lCapacityItem.Hint        = TypeDescriptions[t] + " (" + TConvert.ConvertToUsefulUnit(ExtSpreadSearch[t, 2]) + ")";
-		}
-	  }
-	 }
-  }               */
+		ice->Add(1, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentSize,
+					GLanguageHandler->TypeDescriptions[t],
+					Convert::ConvertToUsefulUnit(GScanEngine->Data[DataTarget].ExtensionSpread[t].Size),
+					GSettingsHandler->FileCategoryColors[t]);
+	}
+
+	ice->End();
 }
 #pragma end_region
 
 
 #pragma region Tab_Properties
 void TFrameSearch::BuildPropertiesTab(int index)
-{                    /*
+{                    /*    to do
 	Screen.Cursor  = crHourGlass;
 
 	GScanEngine->Data[index].FromFile      = False;
@@ -1291,7 +1169,7 @@ void TFrameSearch::BuildPropertiesTab(int index)
 #pragma end_region
 
 
-/*
+/*              to do
 procedure TFrameSearch.sgSearchResultsCanSort(Sender: TObject; ACol: Integer;
   var DoSort: Boolean);
 {
@@ -1334,4 +1212,61 @@ procedure TFrameSearch.sgSearchResultsGetCellColor(Sender: TObject; ARow,
         ABrush.Color = CGridColourOff;
     }
   }
-}*/
+}
+
+
+const
+  SearchSortColumns     : array[0..6] of integer = (schVFilename, kschISize, 2, 3, 4, 5, 6);
+
+
+procedure TFrameSearch.CreateReportsFrame(aDataIndex : integer);
+{
+  FReportsFrame = TFrameReports.Create(Self);
+  FReportsFrame.Name                        = "FrameReports" + std::to_wstring(aDataIndex);
+  FReportsFrame.Parent                      = tsProperties;
+  FReportsFrame.Source                      = aDataIndex;
+  FReportsFrame.Init;
+  FReportsFrame.Visible                     = True;
+  FReportsFrame.GetLeftOffset               = OnGetLeftOffset;
+  FReportsFrame.GetTopOffset                = OnGetTopOffset;
+
+//  FReportsFrame.OnNewScan                   = RequestNewScan;
+  FReportsFrame.OnNewSearch                 = OnRequestNewSearch;
+ {FReportsFrame.OnNewSummary                = RequestNewSummary;
+  FReportsFrame.OnProcessWindowStatusChange = OnProcessWindowStatusChange;
+  FReportsFrame.OnSetStatusBarText          = OnStatusBarChange;
+  FReportsFrame.OnSettingsTab               = OnOpenSettingsTab;
+  FReportsFrame.OnSetTutorialBarText        = OnTutorialBarChange; }
+
+  GReportText.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
+                                   FReportsFrame.sgNullFolders,
+                                   FReportsFrame.sgTop50Big,
+                                   FReportsFrame.sgTop50Small,
+                                   FReportsFrame.sgTop101BigDate,
+                                   FReportsFrame.sgTop101SmallDate);
+
+  GReportXML.SetGrids(aDataIndex,  FReportsFrame.tvFileDates,
+                                   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
+                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
+                                   FReportsFrame.cbFileDates,  FReportsFrame.cbFileDatesUsers, FReportsFrame.cbTop101Dates);
+
+
+  GReportHTML.SetGrids(aDataIndex, FReportsFrame.tvFileDates,
+								   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
+                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
+                                   FReportsFrame.cbFileDates,  FReportsFrame.cbTop101Dates);
+
+
+  GReportSummary.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
+                                      FReportsFrame.sgNullFolders,
+                                      FReportsFrame.sgDirList,
+                                      FReportsFrame.sgTop50Big,
+                                      FReportsFrame.sgUsers);
+
+  //UpdateGUICustomNames(aDataIndex);
+}
+
+
+*/
+
+

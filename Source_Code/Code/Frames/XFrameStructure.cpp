@@ -12,10 +12,12 @@
 #include "ChartUtility.h"
 #include "ConstantsGui.h"
 #include "ConstantsImages.h"
+#include "ConstantsReports.h"
 #include "Formatting.h"
 #include "GridUtility.h"
 #include "ImageHandler.h"
 #include "LanguageHandler.h"
+#include "Log.h"
 #include "LoadDialogs.h"
 #include "SaveDialogs.h"
 #include "SettingsHandler.h"
@@ -26,6 +28,7 @@
 
 extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
@@ -218,46 +221,56 @@ void TFrameStructure::UpdateGUICustomNames()
 #pragma end_region
 
 
+#pragma region Public_Stuff
+void TFrameStructure::SelectAndDblClick(int row, int col)
+{
+	sgLeftSide->Row = row;
+
+	sgLeftSideDblClick(NULL);
+}
+#pragma end_region
+
+
 #pragma region Settings
 void TFrameStructure::LoadSettings()
-{  /*
+{
 	if (GSettingsHandler->OpenSettings(true))
 	{
-		Panel25.Width           = GSettingsHandler->ReadIntegerFromSettings("Prefs", "NavLeft_" + IntToStr(FSource), 325, 325);
-		sgRightSide.Height = GSettingsHandler->ReadIntegerFromSettings("Prefs", "NavRight", Round(pMainNavigation.Height*0.75),10);
+		Panel25->Width = GSettingsHandler->ReadInteger(L"Prefs", L"StructureLeft_" + std::to_wstring(DataSource), 325, 325);
+		sgRightSide->Height = GSettingsHandler->ReadInteger(L"Prefs", L"StructureRight", std::round(pMainNavigation->Height * 0.75), 10);
 
 		// =====================================================================
 
-		Chart = GSettingsHandler->ReadIntegerFromSettings("Charts", "Report_" + IntToStr(FSource) + "_" + IntToStr(t), 0, -1);
+		int chart_type = GSettingsHandler->ReadInteger(L"Charts", L"StructureReport_" + std::to_wstring(DataSource) + L"_1", 0, -1);
 
-		TChartUtility.SetChartType(FCharts[t], lChart);
-
-		GSettingsHandler->CloseSettings;
-	}
-	else
-	{
-		GLog.AddError(L"Error loading settings FrameNavigation");
-	} */
-}
-
-
-void TFrameStructure::SaveSettings()
-{                     /*
-	if GSettingsHandler->OpenSettings(False) then
-	{
-		GSettingsHandler->WriteIntegerToSettings("Prefs", "NavLeft",  Panel25.Width);
-		GSettingsHandler->WriteIntegerToSettings("Prefs", "NavRight", sgRightSide.Height);
-
-		// =====================================================================
-
-		GSettingsHandler->WriteIntegerToSettings("Charts", "Navigation_" + IntToStr(FSource) + "_" + IntToStr(t), TChartUtility.GetChartType(FCharts[t]));
+		ChartUtility::SetChartTo(vtcFS, chart_type);
 
 		GSettingsHandler->CloseSettings();
 	}
 	else
 	{
-		GLog->AddError("Error saving settings FrameNavigation");
-	}                   */
+		GLog->AddError(L"Error loading settings FrameNavigation");
+	}
+}
+
+
+void TFrameStructure::SaveSettings()
+{
+	if (GSettingsHandler->OpenSettings(false))
+	{
+		GSettingsHandler->WriteInteger(L"Prefs", L"StructureLeft_" + std::to_wstring(DataSource), Panel25->Width);
+		GSettingsHandler->WriteInteger(L"Prefs", L"StructureRight", sgRightSide->Height);
+
+		// =====================================================================
+
+		GSettingsHandler->WriteInteger(L"Charts", L"StructureReport_" + std::to_wstring(DataSource) + L"_1", ChartUtility::GetChartTypeInt(vtcFS));
+
+		GSettingsHandler->CloseSettings();
+	}
+	else
+	{
+		GLog->AddError(L"Error saving settings FrameNavigation");
+	}
 }
 #pragma end_region
 
@@ -304,36 +317,34 @@ std::wstring TFrameStructure::GetSelectedFileName(int side)
 void __fastcall TFrameStructure::sgLeftSideDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-/*
-  zRect : TRect;
+	if (ARow > 0)
+	{
+		switch (ACol)
+		{
+		case ksgnIsFolder:
+			if (ARow != 0)
+			{
+				if (sgLeftSide->Cells[ksgnFolderFile][ARow] == L"1")
+				{
+					XFNImages->Draw(sgLeftSide->Canvas, Rect.Left + 1, Rect.Top, 0, true);
+				}
+			}
+			break;
+		case ksgnGraphSize:
+			sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[0]);
+			sgLeftSide->Canvas->Rectangle(Rect);
 
- {
-  if ARow > 0 then {
-	switch ( ACol of
-	  sgnIsFolder  : {
-					   if ARow != 0 then {
-						 if TAdvStringGrid(Sender)->Cells[sgnFolderFile, ARow] = "1" then {
-						   XFNImages.Draw(TAdvStringGrid(Sender).Canvas, Rect.Left + 1, Rect.Top, 0, True);
-						 }
-					   }
-					 }
-	  sgnGraphSize : {
-					   TAdvStringGrid(Sender).Canvas.Brush.Color = GSettingsHandler->Navigation.BarColours[1];
-						 TAdvStringGrid(Sender).Canvas.Rectangle(Rect);
-
-						 if (TAdvStringGrid(Sender)->Cells[sgnIntegerPCent, ARow] != "0") and (TAdvStringGrid(Sender)->Cells[sgnIntegerPCent, ARow] != "") then {
-						   zRect.Top    = Rect.Top + 1;
-						   zRect.Bottom = Rect.Bottom - 1;
-						   zRect.Left   = Rect.Left + 1;
-						   zRect.Right  = Rect.Left + std::to_wstring(TAdvStringGrid(Sender)->Cells[sgnIntegerPCent, ARow]);
-
-						   TAdvStringGrid(Sender).Canvas.Brush.Color = GSettingsHandler->Navigation.BarColours[2];
-						   TAdvStringGrid(Sender).Canvas.FillRect(zRect);
-						 }
-					   }
+			if (sgLeftSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgLeftSide->Cells[ksgnIntegerPCent][ARow] != L"")
+			{
+				sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[1]);
+				sgLeftSide->Canvas->FillRect(TRect(Rect.Left + 1,
+												   Rect.Top + 1,
+												   Rect.Left + sgLeftSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
+												   Rect.Bottom - 1));
+			}
+			break;
+		}
 	}
-  }
-} TO DO */
 }
 
 
@@ -473,13 +484,7 @@ void __fastcall TFrameStructure::sgLeftSideDblClick(TObject *Sender)
 
 		// =====================================================================
 
-		sgRightSide->BeginUpdate();
-
-//		NavSideBarThread = TNavigateRightThread.Create(True);
-//		NavSideBarThread.SetData(FSource, xflID, i, sgRightSide, FFilterChanged);
-// TO DO		NavSideBarThread.OnTerminate = NaviSideBarThreadOnTerminate;
-//    	NavSideBarThread.Priority    = tpHighest;
-//		NavSideBarThread.Start;
+		UpdateRightSide(xflID, i);
 
 		// =====================================================================
 	}
@@ -499,211 +504,6 @@ void __fastcall TFrameStructure::Panel25Resize(TObject *Sender)
 	}
 
 	sgLeftSide->ColWidths[1] = sgLeftSide->Width - (total + __WidthOfScrollbar);
-}
-#pragma end_region
-
-
-#pragma region Right_Side_Toolbar
-void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::LongInt ACol,
-		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
-{
-	if (ARow > 0)
-	{
-		switch (ACol)
-		{
-		case 0:
-			if (ARow != 0)
-			{
-				if (sgRightSide->Cells[ksgnFolderFile][ARow] == L"1")
-				{
-					//XFNImages.Draw(TAdvStringGrid(Sender).Canvas, Rect.Left + 1, Rect.Top, 0, True);
-				}
-			}
-			break;
-		case 3:
-/*			sgRightSide->Canvas->Brush->Color = GSettingsHandler->Navigation.BarColours[3];
-			sgRightSide->Canvas->Rectangle(Rect);
-
-			if (sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"")
-			{
-				zRect.Top    = Rect.Top + 1;
-				zRect.Bottom = Rect.Bottom - 1;
-				zRect.Left   = Rect.Left + 1;
-				zRect.Right  = Rect.Left + std::to_wstring(sgRightSide->Cells[sgnIntegerPCent, ARow]);
-
-				sgRightSide.Canvas.Brush.Color=GSettingsHandler->Navigation.BarColours[4];
-				sgRightSide.Canvas.FillRect(zRect);
-			} */
-            break;
-		}
-	}
-}
-
-
-void __fastcall TFrameStructure::sbNavigationBackClick(TObject *Sender)
-{
-	if (GScanEngine->FolderStructure.size() > 1)
-	{
-		std::wstring s = GScanEngine->FolderStructure[GScanEngine->FolderStructure.size() - 2];
-
-		auto idx = s.find(L'?');
-
-		GScanEngine->FolderStructure.pop_back();
-		GScanEngine->FolderStructure.pop_back();
-
-		// =========================================================================
-
-		Screen->Cursor = crHourGlass;
-
-//		if Assigned(NavSideBarThread) then
-//		{
-//			NavSideBarThread.Terminate;
-//			NavSideBarThread.WaitFor;
-//			FreeAndNil(NavSideBarThread);
-//		}
-
-		CurrentFolder = s.substr(0, idx - 1);
-
-		lNavigationDetails->Caption = (L"\"" + CurrentFolder + L"\", " + Convert::ConvertToUsefulUnit(stoi(s.substr(idx + 1))) + L". ").c_str();
-
-		sgRightSide->BeginUpdate();
-
-		// =========================================================================
-
-		int xflID = -1;
-
-		for (int t = 0; t < GScanEngine->Data[DataSource].Folders.size(); t++)
-		{
-			if (GScanEngine->Data[DataSource].Folders[t] == CurrentFolder)
-			{
-				xflID = t;
-
-				break;
-			}
-		}
-
-		// =========================================================================
-
-		if (xflID != -1)
-		{
-// TO DO			NavSideBarThread = TNavigateRightThread.Create(True);
-//			NavSideBarThread.SetData(FSource, xflID, std::to_wstring64(Copy(s, idx + 1, length(s))) - idx, sgRightSide, FFilterChanged);
-//			NavSideBarThread.OnTerminate = NaviSideBarThreadOnTerminate;
-//			NavSideBarThread.Priority    = tpHighest;
-//			NavSideBarThread.Start;
-		}
-
-		// =========================================================================
-
-		if (GScanEngine->FolderStructure.size() <= 1)
-		{
-			sbNavigationBack->Enabled = false;
-		}
-	}
-}
-
-
-void __fastcall TFrameStructure::sbNSBColourCodeClick(TObject *Sender)
-{
-	TSpeedButton *button = (TSpeedButton*)Sender;
-
-	if (sbNSBColourCode->Tag == 0)
-	{
-		GImageHandler->SetButtonOnImage(button, kImageColourCode);
-
-		sbNSBColourCode->Tag = 1;
-
-		sgRightSide->Font->Color = clBlack;
-	}
-	else
-	{
-		GImageHandler->SetButtonOffImage(button, kImageColourCode);
-
-		sbNSBColourCode->Tag = 0;
-
-		sgRightSide->Font->Color = clWhite;
-	}
-
-	sgRightSide->Invalidate();
-}
-
-
-void __fastcall TFrameStructure::Panel26Resize(TObject *Sender)
-{
-	int total = sgRightSide->ColWidths[0];
-
-	for (int t = 2; t < 18; t++)
-	{
-		if (sgRightSide->ColWidths[t] != -1)
-		{
-			total += sgRightSide->ColWidths[t];
-		}
-	}
-
-	sgRightSide->ColWidths[1] = sgRightSide->Width - (total + __WidthOfScrollbar);
-}
-#pragma end_region
-
-
-#pragma region Right_Side_Grid
-void __fastcall TFrameStructure::sgRightSideDblClick(TObject *Sender)
-{
-	if (sgRightSide->Cells[ksgnFolderFile][sgRightSide->Selection.Top] == L"1")
-	{
-		sbNavigationBack->Enabled = true;
-
-		// =====================================================================
-
-		Screen->Cursor = crHourGlass;
-
-//		if Assigned(NavSideBarThread) then
-//		{
-//			NavSideBarThread.Terminate;
-//			NavSideBarThread.WaitFor;
-//			FreeAndNil(NavSideBarThread);
-//		}
-
-		std::wstring is = sgRightSide->Cells[ksgnIntegerSize][sgRightSide->Selection.Top].c_str();
-
-        std::wstring right = sgRightSide->Cells[1][sgRightSide->Selection.Top].c_str();
-
-		std::wstring s = GScanEngine->CurrentNavigationSideLocation + right + L"\\";
-		unsigned __int64 i = stoi(is);
-
-		CurrentFolder = s;
-
-		lNavigationDetails->Caption = (L"\"" + s + L"\", " + Convert::ConvertToUsefulUnit(i) + L". ").c_str();
-
-		// =====================================================================
-
-		int xflID = -1;
-
-		for (int t = 0; t < GScanEngine->Data[DataSource].Folders.size(); t++)
-		{
-			if (GScanEngine->Data[DataSource].Folders[t] == s)
-			{
-				xflID = t;
-
-				break;
-			}
-		}
-
-		// =====================================================================
-
-//		sgRightSide->BeginUpdate();            to do
-
-//		nrs->Execute();
-
-//		NavSideBarThread = TNavigateRightThread.Create(True);
-//		NavSideBarThread.SetData(FSource, xflID, i, sgRightSide, FFilterChanged);
-//		NavSideBarThread.OnTerminate = NaviSideBarThreadOnTerminate;
-//		NavSideBarThread.Priority    = tpHighest;
-//		NavSideBarThread.Start;
-
-//		sgRightSide->EndUpdate();
-
-		// =========================================================================
-	}
 }
 
 
@@ -806,6 +606,241 @@ void TFrameStructure::BuildNavigationTab()
 	sgLeftSide->EndUpdate();
 
 // TO DO	TGridUtility.DoTableSort(sgNavigation, sgLeftSide->SortSettings.Column, NavigationSortColumns[sgLeftSide->SortSettings.Column]);
+}
+#pragma end_region
+
+
+#pragma region Right_Side_Toolbar
+void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow > 0)
+	{
+		switch (ACol)
+		{
+		case 0:
+			if (ARow != 0)
+			{
+				if (sgRightSide->Cells[ksgnFolderFile][ARow] == L"1")
+				{
+					//XFNImages.Draw(TAdvStringGrid(Sender).Canvas, Rect.Left + 1, Rect.Top, 0, True);
+				}
+			}
+			break;
+		case 3:
+			sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[2]);
+			sgRightSide->Canvas->Rectangle(Rect);
+
+			if (sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"")
+			{
+				sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[3]);
+				sgRightSide->Canvas->FillRect(TRect(Rect.Left + 1,
+													Rect.Top + 1,
+													Rect.Left + sgRightSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
+													Rect.Bottom - 1));
+
+			}
+            break;
+		}
+	}
+}
+
+
+void __fastcall TFrameStructure::sbNavigationBackClick(TObject *Sender)
+{
+	if (GScanEngine->FolderStructure.size() > 1)
+	{
+		std::wstring s = GScanEngine->FolderStructure[GScanEngine->FolderStructure.size() - 2];
+
+		auto idx = s.find(L'?');
+
+		GScanEngine->FolderStructure.pop_back();
+		GScanEngine->FolderStructure.pop_back();
+
+		// =========================================================================
+
+		Screen->Cursor = crHourGlass;
+
+		CurrentFolder = s.substr(0, idx - 1);
+
+		lNavigationDetails->Caption = (L"\"" + CurrentFolder + L"\", " + Convert::ConvertToUsefulUnit(stoi(s.substr(idx + 1))) + L". ").c_str();
+
+		sgRightSide->BeginUpdate();
+
+		// =========================================================================
+
+		int xflID = -1;
+
+		for (int t = 0; t < GScanEngine->Data[DataSource].Folders.size(); t++)
+		{
+			if (GScanEngine->Data[DataSource].Folders[t] == CurrentFolder)
+			{
+				xflID = t;
+
+				break;
+			}
+		}
+
+		// =========================================================================
+
+		if (xflID != -1)
+		{
+			unsigned __int64 i = stoi(s.substr(idx + 1));
+
+			UpdateRightSide(xflID, i);
+		}
+
+		// =========================================================================
+
+		if (GScanEngine->FolderStructure.size() <= 1)
+		{
+			sbNavigationBack->Enabled = false;
+		}
+	}
+}
+
+
+void __fastcall TFrameStructure::sbNSBColourCodeClick(TObject *Sender)
+{
+	TSpeedButton *button = (TSpeedButton*)Sender;
+
+	if (sbNSBColourCode->Tag == 0)
+	{
+		GImageHandler->SetButtonOnImage(button, kImageColourCode);
+
+		sbNSBColourCode->Tag = 1;
+
+		sgRightSide->Font->Color = clBlack;
+	}
+	else
+	{
+		GImageHandler->SetButtonOffImage(button, kImageColourCode);
+
+		sbNSBColourCode->Tag = 0;
+
+		sgRightSide->Font->Color = clWhite;
+	}
+
+	sgRightSide->Invalidate();
+}
+
+
+void __fastcall TFrameStructure::Panel26Resize(TObject *Sender)
+{
+	int total = sgRightSide->ColWidths[0];
+
+	for (int t = 2; t < 18; t++)
+	{
+		if (sgRightSide->ColWidths[t] != -1)
+		{
+			total += sgRightSide->ColWidths[t];
+		}
+	}
+
+	sgRightSide->ColWidths[1] = sgRightSide->Width - (total + __WidthOfScrollbar);
+}
+#pragma end_region
+
+
+#pragma region Right_Side_Grid
+void __fastcall TFrameStructure::sgRightSideDblClick(TObject *Sender)
+{
+	if (sgRightSide->Cells[ksgnFolderFile][sgRightSide->Selection.Top] == L"1")
+	{
+		sbNavigationBack->Enabled = true;
+
+		// =====================================================================
+
+//		if Assigned(NavSideBarThread) then
+//		{
+//			NavSideBarThread.Terminate;
+//			NavSideBarThread.WaitFor;
+//			FreeAndNil(NavSideBarThread);
+//		}
+
+		std::wstring is = sgRightSide->Cells[ksgnIntegerSize][sgRightSide->Selection.Top].c_str();
+
+        std::wstring right = sgRightSide->Cells[1][sgRightSide->Selection.Top].c_str();
+
+		std::wstring s = GScanEngine->CurrentNavigationSideLocation + right + L"\\";
+		unsigned __int64 i = stoi(is);
+
+		CurrentFolder = s;
+
+		lNavigationDetails->Caption = (L"\"" + s + L"\", " + Convert::ConvertToUsefulUnit(i) + L". ").c_str();
+
+		// =====================================================================
+
+		int xflID = -1;
+
+		for (int t = 0; t < GScanEngine->Data[DataSource].Folders.size(); t++)
+		{
+			if (GScanEngine->Data[DataSource].Folders[t] == s)
+			{
+				xflID = t;
+
+				break;
+			}
+		}
+
+		// =====================================================================
+
+		UpdateRightSide(xflID, i);
+
+		// =========================================================================
+	}
+}
+
+
+void TFrameStructure::UpdateRightSide(int folder_id, unsigned __int64 folder_size)
+{
+	Screen->Cursor = crHourGlass;
+
+	sgRightSide->BeginUpdate();
+
+	NRS->SetData(sgRightSide, DataSource, folder_id, folder_size, FilterChanged);
+
+	NRS->Execute();
+
+	BuildRightSide();
+
+	sgRightSide->EndUpdate();
+
+	Screen->Cursor = crDefault;
+}
+
+
+void TFrameStructure::BuildRightSide()
+{
+	vtcFS->Title->Text->Text = CurrentFolder.c_str();
+	vtcFS->Series[0]->Clear();
+
+	if (GScanEngine->Data[DataSource].TotalSize != 0)
+	{
+		vtcFS->SeriesList->Items[0]->Add(std::round((NRS->FileSize / GScanEngine->Data[DataSource].TotalSize) * 100), GLanguageHandler->Text[kSelectedFolder].c_str(), TColor(kMagnitudeColour[0]));
+		vtcFS->SeriesList->Items[0]->Add(std::round(((GScanEngine->Data[DataSource].TotalSize - NRS->FileSize) / GScanEngine->Data[DataSource].TotalSize) * 100), L"Rest of scan", TColor(0x00FFFFFF));
+	}
+	else
+	{
+		vtcFS->SeriesList->Items[0]->Add(100, GLanguageHandler->Text[kSelectedFolder].c_str(), TColor(kMagnitudeColour[0]));
+		vtcFS->SeriesList->Items[0]->Add(100, L"Rest of scan", TColor(0xFFFFFF));
+	}
+
+	// ===========================================================================
+
+	if (sgRightSide->RowCount > 2)
+	{
+		sgRightSide->RowCount = sgRightSide->RowCount - 1;
+	}
+
+//	TGridUtility.DoTableSort(sgNavigationSide, sgNavigationSide.SortSettings.Column, NavigationSortColumns[sgNavigationSide.SortSettings.Column]);
+
+	lNavigationDetails->Caption += (L" " + std::to_wstring(NRS->FileCount) + L" " +
+									GLanguageHandler->Text[kFiles] +
+									L";" + std::to_wstring(NRS->FolderCount) + L" " +
+									GLanguageHandler->Text[kFolders] + L".").c_str();
+
+	FilterChanged = false;
 }
 #pragma end_region
 
@@ -1259,94 +1294,7 @@ void __fastcall TFrameStructure::miSaveAsClick(TObject *Sender)
 #pragma end_region
 
 
-/*
-	FOnProcessWindowStatus : TProcessWindowStatus;
-
-	FChartsHaveChanged     : TChartsHaveChanged;
-
-	NavSideBarThread  : TNavigateRightThread;
-
-	void NaviSideBarThreadOnTerminate(Sender : TObject);
-
-    function  GetSelectedFileName(aSide : integer): string;
-  public
-
-
-    void Init;
-    void DeInit;
-	void InitHint;
-    void InitUpdate;
-    void UpdateGUICustomNames;
-
-    void SaveSettings;
-
-	void BuildNavigationTab;
-
-    void SelectAndDblClick(aRow, aColumn : integer);
-
-    property GetLeftOffset               : TGetLeftOffset          read FGetLeftOffset            write FGetLeftOffset;
-    property GetTopOffset                : TGetTopOffset           read FGetTopOffset             write FGetTopOffset;
-
-    property Source                      : integer                 read FSource                   write FSource;
-
-	property OnChartsHaveChanged         : TChartsHaveChanged      read FChartsHaveChanged        write FChartsHaveChanged;
-    property OnProcessWindowStatusChange : TProcessWindowStatus    read FOnProcessWindowStatus    write FOnProcessWindowStatus;
-  }
-
-const
-  NavigationSortColumns : array[0..16] of integer = (sgnOrderIndex, 1, sgnIntegerSize, sgnIntegerSize, sgnIntegerSize,
-                                                       5, 6, 7, 8, 9,
-                                                       sgnIntegetSoD, 11, 12, 13, 14,
-                                                       15, 16);
-
-  CLeftFileName  = 1;
-  CRightFileName = 1;
-
-void TFrameNavigation.DeInit;
-{
-  if Assigned(NavSideBarThread) then {
-	NavSideBarThread.Terminate;
-	NavSideBarThread.WaitFor;
-	FreeAndNil(NavSideBarThread);
-  }
-}
-
-
-void TFrameNavigation.NaviSideBarThreadOnTerminate(Sender : TObject);
- {
-  vtcFSMain.Title.Text.Text = CurrentFolder;
-  vtcFSMain.Series[0].Clear;
-
-  if GScanEngine->Data[DataSource].TotalSize != 0 then {
-    vtcFSMain.SeriesList.Items[0].Add(Round((NavSideBarThread.FileSize / GScanEngine->Data[DataSource].TotalSize) * 100), GLanguageHandler->Text[kSelectedFolder], magnicolors[0]);
-    vtcFSMain.SeriesList.Items[0].Add(Round(((GScanEngine->Data[DataSource].TotalSize - NavSideBarThread.FileSize) / GScanEngine->Data[DataSource].TotalSize) * 100), "Rest of scan", $00FFFFFF);
-  end
-  else {
-    vtcFSMain.SeriesList.Items[0].Add(100, GLanguageHandler->Text[kSelectedFolder], magnicolors[0]);
-    vtcFSMain.SeriesList.Items[0].Add(100, "Rest of scan", $00FFFFFF);
-  }
-
-  sgNavigationSide.EndUpdate;
-
-  // ===========================================================================
-
-  if sgRightSide->RowCount > 2 then {
-    sgRightSide->RowCount = sgRightSide->RowCount - 1;
-  }
-
-  TGridUtility.DoTableSort(sgNavigationSide, sgNavigationSide.SortSettings.Column, NavigationSortColumns[sgNavigationSide.SortSettings.Column]);
-
-  lNavigationDetails.HTMLText[0] = lNavigationDetails.HTMLText[0] +
-                                    " <b>" + IntToStr(NavSideBarThread.FileCount) + "</b> " + Lowerswitch ((GLanguageHandler->Text[kFiles]) +
-                                    "; <b>" + IntToStr(NavSideBarThread.FolderCount) + "</b> " + Lowerswitch ((GLanguageHandler->Text[kFolders]) + ".";
-
-  // =========================================================================
-
-  FFilterChanged = False;
-
-  Screen.Cursor = crDefault;
-}
-
+/*      to do
 
 void TFrameNavigation.sgNavigationCanSort(Sender: TObject; ACol: Integer;
   var DoSort: Boolean);
@@ -1372,7 +1320,7 @@ void TFrameNavigation.sgNavigationCanSort(Sender: TObject; ACol: Integer;
     sgnStringPCent : {
                       DoSort = False;
 
-                      with TAdvStringGrid(Sender) do {
+					  with TAdvStringGrid(Sender) do {
                         if SortSettings.Direction = sdDescending then
                           SortSettings.Direction = sdAscending
                         else
@@ -1403,13 +1351,6 @@ void TFrameNavigation.sgNavigationCanSort(Sender: TObject; ACol: Integer;
   }
 }
 
-
-void TFrameNavigation.SelectAndDblClick(aRow, aColumn : integer);
-{
-  sgLeftSide->SelectRows(aRow, aColumn);
-
-  sgNavigationDblClick(NULL);
-}
 
 
 

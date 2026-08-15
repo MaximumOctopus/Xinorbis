@@ -146,30 +146,33 @@ void TabUiTypes::List(TStringGrid* grid, int DataSource)
 
 	for (int t = 0; t < kAttributesCount; t++)
 	{
-		/*for t := 1 to __AttributesToDisplayCount do begin
-		grid.Cells[0, t] := LanguageTypes[t];
+		grid->Cells[0][t] = GLanguageHandler->LanguageTypes[t].c_str();
 
-		grid.Cells[1, t] := IntToStr(GScanDetails[aDataIndex].FileAttributes[t, 0]);
+		grid->Cells[1][t] = std::to_wstring(GScanEngine->Data[DataSource].FileAttributes[t].Count).c_str();
 
-		if GScanDetails[aDataIndex].FileCount <> 0 then begin
-		  grid.Cells[2, t] := TConvert.RealToPercent(GScanDetails[aDataIndex].FileAttributes[t, 0] / GScanDetails[aDataIndex].FileCount);
-		  grid.Cells[6, t] := IntToStr(Round((GScanDetails[aDataIndex].FileAttributes[t, 0] / GScanDetails[aDataIndex].FileCount) * 50));
-		end
-		else begin
-		  grid.Cells[2, t] := '100%';
-		  oTable.Cells[6, t] := '100';
-		end;
+		if (GScanEngine->Data[DataSource].FileCount != 0)
+		{
+		  grid->Cells[2][t] = Convert::DoubleToPercent(GScanEngine->Data[DataSource].FileAttributes[t].Count / GScanEngine->Data[DataSource].FileCount).c_str();
+		  grid->Cells[6][t] = std::to_wstring(std::round((GScanEngine->Data[DataSource].FileAttributes[t].Count / GScanEngine->Data[DataSource].FileCount) * 50)).c_str();
+		}
+		else
+		{
+		  grid->Cells[2][t] = L"100%";
+		  grid->Cells[6][t] = L"100";
+		}
 
-		oTable.Cells[4, t] := TConvert.ConvertToUsefulUnit(GScanDetails[aDataIndex].FileAttributes[t, 1]);
+		grid->Cells[4][t] = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].FileAttributes[t].Size).c_str();
 
-		if GScanDetails[aDataIndex].TotalSize <> 0 then begin
-		  oTable.Cells[5, t] := TConvert.RealToPercent(GScanDetails[aDataIndex].FileAttributes[t, 1] / GScanDetails[aDataIndex].TotalSize);
-		  oTable.Cells[7, t] := IntToStr(Round((GScanDetails[aDataIndex].FileAttributes[t, 1] / GScanDetails[aDataIndex].TotalSize) * 50));
-		end
-		else begin
-		  oTable.Cells[5, t] := '100%';
-		  oTable.Cells[7, t] := '100';
-		end; */
+		if (GScanEngine->Data[DataSource].TotalSize != 0)
+		{
+		  grid->Cells[5][t] = Convert::DoubleToPercent(GScanEngine->Data[DataSource].FileAttributes[t].Size / GScanEngine->Data[DataSource].TotalSize).c_str();
+		  grid->Cells[7][t] = std::to_wstring(std::round((GScanEngine->Data[DataSource].FileAttributes[t].Size / GScanEngine->Data[DataSource].TotalSize) * 50)).c_str();
+		}
+		else
+		{
+		  grid->Cells[5][t] = L"100%";
+		  grid->Cells[7][t] = L"100";
+		}
 	}
 
 	grid->EndUpdate();

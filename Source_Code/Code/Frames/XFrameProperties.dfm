@@ -15,7 +15,7 @@ object FrameProperties: TFrameProperties
     Top = 0
     Width = 1514
     Height = 700
-    ActivePage = tsCategories
+    ActivePage = tsTop101
     Align = alClient
     Images = ilTabs
     TabOrder = 0
@@ -89,11 +89,15 @@ object FrameProperties: TFrameProperties
         Width = 497
         Height = 643
         Align = alLeft
-        ColCount = 7
+        ColCount = 11
         FixedCols = 0
         PopupMenu = puTable
         TabOrder = 1
         ColWidths = (
+          64
+          64
+          64
+          64
           64
           64
           64
@@ -931,6 +935,7 @@ object FrameProperties: TFrameProperties
             Caption = 'Panel15'
             TabOrder = 1
             object sgTop101Small: TStringGrid
+              Tag = 3
               Left = 1
               Top = 1
               Width = 612
@@ -960,16 +965,25 @@ object FrameProperties: TFrameProperties
               TabOrder = 0
             end
             object sgTop101Big: TStringGrid
+              Tag = 2
               Left = 1
               Top = 25
               Width = 879
-              Height = 560
+              Height = 487
               Align = alClient
               ColCount = 3
               FixedCols = 0
               RowCount = 2
               PopupMenu = puSearch
               TabOrder = 1
+            end
+            object pICTop101: TPanel
+              Left = 1
+              Top = 512
+              Width = 879
+              Height = 73
+              Align = alBottom
+              TabOrder = 2
             end
           end
         end
@@ -1035,6 +1049,7 @@ object FrameProperties: TFrameProperties
               TabOrder = 0
             end
             object sgTop101BigDate: TStringGrid
+              Tag = 6
               Left = 1
               Top = 25
               Width = 879
@@ -1048,6 +1063,7 @@ object FrameProperties: TFrameProperties
             end
           end
           object sgTop101SmallDate: TStringGrid
+            Tag = 7
             Left = 884
             Top = 27
             Width = 614

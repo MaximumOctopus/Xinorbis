@@ -15,6 +15,9 @@
 
 #include "ProcessSearch.h"
 
+#include "XIceCream.h"
+#include <Vcl.Samples.Gauges.hpp>
+
 //---------------------------------------------------------------------------
 class TFrameSearch : public TFrame
 {
@@ -70,6 +73,12 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbPagePrevious;
 	TSpeedButton *sbPageNext;
 	TLabel *lPageNumber;
+	TLabel *lShowing;
+	TPanel *pICSearch;
+	TLabel *lGaugeQuantity;
+	TLabel *lGaugeSize;
+	TGauge *gaugeQuantity;
+	TGauge *gaugeSize;
 	void __fastcall sbGoSearchClick(TObject *Sender);
 	void __fastcall eSearchChange(TObject *Sender);
 	void __fastcall eSearchKeyPress(TObject *Sender, System::WideChar &Key);
@@ -118,6 +127,8 @@ private:
 
 	const int DefaultColumnWidths[13] = { 20, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64 };
 
+    XIceCream *ice = nullptr;
+
 	int Source  = 0;
 	int PageNumber = 0;
 	int FirstPage = 1;	// indexed from 1
@@ -165,7 +176,9 @@ public:
 	__fastcall TFrameSearch(TComponent* Owner);
 
 	int DataSource = 0;
+	int DataTarget = 1;
 
+    int CurrentTab();
 	void SetTab(int);
 
 	void ExecuteSearch(const std::wstring);

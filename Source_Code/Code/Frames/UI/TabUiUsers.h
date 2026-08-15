@@ -15,20 +15,20 @@
 #include <VCLTee.Chart.hpp>
 #include <Vcl.Grids.hpp>
 
+const static int kUsersTableName       = 1;
+const static int kUsersTableCount      = 2;
+const static int kUsersTableCountAs    = 3;
+const static int kUsersTableSeparator  = 4;
+const static int kUsersTableSize       = 5;
+const static int kUsersTableSizeAs     = 6;
+const static int kUsersTableSortSize   = 7;
+const static int kUsersTableGraphCount = 8;
+const static int kUsersTableGraphSize  = 9;
+
 
 namespace TabUiUsers
 {
 	const static int kDisplayModeShowAll   = 0;
-
-	const static int kUsersTableName       = 1;
-	const static int kUsersTableCount      = 2;
-	const static int kUsersTableCountAs    = 3;
-	const static int kUsersTableSeparator  = 4;
-	const static int kUsersTableSize       = 5;
-	const static int kUsersTableSizeAs     = 6;
-	const static int kUsersTableSortSize   = 7;
-	const static int kUsersTableGraphCount = 8;
-	const static int kUsersTableGraphSize  = 9;
 
 	void Chart(TChart* chart, int);
 

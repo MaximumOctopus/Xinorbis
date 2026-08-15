@@ -157,7 +157,7 @@ std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int
 
 
 // assumes data is sorted from low to high
-std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, int DataSource, int user_id)
+std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, XIceCream *ice, int DataSource, int user_id)
 {
 	if (GScanEngine->Data[DataSource].FileCount == 0) return L"n/a";
 
@@ -214,24 +214,24 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, int
 
 	gridbig->RowCount--;
 
-	/*icecream->Clear();
+	ice->Clear();
 
-	if (GScanEngine->Data[DataSource].TotalSize != 0 && GScanEngine->Data[DataSource].Count != 0)
+	if (GScanEngine->Data[DataSource].TotalSize != 0 && GScanEngine->Data[DataSource].FileCount != 0)
 	{
-		icecream->Begin();
+		ice->Begin();
 
-		icecream->Add((TopSize /GScanDetails[aDataIndex].TotalSize * 100),
-					  L"Top 101",
-					  L"Top 101  (" + Convert::ConvertToUsefulUnit(TopSize) + L")",
-					  0x00FF8822);
+		ice->Add(0, ((TopSize / GScanEngine->Data[DataSource].TotalSize) * 100),
+						 L"Top 101",
+						 Convert::ConvertToUsefulUnit(TopSize),
+						 0x002288FF);
 
-		icecream->Add(100 - ((TopSize /GScanDetails[aDataIndex].TotalSize * 100)),
-					  L"Others",
-					  L"Others  (" + Convert::ConvertToUsefulUnit(TopSize - GScanEngine->Data[DataSource].TotalSize) + L")",
-					  0x00AAAAAA);
+		ice->Add(0, 100 - ((TopSize / GScanEngine->Data[DataSource].TotalSize) * 100),
+						 L"Others",
+						 Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].TotalSize - TopSize),
+						 0x00AAAAAA);
 
-	  icecream->End();
-	}*/
+		ice->End();
+	}
 
 	// == build top list of smallest files =======================================
 	added_count = 0;

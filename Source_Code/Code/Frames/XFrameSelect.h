@@ -84,15 +84,15 @@ private:
 	// import tab
 	void ReportDetail(const std::wstring);
 
-	// report history tab
-	void BuildScanHistory(int);
-
 public:
 	__fastcall TFrameSelect(TComponent* Owner);
 
-    int DataSource = 0;
+	int DataSource = 0;
 
 	void UpdateQuickFolders();
+
+	// report history tab
+	void BuildScanHistory(int);
 
     void SaveSettings();
 

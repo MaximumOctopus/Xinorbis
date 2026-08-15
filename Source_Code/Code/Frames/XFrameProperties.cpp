@@ -3,6 +3,9 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <fstream>
+
+
 #include "XFrameProperties.h"
 
 #include "XFormChartOptions.h"
@@ -15,6 +18,7 @@
 #include "ConstantsGui.h"
 #include "Convert.h"
 #include "FileExtensionHandler.h"
+#include "Formatting.h"
 #include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
@@ -26,6 +30,9 @@
 #include "TreeUtility.h"
 #include "Utility.h"
 #include "WindowsUtility.h"
+#include "XZip.h"
+
+#include "ReportCSV.h"
 
 #include "TabUiDates.h"
 #include "TabUiFolders.h"
@@ -37,11 +44,12 @@
 #include "TabUiTypes.h"
 #include "TabUiUsers.h"
 
-extern FileExtensionHandler* GFileExtensionHandler;
-extern LanguageHandler* GLanguageHandler;
-extern ScanEngine* GScanEngine;
-extern SettingsHandler* GSettingsHandler;
-extern SystemGlobal* GSystemGlobal;
+extern FileExtensionHandler *GFileExtensionHandler;
+extern LanguageHandler *GLanguageHandler;
+extern ScanEngine *GScanEngine;
+extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
+extern XZip *GXZip;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -284,6 +292,12 @@ void TFrameProperties::SaveSettings()
 //		GLog		TMSLogger.Error('Error saving FrameReports settings.');
 	}
 }
+
+
+void TFrameProperties::ToggleStatus(bool status)
+{
+//
+}
 #pragma end_region
 
 
@@ -359,7 +373,7 @@ void TFrameProperties::UpdateDisplay(int display)
 			duser_id = cbTop101DateUser->ItemIndex - 1;
 		}
 
-		TabUiTop101::Size(sgTop101Big, sgTop101Small, DataSource, suser_id);
+		TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id);
 		TabUiTop101::Date(sgTop101BigDate, sgTop101SmallDate, DataSource, duser_id, cbTop101DateDate->ItemIndex);
 		break;
 	}
@@ -479,6 +493,18 @@ void __fastcall TFrameProperties::sbCategoriesBarClick(TObject *Sender)
 		break;
 	}
 }
+
+
+int TFrameProperties::CurrentTab()
+{
+	return pcProperties->ActivePageIndex;
+}
+
+
+void TFrameProperties::SetTab(int tab)
+{
+    pcProperties->ActivePageIndex = tab;
+}
 #pragma end_region
 
 
@@ -491,7 +517,7 @@ void TFrameProperties::InitCategoriesTab()
 	sgCategories->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgCategories->RowCount = kFileCategoriesCount + 1;
 
-	for (int t = 0; t < 7; t++)
+	for (int t = 0; t < 11; t++)
 	{
 		sgCategories->ColWidths[t] = CategoryWidths[t];
 	}
@@ -507,8 +533,14 @@ void TFrameProperties::BuildCategoriesTable()
 		sgCategories->Cells[1][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].Name.c_str();
 		sgCategories->Cells[2][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].Count;
 		sgCategories->Cells[3][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCountString.c_str();
+
 		sgCategories->Cells[5][Row] = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size).c_str();
 		sgCategories->Cells[6][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSizeString.c_str();
+
+		sgCategories->Cells[7][Row] = t;
+		sgCategories->Cells[8][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].Size;
+		sgCategories->Cells[9][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount;
+		sgCategories->Cells[10][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize;
 
 		Row++;
 	}
@@ -965,6 +997,8 @@ void TFrameProperties::UpdateHistoryDropDowns()
 #pragma region Tab_Top_101
 void TFrameProperties::InitTop101Tab()
 {
+	ice = new XIceCream(this, pICTop101);
+
 	cbTop101SizeColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
 	cbTop101DateColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
 
@@ -1237,7 +1271,7 @@ void __fastcall TFrameProperties::miOA1Click(TObject *Sender)
 			GFileExtensionHandler->Extensions.push_back(tfx);
 		}
 
-		GFileExtensionHandler->SaveFileExtensionLists(GSystemGlobal->ExePath, true);
+		GFileExtensionHandler->SaveFileExtensionLists(GSystemGlobal->ExePath, false, true);
 	}
 }
 
@@ -1424,18 +1458,33 @@ void __fastcall TFrameProperties::miMagnitudeExportClick(TObject *Sender)
 
 
 void __fastcall TFrameProperties::miMagnitudeZipClick(TObject *Sender)
-{/*
-	if (!XSettings.ProcessWindowsVisible)
-	{
-		std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
-													  L".zip",
-													  Utility::GetDefaultFileName(L".zip", GLanguageHandler->Text[kMagnitude] + L"_" + GLanguageHandler->Text[kExport]));
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
+												  L".zip",
+                                                  L"",
+												  Utility::GetDefaultFileName(L".zip", GLanguageHandler->Text[kMagnitude] + L"_" + GLanguageHandler->Text[kExport]));
 
-		if (!file_name.empty())
+	if (!file_name.empty())
+	{
+		std::vector<std::wstring> data;
+
+		std::wstring magnitude_bin = sgMagnitude->Cells[7][sgMagnitude->Selection.Top].c_str();
+
+		int bin = stoi(magnitude_bin);
+
+		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-			XinorbisZip.ZipFilesOfType(FSource, file_name, 3, L"", sgMagnitude->Selection.Top);
+			if (file->MagnitudeBin == bin)
+			{
+				data.push_back(file->FullPath);
+			}
 		}
-	} */
+
+		if (data.size() != 0)
+		{
+			GXZip->Files(file_name, data, L"");
+		}
+	}
 }
 
 
@@ -1702,42 +1751,67 @@ void __fastcall TFrameProperties::miHexEditClick(TObject *Sender)
 
 
 void __fastcall TFrameProperties::miZIPClick(TObject *Sender)
-{/*
-  lFileName = SaveDialog::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
-                                    '.zip",
-									TUtility.GetDefaultFileName('.zip", GLanguageHandler->Text[kTop101] + L"_' + GLanguageHandler->Text[kExport]));
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
+												  L".zip",
+												  L"",
+												  Utility::GetDefaultFileName(L".zip", GLanguageHandler->Text[kTop101] + L"_" + GLanguageHandler->Text[kExport]));
 
-  if lFileName != L"" then {
-
-	lZipCount = -1;
-
-	TMenuItem* mi = (TMenuItem*)Sender;
-	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
-	TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
-	int tag = sg->Tag;
-
-	switch (tag)
+	if (!file_name.empty())
 	{
-	case kGridTop101Big:
-		lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent).Tag, sgTop101Big, 0);
-	case kGridTop101Small:
-		lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent).Tag, sgTop101Small, 0);
-	case kCGridTop101BigDate:
-		lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent).Tag, sgTop101BigDate, 0);
-	case kGridTop101SmallDate:
-		lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent).Tag, sgTop101SmallDate, 0);
+		TMenuItem* mi = (TMenuItem*)Sender;
+		TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+		TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
+		int tag = sg->Tag;
+
+		std::vector<std::wstring> data;
+
+		switch (tag)
+		{
+		case kGridTop101Big:
+		{
+			for (int t = 1; t < sgTop101Big->RowCount; t++)
+			{
+				data.push_back(sgTop101Big->Cells[0][t].c_str());
+			}
+			break;
+		}
+		case kGridTop101Small:
+			for (int t = 1; t < sgTop101Small->RowCount; t++)
+			{
+				data.push_back(sgTop101Small->Cells[0][t].c_str());
+			}
+			break;
+		case kGridTop101BigDate:
+			for (int t = 1; t < sgTop101BigDate->RowCount; t++)
+			{
+				data.push_back(sgTop101BigDate->Cells[0][t].c_str());
+			}
+			break;
+		case kGridTop101SmallDate:
+			for (int t = 1; t < sgTop101SmallDate->RowCount; t++)
+			{
+				data.push_back(sgTop101SmallDate->Cells[0][t].c_str());
+			}
+			break;
+		}
+
+		if (data.size() != 0)
+		{
+			if (!GXZip->Files(file_name, data, L"Compressing files..."))
+			{
+				ShowXDialog(GLanguageHandler->Text[kErrorCompressingFiles],
+							GLanguageHandler->Text[kErrorCompressingFiles],
+							XDialogTypeWarning);
+			}
+		}
+		else
+		{
+			ShowXDialog(GLanguageHandler->Text[kWarning],
+						GLanguageHandler->Text[kNoFilesToCompress],
+						XDialogTypeWarning);
+		}
 	}
-
-	if lZipCount = -1)
-	{
-	  ShowXDialog(GLanguageHandler->Text[kErrorCompressingFiles],
-				  GLanguageHandler->Text[kErrorCompressingFiles],
-				  XDialogTypeWarning)
-	}
-	else if lZipCount = 0 then
-	{
-	  ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kNoFilesToCompress], XDialogTypeWarning);
-	} */
 }
 
 
@@ -1794,52 +1868,72 @@ void __fastcall TFrameProperties::miSaveAsClick(TObject *Sender)
 #pragma region PopupMenu_Table
 void __fastcall TFrameProperties::miTableExportSelectedClick(TObject *Sender)
 {
-/*     var
-  CSVOptions : TCSVReportOptions;
-  lFileName : string;
-  lCSVReport : TStringList;
+	if (sgCategories->Cells[7][sgCategories->Selection.Top] != L"")
+	{
+		std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kCategories] + L"_" + GLanguageHandler->Text[kExport]));
 
-{
-  if sgMainReport->Cells[7, sgMainReport->Selection.Top] != L"" then {
-	lFileName = SaveDialog::ExecuteReports(TUtility.GetDefaultFileName('.csv", GLanguageHandler->Text[kCategories] + L"_' + GLanguageHandler->Text[kExport]));
+		if (!file_name.empty())
+		{
+			if (Utility::GetFileExtension(file_name) == L".csv")
+			{
+				CSVReportOptions csvro;
 
-	if lFileName != L"" then {
+				csvro.FileName = file_name;
+				csvro.Data  = kDataFileList;
 
-	  if UpperCase(ExtractFileExt(lFileName)) = '.CSV' then {
-		 CSVOptions.FileName = lFileName;
-		 CSVOptions.CSVData  = CDataFileList;
-		if sgMainReport->Cells[7, sgMainReport->Selection.Top] != L"" then
-		  CSVOptions.Category = StrToInt(sgMainReport->Cells[7, sgMainReport->Selection.Top])
-		else
-		  CSVOptions.Category = __FileCategoriesOther;
+				if (sgCategories->Cells[7][sgCategories->Selection.Top] != L"")
+				{
+					csvro.Category = sgCategories->Cells[7][sgCategories->Selection.Top].ToInt();
+				}
+				else
+				{
+					csvro.Category = kFileCategoriesOther;
+				}
 
-		lCSVReport = TStringList.Create;
+				std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
-		GReportCSV.GenerateCSVReport(FSource, lCSVReport, CSVOptions, LayoutUnknown);
+				ReportCSV::Summary(csvro, data, DataSource);
 
-		lCSVReport.Free;
-	  end
-	  else {
-		GridUtility::SaveGrid(sgMainReport, lFileName);
-	  }
+				delete data;
+			}
+			else
+			{
+				GridUtility::SaveGrid(sgCategories, file_name);
+			}
+		}
 	}
-  } TO DO */
 }
 
 
 void __fastcall TFrameProperties::miTableZipClick(TObject *Sender)
-{/*
-	std::wstring file_name = SaveDialog::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
-							'.zip",
-							TUtility.GetDefaultFileName('.zip", GLanguageHandler->Text[kTable] + L"_' + GLanguageHandler->Text[kExport]));
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
+												  L".zip",
+                                                  L"",
+												  Utility::GetDefaultFileName(L".zip", GLanguageHandler->Text[kTable] + L"_" + GLanguageHandler->Text[kExport]));
 
 	if (!file_name.empty())
 	{
-		if sgUsers->Cells[2, sgUsers->Selection.Top] != '0')
+		std::vector<std::wstring> data;
+
+		int CategoryId = GScanEngine->Data[DataSource].FindUser(sgCategories->Cells[7][sgCategories->Selection.Top].c_str());
+
+		if (CategoryId != -1)
 		{
-			XinorbisZip.ZipFilesOfType(FSource, lFileName, 4, sgUsers->Cells[1, sgUsers->Selection.Top], 0);
+			for (FileObject *file : GScanEngine->Data[DataSource].Files)
+			{
+				if (file->Category == CategoryId)
+				{
+					data.push_back(file->FullPath);
+				}
+			}
+
+			if (data.size() != 0)
+			{
+				GXZip->Files(file_name, data, L"");
+			}
 		}
-	}*/
+	}
 }
 
 
@@ -1990,46 +2084,71 @@ void __fastcall TFrameProperties::miTypeExportContentClick(TObject *Sender)
 
 
 void __fastcall TFrameProperties::miTypeZipClick(TObject *Sender)
-{ /*
-  lFileName = SaveDialog::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
-									L".zip",
-									TUtility.GetDefaultFileName(L".zip", GLanguageHandler->Text[kFiles] + L"_" + GLanguageHandler->Text[kExport]));
+{
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kCompressedFiles] + L" (*.zip)|*.zip",
+												  L".zip",
+												  L"",
+												  Utility::GetDefaultFileName(L".zip", GLanguageHandler->Text[kFiles] + L"_" + GLanguageHandler->Text[kExport]));
 
-  if lFileName != L"" then {
+	if (!file_name.empty())
+	{
+		std::vector<std::wstring> data;
 
-    if tvFileTypes.Selected.Parent = NULL then {
-      s = L"";
-      t = 1;
+		std::wstring category_name = L"";
 
-      while tvFileTypes.Selected.Text[t] != ' ' do {
-        s = s + tvFileTypes.Selected.Text[t];
+		int category = -1;
 
-        inc(t);
-      }
+		std::wstring node_title = tvTypes->Selected->Text.c_str();
 
-      idx = -1;
-      s   = TXFormatting.FilterTags(s); // removes html formatting from parent node text
+		if (tvTypes->Selected->Parent == NULL)
+		{
+			auto index = node_title.find(L' ');
 
-      for t = 1 to __FileCategoriesCount do
-        if UpperCase(TypeDescriptions[t]) = UpperCase(s) then
-          idx = t;
+			if (index != std::wstring::npos)
+			{
+				category_name = node_title.substr(0, index - 1);
 
-      if idx != -1 then
-        XinorbisZip.ZipFilesOfType(FSource, lFileName, 2, L"", idx);
-    end
-	else {
-      s = L"";
-      t = 1;
+				std::transform(category_name.begin(), category_name.end(), category_name.begin(), ::tolower);
 
-      while tvFileTypes.Selected.Text[t] != ':' do {
-        s = s + tvFileTypes.Selected.Text[t];
+				category = GLanguageHandler->CategoryIdFromDescription(category_name);
+			}
+		}
+		else
+		{
+			auto index = node_title.find(L':');
 
-        inc(t);
-      }
+			if (index != std::wstring::npos)
+			{
+				category_name = node_title.substr(0, index - 1);
 
-      XinorbisZip.ZipFilesOfType(FSource, lFileName, 1, UpperCase(s), -1);
-    }
-  }     */
+				std::transform(category_name.begin(), category_name.end(), category_name.begin(), ::tolower);
+
+				category = GLanguageHandler->CategoryIdFromDescription(category_name);
+			}
+		}
+
+		if (category != -1)
+		{
+			for (FileObject *file : GScanEngine->Data[DataSource].Files)
+			{
+				if (file->Category == category)
+				{
+					data.push_back(file->FullPath);
+				}
+			}
+
+			if (data.size() != 0)
+			{
+				GXZip->Files(file_name, data, L"Compressing files...");
+			}
+			else
+			{
+				ShowXDialog(GLanguageHandler->Text[kWarning],
+							GLanguageHandler->Text[kNoFilesToCompress],
+							XDialogTypeWarning);
+			}
+		}
+	}
 }
 
 
@@ -2042,72 +2161,70 @@ void __fastcall TFrameProperties::miTypeExportCBClick(TObject *Sender)
 
 #pragma region PopupMenu_Users
 void __fastcall TFrameProperties::miUsersExportSelectedClick(TObject *Sender)
-{  /*
-		var
-  str : string;
-  wp : TextFile;
-  t, lDataIndex : integer;
-  grid : TAdvStringGrid;
-  lFileName : string;
-
-  lDataIndex = FSource;
-  grid       = sgUsers;
-
-  Assert(grid != NULL, 'miUsersExportSelectedClick :: Grid is NULL');
-
-	std::wstring file_name = SaveDialog::ExecuteReports(TUtility.GetDefaultFileName('.csv", GLanguageHandler->Text[kUsers] + L"_' + GLanguageHandler->Text[kExport]));
+{
+	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kUsers] + L"_" + GLanguageHandler->Text[kExport]));
 
 	if (!file_name.empty())
 	{
-	if UpperCase(ExtractFileExt(lFileName)) = '.TXT' then {
-	  AssignFile(wp, lFileName);
+		if (Utility::GetFileExtension(file_name) == L".txt")
+		{
+			std::ofstream file(file_name);
 
-	  {$I-}
-      Rewrite(wp);
+			if (file)
+			{
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[0] + L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[11] + L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[0] + L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[12] + L"\n");
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[0] + L"\n");
 
-	  if IOResult != 0 then {
-		ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
-					GLanguageHandler->Text[kErrorSaving] + L" "' + lFileName + L"".",
-                    XDialogTypeWarning);
-	  end
-	  else {
-		writeln(wp, TextReport[0]);
-        writeln(wp, TextReport[11]);
-		writeln(wp, TextReport[0]);
-        writeln(wp, TextReport[12]);
-		writeln(wp, TextReport[0]);
+				if (GScanEngine->Data[DataSource].FileCount != 0)
+				{
+					for (int t = 0; t < GScanEngine->Data[DataSource].Users.size(); t++)
+					{
+						std::wstring str = Formatting::AddTrailing(L" " + GScanEngine->Data[DataSource].Users[t]->Name, 25, L' ');
+						str += Formatting::AddLeading(std::to_wstring(GScanEngine->Data[DataSource].Users[t]->Count), 8, L' ');
 
-		if GScanEngine[lDataIndex].FileCount != 0 then {
-          for t = 0 to GScanEngine[lDataIndex].Users.Count - 1 do {
-			str = TXFormatting.AddTrailing(' ' + GScanEngine[lDataIndex].Users[t].Name, 25, ' ');
-			str = str + TXFormatting.AddLeading(IntToStr(GScanEngine[lDataIndex].Users[t].Data[XUserCount]), 8, ' ');
+						if (GScanEngine->Data[DataSource].FileCount != 0)
+						{
+							str += Formatting::AddLeading(Convert::DoubleToPercent(GScanEngine->Data[DataSource].Users[t]->Count / GScanEngine->Data[DataSource].FileCount), 6, L' ');
+						}
+						else
+						{
+							str += Formatting::AddLeading(L"100%", 6, L' ');
+						}
 
-            if (GScanEngine[lDataIndex].FileCount != 0) then
-			  str = str + TXFormatting.AddLeading(TConvert.RealToPercent(GScanEngine[lDataIndex].Users[t].Data[XUserCount] / GScanEngine[lDataIndex].FileCount), 6, ' ')
+						str += Formatting::AddLeading(Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].Users[t]->Size), 11, L' ');
+
+						if (GScanEngine->Data[DataSource].TotalSize != 0)
+						{
+							str += Formatting::AddLeading(Convert::DoubleToPercent(GScanEngine->Data[DataSource].Users[t]->Size / GScanEngine->Data[DataSource].TotalSize), 6, L' ');
+						}
+						else
+						{
+							str += Formatting::AddLeading(L"100%", 6, L' ');
+						}
+
+						file << Formatting::to_utf8(str + L"\n");
+					}
+				}
+
+				file << Formatting::to_utf8(GLanguageHandler->TextReport[0] + L"\n");
+
+				file.close();
+			}
 			else
-			  str = str + TXFormatting.AddLeading('100%", 6, ' ');
-
-			str = str + TXFormatting.AddLeading(TConvert.ConvertToUsefulUnit(GScanEngine[lDataIndex].Users[t].Data[XUserSize]), 11, ' ');
-			if GScanEngine[lDataIndex].TotalSize != 0 then
-			  str = str + TXFormatting.AddLeading(TConvert.RealToPercent(GScanEngine[lDataIndex].Users[t].Data[XUserSize] / GScanEngine[lDataIndex].TotalSize), 6, ' ')
-			else
-			  str = str + TXFormatting.AddLeading('100%", 6, ' ');
-
-            writeln(wp, str);
-          }
+			{
+				ShowXDialog(GLanguageHandler->Text[kErrorSavingReport],
+							GLanguageHandler->Text[kErrorSaving] + L" \"" + file_name + L"\".",
+							XDialogTypeWarning);
+			}
 		}
-
-        writeln(wp, TextReport[0]);
-
-		CloseFile(wp);
-      }
-
-	  {$I+}
-	end
-	else {
-	  GridUtility::SaveGrid(grid, lFileName);
+		else
+		{
+			GridUtility::SaveGrid(sgUsers, file_name);
+		}
 	}
-  }   */
 }
 
 
@@ -2122,7 +2239,25 @@ void __fastcall TFrameProperties::miUsersZipClick(TObject *Sender)
 
 		if (!file_name.empty())
 		{
-// to do			XinorbisZip.ZipFilesOfType(FSource, file_name, 4, sgUsers->Cells[1, sgUsers->Selection.Top], 0);
+			std::vector<std::wstring> data;
+
+			int UserId = GScanEngine->Data[DataSource].FindUser(sgUsers->Cells[kUsersTableName][sgUsers->Selection.Top].c_str());
+
+			if (UserId != -1)
+			{
+				for (FileObject *file : GScanEngine->Data[DataSource].Files)
+				{
+					if (file->Owner == UserId)
+					{
+						data.push_back(file->FullPath);
+					}
+				}
+
+				if (data.size() != 0)
+				{
+					GXZip->Files(file_name, data, L"");
+				}
+			}
 		}
 	}
 }

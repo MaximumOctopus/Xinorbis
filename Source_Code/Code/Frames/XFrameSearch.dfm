@@ -17,17 +17,17 @@ object FrameSearch: TFrameSearch
     object tsSearch: TTabSheet
       object Panel1: TPanel
         Left = 0
-        Top = 536
+        Top = 501
         Width = 1316
-        Height = 85
+        Height = 120
         Align = alBottom
         TabOrder = 0
         DesignSize = (
           1316
-          85)
+          120)
         object sbSettings: TSpeedButton
           Left = 1290
-          Top = 55
+          Top = 95
           Width = 23
           Height = 22
           Anchors = [akTop, akRight]
@@ -35,40 +35,55 @@ object FrameSearch: TFrameSearch
         end
         object sbPagePrevious: TSpeedButton
           Left = 10
-          Top = 55
+          Top = 95
           Width = 44
           Height = 22
           OnClick = sbPagePreviousClick
         end
         object sbPageNext: TSpeedButton
           Left = 100
-          Top = 55
+          Top = 95
           Width = 44
           Height = 22
           OnClick = sbPageNextClick
         end
         object lPageNumber: TLabel
           Left = 60
-          Top = 57
+          Top = 97
           Width = 34
           Height = 15
           Alignment = taCenter
           AutoSize = False
           Caption = '0'
         end
+        object lShowing: TLabel
+          Left = 150
+          Top = 96
+          Width = 49
+          Height = 15
+          Caption = 'lShowing'
+        end
+        object pICSearch: TPanel
+          Left = 10
+          Top = 4
+          Width = 1303
+          Height = 84
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 0
+        end
       end
       object Panel2: TPanel
         Left = 0
         Top = 0
         Width = 1316
-        Height = 536
+        Height = 501
         Align = alClient
         TabOrder = 1
         object Panel3: TPanel
-          Left = 1130
+          Left = 1148
           Top = 1
-          Width = 185
-          Height = 534
+          Width = 167
+          Height = 499
           Align = alRight
           TabOrder = 0
           object sbSCAccessed: TSpeedButton
@@ -109,6 +124,44 @@ object FrameSearch: TFrameSearch
             Height = 22
             OnClick = sbSaveSearchClick
           end
+          object lGaugeQuantity: TLabel
+            Left = 6
+            Top = 160
+            Width = 9
+            Height = 15
+            Caption = '...'
+          end
+          object lGaugeSize: TLabel
+            Left = 6
+            Top = 344
+            Width = 9
+            Height = 15
+            Caption = '...'
+          end
+          object gaugeQuantity: TGauge
+            Left = 6
+            Top = 9
+            Width = 145
+            Height = 145
+            BorderStyle = bsNone
+            Color = 3355443
+            ForeColor = clGray
+            Kind = gkPie
+            ParentColor = False
+            Progress = 20
+          end
+          object gaugeSize: TGauge
+            Left = 6
+            Top = 193
+            Width = 145
+            Height = 145
+            BorderStyle = bsNone
+            Color = 3355443
+            ForeColor = clGray
+            Kind = gkPie
+            ParentColor = False
+            Progress = 20
+          end
           object cbSearchShowPath: TCheckBox
             Left = 14
             Top = 480
@@ -131,15 +184,15 @@ object FrameSearch: TFrameSearch
         object Panel4: TPanel
           Left = 1
           Top = 1
-          Width = 1129
-          Height = 534
+          Width = 1147
+          Height = 499
           Align = alClient
           Caption = 'Panel3'
           TabOrder = 1
           object Panel7: TPanel
             Left = 1
             Top = 1
-            Width = 1127
+            Width = 1145
             Height = 56
             Align = alTop
             TabOrder = 0
@@ -189,8 +242,8 @@ object FrameSearch: TFrameSearch
           object sgSearchResults: TStringGrid
             Left = 1
             Top = 57
-            Width = 1127
-            Height = 476
+            Width = 1145
+            Height = 441
             Align = alClient
             ColCount = 13
             FixedCols = 0

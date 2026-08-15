@@ -24,6 +24,8 @@
 
 #include "JITProperties.h"
 
+#include "XIceCream.h"
+
 //---------------------------------------------------------------------------
 class TFrameProperties : public TFrame
 {
@@ -309,6 +311,7 @@ __published:	// IDE-managed Components
 	TPanel *Panel22;
 	TChart *vtcDates;
 	TPanel *pDatesIceCream;
+	TPanel *pICTop101;
 	void __fastcall sbCategoriesPieClick(TObject *Sender);
 	void __fastcall sbCategoriesBarClick(TObject *Sender);
 	void __fastcall miOA1Click(TObject *Sender);
@@ -387,7 +390,7 @@ __published:	// IDE-managed Components
 	void __fastcall splitLengthsMoved(TObject *Sender);
 private:	// User declarations
 
-	static constexpr int CategoryWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int CategoryWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
 	static constexpr int TypesWidths[6] = { 100, 50, 52, 4, 60, 52 };
 	static constexpr int ExtensionsWidths[8] = { 75, 65, 52, 4, 65, 52, 4, 100 };
 	static constexpr int FoldersWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
@@ -419,11 +422,13 @@ private:	// User declarations
 	static const int kAccessedDate = 1;
 	static const int kModifiedDate = 2;
 
-    std::vector<std::wstring> SearchStrings;
+	std::vector<std::wstring> SearchStrings;
 
-	TChart* Charts[kChartCount];
+	XIceCream *ice = nullptr;
 
-	TMenuItem* FileCategoryMenus[19];
+	TChart *Charts[kChartCount];
+
+	TMenuItem *FileCategoryMenus[19];
 
 	void Init();
 	void InitMenus();
@@ -484,11 +489,16 @@ public:		// User declarations
 
 	JITProperties JIT;
 
+    void ToggleStatus(bool);
+
 	void UpdateDisplay(int);
 
-    void SaveSettings();
+	void SaveSettings();
 
 	void Update();
+
+	int CurrentTab();
+	void SetTab(int);
 
 	std::function<void(const std::wstring)> OnNewSearch;
 	std::function<void(bool, const std::wstring)> OnScanWithNewPath;

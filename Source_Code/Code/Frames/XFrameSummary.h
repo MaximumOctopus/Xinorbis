@@ -51,7 +51,8 @@ __published:	// IDE-managed Components
 	TLabel *lSLFX;
 	TLabel *lSULSSoFX;
 	TPanel *pICQuantity;
-	TPanel *Panel1;
+	TPanel *pICSize;
+	void __fastcall FrameResize(TObject *Sender);
 private:
 
 	XIceCream *icQuantity = nullptr;
@@ -61,15 +62,19 @@ private:
 	void BuildPreamble();
 	void BuildSummaryLabels();
 
-    void BuildIceCream(int);
+	void BuildIceCream();
 	void BuildGauges();
 
 public:
 	__fastcall TFrameSummary(TComponent* Owner);
 
+	void Destroy();
+
     int DataSource = 0;
 
-    void Update();
+	void Update();
+
+	void SetProcessTime(const std::wstring);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSummary *FrameSummary;

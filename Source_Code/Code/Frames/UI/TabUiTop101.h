@@ -14,10 +14,12 @@
 
 #include <Vcl.Grids.hpp>
 
+#include "XIceCream.h"
+
 
 namespace TabUiTop101
 {
 	std::wstring Date(TStringGrid*, TStringGrid*, int, int, int);
 
-	std::wstring Size(TStringGrid*, TStringGrid*, int, int);
+	std::wstring Size(TStringGrid*, TStringGrid*, XIceCream*, int, int);
 }

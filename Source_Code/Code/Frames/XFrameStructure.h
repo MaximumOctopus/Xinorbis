@@ -18,6 +18,9 @@
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
 #include <Vcl.Grids.hpp>
+
+#include "NavigateRightSide.h"
+
 //---------------------------------------------------------------------------
 class TFrameStructure : public TFrame
 {
@@ -150,7 +153,7 @@ private:
 
 	TMenuItem* NavigateFilter[19];
 
-//	NavigateRightSide *nrs = nullptr;
+	NavigateRightSide *NRS = nullptr;
 
 	bool FilterChanged = true;
 
@@ -167,6 +170,9 @@ private:
 
 	void BuildNavigationTab();
 
+	void UpdateRightSide(int, unsigned __int64);
+    void BuildRightSide();
+
 	// generic
     std::wstring GetSelectedFileName(int);
 
@@ -174,6 +180,8 @@ public:
 	__fastcall TFrameStructure(TComponent* Owner);
 
     int DataSource = 0;
+
+    void SelectAndDblClick(int, int);
 
 	void UpdateGUICustomNames();
 
