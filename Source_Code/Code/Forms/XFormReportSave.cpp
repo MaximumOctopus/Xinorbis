@@ -66,16 +66,6 @@ bool OpenReportSave(int data_source)
 
 void __fastcall TFormReportSaves::FormCreate(TObject *Sender)
 {
-   /*	FormDetails fd = GSettingsHandler->LoadFormDetails(_FormReport);
-
-	if (fd.FormId != -1)
-	{
-		Left   = fd.X;
-		Top    = fd.H;
-		Width  = fd.Width;
-		Height = fd.Height;
-	}*/
-
 	Folder = L"";
 
 	Edits[0] = eCSVFileName;

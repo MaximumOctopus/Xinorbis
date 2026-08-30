@@ -128,11 +128,11 @@ void __fastcall TForm21::cbTimesClick(TObject *Sender)
 	{
 //		std::wstring s = cbTimes->Items->Strings[cbTimes->ItemIndex].c_str();
 //
-//		SelectedDateTime  := SelectedDate + s[1] + s[2] + s[4] + s[5] + s[7] + s[8];
+//		SelectedDateTime  := SelectedDate + s.substr(0, 2) + s.substr(3, 2) + s.substr(6, 2);
 
 //	lSelected.Caption := TConvert.IntDateToString(StrToInt(SelectedDate)) + ' ' + s;
 
-//	bUse.Enabled := True;
+		bUse->Enabled = true;
 	}
 }
 
@@ -140,8 +140,6 @@ void __fastcall TForm21::cbTimesClick(TObject *Sender)
 void __fastcall TForm21::sgCalendarSelectCell(TObject *Sender, System::LongInt ACol,
           System::LongInt ARow, bool &CanSelect)
 {                /*
-procedure TfrmShowCalendar.sgCalendarClickCell(Sender: TObject; ARow, ACol: Integer);
-var
   temp : string;
   t : integer;
 
@@ -184,23 +182,22 @@ begin
     end;
   end
   else begin
-  end;
-end;*/
+  end;*/
 }
 
 
 void __fastcall TForm21::sgCalendarDrawCell(TObject *Sender, System::LongInt ACol,
           System::LongInt ARow, TRect &Rect, TGridDrawState State)
-{         /*
-	if (ARow > 0) and (ACol > 0)
+{
+	if (ARow > 0 && ACol > 0)
 	{
-		if FileHistoryData[ACol, ARow] <> -1)
+		if (FileHistoryData[ACol][ARow] != -1)
 		{
-			TAdvStringGrid(Sender).Canvas.Brush.Color := GridColours[FileHistoryData[ACol, ARow]];
-			TAdvStringGrid(Sender).Canvas.FillRect(Rect);
-			TAdvStringGrid(Sender).Canvas.TextOut(Rect.Left + 5, Rect.Top + 2, TAdvStringGrid(Sender).Cells[ACol, ARow]);
+//			TAdvStringGrid(Sender).Canvas.Brush.Color := GridColours[FileHistoryData[ACol, ARow]];
+//			TAdvStringGrid(Sender).Canvas.FillRect(Rect);
+//			TAdvStringGrid(Sender).Canvas.TextOut(Rect.Left + 5, Rect.Top + 2, TAdvStringGrid(Sender).Cells[ACol, ARow]);
 		}
-	}    */
+	}
 }
 
 

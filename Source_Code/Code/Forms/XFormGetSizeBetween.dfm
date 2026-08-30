@@ -2,7 +2,6 @@ object Form5: TForm5
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Form5'
   ClientHeight = 121
   ClientWidth = 289
   Color = clBtnFace
@@ -11,6 +10,7 @@ object Form5: TForm5
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poScreenCenter
   TextHeight = 15
   object Bevel1: TBevel
     Left = 8
@@ -93,7 +93,7 @@ object Form5: TForm5
     Top = 88
     Width = 75
     Height = 25
-    Caption = '&OK'
+    Caption = 'OK'
     ModalResult = 1
     TabOrder = 4
   end
@@ -103,7 +103,7 @@ object Form5: TForm5
     Width = 75
     Height = 25
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 5
   end

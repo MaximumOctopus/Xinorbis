@@ -39,9 +39,11 @@ object FormFileAges: TFormFileAges
       Width = 761
       Height = 560
       Align = alClient
+      DefaultDrawing = False
       FixedCols = 0
       RowCount = 2
       TabOrder = 1
+      OnDrawCell = sgResultsDrawCell
       ColWidths = (
         64
         79

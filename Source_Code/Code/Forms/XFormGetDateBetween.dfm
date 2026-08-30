@@ -11,6 +11,7 @@ object Form6: TForm6
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poMainFormCenter
   OnCreate = FormCreate
   TextHeight = 15
   object Bevel1: TBevel
@@ -39,7 +40,7 @@ object Form6: TForm6
     Top = 223
     Width = 75
     Height = 25
-    Caption = '&OK'
+    Caption = 'OK'
     ModalResult = 1
     TabOrder = 0
   end
@@ -49,7 +50,7 @@ object Form6: TForm6
     Width = 75
     Height = 25
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1
   end

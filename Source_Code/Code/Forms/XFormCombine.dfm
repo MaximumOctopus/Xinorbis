@@ -2,8 +2,8 @@ object Form13: TForm13
   Left = 0
   Top = 0
   Caption = 'Form13'
-  ClientHeight = 441
-  ClientWidth = 624
+  ClientHeight = 443
+  ClientWidth = 709
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,13 +11,13 @@ object Form13: TForm13
   Font.Name = 'Segoe UI'
   Font.Style = []
   DesignSize = (
-    624
-    441)
+    709
+    443)
   TextHeight = 15
   object Bevel1: TBevel
     Left = 0
-    Top = 437
-    Width = 624
+    Top = 439
+    Width = 709
     Height = 4
     Align = alBottom
     Shape = bsBottomLine
@@ -27,40 +27,39 @@ object Form13: TForm13
   object Bevel2: TBevel
     Left = 0
     Top = 0
-    Width = 624
+    Width = 709
     Height = 4
     Align = alTop
     Shape = bsTopLine
     ExplicitWidth = 369
   end
   object Bevel3: TBevel
-    Left = 620
+    Left = 705
     Top = 4
     Width = 4
-    Height = 433
+    Height = 435
     Align = alRight
     Shape = bsRightLine
-    ExplicitLeft = 365
-    ExplicitHeight = 337
+    ExplicitTop = 38
+    ExplicitHeight = 433
   end
   object Bevel4: TBevel
     Left = 0
     Top = 4
     Width = 4
-    Height = 433
+    Height = 435
     Align = alLeft
     Shape = bsLeftLine
     ExplicitHeight = 337
   end
   object Bevel5: TBevel
     Left = 8
-    Top = 323
-    Width = 433
+    Top = 324
+    Width = 691
     Height = 9
     Anchors = [akLeft, akRight]
     Shape = bsTopLine
-    ExplicitTop = 304
-    ExplicitWidth = 353
+    ExplicitTop = 323
   end
   object lChoose: TLabel
     Left = 8
@@ -70,7 +69,7 @@ object Form13: TForm13
     Caption = '.'
   end
   object sbDrive2Add: TSpeedButton
-    Left = 419
+    Left = 680
     Top = 34
     Width = 23
     Height = 22
@@ -129,7 +128,6 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     NumGlyphs = 2
-    ExplicitLeft = 339
   end
   object sbDelete: TSpeedButton
     Left = 10
@@ -193,7 +191,7 @@ object Form13: TForm13
     NumGlyphs = 2
   end
   object SpeedButton4: TSpeedButton
-    Left = 394
+    Left = 655
     Top = 34
     Width = 23
     Height = 22
@@ -227,7 +225,6 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
-    ExplicitLeft = 314
   end
   object lFolderList: TLabel
     Left = 8
@@ -239,15 +236,15 @@ object Form13: TForm13
   object Bevel6: TBevel
     Left = 8
     Top = 64
-    Width = 433
-    Height = 4
+    Width = 691
+    Height = 6
     Anchors = [akLeft, akTop, akRight, akBottom]
     Shape = bsTopLine
-    ExplicitHeight = 5
+    ExplicitHeight = 4
   end
   object sbExplore: TSpeedButton
-    Left = 304
-    Top = 292
+    Left = 388
+    Top = 334
     Width = 138
     Height = 25
     Hint = 'open the selected folder in Explorer'
@@ -306,21 +303,21 @@ object Form13: TForm13
       FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
       00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
     NumGlyphs = 2
-    ExplicitLeft = 224
-    ExplicitTop = 272
+    ExplicitTop = 332
   end
   object lbCombine: TListBox
     Left = 8
     Top = 88
-    Width = 433
-    Height = 199
+    Width = 691
+    Height = 201
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 15
     TabOrder = 0
+    ExplicitHeight = 199
   end
   object bCancel: TBitBtn
-    Left = 360
-    Top = 332
+    Left = 620
+    Top = 334
     Width = 83
     Height = 25
     Anchors = [akRight, akBottom]
@@ -354,10 +351,11 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     ModalResult = 2
     TabOrder = 1
+    ExplicitTop = 332
   end
   object bScan: TBitBtn
-    Left = 272
-    Top = 332
+    Left = 532
+    Top = 334
     Width = 82
     Height = 25
     Anchors = [akRight, akBottom]
@@ -416,10 +414,11 @@ object Form13: TForm13
     ModalResult = 1
     NumGlyphs = 2
     TabOrder = 2
+    ExplicitTop = 332
   end
   object bLoadList: TBitBtn
     Left = 91
-    Top = 332
+    Top = 334
     Width = 75
     Height = 25
     Hint = 'load a previously saved scan list'
@@ -460,10 +459,11 @@ object Form13: TForm13
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
     TabOrder = 3
+    ExplicitTop = 332
   end
   object bSaveList: TBitBtn
     Left = 10
-    Top = 332
+    Top = 334
     Width = 75
     Height = 25
     Hint = 'save this scan list'
@@ -522,24 +522,25 @@ object Form13: TForm13
       69696969696B6B6B6D6D6D6B6B6B7373738A8A8AFF00FFFF00FF}
     NumGlyphs = 2
     TabOrder = 4
+    ExplicitTop = 332
   end
   object eDirectory: TEdit
     Left = 8
     Top = 34
-    Width = 384
-    Height = 21
+    Width = 641
+    Height = 23
     TabOrder = 5
   end
   object odCombine: TOpenDialog
     DefaultExt = 'xcl'
     Filter = 'Xinorbis Scan Lists (.xcl)|*.xcl'
-    Left = 376
-    Top = 16
+    Left = 224
+    Top = 368
   end
   object sdCombine: TSaveDialog
     DefaultExt = 'xcl'
     Filter = 'Xinorbis Scan Lists (.xcl)|*.xcl'
-    Left = 416
-    Top = 24
+    Left = 256
+    Top = 368
   end
 end

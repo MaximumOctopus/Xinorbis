@@ -293,47 +293,71 @@ void __fastcall TForm16::sgExploreDblClick(TObject *Sender)
 void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-	if (ARow == 0) return;
-
-	switch (ACol)
+	if (ARow != 0)
 	{
-	case kColIcon:
-		ilExplore->Draw(sgExplore->Canvas, Rect.Left + 1, Rect.Top, 0, true);
-		break;
-	case kColFilesAsPercent:
-		sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
-		sgExplore->Canvas->Rectangle(Rect);
+		sgExplore->Canvas->Font->Style = TFontStyles();
 
-		if (sgExplore->Cells[kColFileCountPCache][ARow] != L"0")
+		if (State.Contains(gdSelected))
 		{
-			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
-			sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
-											  Rect.Top + 1,
-											  Rect.Left + sgExplore->Cells[kColFileCountPCache][ARow].ToInt(),
-											  Rect.Bottom - 1));
+			sgExplore->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				sgExplore->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				sgExplore->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
 		}
 
-		sgExplore->Canvas->Brush->Style = bsClear;
-		sgExplore->Canvas->Font->Color  = clBlack;
-		sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColFilesAsPercent][ARow]);
-		break;
-	case kColSizeAsPercent:
-		sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
-		sgExplore->Canvas->Rectangle(Rect);
+		sgExplore->Canvas->FillRect(Rect);
 
-		if (sgExplore->Cells[kColSizePCache][ARow] != L"0")
+		switch (ACol)
 		{
-			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
-			sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
-											  Rect.Top + 1,
-											  Rect.Left + sgExplore->Cells[kColSizePCache][ARow].ToInt(),
-											  Rect.Bottom - 1));
-		}
+		case kColIcon:
+			ilExplore->Draw(sgExplore->Canvas, Rect.Left + 1, Rect.Top, 0, true);
+			break;
+		case kColFilesAsPercent:
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+			sgExplore->Canvas->Rectangle(Rect);
 
-		sgExplore->Canvas->Brush->Style = bsClear;
-		sgExplore->Canvas->Font->Color = clBlack;
-		sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColSizeAsPercent][ARow]);
-		break;
+			if (sgExplore->Cells[kColFileCountPCache][ARow] != L"0")
+			{
+				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+				sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
+												  Rect.Top + 1,
+												  Rect.Left + sgExplore->Cells[kColFileCountPCache][ARow].ToInt(),
+												  Rect.Bottom - 1));
+			}
+
+			sgExplore->Canvas->Brush->Style = bsClear;
+			sgExplore->Canvas->Font->Color  = clBlack;
+			sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColFilesAsPercent][ARow]);
+			break;
+		case kColSizeAsPercent:
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+			sgExplore->Canvas->Rectangle(Rect);
+
+			if (sgExplore->Cells[kColSizePCache][ARow] != L"0")
+			{
+				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+				sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
+												  Rect.Top + 1,
+												  Rect.Left + sgExplore->Cells[kColSizePCache][ARow].ToInt(),
+												  Rect.Bottom - 1));
+			}
+
+			sgExplore->Canvas->Brush->Style = bsClear;
+			sgExplore->Canvas->Font->Color = clBlack;
+			sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColSizeAsPercent][ARow]);
+			break;
+		}
+	}
+	else
+	{
 	}
 }
 
@@ -436,8 +460,6 @@ void TForm16::BuildFrom(const std::wstring path)
 
 		return found_path;
 	};
-
-	//Assert((FDataIndex >= 0) and (FDataIndex <= 1), "TfrmExplore->BuildFrom :: invalid dataindex :: " + std::to_wstring(FDataIndex));
 
 	Caption = (GLanguageHandler->Text[kExploring] + L": " + path).c_str();
 
@@ -779,7 +801,7 @@ void TForm16::BuildFrom(const std::wstring path)
 		}
 	}
 
-//	lData.HTMLText[0] = "<b>" + std::to_wstring(TotalFCount) + "</b> " + GLanguageHandler->Text[kFiles] + "; <b>" + std::to_wstring(TotalDCount) + "</b> " + GLanguageHandler->Text[kFolders] + "; <b>" + Convert::ConvertToUsefulUnit(TotalSize) + "</b>";
+	lResults->Caption = (std::to_wstring(TotalFCount) + L" " + GLanguageHandler->Text[kFiles] + L"; " + std::to_wstring(TotalDCount) + L" " + GLanguageHandler->Text[kFolders] + L"; <b>" + Convert::ConvertToUsefulUnit(TotalSize)).c_str();
 
 	sgExplore->EndUpdate();
 }
@@ -798,68 +820,3 @@ void __fastcall TForm16::cbCreated1Change(TObject *Sender)
 		DateControls[cb->Tag]->Enabled = false;
 	}
 }
-
-
-/*    to do
-
-
-procedure TfrmExplore.sgExploreGetAlignment(Sender: TObject; ARow,
-  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
-{
-  if (ACol = colFileCount) or (ACol = colSize) then
-    HAlign = taRightJustify
-  else
-    HAlign = taLeftJustify;
-}
-
-
-procedure TfrmExplore.sgExploreGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if gdSelected in AState then
-	ABrush.Color = CGridColourSelected
-  else {
-    if Odd(ARow) then
-      ABrush.Color = CGridColourOn
-    else
-	  ABrush.Color = CGridColourOff;
-  }
-}
-
-
-
-procedure TfrmExplore.sgExploreCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);
- {
-  if (Acol = colFilesAsPercent) then {
-    DoSort = False;
-
-    with TAdvStringGrid(Sender) do {
-      if SortSettings.Direction = sdDescending then
-        SortSettings.Direction = sdAscending
-      else
-        SortSettings.Direction = sdDescending;
-
-      Sortsettings.Column = colFileCount;
-      QSort;
-      SortSettings.Column = Acol;
-    }
-  end
-  else if (Acol = colSize) or (ACol = colSizeAsPercent) then {
-    DoSort = False;
-
-    with TAdvStringGrid(Sender) do {
-      if SortSettings.Direction = sdDescending then
-        SortSettings.Direction = sdAscending
-      else
-        SortSettings.Direction = sdDescending;
-
-      Sortsettings.Column = colSizeCache;
-      QSort;
-      SortSettings.Column = Acol;
-    }
-  }
-}
-
-
-
-*/

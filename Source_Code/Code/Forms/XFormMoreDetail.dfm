@@ -951,12 +951,12 @@ object Form16: TForm16
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
-      object Label5: TLabel
+      object lResults: TLabel
         Left = 5
         Top = 9
-        Width = 32
+        Width = 9
         Height = 13
-        Caption = 'Label5'
+        Caption = '...'
       end
     end
     object sgExplore: TStringGrid
@@ -965,6 +965,8 @@ object Form16: TForm16
       Width = 642
       Height = 383
       Align = alClient
+      ColCount = 7
+      DefaultDrawing = False
       FixedCols = 0
       RowCount = 2
       TabOrder = 1

@@ -103,7 +103,7 @@ __published:	// IDE-managed Components
 	TCheckBox *cbFileOwner;
 	TCheckBox *cbNameLength;
 	TStringGrid *sgExplore;
-	TLabel *Label5;
+	TLabel *lResults;
 	void __fastcall sbBackClick(TObject *Sender);
 	void __fastcall sgExploreDblClick(TObject *Sender);
 	void __fastcall bFilterClick(TObject *Sender);

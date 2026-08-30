@@ -44,6 +44,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall FormCanResize(TObject *Sender, int &NewWidth, int &NewHeight, bool &Resize);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall sgResultsDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
 
 private:
 

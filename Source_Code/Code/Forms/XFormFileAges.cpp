@@ -154,54 +154,6 @@ void TFormFileAges::Init()
 	}
 }
 
-//    FULSP : TUpdateLeftStatusPanel;
-//  public
-//    property OnHide : TUpdateLeftStatusPanel read FULSP write FULSP;
-//  end;
-
-
-/*procedure TfrmFileAges.sgResultsCanSort(Sender: TObject; ACol: Integer; var DoSort: Boolean);    to do
-begin
-  if Acol = 4 then begin
-    DoSort := False; // stops the component for sorting automatically
-
-    with TAdvStringGrid(Sender) do begin
-      if SortSettings.Direction = sdDescending then
-        SortSettings.Direction := sdAscending
-      else
-        SortSettings.Direction := sdDescending;
-
-      Sortsettings.Column := 5;
-      QSort;
-
-      SortSettings.Column := 4;
-    end;
-  end
-end;
-
-procedure TfrmFileAges.sgResultsGetAlignment(Sender: TObject; ARow,
-  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
-begin
-  if (ACol = 4) then
-    HAlign := taRightJustify
-  else
-    HAlign := taLeftJustify;
-end;
-
-
-procedure TfrmFileAges.sgResultsGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-begin
-  if gdSelected in AState then
-    ABrush.Color := CGridColourSelected
-  else begin
-    if Odd(ARow) then
-      ABrush.Color := CGridColourOn
-    else
-      ABrush.Color := CGridColourOff;
-  end;
-end;*/
-
 
 void __fastcall TFormFileAges::bGoClick(TObject *Sender)
 {
@@ -502,6 +454,44 @@ void __fastcall TFormFileAges::eCountKeyPress(TObject *Sender, System::WideChar 
 	if (Key == VK_RETURN && cbAutoRefresh->Checked)
 	{
 		bGoClick(NULL);
+	}
+}
+
+
+void __fastcall TFormFileAges::sgResultsDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		sgResults->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			sgResults->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				sgResults->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				sgResults->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		sgResults->Canvas->FillRect(Rect);
+	}
+	else
+	{
+		sgResults->Canvas->Brush->Color = TColor(kGridHeader);
+		sgResults->Canvas->FillRect(Rect);
+
+		sgResults->Canvas->Brush->Style = bsClear;
+		sgResults->Canvas->Font->Color = clWhite;
+		sgResults->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgResults->Canvas->TextOut(Rect.Left, Rect.Top, sgResults->Cells[ACol][0]);
 	}
 }
 
@@ -900,3 +890,9 @@ void TFormFileAges::ExportDataXML(const std::wstring file_name)
 	{
 	}
 }
+
+
+//    FULSP : TUpdateLeftStatusPanel;
+//  public
+//    property OnHide : TUpdateLeftStatusPanel read FULSP write FULSP;
+//  end;
