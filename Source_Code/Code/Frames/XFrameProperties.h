@@ -216,14 +216,14 @@ __published:	// IDE-managed Components
 	TPanel *Panel14;
 	TTreeView *tvTypes;
 	TStringGrid *sgExtensions;
-	TSpeedButton *SpeedButton1;
-	TSpeedButton *SpeedButton2;
+	TSpeedButton *sbDatesPie;
+	TSpeedButton *sbDatesBar;
 	TRadioButton *rbDatesBySize;
 	TRadioButton *rbDatesByQuantity;
 	TComboBox *cbDatesUsers;
 	TComboBox *cbDatesDateRange;
-	TSpeedButton *SpeedButton3;
-	TSpeedButton *SpeedButton5;
+	TSpeedButton *sbUsersPie;
+	TSpeedButton *sbUsersBar;
 	TRadioButton *rbUsersSize;
 	TRadioButton *rbUsersQuantity;
 	TStringGrid *sgTemporary;
@@ -233,13 +233,13 @@ __published:	// IDE-managed Components
 	TRadioButton *rbTempBySize;
 	TRadioButton *rbTempByQuantity;
 	TPageControl *pcTop101;
-	TTabSheet *TabSheet1;
-	TTabSheet *TabSheet2;
+	TTabSheet *tsTop101Size;
+	TTabSheet *tsTop101Date;
 	TPanel *Panel1;
 	TPanel *Panel15;
 	TSplitter *splitTop101Size;
 	TPanel *Panel16;
-	TPanel *Panel17;
+	TPanel *pTop101Size;
 	TStringGrid *sgTop101Big;
 	TStringGrid *sgTop101Small;
 	TComboBox *cbTop101SizeUser;
@@ -248,7 +248,7 @@ __published:	// IDE-managed Components
 	TComboBox *cbTop101DateUser;
 	TCheckBox *cbTop101DateColourCode;
 	TPanel *Panel19;
-	TPanel *Panel20;
+	TPanel *pTop101Date;
 	TStringGrid *sgTop101BigDate;
 	TSplitter *splitTop101Dates;
 	TStringGrid *sgTop101SmallDate;
@@ -264,23 +264,23 @@ __published:	// IDE-managed Components
 	TPanel *Panel21;
 	TSpeedButton *SpeedButton9;
 	TSpeedButton *sbDatesCollapseNodes;
-	TSpeedButton *SpeedButton10;
-	TSpeedButton *SpeedButton11;
+	TSpeedButton *sbFoldersPie;
+	TSpeedButton *sbFoldersBar;
 	TSpeedButton *sbFoldersConfig;
 	TRadioButton *rbFoldersBySize;
 	TRadioButton *rbFoldersByQuantity;
 	TSpeedButton *sbFoldersMoreDetail;
-	TSpeedButton *SpeedButton13;
-	TSpeedButton *SpeedButton14;
+	TSpeedButton *sbLengthsPie;
+	TSpeedButton *sbLengthsBar;
 	TSpeedButton *SpeedButton15;
 	TRadioButton *rbLengthSize;
 	TRadioButton *rbLengthQuantity;
-	TSpeedButton *SpeedButton16;
-	TSpeedButton *SpeedButton17;
+	TSpeedButton *sbMagnitudePie;
+	TSpeedButton *sbMagnitudeBar;
 	TRadioButton *rbMagnitudeBySize;
 	TRadioButton *rbMagnitudeByQuantity;
-	TSpeedButton *SpeedButton18;
-	TSpeedButton *SpeedButton19;
+	TSpeedButton *sbTypesPie;
+	TSpeedButton *sbTypesBar;
 	TSpeedButton *SpeedButton20;
 	TRadioButton *rbTypesBySize;
 	TRadioButton *rbTypesByQuantity;
@@ -312,6 +312,12 @@ __published:	// IDE-managed Components
 	TChart *vtcDates;
 	TPanel *pDatesIceCream;
 	TPanel *pICTop101;
+	TPieSeries *Series4;
+	TPieSeries *Series5;
+	TPieSeries *Series6;
+	TPieSeries *Series7;
+	TPieSeries *Series8;
+	TPieSeries *Series9;
 	void __fastcall sbCategoriesPieClick(TObject *Sender);
 	void __fastcall sbCategoriesBarClick(TObject *Sender);
 	void __fastcall miOA1Click(TObject *Sender);
@@ -388,20 +394,52 @@ __published:	// IDE-managed Components
 	void __fastcall splitUsersMoved(TObject *Sender);
 	void __fastcall splitTemporaryMoved(TObject *Sender);
 	void __fastcall splitLengthsMoved(TObject *Sender);
+	void __fastcall tsNullResize(TObject *Sender);
+	void __fastcall rbCategoriesBySizeClick(TObject *Sender);
+	void __fastcall cbExtensionsAllClick(TObject *Sender);
+	void __fastcall rbFoldersBySizeClick(TObject *Sender);
+	void __fastcall rbMagnitudeBySizeClick(TObject *Sender);
+	void __fastcall ComboBox3Change(TObject *Sender);
+	void __fastcall cbDatesUsersChange(TObject *Sender);
+	void __fastcall sbDatesCollapseNodesClick(TObject *Sender);
+	void __fastcall rbUsersSizeClick(TObject *Sender);
+	void __fastcall SpeedButton21Click(TObject *Sender);
+	void __fastcall cbUsersDisplayModeChange(TObject *Sender);
+	void __fastcall rbTempBySizeClick(TObject *Sender);
+	void __fastcall rbLengthSizeClick(TObject *Sender);
+	void __fastcall sgCategoriesDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgNullFilesDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgTemporaryDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgTop101BigDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgTop101SmallDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgTop101BigDateDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall cbTop101SizeUserChange(TObject *Sender);
+	void __fastcall cbTop101SizeColourCodeClick(TObject *Sender);
+	void __fastcall cbTop101DateUserChange(TObject *Sender);
+	void __fastcall cbTop101DateColourCodeClick(TObject *Sender);
+	void __fastcall sbHistoryRefreshClick(TObject *Sender);
+	void __fastcall rbHistoryQuantityClick(TObject *Sender);
+	void __fastcall vtcHistoryClick(TObject *Sender);
 private:	// User declarations
 
 	static constexpr int CategoryWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
-	static constexpr int TypesWidths[6] = { 100, 50, 52, 4, 60, 52 };
-	static constexpr int ExtensionsWidths[8] = { 75, 65, 52, 4, 65, 52, 4, 100 };
-	static constexpr int FoldersWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
-	static constexpr int MagnitudesWidths[7] = { 10, 100, 40, 52, 4, 60, 52 };
-	static constexpr int Top101SizeBigWidths[3] = { 100, 60, 90 };
-	static constexpr int Top101SizeSmallWidths[2] = { 100, 60 };
-	static constexpr int Top101DateBigWidths[4] = { 100, 65, 60, 90 };
-	static constexpr int Top101DateSmallWidths[4] = { 100, 65, 60, 90 };
-	static constexpr int UsersWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int TypesWidths[11] = { -1, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
+	static constexpr int ExtensionsWidths[12] = { -1, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1, 100 };
+	static constexpr int FoldersWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
+	static constexpr int MagnitudesWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
+	static constexpr int Top101SizeBigWidths[4] = { 100, 60, 90, -1};
+	static constexpr int Top101SizeSmallWidths[3] = { 100, 60, -1 };
+	static constexpr int Top101DateBigWidths[5] = { 100, 65, 60, 90, -1 };
+	static constexpr int Top101DateSmallWidths[5] = { 100, 65, 60, 90, -1 };
+	static constexpr int UsersWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
 	static constexpr int TempWidths[2] = { 100, 80 };
-	static constexpr int LengthsWidths[7] = { 10, 100, 50, 52, 4, 62, 52 };
+	static constexpr int LengthsWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
 
 	static constexpr double FilterValues[8] = { 0, 1, 2, 3, 4, 5, 10, 15 };
 
@@ -500,8 +538,8 @@ public:		// User declarations
 	int CurrentTab();
 	void SetTab(int);
 
-	std::function<void(const std::wstring)> OnNewSearch;
-	std::function<void(bool, const std::wstring)> OnScanWithNewPath;
+	std::function<void(const std::wstring, int)> OnNewSearch;
+	std::function<void(const std::wstring, int, bool)> OnScanWithNewPath;
 	std::function<void(int)> OnChartsChanged;
 };
 //---------------------------------------------------------------------------

@@ -151,13 +151,20 @@ void TabUiLength::Table(TStringGrid* grid, int DataSource, int index, bool add_a
 		{
 			ConsolidatedData cd = GScanEngine->Data[DataSource].Lengths[t];
 
-			grid->Cells[1][Row]  = cd.Name.c_str();
+			grid->Cells[1][Row] = cd.Name.c_str();
 
-			grid->Cells[2][Row]  = cd.Count;
-			grid->Cells[3][Row]  = cd.PercentCountString.c_str();
+			grid->Cells[2][Row] = cd.Count;
+			grid->Cells[3][Row] = cd.PercentCountString.c_str();
 
-			grid->Cells[5][Row]  = Convert::ConvertToUsefulUnit(cd.Size).c_str();
-			grid->Cells[6][Row]  = cd.PercentSizeString.c_str();
+			grid->Cells[5][Row] = Convert::ConvertToUsefulUnit(cd.Size).c_str();
+			grid->Cells[6][Row] = cd.PercentSizeString.c_str();
+
+			grid->Cells[7][Row] = kSpectrumColours[t % kSpectrumMod];
+
+			grid->Cells[8][Row] = cd.Size;
+
+			grid->Cells[9][Row]  = (int)(cd.PercentCount * 50);
+			grid->Cells[10][Row] = (int)(cd.PercentSize * 50);
 
 			grid->RowCount++;
 		}

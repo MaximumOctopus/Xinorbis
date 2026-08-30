@@ -49,14 +49,12 @@ public:
 	int DataSource = 0;
 
 	bool HasData = false;
+	bool NeedsRefresh = true;
 
 	void DeInit();
 
 	void Clear();
-
-	void BeginData();
-	void AddData(const std::wstring, int, unsigned __int64, int);
-	void EndData();
+	void Update();
 
 	void SetDataSource(int);
 };

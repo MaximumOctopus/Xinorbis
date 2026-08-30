@@ -138,6 +138,7 @@ object FrameStructure: TFrameStructure
         Height = 621
         Align = alClient
         ColCount = 17
+        DefaultDrawing = False
         FixedCols = 0
         TabOrder = 1
         OnDblClick = sgLeftSideDblClick
@@ -365,10 +366,12 @@ object FrameStructure: TFrameStructure
         Height = 302
         Align = alTop
         ColCount = 17
+        DefaultDrawing = False
         FixedCols = 0
         TabOrder = 1
         OnDblClick = sgRightSideDblClick
         OnDrawCell = sgRightSideDrawCell
+        ExplicitLeft = 5
         ColWidths = (
           50
           64

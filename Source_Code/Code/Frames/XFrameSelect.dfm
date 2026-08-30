@@ -97,12 +97,11 @@ object FrameSelect: TFrameSelect
         TabOrder = 8
         OnClick = bExploreClick
       end
-      object eScanPath: TEdit
-        Left = 82
+      object cbScanPath: TComboBox
+        Left = 84
         Top = 4
-        Width = 839
+        Width = 837
         Height = 23
-        Anchors = [akLeft, akTop, akRight]
         TabOrder = 9
       end
     end
@@ -216,8 +215,10 @@ object FrameSelect: TFrameSelect
         Width = 1005
         Height = 568
         Align = alClient
+        DefaultDrawing = False
         FixedCols = 0
         TabOrder = 1
+        OnDrawCell = sgScanHistoryDrawCell
       end
     end
   end

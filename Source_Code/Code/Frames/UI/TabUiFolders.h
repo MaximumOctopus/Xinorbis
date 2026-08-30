@@ -13,9 +13,12 @@
 #pragma once
 
 #include <VCLTee.Chart.hpp>
+#include <Vcl.Grids.hpp>
 
 
 namespace TabUiFolders
 {
 	void Chart(TChart*, int, double, int);
+
+	void Table(TStringGrid*, int);
 }

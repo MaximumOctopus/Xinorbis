@@ -29,7 +29,6 @@ __published:	// IDE-managed Components
 	TBitBtn *bCombine;
 	TBitBtn *bFavourites;
 	TBitBtn *bExplore;
-	TEdit *eScanPath;
 	TPopupMenu *puScanHistory;
 	TMenuItem *miExploreFromScanHistory;
 	TMenuItem *N20;
@@ -54,6 +53,7 @@ __published:	// IDE-managed Components
 	TBitBtn *bShowLastWeek;
 	TBitBtn *bShowLastMonth;
 	TStringGrid *sgScanHistory;
+	TComboBox *cbScanPath;
 	void __fastcall bScanNowClick(TObject *Sender);
 	void __fastcall bExploreClick(TObject *Sender);
 	void __fastcall bSelectClick(TObject *Sender);
@@ -67,6 +67,8 @@ __published:	// IDE-managed Components
 	void __fastcall bOpenImportClick(TObject *Sender);
 	void __fastcall bShowAllClick(TObject *Sender);
 	void __fastcall tsScanHistoryResize(TObject *Sender);
+	void __fastcall sgScanHistoryDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
 private:
 
 	const int kScanHistoryDate = 0;

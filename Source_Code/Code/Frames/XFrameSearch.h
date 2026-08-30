@@ -12,11 +12,15 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Menus.hpp>
+#include <Vcl.Samples.Gauges.hpp>
+#include <System.ImageList.hpp>
+#include <Vcl.ImgList.hpp>
+
+#include "XFrameProperties.h"
 
 #include "ProcessSearch.h"
 
 #include "XIceCream.h"
-#include <Vcl.Samples.Gauges.hpp>
 
 //---------------------------------------------------------------------------
 class TFrameSearch : public TFrame
@@ -79,6 +83,7 @@ __published:	// IDE-managed Components
 	TLabel *lGaugeSize;
 	TGauge *gaugeQuantity;
 	TGauge *gaugeSize;
+	TImageList *ilSearch;
 	void __fastcall sbGoSearchClick(TObject *Sender);
 	void __fastcall eSearchChange(TObject *Sender);
 	void __fastcall eSearchKeyPress(TObject *Sender, System::WideChar &Key);
@@ -109,23 +114,27 @@ __published:	// IDE-managed Components
 	void __fastcall sbPagePreviousClick(TObject *Sender);
 	void __fastcall sbPageNextClick(TObject *Sender);
 	void __fastcall pcSearchChange(TObject *Sender);
+	void __fastcall sgSearchResultsDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
 private:
 
-	const int kschVFileName     = 0;
-	const int kschVSize         = 1;
-	const int kschVCDate        = 2;
-	const int kschVADate        = 3;
-	const int kschVMDate        = 4;
-	const int kschVOwner        = 5;
-	const int kschVAttributes   = 6;
-	const int kschIFileName     = 7;
-	const int kschISize         = 8;
-	const int kschICDate        = 9;
-	const int kschIADate        = 10;
-	const int kschIMDate        = 11;
-	const int kschIColour       = 12;
+	constexpr static int kschVFileName     = 0;
+	constexpr static int kschVSize         = 1;
+	constexpr static int kschVCDate        = 2;
+	constexpr static int kschVADate        = 3;
+	constexpr static int kschVMDate        = 4;
+	constexpr static int kschVOwner        = 5;
+	constexpr static int kschVAttributes   = 6;
+	constexpr static int kschIFileName     = 7;
+	constexpr static int kschISize         = 8;
+	constexpr static int kschICDate        = 9;
+	constexpr static int kschIADate        = 10;
+	constexpr static int kschIMDate        = 11;
+	constexpr static int kschIColour       = 12;
 
 	const int DefaultColumnWidths[13] = { 20, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64 };
+
+	TFrameProperties *FrameProperties = nullptr;
 
     XIceCream *ice = nullptr;
 
@@ -151,6 +160,8 @@ private:
 
 	void Init();
 	void DeInit();
+
+    void CreatePropertiesFrame();
 
     void ClearGUI(bool);
 	void UpdateGUI();

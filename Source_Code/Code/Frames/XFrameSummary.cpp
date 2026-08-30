@@ -5,9 +5,11 @@
 
 #include "XFrameSummary.h"
 
+#include "ConstantsGui.h"
 #include "LanguageHandler.h"
 #include "ScanEngine.h"
 #include "SettingsHandler.h"
+#include "WindowsUtility.h"
 
 extern LanguageHandler* GLanguageHandler;
 extern ScanEngine* GScanEngine;
@@ -56,22 +58,17 @@ void TFrameSummary::Init()
 	lSULSSoF->Caption = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSSoF->Caption.c_str() + L")").c_str();
 	lSULSNoF->Caption = GLanguageHandler->FormatForScreen(GLanguageHandler->SummaryReport[13] + L" (" + lSNoF->Caption.c_str() + L")").c_str();
 
-//  lSVolName->Caption    := FormatForScreen(DriveReport[7]);
-//  lSSerial.Caption     := FormatForScreen(DriveReport[8]);
-//  lSFileSystem.Caption := FormatForScreen(DriveReport[9]);
-//  lSVolMax.Caption     := FormatForScreen(DriveReport[1]);
-//  lSVolFree.Caption    := FormatForScreen(DriveReport[2]);
+	lSVolName->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->DriveReport[7]).c_str();
+	lSSerial->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->DriveReport[8]).c_str();
+	lSFileSystem->Caption = GLanguageHandler->FormatForScreen(GLanguageHandler->DriveReport[9]).c_str();
+	lSVolMax->Caption     = GLanguageHandler->FormatForScreen(GLanguageHandler->DriveReport[1]).c_str();
+	lSVolFree->Caption    = GLanguageHandler->FormatForScreen(GLanguageHandler->DriveReport[2]).c_str();
 
-//  if lSThisFolder.Canvas.TextWidth(XText[kFolder]) < 80 then
-//    lSThisFolder.Left := gSThisFolder.Left + (Round((80 - lSThisFolder.Canvas.TextWidth(XText[kFolder])) / 2));
-//  lSThisFolder.Caption := XText[kFolder];
-
-//  if lSDSpaceUsed.Canvas.TextWidth(XText[kUsedSpace]) < 80 then
-//    lSDSpaceUsed.Left := gSFS.Left + (Round((80 - lSDSpaceUsed.Canvas.TextWidth(XText[kUsedSpace])) / 2));
-//  lSDSpaceUsed.Caption := XText[kUsedSpace];
+	lDFolder->Caption = GLanguageHandler->Text[kFolder].c_str();
+	lDUsedSpace->Caption = GLanguageHandler->Text[kUsedSpace].c_str();
 
 	tsSummary->Caption = GLanguageHandler->Text[kSummary].c_str();
-//  tsImportFromFile.Caption := XText[kORIReport9];
+	tsDrive->Caption = GLanguageHandler->Text[kORIReport9].c_str();
 }
 
 
@@ -82,12 +79,68 @@ void TFrameSummary::Destroy()
 }
 
 
+void __fastcall TFrameSummary::lSNoFXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexCategories);
+	}
+}
+
+
+void __fastcall TFrameSummary::lSAFSXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexMagnitude);
+	}
+}
+
+
+void __fastcall TFrameSummary::lSEFXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexNull);
+	}
+}
+
+
+void __fastcall TFrameSummary::lSNoDXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexFolders);
+	}
+}
+
+void __fastcall TFrameSummary::lSLFXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexTop101);
+	}
+}
+
+
+void __fastcall TFrameSummary::lSULSSoFXClick(TObject *Sender)
+{
+	if (OnDataSelected)
+	{
+		OnDataSelected(kTabIndexUsers);
+	}
+}
+
+
 void TFrameSummary::Update()
 {
+	dd = WindowsUtility::GetDriveDetails(GScanEngine->Data[DataSource].Path.String.substr(0, 2));
+
 	BuildPreamble();
 	BuildSummaryLabels();
 	BuildGauges();
 	BuildIceCream();
+	BuildDriveSection();
 }
 
 
@@ -121,16 +174,20 @@ void TFrameSummary::BuildSummaryLabels()
 	lSNoFX->Caption = IntToStr(GScanEngine->Data[DataSource].FileCount);
 	lSNoDX->Caption = IntToStr(GScanEngine->Data[DataSource].FolderCount);
 
-//	lSSoFx.Caption := TConvert.ConvertToUsefulUnit(GScanEngine[FSource].TotalSize);
+	lSSoFX->Caption = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].TotalSize).c_str();
 
-//	if drivesectorsize <> 0 then
-//		lSSoFoDx.Caption   := TConvert.ConvertToUsefulUnit(GScanEngine[FSource].TotalSizeOD)
-//  else
-//	lSSoFoDx.Caption   := '-';
+	if (dd.SectorSize != 0)
+	{
+		lSSoFODX->Caption = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].TotalSizeOD).c_str();
+	}
+	else
+	{
+		lSSoFODX->Caption = L"n/a";
+	}
 
 	if (GScanEngine->Data[DataSource].FileCount != 0)
 	{
-//		lSAFSX.Caption    := TConvert.ConvertToUsefulUnit(Round(GScanEngine[FSource].TotalSize / GScanEngine[FSource].FileCount))
+		lSAFSX->Caption = Convert::ConvertToUsefulUnit(std::round(GScanEngine->Data[DataSource].TotalSize / GScanEngine->Data[DataSource].FileCount)).c_str();
 	}
 	else
 	{
@@ -139,7 +196,7 @@ void TFrameSummary::BuildSummaryLabels()
 
 	if (GScanEngine->Data[DataSource].FolderCount != 0)
 	{
-//		lSAFFX.Caption    := FloatToStrF(GScanEngine[FSource].FileCount / GScanEngine[FSource].FolderCount, ffFixed, 7, 2, XinorbisFormatSettings)
+		lSAFFX->Caption = FloatToStrF(GScanEngine->Data[DataSource].FileCount / GScanEngine->Data[DataSource].FolderCount, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat);
 	}
 	else
 	{
@@ -152,8 +209,29 @@ void TFrameSummary::BuildSummaryLabels()
 
 
 void TFrameSummary::BuildGauges()
-{
-//
+{                       /*
+	gSLDCount->Progress = StrToInt64(lDirList.Cells[2, zCount]), GScanDetails[aDataIndex].FileCount);
+	gSLDSize->Progress  = StrToInt64(lDirList.Cells[8, zSize]),  GScanDetails[aDataIndex].TotalSize);
+
+	if (GScanEngine->Data[DataSource].Users.size() != 0)
+	{
+		gSLUCount->Progress =  StrToInt64(FrameReports[aDataIndex].sgUsers.Cells[2, zCount]), GScanDetails[aDataIndex].FileCount);
+		gSLUSize->Progress  =  StrToInt64(FrameReports[aDataIndex].sgUsers.Cells[7, zSize]),  GScanDetails[aDataIndex].TotalSize);
+	}
+	else
+	{
+		gSLUCount->Progress = 0;
+		gSLUSize->Progress  = 0;
+	}
+
+	if (GScanEngine->Data[DataSource].TotalSize != 0 && FrameReports[aDataIndex].sgTop50Big.Cells[3, 1] <> '')
+	{
+		gSLF->Progress = SetDisplay((StrToInt64(FrameReports[aDataIndex].sgTop50Big.Cells[3, 1]) / GScanDetails[aDataIndex].TotalSize) * 100)
+	}
+	else
+	{
+		gSLF->Progress = 0;
+	}                     */
 }
 
 
@@ -193,3 +271,56 @@ void TFrameSummary::BuildIceCream()
 	icSize->End();
 }
 
+
+void TFrameSummary::BuildDriveSection()
+{
+	bool show_control = GScanEngine->Data[DataSource].Source != ScanSource::FileCSV &&
+						GScanEngine->Data[DataSource].Source != ScanSource::LiveShare &&
+						GScanEngine->Data[DataSource].Source != ScanSource::FolderHistory;
+
+	lSVolName->Visible         = show_control;
+	lSVolNameValue->Visible    = show_control;
+	lSSerial->Visible          = show_control;
+	lSSerialValue->Visible     = show_control;
+	lSFileSystem->Visible      = show_control;
+	lSFileSystemValue->Visible = show_control;
+	lSVolMax->Visible          = show_control;
+	lSVolMaxValue->Visible     = show_control;
+	lSVolFree->Visible         = show_control;
+	lSVolFreeValue->Visible    = show_control;
+
+	gDFolder->Visible          = show_control;
+	lDFolder->Visible          = show_control;
+
+	gDUsedSpace->Visible       = show_control;
+	lDUsedSpace->Visible       = show_control;
+
+	if (show_control)
+	{
+		lSVolNameValue->Caption    = dd.VolumeName.c_str();
+		lSSerialValue->Caption     = (dd.SerialNumber + L" ($" + dd.SerialNumberHex + L")").c_str();
+		lSFileSystemValue->Caption = dd.FileSystem.c_str();
+
+		if (dd.SpaceTotal > 0)
+		{
+			lSVolMaxValue->Caption  = Convert::ConvertToUsefulUnit(dd.SpaceTotal).c_str();
+			lSVolFreeValue->Caption = Convert::ConvertToUsefulUnit(dd.SpaceFree).c_str();
+
+			gDFolder->Progress    = (GScanEngine->Data[DataSource].TotalSize / dd.SpaceTotal) * 100;
+			gDUsedSpace->Progress = 100 - ((dd.SpaceFree / dd.SpaceTotal) * 100);
+		}
+		else
+		{
+			lSVolMaxValue->Caption  = L"n/a";
+			lSVolFreeValue->Caption = L"n/a";
+
+			gDFolder->Progress = 0;
+			gDUsedSpace->Progress = 0;
+		}
+	}
+	else
+	{
+		gDFolder->Progress = 0;
+		gDUsedSpace->Progress = 0;
+	}
+}

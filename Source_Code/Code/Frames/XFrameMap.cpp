@@ -7,8 +7,10 @@
 
 #include "Convert.h"
 #include "LanguageHandler.h"
+#include "ScanEngine.h"
 
 extern LanguageHandler* GLanguageHandler;
+extern ScanEngine *GScanEngine;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -42,6 +44,34 @@ void TFrameMap::Init()
 void TFrameMap::DeInit()
 {
 	delete MapX;
+}
+
+
+void TFrameMap::Update()
+{
+    if (!NeedsRefresh) return;
+
+	Clear();
+
+	MapX->BeginData();
+
+	int ColourMod = 0;
+
+	for (RootFolder *folder : GScanEngine->Data[DataSource].RootFolders)
+	{
+		MapX->AddData(folder->Name,
+					  folder->Count,
+					  folder->Size,
+					  kSpectrumColours[ColourMod % kSpectrumMod]);
+
+        ColourMod++;
+	}
+
+	MapX->EndData();
+
+	HasData = true;
+
+    NeedsRefresh = false;
 }
 
 
@@ -148,26 +178,6 @@ void TFrameMap::Clear()
 
 	HasData = false;
 	OldIndex = -1;
-}
-
-
-void TFrameMap::BeginData()
-{
-	MapX->BeginData();
-}
-
-
-void TFrameMap::AddData(const std::wstring folder_name, int file_count, unsigned __int64 file_size, int colour)
-{
-	MapX->AddData(folder_name, file_count, file_size, colour);
-}
-
-
-void TFrameMap::EndData()
-{
-	MapX->EndData();
-
-	HasData = true;
 }
 
 

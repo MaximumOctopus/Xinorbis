@@ -10,6 +10,7 @@ object FrameSummary: TFrameSummary
     Top = 0
     Width = 1032
     Height = 617
+    Cursor = crHandPoint
     ActivePage = tsSummary
     Align = alClient
     TabOrder = 0
@@ -38,18 +39,22 @@ object FrameSummary: TFrameSummary
         Caption = 'Label1'
       end
       object lSNoFX: TLabel
-        Left = 48
-        Top = 80
+        Left = 53
+        Top = 81
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoFXClick
       end
       object lSNoDX: TLabel
         Left = 48
         Top = 128
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoDXClick
       end
       object lSSoF: TLabel
         Left = 168
@@ -58,12 +63,14 @@ object FrameSummary: TFrameSummary
         Height = 15
         Caption = 'Label1'
       end
-      object lSoFX: TLabel
+      object lSSoFX: TLabel
         Left = 200
-        Top = 75
+        Top = 80
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoFXClick
       end
       object lSSoFoD: TLabel
         Left = 168
@@ -77,7 +84,9 @@ object FrameSummary: TFrameSummary
         Top = 128
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoFXClick
       end
       object lSAFF: TLabel
         Left = 320
@@ -91,7 +100,9 @@ object FrameSummary: TFrameSummary
         Top = 80
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSAFSXClick
       end
       object lSAFS: TLabel
         Left = 320
@@ -105,7 +116,9 @@ object FrameSummary: TFrameSummary
         Top = 128
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSAFSXClick
       end
       object lSLF: TLabel
         Left = 72
@@ -133,7 +146,9 @@ object FrameSummary: TFrameSummary
         Top = 128
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSEFXClick
       end
       object lSED: TLabel
         Left = 472
@@ -154,7 +169,9 @@ object FrameSummary: TFrameSummary
         Top = 80
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSEFXClick
       end
       object lProcessTime: TLabel
         Left = 64
@@ -182,7 +199,9 @@ object FrameSummary: TFrameSummary
         Top = 224
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoDXClick
       end
       object lSLFNoF: TLabel
         Left = 534
@@ -196,7 +215,9 @@ object FrameSummary: TFrameSummary
         Top = 224
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSNoDXClick
       end
       object lSULSNoF: TLabel
         Left = 534
@@ -217,21 +238,60 @@ object FrameSummary: TFrameSummary
         Top = 273
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSULSSoFXClick
       end
       object lSLFX: TLabel
         Left = 104
         Top = 174
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSLFXClick
       end
       object lSULSSoFX: TLabel
         Left = 104
         Top = 273
         Width = 34
         Height = 15
+        Cursor = crHandPoint
         Caption = 'Label1'
+        OnClick = lSULSSoFXClick
+      end
+      object g1: TGauge
+        Left = 16
+        Top = 207
+        Width = 45
+        Height = 45
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object g2: TGauge
+        Left = 16
+        Top = 258
+        Width = 45
+        Height = 45
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object Gauge1: TGauge
+        Left = 16
+        Top = 156
+        Width = 45
+        Height = 45
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
       end
       object pICQuantity: TPanel
         Left = 80
@@ -256,8 +316,114 @@ object FrameSummary: TFrameSummary
         TabOrder = 1
       end
     end
-    object TabSheet2: TTabSheet
+    object tsDrive: TTabSheet
       ImageIndex = 1
+      object gDFolder: TGauge
+        Left = 16
+        Top = 16
+        Width = 121
+        Height = 121
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object gDUsedSpace: TGauge
+        Left = 143
+        Top = 16
+        Width = 121
+        Height = 121
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object lSVolName: TLabel
+        Left = 312
+        Top = 16
+        Width = 9
+        Height = 15
+        Caption = '...'
+      end
+      object lSVolNameValue: TLabel
+        Left = 336
+        Top = 37
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lSVolMaxValue: TLabel
+        Left = 336
+        Top = 93
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lSVolMax: TLabel
+        Left = 312
+        Top = 72
+        Width = 9
+        Height = 15
+        Caption = '...'
+      end
+      object lSSerial: TLabel
+        Left = 472
+        Top = 16
+        Width = 9
+        Height = 15
+        Caption = '...'
+      end
+      object lSSerialValue: TLabel
+        Left = 496
+        Top = 37
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lSFileSystem: TLabel
+        Left = 616
+        Top = 16
+        Width = 9
+        Height = 15
+        Caption = '...'
+      end
+      object lSFileSystemValue: TLabel
+        Left = 640
+        Top = 37
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lSVolFree: TLabel
+        Left = 472
+        Top = 72
+        Width = 12
+        Height = 15
+        Caption = '....'
+      end
+      object lSVolFreeValue: TLabel
+        Left = 496
+        Top = 93
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
+      object lDFolder: TLabel
+        Left = 16
+        Top = 143
+        Width = 44
+        Height = 15
+        Caption = 'lDFolder'
+      end
+      object lDUsedSpace: TLabel
+        Left = 143
+        Top = 143
+        Width = 34
+        Height = 15
+        Caption = 'Label1'
+      end
     end
   end
 end

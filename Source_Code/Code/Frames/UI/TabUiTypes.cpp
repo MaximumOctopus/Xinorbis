@@ -144,35 +144,25 @@ void TabUiTypes::List(TStringGrid* grid, int DataSource)
 
 	grid->BeginUpdate();
 
+	int row = 1;
+
 	for (int t = 0; t < kAttributesCount; t++)
 	{
-		grid->Cells[0][t] = GLanguageHandler->LanguageTypes[t].c_str();
+		grid->Cells[1][row] = GLanguageHandler->LanguageTypes[t].c_str();
+		grid->Cells[2][row] = GScanEngine->Data[DataSource].FileAttributes[t].Count;
+		grid->Cells[3][row] = GScanEngine->Data[DataSource].FileAttributes[t].PercentCountString.c_str();
 
-		grid->Cells[1][t] = std::to_wstring(GScanEngine->Data[DataSource].FileAttributes[t].Count).c_str();
+		grid->Cells[5][row] = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].FileAttributes[t].Size).c_str();
+		grid->Cells[6][row] = GScanEngine->Data[DataSource].FileAttributes[t].PercentSizeString.c_str();
 
-		if (GScanEngine->Data[DataSource].FileCount != 0)
-		{
-		  grid->Cells[2][t] = Convert::DoubleToPercent(GScanEngine->Data[DataSource].FileAttributes[t].Count / GScanEngine->Data[DataSource].FileCount).c_str();
-		  grid->Cells[6][t] = std::to_wstring(std::round((GScanEngine->Data[DataSource].FileAttributes[t].Count / GScanEngine->Data[DataSource].FileCount) * 50)).c_str();
-		}
-		else
-		{
-		  grid->Cells[2][t] = L"100%";
-		  grid->Cells[6][t] = L"100";
-		}
+		grid->Cells[7][row] = 0;
 
-		grid->Cells[4][t] = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].FileAttributes[t].Size).c_str();
+		grid->Cells[8][row] = GScanEngine->Data[DataSource].FileAttributes[t].Size;
 
-		if (GScanEngine->Data[DataSource].TotalSize != 0)
-		{
-		  grid->Cells[5][t] = Convert::DoubleToPercent(GScanEngine->Data[DataSource].FileAttributes[t].Size / GScanEngine->Data[DataSource].TotalSize).c_str();
-		  grid->Cells[7][t] = std::to_wstring(std::round((GScanEngine->Data[DataSource].FileAttributes[t].Size / GScanEngine->Data[DataSource].TotalSize) * 50)).c_str();
-		}
-		else
-		{
-		  grid->Cells[5][t] = L"100%";
-		  grid->Cells[7][t] = L"100";
-		}
+		grid->Cells[9][row] = (int)(GScanEngine->Data[DataSource].FileAttributes[t].PercentCount * 50);
+		grid->Cells[10][row] = (int)(GScanEngine->Data[DataSource].FileAttributes[t].PercentSize * 50);
+
+        row++;
 	}
 
 	grid->EndUpdate();

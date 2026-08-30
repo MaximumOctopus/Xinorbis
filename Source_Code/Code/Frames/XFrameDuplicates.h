@@ -77,6 +77,8 @@ __published:	// IDE-managed Components
 	void __fastcall miSearchExportToCBClick(TObject *Sender);
 	void __fastcall miSSaveClick(TObject *Sender);
 	void __fastcall puSearchPopup(TObject *Sender);
+	void __fastcall sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
+          System::LongInt ARow, TRect &Rect, TGridDrawState State);
 private:
 
 	void Init();

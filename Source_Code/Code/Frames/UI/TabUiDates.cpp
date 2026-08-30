@@ -50,8 +50,12 @@ void TabUiDates::Chart(TTreeView* tree, TChart* chart)
 }
 
 
-void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int userid, int data_range, bool build_tree, bool quantity)
+void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int userid, int date_range, bool build_tree, bool quantity)
 {
+	constexpr static int kDateCreated = 0;
+	constexpr static int kDateAccessed = 1;
+	constexpr static int kDateModified = 2;
+
 	if (!build_tree || GScanEngine->Data[DataSource].Files.size() == 0) return;
 
 	std::wstring yy = L"";
@@ -113,15 +117,15 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 		}
 	}
 
-	switch (data_range)
+	switch (date_range)
 	{
-	case kCreatedDate:
+	case kDateCreated:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 		break;
-	case kAccessedDate:
+	case kDateAccessed:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 		break;
-	case kModifiedDate:
+	case kDateModified:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 		break;
 	}
@@ -132,27 +136,27 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 		{
 			std::wstring strdate = L"";
 
-			switch (data_range)
+			switch (date_range)
 			{
-			case kCreatedDate:
-				strdate = file->DateCreated;
-				yy      = strdate.substr(0, 4);
-				mm      = strdate.substr(4, 2);
-				dd      = strdate.substr(6, 2);
+			case kDateCreated:
+				strdate = std::to_wstring(file->DateCreated);
 				break;
-			case kAccessedDate:
-				strdate = file->DateAccessed;
-				yy      = strdate.substr(0, 4);
-				mm      = strdate.substr(4, 2);
-				dd      = strdate.substr(6, 2);
+			case kDateAccessed:
+				strdate = std::to_wstring(file->DateAccessed);
 				break;
-			case kModifiedDate:
-				strdate = file->DateModified;
-				yy      = strdate.substr(0, 4);
-				mm      = strdate.substr(4, 2);
-				dd      = strdate.substr(6, 2);
+			case kDateModified:
+				strdate = std::to_wstring(file->DateModified);
 				break;
 			}
+
+			if (strdate.empty())
+			{
+				strdate = L"19900101";
+			}
+
+			yy = strdate.substr(0, 4);
+			mm = strdate.substr(4, 2);
+			dd = strdate.substr(6, 2);
 
 			// ===================================================================
 
@@ -187,7 +191,7 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 
 				if (oldmonth != L"9999")
 				{
-					monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth)] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
+					monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth) - 1] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
 				}
 
 				if (oldday != L"9999")
@@ -200,7 +204,7 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 				oldmonth  = mm;
 
 				yearnode  = tree->Items->Add(NULL, yy.c_str());
-				monthnode = tree->Items->AddChild(yearnode, GLanguageHandler->ShortMonths[stoi(mm)].c_str());
+				monthnode = tree->Items->AddChild(yearnode, GLanguageHandler->ShortMonths[stoi(mm) - 1].c_str());
 				daynode   = tree->Items->AddChild(monthnode, dd.c_str());
 
 				YearCount  = 0;  YearSize  = 0;
@@ -212,7 +216,7 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 			{
 				if (oldmonth != L"9999")
 				{
-					monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth)] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
+					monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth) - 1] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
 				}
 
 				if (oldday != L"9999")
@@ -223,7 +227,7 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 				oldday     = dd;
 				oldmonth   = mm;
 
-				monthnode  = tree->Items->AddChild(yearnode, GLanguageHandler->ShortMonths[stoi(mm)].c_str());
+				monthnode  = tree->Items->AddChild(yearnode, GLanguageHandler->ShortMonths[stoi(mm) - 1].c_str());
 				daynode    = tree->Items->AddChild(monthnode, dd.c_str());
 
 				MonthCount = 0;
@@ -284,7 +288,7 @@ void TabUiDates::Tree(TTreeView* tree, XIceCream* icecream, int DataSource, int 
 	}
 
 	yearnode->Text  = (yy + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(YearCount) + L" (" + Convert::ConvertToUsefulUnit(YearSize) + L")]").c_str();
-	monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth) ] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
+	monthnode->Text = (GLanguageHandler->ShortMonths[stoi(oldmonth) - 1] + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(MonthCount) + L" (" + Convert::ConvertToUsefulUnit(MonthSize) + L")]").c_str();
 	daynode->Text   = (oldday + L" [" + GLanguageHandler->Text[kFiles] + L": " + std::to_wstring(DayCount) + L" (" + Convert::ConvertToUsefulUnit(DaySize) + L")]").c_str();
 
 	// ===========================================================================

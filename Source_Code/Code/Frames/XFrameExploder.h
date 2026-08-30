@@ -64,14 +64,15 @@ public:		// User declarations
     int DataSource = 0;
 
 	bool HasData = false;
+	bool NeedsRefresh = true;
 
-   	void Clear();
+	void Clear();
+	void Update();
 
 	int GetDataSource();
 	void SetDataSource(int);
 
 	void BeginData(const std::wstring, int, unsigned __int64);
-	void AddData(const std::wstring, int, int, unsigned __int64, int);
 	void EndData();
 };
 //---------------------------------------------------------------------------

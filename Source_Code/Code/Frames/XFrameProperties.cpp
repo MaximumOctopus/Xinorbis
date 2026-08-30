@@ -20,6 +20,7 @@
 #include "FileExtensionHandler.h"
 #include "Formatting.h"
 #include "GridUtility.h"
+#include "ImageHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "MD5.h"
@@ -45,6 +46,7 @@
 #include "TabUiUsers.h"
 
 extern FileExtensionHandler *GFileExtensionHandler;
+extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
@@ -86,6 +88,14 @@ void TFrameProperties::Init()
 	Charts[3] = vtcMagnitude;  Charts[4] = vtcDates;   Charts[5] = vtcTemporary;
 	Charts[6] = vtcUsers;      Charts[7] = vtcHistory; Charts[8] = vtcLengths;
 
+	GImageHandler->SetPieBarImages(sbCategoriesPie, sbCategoriesBar);
+	GImageHandler->SetPieBarImages(sbTypesPie, sbTypesBar);
+	GImageHandler->SetPieBarImages(sbFoldersPie, sbFoldersBar);
+	GImageHandler->SetPieBarImages(sbMagnitudePie, sbMagnitudeBar);
+	GImageHandler->SetPieBarImages(sbDatesPie, sbDatesBar);
+	GImageHandler->SetPieBarImages(sbUsersPie, sbUsersBar);
+	GImageHandler->SetPieBarImages(sbLengthsPie, sbLengthsBar);
+
 	// tabs
 	InitCategoriesTab();
 	InitTypesTab();
@@ -105,6 +115,17 @@ void TFrameProperties::Init()
 	cbExtensionsOther->Caption = GLanguageHandler->Text[kShowUncategorised].c_str();
 	cbExtensionsCustom->Caption = GLanguageHandler->Text[kShowCustom].c_str();
 	cbExtensionsColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
+
+	// ensure the tables are nicely resized to fit their containers
+	splitCategoriesMoved(NULL);
+	splitTypesMoved(NULL);
+	splitFoldersMoved(NULL);
+	splitMagnitudeMoved(NULL);
+	splitTop101SizeMoved(NULL);
+	splitTop101DatesMoved(NULL);
+	splitUsersMoved(NULL);
+	splitTemporaryMoved(NULL);
+	splitLengthsMoved(NULL);
 }
 
 
@@ -246,6 +267,9 @@ void TFrameProperties::Update()
 	BuildCategoriesTable();
 	BuildCategoriesChart(GSettingsHandler->Chart.LabelOptions);
 
+	TabUiFolders::Chart(vtcFolders, DataSource, FilterValues[sbFoldersConfig->Tag], GSettingsHandler->Chart.LabelOptions);
+	TabUiFolders::Table(sgFolders, DataSource);
+
 	TabUiTypes::Tree(tvTypes, DataSource, 2);
 	rbTypesBySizeClick(NULL);
 
@@ -373,8 +397,8 @@ void TFrameProperties::UpdateDisplay(int display)
 			duser_id = cbTop101DateUser->ItemIndex - 1;
 		}
 
-		TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id);
-		TabUiTop101::Date(sgTop101BigDate, sgTop101SmallDate, DataSource, duser_id, cbTop101DateDate->ItemIndex);
+		pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id).c_str();
+		pTop101Date->Caption = TabUiTop101::Date(sgTop101BigDate, sgTop101SmallDate, DataSource, duser_id, cbTop101DateDate->ItemIndex).c_str();
 		break;
 	}
 	case kTabIndexNull:
@@ -423,33 +447,33 @@ void __fastcall TFrameProperties::sbCategoriesPieClick(TObject *Sender)
 
 	switch (sb->Tag)
 	{
-	case 1:
+	case kTabIndexCategories:
 		ChartUtility::ChangeChartToPie(vtcCategories);
-		//GXGuiUtil.SetPieBarImages(sbCategoriesPie, sbCategoriesBar);
+		GImageHandler->SetPieBarImages(sbCategoriesPie, sbCategoriesBar);
 		break;
-	case 2:
+	case kTabIndexTypes:
 		ChartUtility::ChangeChartToPie(vtcTypes);
-		//GXGuiUtil.SetPieBarImages(sbTreePie, sbTreeBar);
+		GImageHandler->SetPieBarImages(sbTypesPie, sbTypesBar);
 		break;
-	case 3:
+	case kTabIndexFolders:
 		ChartUtility::ChangeChartToPie(vtcFolders);
-		//   GXGuiUtil.SetPieBarImages(sbDirListPie, sbDirListBar);
+		GImageHandler->SetPieBarImages(sbFoldersPie, sbFoldersBar);
 		break;
-	case 4 :
+	case kTabIndexMagnitude:
 		ChartUtility::ChangeChartToPie(vtcMagnitude);
-		//   GXGuiUtil.SetPieBarImages(sbMagnitudePie, sbMagnitudeBar);
+		GImageHandler->SetPieBarImages(sbMagnitudePie, sbMagnitudeBar);
 		break;
-	case 8:
+	case kTabIndexDates:
 		ChartUtility::ChangeChartToPie(vtcDates);
-		//   GXGuiUtil.SetPieBarImages(sbFileDatesPie, sbFileDatesBar);
+		GImageHandler->SetPieBarImages(sbDatesPie, sbDatesBar);
 		break;
-	case 11:
+	case kTabIndexUsers:
 		ChartUtility::ChangeChartToPie(vtcUsers);
-		//   GXGuiUtil.SetPieBarImages(sbUsersPie, sbUsersBar);
+		GImageHandler->SetPieBarImages(sbUsersPie, sbUsersBar);
 		break;
-	case 12 :
+	case kTabIndexNameLength:
 		ChartUtility::ChangeChartToPie(vtcLengths);
-		//   GXGuiUtil.SetPieBarImages(sbLengthPie, sbLengthBar);
+		GImageHandler->SetPieBarImages(sbLengthsPie, sbLengthsBar);
 		break;
 	}
 }
@@ -463,33 +487,33 @@ void __fastcall TFrameProperties::sbCategoriesBarClick(TObject *Sender)
 
 	switch (sb->Tag)
 	{
-	case 1:
+	case kTabIndexCategories:
 		ChartUtility::ChangeChartToHorizontalBar(vtcCategories, false);
-//		   GXGuiUtil.SetPieBarImages(sbCategoriesPie, sbCategoriesBar);
+		GImageHandler->SetPieBarImages(sbCategoriesPie, sbCategoriesBar);
 		break;
-	case 2:
+	case kTabIndexTypes:
 		ChartUtility::ChangeChartToHorizontalBar(vtcTypes, false);
-//		   GXGuiUtil.SetPieBarImages(sbTreePie, sbTreeBar);
+		GImageHandler->SetPieBarImages(sbTypesPie, sbTypesBar);
 		break;
-	case 3:
+	case kTabIndexFolders:
 		ChartUtility::ChangeChartToHorizontalBar(vtcFolders, true);
-//		   GXGuiUtil.SetPieBarImages(sbDirListPie, sbDirListBar);
+		GImageHandler->SetPieBarImages(sbFoldersPie, sbFoldersBar);
 		break;
-	case 4:
+	case kTabIndexMagnitude:
 		ChartUtility::ChangeChartToHorizontalBar(vtcMagnitude, false);
-//		   GXGuiUtil.SetPieBarImages(sbMagnitudePie, sbMagnitudeBar);
+		GImageHandler->SetPieBarImages(sbMagnitudePie, sbMagnitudeBar);
 		break;
-	case 8:
+	case kTabIndexDates:
 		ChartUtility::ChangeChartToHorizontalBar(vtcDates, false);
-//		   GXGuiUtil.SetPieBarImages(sbFileDatesPie, sbFileDatesBar);
+		GImageHandler->SetPieBarImages(sbDatesPie, sbDatesBar);
 		break;
-	case 11:
+	case kTabIndexUsers:
 		ChartUtility::ChangeChartToHorizontalBar(vtcUsers, false);
-//		   GXGuiUtil.SetPieBarImages(sbUsersPie, sbUsersBar);
+		GImageHandler->SetPieBarImages(sbUsersPie, sbUsersBar);
 		break;
-	case 12:
+	case kTabIndexNameLength:
 		ChartUtility::ChangeChartToHorizontalBar(vtcLengths, false);
-//		   GXGuiUtil.SetPieBarImages(sbLengthPie, sbLengthBar);
+		GImageHandler->SetPieBarImages(sbLengthsPie, sbLengthsBar);
 		break;
 	}
 }
@@ -517,6 +541,12 @@ void TFrameProperties::InitCategoriesTab()
 	sgCategories->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgCategories->RowCount = kFileCategoriesCount + 1;
 
+	sgCategories->Cells[1][0] = GLanguageHandler->Text[kCategory].c_str();
+	sgCategories->Cells[2][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgCategories->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgCategories->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgCategories->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+
 	for (int t = 0; t < 11; t++)
 	{
 		sgCategories->ColWidths[t] = CategoryWidths[t];
@@ -537,10 +567,10 @@ void TFrameProperties::BuildCategoriesTable()
 		sgCategories->Cells[5][Row] = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size).c_str();
 		sgCategories->Cells[6][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSizeString.c_str();
 
-		sgCategories->Cells[7][Row] = t;
+		sgCategories->Cells[7][Row] = GSettingsHandler->FileCategoryColors[t];
 		sgCategories->Cells[8][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].Size;
-		sgCategories->Cells[9][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount;
-		sgCategories->Cells[10][Row] = GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize;
+		sgCategories->Cells[9][Row] = (int)(GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount * 50);
+		sgCategories->Cells[10][Row] = (int)(GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize * 50);
 
 		Row++;
 	}
@@ -586,6 +616,12 @@ void TFrameProperties::BuildCategoriesChart(int LabelOptions)
 			}
 		}
 	}
+}
+
+
+void __fastcall TFrameProperties::rbCategoriesBySizeClick(TObject *Sender)
+{
+//
 }
 
 
@@ -635,6 +671,113 @@ void __fastcall TFrameProperties::splitCategoriesMoved(TObject *Sender)
 
 	sgCategories->ColWidths[1] = sgCategories->Width - (total + __WidthOfScrollbar);
 }
+
+
+void __fastcall TFrameProperties::sgCategoriesDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+        if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(StrToInt(static_cast<TStringGrid*>(Sender)->Cells[7][ARow]));
+				static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+			}
+			break;
+		case 2:
+		case 5:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		case 3:
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xff8822);
+			static_cast<TStringGrid*>(Sender)->Canvas->Rectangle(Rect);
+
+			if (static_cast<TStringGrid*>(Sender)->Cells[9][ARow] != L"0")
+			{
+				TRect zRect;
+				zRect.Top    = Rect.Top + 1;
+				zRect.Bottom = Rect.Bottom - 1;
+				zRect.Left   = Rect.Left + 1;
+				zRect.Right  = Rect.Left + StrToInt(static_cast<TStringGrid*>(Sender)->Cells[9][ARow]);
+
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xdd4411);
+				static_cast<TStringGrid*>(Sender)->Canvas->FillRect(zRect);
+			}
+
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+			static_cast<TStringGrid*>(Sender)->Canvas->Font->Color  = clBlack;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[3][ARow]);
+			break;
+		}
+		case 6:
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xff8822);
+			static_cast<TStringGrid*>(Sender)->Canvas->Rectangle(Rect);
+
+			if (static_cast<TStringGrid*>(Sender)->Cells[10][ARow] != L"0")
+			{
+				TRect zRect;
+			  zRect.Top    = Rect.Top + 1;
+			  zRect.Bottom = Rect.Bottom - 1;
+			  zRect.Left   = Rect.Left + 1;
+			  zRect.Right  = Rect.Left + StrToInt(static_cast<TStringGrid*>(Sender)->Cells[10][ARow]);
+
+			  static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xdd4411);
+			  static_cast<TStringGrid*>(Sender)->Canvas->FillRect(zRect);
+			}
+
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+			static_cast<TStringGrid*>(Sender)->Canvas->Font->Color  = clBlack;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[6][ARow]);
+			break;
+		}
+		default:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+				static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			}
+		}
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
+}
 #pragma end_region
 
 
@@ -647,7 +790,13 @@ void TFrameProperties::InitTypesTab()
 	sgTypes->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgTypes->RowCount = 15;
 
-	for (int t = 0; t < 6; t++)
+	sgTypes->Cells[1][0] = GLanguageHandler->Text[kFileAttributes].c_str();
+	sgTypes->Cells[2][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgTypes->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgTypes->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgTypes->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+
+	for (int t = 0; t < 11; t++)
 	{
 		sgTypes->ColWidths[t] = TypesWidths[t];
 	}
@@ -723,7 +872,14 @@ void TFrameProperties::InitExtensionsTab()
 	sgExtensions->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgExtensions->RowCount = 2;
 
-	for (int t = 0; t < 8; t++)
+	sgExtensions->Cells[1][0] = GLanguageHandler->Text[kExtension].c_str();
+	sgExtensions->Cells[2][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgExtensions->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgExtensions->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgExtensions->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgExtensions->Cells[11][0] = GLanguageHandler->Text[kSuggestedFileType].c_str();
+
+	for (int t = 0; t < 12; t++)
 	{
 		sgExtensions->ColWidths[t] = ExtensionsWidths[t];
 	}
@@ -739,11 +895,18 @@ void TFrameProperties::BuildExtensionsTable()
 		if (GFileExtensionHandler->Extensions[t]->Count != 0)
 		{
 			sgExtensions->Cells[1][row] = GFileExtensionHandler->Extensions[t]->Name.c_str();
-			sgExtensions->Cells[1][row] = GFileExtensionHandler->Extensions[t]->Count;
-			sgExtensions->Cells[2][row] = GFileExtensionHandler->Extensions[t]->PercentCountString.c_str();
-			sgExtensions->Cells[4][row] = Convert::ConvertToUsefulUnit(GFileExtensionHandler->Extensions[t]->Size).c_str();
-			sgExtensions->Cells[5][row] = GFileExtensionHandler->Extensions[t]->PercentSizeString.c_str();
-			sgExtensions->Cells[7][row] = GFileExtensionHandler->Extensions[t]->Description.c_str();
+			sgExtensions->Cells[2][row] = GFileExtensionHandler->Extensions[t]->Count;
+			sgExtensions->Cells[3][row] = GFileExtensionHandler->Extensions[t]->PercentCountString.c_str();
+
+			sgExtensions->Cells[5][row] = Convert::ConvertToUsefulUnit(GFileExtensionHandler->Extensions[t]->Size).c_str();
+			sgExtensions->Cells[6][row] = GFileExtensionHandler->Extensions[t]->PercentSizeString.c_str();
+
+			sgExtensions->Cells[7][row] = 0;
+			sgExtensions->Cells[8][row] = GFileExtensionHandler->Extensions[t]->Size;
+			sgExtensions->Cells[9][row] = (int)(GFileExtensionHandler->Extensions[t]->PercentCount * 50);
+			sgExtensions->Cells[10][row] = (int)(GFileExtensionHandler->Extensions[t]->PercentSize * 50);
+
+			sgExtensions->Cells[11][row] = GFileExtensionHandler->Extensions[t]->Description.c_str();
 
 			sgExtensions->RowCount++;
 
@@ -767,7 +930,13 @@ void __fastcall TFrameProperties::tsExtensionsResize(TObject *Sender)
 		total += sgExtensions->ColWidths[t];
 	}
 
-	sgExtensions->ColWidths[7] = sgExtensions->Width - (total + __WidthOfScrollbar);
+	sgExtensions->ColWidths[11] = sgExtensions->Width - (total + __WidthOfScrollbar);
+}
+
+
+void __fastcall TFrameProperties::cbExtensionsAllClick(TObject *Sender)
+{
+//
 }
 #pragma end_region
 
@@ -780,10 +949,16 @@ void TFrameProperties::InitFoldersTab()
 
 	sbFoldersMoreDetail->Caption = (GLanguageHandler->Text[kMoreDetail] + kEllipsis).c_str();
 
+	sgFolders->Cells[1][0] = GLanguageHandler->Text[kFolder].c_str();
+	sgFolders->Cells[2][0] = GLanguageHandler->Text[kHashFiles].c_str();
+	sgFolders->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgFolders->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgFolders->Cells[6][0] = GLanguageHandler->Text[kPercent].c_str();
+
 	sgFolders->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgFolders->RowCount = 2;
 
-	for (int t = 0; t < 7; t++)
+	for (int t = 0; t < 11; t++)
 	{
 		sgFolders->ColWidths[t] = FoldersWidths[t];
 	}
@@ -844,6 +1019,12 @@ void __fastcall TFrameProperties::splitFoldersMoved(TObject *Sender)
 
 	sgFolders->ColWidths[1] = sgFolders->Width - (total + __WidthOfScrollbar);
 }
+
+
+void __fastcall TFrameProperties::rbFoldersBySizeClick(TObject *Sender)
+{
+//
+}
 #pragma end_region
 
 
@@ -856,7 +1037,13 @@ void TFrameProperties::InitMagnitudeTab()
 	sgMagnitude->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgMagnitude->RowCount = kMagnitudesCount + 1;
 
-	for (int t = 0; t < 7; t++)
+	sgMagnitude->Cells[1][0] = GLanguageHandler->Text[kFileSize].c_str();
+	sgMagnitude->Cells[2][0] = GLanguageHandler->Text[kHashFiles].c_str();
+	sgMagnitude->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgMagnitude->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgMagnitude->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+
+	for (int t = 0; t < 11; t++)
 	{
 		sgMagnitude->ColWidths[t] = MagnitudesWidths[t];
 	}
@@ -867,11 +1054,18 @@ void TFrameProperties::BuildMagnitudeTable()
 {
 	for (int t = 0; t < kMagnitudesCount; t++)
 	{
-		sgMagnitude->Cells[1][t + 1] = GScanEngine->Data[DataSource].Magnitude[t].Name.c_str();
-		sgMagnitude->Cells[2][t + 1] = GScanEngine->Data[DataSource].Magnitude[t].Count;
-		sgMagnitude->Cells[3][t + 1] = GScanEngine->Data[DataSource].Magnitude[t].PercentCountString.c_str();
-		sgMagnitude->Cells[5][t + 1] = GScanEngine->Data[DataSource].Magnitude[t].Size;
-		sgMagnitude->Cells[6][t + 1] = GScanEngine->Data[DataSource].Magnitude[t].PercentSizeString.c_str();
+		sgMagnitude->Cells[1][t + 1]  = GScanEngine->Data[DataSource].Magnitude[t].Name.c_str();
+		sgMagnitude->Cells[2][t + 1]  = GScanEngine->Data[DataSource].Magnitude[t].Count;
+		sgMagnitude->Cells[3][t + 1]  = GScanEngine->Data[DataSource].Magnitude[t].PercentCountString.c_str();
+
+		sgMagnitude->Cells[5][t + 1]  = Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].Magnitude[t].Size).c_str();
+		sgMagnitude->Cells[6][t + 1]  = GScanEngine->Data[DataSource].Magnitude[t].PercentSizeString.c_str();
+
+		sgMagnitude->Cells[7][t + 1]  = TColor(kMagnitudeColours[t]);
+
+		sgMagnitude->Cells[8][t + 1]  = GScanEngine->Data[DataSource].Magnitude[t].Size;
+		sgMagnitude->Cells[9][t + 1]  = (int)(GScanEngine->Data[DataSource].Magnitude[t].PercentCount * 50);
+		sgMagnitude->Cells[10][t + 1] = (int)(GScanEngine->Data[DataSource].Magnitude[t].PercentSize * 50);
 	}
 }
 
@@ -932,6 +1126,18 @@ void __fastcall TFrameProperties::splitMagnitudeMoved(TObject *Sender)
 
 	sgMagnitude->ColWidths[1] = sgMagnitude->Width - (total + __WidthOfScrollbar);
 }
+
+
+void __fastcall TFrameProperties::rbMagnitudeBySizeClick(TObject *Sender)
+{
+//
+}
+
+
+void __fastcall TFrameProperties::ComboBox3Change(TObject *Sender)
+{
+//
+}
 #pragma end_region
 
 
@@ -942,6 +1148,11 @@ void TFrameProperties::InitDatesTab()
 	rbDatesByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
 	sbDatesCollapseNodes->Caption = GLanguageHandler->Text[kCollapseNodes].c_str();
+
+	cbDatesDateRange->Items->Add(GLanguageHandler->Text[kCreated].c_str());
+	cbDatesDateRange->Items->Add(GLanguageHandler->Text[kAccessed].c_str());
+	cbDatesDateRange->Items->Add(GLanguageHandler->Text[kModified].c_str());
+    cbDatesDateRange->ItemIndex = 0;
 }
 
 
@@ -957,6 +1168,18 @@ void TFrameProperties::DatesUpdateDropDowns()
 
 	cbDatesUsers->ItemIndex = 0;
 }
+
+
+void __fastcall TFrameProperties::cbDatesUsersChange(TObject *Sender)
+{
+	//
+}
+
+
+void __fastcall TFrameProperties::sbDatesCollapseNodesClick(TObject *Sender)
+{
+	tvDates->FullCollapse();
+}
 #pragma end_region
 
 
@@ -971,6 +1194,18 @@ void TFrameProperties::InitHistoryTab()
 	rbHistoryQuantity->Caption = GLanguageHandler->Text[kQuantity].c_str();
 	rbHistorySize->Caption = GLanguageHandler->Text[kSize].c_str();
 	cbHistoryCumulative->Caption = GLanguageHandler->Text[kCumulative].c_str();
+
+	cbHistoryInterval->Items->Add(GLanguageHandler->Text[kDay].c_str());
+	cbHistoryInterval->Items->Add(GLanguageHandler->Text[kWeek].c_str());
+	cbHistoryInterval->Items->Add(GLanguageHandler->Text[kMonth].c_str());
+	cbHistoryInterval->Items->Add(GLanguageHandler->Text[kYear].c_str());
+	cbHistoryInterval->Items->Add(GLanguageHandler->Text[kHour].c_str());
+	cbHistoryInterval->ItemIndex = 0;
+
+	cbHistoryDateSelect->Items->Add(GLanguageHandler->Text[kCreated].c_str());
+	cbHistoryDateSelect->Items->Add(GLanguageHandler->Text[kAccessed].c_str());
+	cbHistoryDateSelect->Items->Add(GLanguageHandler->Text[kModified].c_str());
+	cbHistoryDateSelect->ItemIndex = 0;
 
 	lHistoryUser->Caption = GLanguageHandler->Text[kUsers].c_str();
 
@@ -991,6 +1226,39 @@ void TFrameProperties::UpdateHistoryDropDowns()
 
     cbHistoryUsers->ItemIndex = 0;
 }
+
+
+void __fastcall TFrameProperties::sbHistoryRefreshClick(TObject *Sender)
+{
+	int user_id = -1;
+
+	if (cbHistoryUsers->ItemIndex != 0)
+	{
+		//
+	}
+
+	TabUiHistory::Chart(vtcHistory, SearchStrings,
+						DataSource, user_id,
+						dtpHistoryFrom->DateTime, dtpHistoryTo->DateTime,
+						cbHistoryInterval->ItemIndex, cbHistoryDateSelect->ItemIndex,
+						rbHistoryQuantity->Checked, cbHistoryCumulative->Checked,
+						cbHistoryInterval->Text.c_str());
+}
+
+
+void __fastcall TFrameProperties::rbHistoryQuantityClick(TObject *Sender)
+{
+	if (cbHistoryAutoRefresh->Checked)
+	{
+		sbHistoryRefreshClick(NULL);
+	}
+}
+
+
+void __fastcall TFrameProperties::vtcHistoryClick(TObject *Sender)
+{
+//
+}
 #pragma end_region
 
 
@@ -998,6 +1266,9 @@ void TFrameProperties::UpdateHistoryDropDowns()
 void TFrameProperties::InitTop101Tab()
 {
 	ice = new XIceCream(this, pICTop101);
+
+	tsTop101Size->Caption = GLanguageHandler->Text[kBySize].c_str();
+	tsTop101Date->Caption = GLanguageHandler->Text[kByDate].c_str();
 
 	cbTop101SizeColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
 	cbTop101DateColourCode->Caption = GLanguageHandler->Text[kColourCode].c_str();
@@ -1017,15 +1288,33 @@ void TFrameProperties::InitTop101Tab()
 	sgTop101BigDate->RowCount = 2;
 	sgTop101SmallDate->RowCount = 2;
 
-	for (int t = 0; t < 3; t++)
+	sgTop101Big->Cells[0][0] = GLanguageHandler->Text[kLargestFiles].c_str();
+	sgTop101Big->Cells[1][0] = GLanguageHandler->Text[kSize].c_str();
+	sgTop101Big->Cells[2][0] = GLanguageHandler->Text[kFileOwner].c_str();
+
+	sgTop101Small->Cells[0][0] = GLanguageHandler->Text[kSmallestFiles].c_str();
+	sgTop101Small->Cells[1][0] = GLanguageHandler->Text[kSize].c_str();
+
+	sgTop101BigDate->Cells[0][0] = GLanguageHandler->Text[kNewestFiles].c_str();
+	sgTop101BigDate->Cells[1][0] = GLanguageHandler->Text[kDate].c_str();
+	sgTop101BigDate->Cells[2][0] = GLanguageHandler->Text[kSize].c_str();
+	sgTop101BigDate->Cells[3][0] = GLanguageHandler->Text[kFileOwner].c_str();
+
+	sgTop101SmallDate->Cells[0][0] = GLanguageHandler->Text[kOldestFiles].c_str();
+	sgTop101SmallDate->Cells[1][0] = GLanguageHandler->Text[kDate].c_str();
+	sgTop101SmallDate->Cells[2][0] = GLanguageHandler->Text[kSize].c_str();
+	sgTop101SmallDate->Cells[3][0] = GLanguageHandler->Text[kFileOwner].c_str();
+
+	for (int t = 0; t < 4; t++)
 	{
 		sgTop101Big->ColWidths[t] = Top101SizeBigWidths[t];
 	}
 
 	sgTop101Small->ColWidths[0] = Top101SizeBigWidths[0];
 	sgTop101Small->ColWidths[1] = Top101SizeSmallWidths[1];
+	sgTop101Small->ColWidths[2] = Top101SizeSmallWidths[2];
 
-	for (int t = 0; t < 4; t++)
+	for (int t = 0; t < 5; t++)
 	{
 		sgTop101BigDate->ColWidths[t] = Top101DateBigWidths[t];
 		sgTop101SmallDate->ColWidths[t] = Top101DateSmallWidths[t];
@@ -1052,15 +1341,257 @@ void TFrameProperties::Top101UpdateDropDowns()
 }
 
 
+void __fastcall TFrameProperties::cbTop101SizeUserChange(TObject *Sender)
+{
+	int suser_id = -1;
+
+	if (cbTop101SizeUser->ItemIndex != 0)
+	{
+		suser_id = cbTop101SizeUser->ItemIndex - 1;
+	}
+
+	pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id).c_str();
+}
+
+
+void __fastcall TFrameProperties::cbTop101SizeColourCodeClick(TObject *Sender)
+{
+	sgTop101Big->Invalidate();
+    sgTop101Small->Invalidate();
+}
+
+
+void __fastcall TFrameProperties::cbTop101DateUserChange(TObject *Sender)
+{
+	int duser_id = -1;
+
+	if (cbTop101DateUser->ItemIndex != 0)
+	{
+		duser_id = cbTop101DateUser->ItemIndex - 1;
+	}
+
+	pTop101Date->Caption = TabUiTop101::Date(sgTop101BigDate, sgTop101SmallDate, DataSource, duser_id, cbTop101DateDate->ItemIndex).c_str();
+}
+
+
+void __fastcall TFrameProperties::cbTop101DateColourCodeClick(TObject *Sender)
+{
+	sgTop101BigDate->Invalidate();
+	sgTop101SmallDate->Invalidate();
+}
+
+
 void __fastcall TFrameProperties::splitTop101SizeMoved(TObject *Sender)
 {
-//
+	int total = sgTop101Big->ColWidths[1] + sgTop101Big->ColWidths[2];
+
+	sgTop101Big->ColWidths[0] = sgTop101Big->Width - total - __WidthOfScrollbar;
+
+	sgTop101Small->ColWidths[0] = sgTop101Small->Width - (sgTop101Small->ColWidths[1] + __WidthOfScrollbar);
 }
 
 
 void __fastcall TFrameProperties::splitTop101DatesMoved(TObject *Sender)
 {
-//
+	int total = sgTop101BigDate->ColWidths[1] + sgTop101BigDate->ColWidths[2] + sgTop101BigDate->ColWidths[3];
+
+	sgTop101BigDate->ColWidths[0] = sgTop101BigDate->Width - total - __WidthOfScrollbar;
+
+	total = sgTop101SmallDate->ColWidths[1] + sgTop101SmallDate->ColWidths[2] + sgTop101SmallDate->ColWidths[3];
+
+	sgTop101SmallDate->ColWidths[0] = sgTop101SmallDate->Width - total - __WidthOfScrollbar;
+}
+
+
+void __fastcall TFrameProperties::sgTop101BigDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (cbTop101SizeColourCode->Checked)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(StrToInt(static_cast<TStringGrid*>(Sender)->Cells[3][ARow]));
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+		case 2:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+				static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			}
+			break;
+		case 1:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		}
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
+}
+
+
+void __fastcall TFrameProperties::sgTop101SmallDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (cbTop101SizeColourCode->Checked)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(StrToInt(static_cast<TStringGrid*>(Sender)->Cells[2][ARow]));
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+				static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			}
+			break;
+		case 1:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		}
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
+}
+
+
+void __fastcall TFrameProperties::sgTop101BigDateDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (cbTop101SizeColourCode->Checked)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(StrToInt(static_cast<TStringGrid*>(Sender)->Cells[4][ARow]));
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+		case 1:
+		case 3:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+				static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			}
+			break;
+		case 2:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		}
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
 }
 #pragma end_region
 
@@ -1068,6 +1599,57 @@ void __fastcall TFrameProperties::splitTop101DatesMoved(TObject *Sender)
 #pragma region Tab_NullFiles
 void TFrameProperties::InitNullTab()
 {
+	sgNullFiles->Cells[0][0] = GLanguageHandler->Text[kFilePath].c_str();
+	sgNullFolders->Cells[0][0] = GLanguageHandler->Text[kFilePath].c_str();
+}
+
+
+void __fastcall TFrameProperties::tsNullResize(TObject *Sender)
+{
+	sgNullFiles->ColWidths[0] = sgNullFiles->Width - __WidthOfScrollbar;
+	sgNullFolders->ColWidths[0] = sgNullFolders->Width - __WidthOfScrollbar;
+}
+
+
+void __fastcall TFrameProperties::sgNullFilesDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+        if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
 }
 #pragma end_region
 
@@ -1077,6 +1659,12 @@ void TFrameProperties::InitUsersTab()
 {
 	rbUsersSize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbUsersQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
+
+	sgUsers->Cells[1][0] = GLanguageHandler->Text[kOwner].c_str();
+	sgUsers->Cells[2][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgUsers->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgUsers->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgUsers->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
 
 	cbUsersDisplayMode->Clear();
 	cbUsersDisplayMode->Items->Add(GLanguageHandler->Text[kShowAll].c_str());
@@ -1091,7 +1679,7 @@ void TFrameProperties::InitUsersTab()
 	sgUsers->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgUsers->RowCount = 2;
 
-	for (int t = 0; t < 7; t++)
+	for (int t = 0; t < 11; t++)
 	{
 		sgUsers->ColWidths[t] = UsersWidths[t];
 	}
@@ -1116,12 +1704,33 @@ void __fastcall TFrameProperties::splitUsersMoved(TObject *Sender)
 {
 	int total = sgUsers->ColWidths[0];
 
-	for (int t = 2; t < 7; t++)
+	for (int t = 2; t < 11; t++)
 	{
-		total += sgUsers->ColWidths[t];
+		if (sgUsers->ColWidths[t] != -1)
+		{
+			total += sgUsers->ColWidths[t];
+        }
 	}
 
 	sgUsers->ColWidths[1] = sgUsers->Width - (total + __WidthOfScrollbar);
+}
+
+
+void __fastcall TFrameProperties::rbUsersSizeClick(TObject *Sender)
+{
+//
+}
+
+
+void __fastcall TFrameProperties::SpeedButton21Click(TObject *Sender)
+{
+//
+}
+
+
+void __fastcall TFrameProperties::cbUsersDisplayModeChange(TObject *Sender)
+{
+//
 }
 #pragma end_region
 
@@ -1137,6 +1746,7 @@ void TFrameProperties::InitTempTab()
 
 	sgTemporary->ColWidths[0] = TempWidths[0];
 	sgTemporary->ColWidths[1] = TempWidths[1];
+	sgTemporary->ColWidths[2] = -1;
 }
 
 
@@ -1145,6 +1755,19 @@ void __fastcall TFrameProperties::splitTemporaryMoved(TObject *Sender)
 	sgTemporary->ColWidths[0] = TempWidths[1];
 
 	sgTemporary->ColWidths[1] = sgTemporary->Width - (TempWidths[1] + __WidthOfScrollbar);
+}
+
+
+void __fastcall TFrameProperties::rbTempBySizeClick(TObject *Sender)
+{
+//
+}
+
+
+void __fastcall TFrameProperties::sgTemporaryDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+//
 }
 #pragma end_region
 
@@ -1161,7 +1784,13 @@ void TFrameProperties::InitLengthTab()
 	sgLengths->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgLengths->RowCount = 2;
 
-	for (int t = 0; t < 7; t++)
+	sgLengths->Cells[1][0] = GLanguageHandler->Text[kFileNameLength].c_str();
+	sgLengths->Cells[2][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgLengths->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
+	sgLengths->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
+	sgLengths->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+
+	for (int t = 0; t < 11; t++)
 	{
 		sgLengths->ColWidths[t] = LengthsWidths[t];
 	}
@@ -1170,7 +1799,7 @@ void TFrameProperties::InitLengthTab()
 
 void __fastcall TFrameProperties::SpeedButton15Click(TObject *Sender)
 {
-    int tag = ((TSpeedButton*)Sender)->Tag;
+	int tag = ((TSpeedButton*)Sender)->Tag;
 
 	switch (GSettingsHandler->TabDisplay[tag].Option[0].Value)
 	{
@@ -1194,10 +1823,19 @@ void __fastcall TFrameProperties::splitLengthsMoved(TObject *Sender)
 
 	for (int t = 2; t < 7; t++)
 	{
-		total += sgLengths->ColWidths[t];
+		if (sgLengths->ColWidths[t] != -1)
+		{
+			total += sgLengths->ColWidths[t];
+		}
 	}
 
 	sgLengths->ColWidths[1] = sgLengths->Width - (total + __WidthOfScrollbar);
+}
+
+
+void __fastcall TFrameProperties::rbLengthSizeClick(TObject *Sender)
+{
+//
 }
 #pragma end_region
 
@@ -1284,7 +1922,7 @@ void __fastcall TFrameProperties::miShowOtherFilesClick(TObject *Sender)
 	{
 		if (OnNewSearch)
 		{
-			OnNewSearch(L"." + search);
+			OnNewSearch(L"." + search, DataSource);
 		}
 	}
 }
@@ -1380,7 +2018,7 @@ void __fastcall TFrameProperties::miScanFromDirListClick(TObject *Sender)
 
 		if (OnScanWithNewPath)
 		{
-			OnScanWithNewPath(false, path);
+			OnScanWithNewPath(path, DataSource, false);
 		}
 	}
 }
@@ -2511,4 +3149,3 @@ void __fastcall TFrameProperties::miDeleteAllClick(TObject *Sender)
 		}
 	}
 }
-

@@ -93,9 +93,5 @@ object FrameMap: TFrameMap
     Height = 614
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 464
-    ExplicitTop = 264
-    ExplicitWidth = 185
-    ExplicitHeight = 41
   end
 end

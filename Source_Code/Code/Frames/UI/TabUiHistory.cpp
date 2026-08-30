@@ -99,17 +99,21 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 								 int interval, int date_select, bool quantity, bool cumulative,
 								 std::wstring interval_caption)
 {
+	constexpr static int kDatePropertyCreated = 0;
+	constexpr static int kDatePropertyAccessed = 1;
+	constexpr static int kDatePropertyModified = 2;
+
 	if (interval <= kIntervalYear)
 	{
 		switch (date_select)
 		{
-		case kCreatedDate:
+		case kDatePropertyCreated:
 			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 			break;
-		case kAccessedDate:
+		case kDatePropertyAccessed:
 			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 			break;
-		case kModifiedDate:
+		case kDatePropertyModified:
 			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 			break;
 		}
@@ -156,21 +160,21 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 	// ===========================================================================
 	switch (date_select)
 	{
-	case kCreatedDate:
+	case kDatePropertyCreated:
 		chart->Title->Text->Strings[0] = (GLanguageHandler->Text[kFileCreationHistory] + L" " +
 										 GLanguageHandler->Text[kFrom] + L" " +
 										 DateUtility::DateToString(date_from, GSettingsHandler->General.FormatDate) + L" " +
 										 GLanguageHandler->Text[kTo] + L" " +
 										 DateUtility::DateToString(date_to, GSettingsHandler->General.FormatDate)).c_str();
 		break;
-	case kAccessedDate:
+	case kDatePropertyAccessed:
 		chart->Title->Text->Strings[0] = (GLanguageHandler->Text[kFileAccessHistory] + L" " +
 										 GLanguageHandler->Text[kFrom] + L" " +
 										 DateUtility::DateToString(date_from, GSettingsHandler->General.FormatDate) + L" " +
 										 GLanguageHandler->Text[kTo] + L" " +
 										 DateUtility::DateToString(date_to, GSettingsHandler->General.FormatDate)).c_str();
 		break;
-	case kModifiedDate:
+	case kDatePropertyModified:
 		chart->Title->Text->Strings[0] = (GLanguageHandler->Text[kFileModificationHistory] + L" " +
 										  GLanguageHandler->Text[kFrom] + L" " +
 										  DateUtility::DateToString(date_from, GSettingsHandler->General.FormatDate) + L" " +
@@ -223,10 +227,10 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 			case kCreatedDate:
 				file_date = xfo->DateCreated;
 				break;
-			case kAccessedDate:
+			case kDatePropertyAccessed:
 				file_date = xfo->DateAccessed;
 				break;
-			case kModifiedDate:
+			case kDatePropertyModified:
 				file_date = xfo->DateModified;
 				break;
 			}
@@ -442,15 +446,15 @@ std::wstring TabUiHistory::Chart(TChart* chart, std::vector<std::wstring> &searc
 	{
 		switch (date_select)
 		{
-		case kCreatedDate:
-			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
+		case kDatePropertyCreated:
+//			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 			break;
-		case kAccessedDate:
-			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
+		case kDatePropertyAccessed:
+//			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 			break;
-		case kModifiedDate:
-			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
-            break;
+		case kDatePropertyModified:
+//			GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
+			break;
 		}
 	}
 }

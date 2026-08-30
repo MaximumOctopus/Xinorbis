@@ -92,3 +92,43 @@ void TabUiFolders::Chart(TChart* chart, int DataSource, double filter_value, int
 		}
 	}
 }
+
+
+void TabUiFolders::Table(TStringGrid *grid, int DataSource)
+{
+	grid->RowCount = 2;
+
+	if (GScanEngine->Data[DataSource].RootFolders.size() == 0)
+	{
+		grid->Cells[1][1] = GLanguageHandler->Text[kNoneFound].c_str();
+		return;
+	}
+
+	int Row = 1;
+
+	grid->BeginUpdate();
+
+	grid->RowCount = GScanEngine->Data[DataSource].RootFolders.size() + 1;
+
+	for (RootFolder *folder : GScanEngine->Data[DataSource].RootFolders)
+	{
+		grid->Cells[1][Row] = folder->Name.c_str();
+		grid->Cells[2][Row] = folder->Count;
+		grid->Cells[3][Row] = folder->PercentCountString.c_str();
+
+		grid->Cells[5][Row] = Convert::ConvertToUsefulUnit(folder->Size).c_str();
+		grid->Cells[6][Row] = folder->PercentSizeString.c_str();
+
+		grid->Cells[7][Row] = TColor(kSpectrumColours[(Row - 1) % kSpectrumMod]);
+		grid->Cells[8][Row] = folder->Size;
+
+		grid->Cells[9][Row] = (int)(folder->PercentCount * 50);
+		grid->Cells[10][Row] = (int)(folder->PercentSize * 50);
+
+		Row++;
+	}
+
+//	DoTableSort(oTable, oTable.SortSettings.Column, UsersSortColumns[oTable.SortSettings.Column]);
+
+	grid->EndUpdate();
+}

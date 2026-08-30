@@ -14,25 +14,31 @@
 #include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "ScanEngine.h"
+#include "SettingsHandler.h"
 #include "TabUiTop101.h"
 
-extern LanguageHandler* GLanguageHandler;
-extern ScanEngine* GScanEngine;
+extern LanguageHandler *GLanguageHandler;
+extern ScanEngine *GScanEngine;
+extern SettingsHandler *GSettingsHandler;
 
 
 std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int DataSource, int user_id, int date_type)
 {
+	constexpr static int kDatePropertyCreated = 0;
+	constexpr static int kDatePropertyAccessed = 1;
+	constexpr static int kDatePropertyModified = 2;
+
 	if (GScanEngine->Data[DataSource].FileCount == 0) return L"n/a";
 
 	switch (date_type)
 	{
-	case kCreatedDate:
+	case kDatePropertyCreated:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateCreated);
 		break;
-	case kAccessedDate:
+	case kDatePropertyAccessed:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateAccessed);
 		break;
-	case kModifiedDate:
+	case kDatePropertyModified:
 		GScanEngine->Data[DataSource].SortByProperty(SortMode::kDateModified);
 		break;
 	}
@@ -71,21 +77,20 @@ std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int
 
 				switch (date_type)
 				{
-				case kCreatedDate:
+				case kDatePropertyCreated:
 					gridbig->Cells[1][gridbig->RowCount - 1] = Convert::IntDateToString(fo->DateCreated).c_str();
 					break;
-				case kAccessedDate:
+				case kDatePropertyAccessed:
 					gridbig->Cells[1][gridbig->RowCount - 1] = Convert::IntDateToString(fo->DateAccessed).c_str();
 					break;
-				case kModifiedDate:
+				case kDatePropertyModified:
 					gridbig->Cells[1][gridbig->RowCount - 1] = Convert::IntDateToString(fo->DateModified).c_str();
 					break;
 				}
 
 				gridbig->Cells[2][gridbig->RowCount - 1] = Convert::ConvertToUsefulUnit(fo->Size).c_str();
 				gridbig->Cells[3][gridbig->RowCount - 1] = GScanEngine->Data[DataSource].Users[fo->Owner]->Name.c_str();
-//				gridbig->Cells[CTopBigFileName, ][gridbig->RowCount - 1] = IntToStr(FileExtensionsObject.GetExtensionCategoryIDFromName(GScanDetails[aDataIndex].Files.Items[t].FileName));
-//				gridbig->Cells[CTopBigFileSizeAB][gridbig->RowCount - 1] = IntToStr(GScanDetails[aDataIndex].Files.Items[t].FileSize);
+				gridbig->Cells[4][gridbig->RowCount - 1] = GSettingsHandler->FileCategoryColors[fo->Category];
 
 				gridbig->RowCount++;
 
@@ -114,21 +119,20 @@ std::wstring TabUiTop101::Date(TStringGrid* gridbig, TStringGrid* gridsmall, int
 
 			switch (date_type)
 			{
-			case kCreatedDate:
+			case kDatePropertyCreated:
 				gridsmall->Cells[1][gridsmall->RowCount - 1] = Convert::IntDateToString(fo->DateCreated).c_str();
 				break;
-			case kAccessedDate:
+			case kDatePropertyAccessed:
 				gridsmall->Cells[1][gridsmall->RowCount - 1] = Convert::IntDateToString(fo->DateAccessed).c_str();
 				break;
-			case kModifiedDate:
+			case kDatePropertyModified:
 				gridsmall->Cells[1][gridsmall->RowCount - 1] = Convert::IntDateToString(fo->DateModified).c_str();
 				break;
 			}
 
 			gridsmall->Cells[2][gridsmall->RowCount - 1] = Convert::ConvertToUsefulUnit(fo->Size).c_str();
 			gridsmall->Cells[3][gridsmall->RowCount - 1] = GScanEngine->Data[DataSource].Users[fo->Owner]->Name.c_str();
-//			gridsmall->Cells[CTopBigFileName, ][gridsmall->RowCount - 1] = IntToStr(FileExtensionsObject.GetExtensionCategoryIDFromName(GScanDetails[aDataIndex].Files.Items[t].FileName));
-//			gridsmall->Cells[CTopBigFileSizeAB][gridsmall->RowCount - 1] = IntToStr(GScanDetails[aDataIndex].Files.Items[t].FileSize);
+			gridsmall->Cells[4][gridsmall->RowCount - 1] = GSettingsHandler->FileCategoryColors[fo->Category];
 
 			gridsmall->RowCount++;
 
@@ -199,8 +203,7 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, XIc
 				gridbig->Cells[0][gridbig->RowCount - 1] = (GScanEngine->Data[DataSource].Folders[fo->FilePathIndex] + fo->Name).c_str();
 				gridbig->Cells[1][gridbig->RowCount - 1] = Convert::ConvertToUsefulUnit(fo->Size).c_str();
 				gridbig->Cells[2][gridbig->RowCount - 1] = GScanEngine->Data[DataSource].Users[fo->Owner]->Name.c_str();
-//				gridbig->Cells[3][gridbig.RowCount - 1] := IntToStr(GScanDetails[aDataIndex].Files.Items[t].FileSize);
-//				gridbig->Cells[4][gridbig.RowCount - 1] := IntToStr(FileExtensionsObject.GetExtensionCategoryIDFromName(GScanDetails[aDataIndex].Files.Items[t].FileName));
+				gridbig->Cells[3][gridbig->RowCount - 1] = GSettingsHandler->FileCategoryColors[fo->Category];
 
 				gridbig->RowCount++;
 
@@ -245,8 +248,7 @@ std::wstring TabUiTop101::Size(TStringGrid* gridbig, TStringGrid* gridsmall, XIc
 
 			gridsmall->Cells[0][gridsmall->RowCount - 1] = (GScanEngine->Data[DataSource].Folders[fo->FilePathIndex] + fo->Name).c_str();
 			gridsmall->Cells[1][gridsmall->RowCount - 1] = Convert::ConvertToUsefulUnit(fo->Size).c_str();
-//			oTableSmall.Cells[2, oTableSmall.RowCount - 1] := IntToStr(GScanEngine[aDataIndex].Files.Items[t].FileSize);
-//			oTableSmall.Cells[3, oTableSmall.RowCount - 1] := IntToStr(FileExtensionsObject.GetExtensionCategoryIDFromName(GScanEngine[aDataIndex].Files.Items[t].FileName));
+			gridsmall->Cells[2][gridsmall->RowCount - 1] = GSettingsHandler->FileCategoryColors[fo->Category];
 
 			gridsmall->RowCount++;
 

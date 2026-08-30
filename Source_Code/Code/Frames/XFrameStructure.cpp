@@ -319,6 +319,33 @@ void __fastcall TFrameStructure::sgLeftSideDrawCell(TObject *Sender, System::Lon
 {
 	if (ARow > 0)
 	{
+		sgLeftSide->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			sgLeftSide->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (sbNMColourCode->Tag == 1)
+			{
+				sgLeftSide->Canvas->Brush->Color = TColor(0xff4400);
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					sgLeftSide->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					sgLeftSide->Canvas->Brush->Color = TColor(kGridColourOn);
+                }
+			}
+		}
+
+		sgLeftSide->Canvas->FillRect(Rect);
+
 		switch (ACol)
 		{
 		case ksgnIsFolder:
@@ -344,6 +371,9 @@ void __fastcall TFrameStructure::sgLeftSideDrawCell(TObject *Sender, System::Lon
 			}
 			break;
 		}
+	}
+	else
+	{
 	}
 }
 
@@ -616,6 +646,31 @@ void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::Lo
 {
 	if (ARow > 0)
 	{
+		sgRightSide->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			sgRightSide->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (sbNSBColourCode->Tag == 1)
+			{
+				sgRightSide->Canvas->Brush->Color = TColor(0xffff00);
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					sgRightSide->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					sgRightSide->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
 		switch (ACol)
 		{
 		case 0:
@@ -643,6 +698,9 @@ void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::Lo
             break;
 		}
 	}
+	else
+	{
+    }
 }
 
 
@@ -931,24 +989,23 @@ void __fastcall TFrameStructure::puSearchPopup(TObject *Sender)
 	bool status = false;
 	bool folder = false;
 
-   /* TO DO 	if (!GSettingsHandler->ProcessWindowsVisible)
+// TO DO 	if (!GSettingsHandler->ProcessWindowsVisible)
+//	{
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
+
+	if (sg->Selection.Top > 0)
 	{
-		TMenuItem* mi = (TMenuItem*)Sender;
-		TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
-		TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
+		std::wstring file_name = sg->Cells[1][sg->Selection.Top].c_str();
 
-		if (sg->Selection.Top > 0)
+		if (!file_name.empty())
 		{
-			std::wstring file_name = sg->Cells[1][sg->Selection.Top].c_str();
+			status = true;
 
-			if (!file_name.empty())
-			{
-				status = true;
-
-				folder = sg->Cells[ksgnFolderFile][sg->Selection.Top] == L"1";
-			}
+			folder = sg->Cells[ksgnFolderFile][sg->Selection.Top] == L"1";
 		}
-	}       */
+	}
 
 	miSearchOpen->Enabled       = status;
 	miSearchOpenCustom->Enabled = status;
@@ -1294,113 +1351,4 @@ void __fastcall TFrameStructure::miSaveAsClick(TObject *Sender)
 #pragma end_region
 
 
-/*      to do
 
-void TFrameNavigation.sgNavigationCanSort(Sender: TObject; ACol: Integer;
-  var DoSort: Boolean);
-{
-  switch ( Acol of
-    sgnIsFolder   : {
-                      DoSort = False;
-
-					  with TAdvStringGrid(Sender) do {
-                        if SortSettings.Direction = sdDescending then
-                          SortSettings.Direction = sdAscending
-                        else
-                          SortSettings.Direction = sdDescending;
-
-                        Sortsettings.Column = sgnOrderIndex;
-                        QSort;
-
-                        SortSettings.Column = ACol;
-                      }
-                    }
-    sgnStringSize,
-    sgnGraphSize,
-    sgnStringPCent : {
-                      DoSort = False;
-
-					  with TAdvStringGrid(Sender) do {
-                        if SortSettings.Direction = sdDescending then
-                          SortSettings.Direction = sdAscending
-                        else
-                          SortSettings.Direction = sdDescending;
-
-                        Sortsettings.Column = sgnIntegerSize;
-                        QSort;
-
-                        SortSettings.Column = ACol;
-                      }
-					}
-    sgnSizeOnDisk : {
-					  DoSort = False;
-
-                      with TAdvStringGrid(Sender) do {
-                        if SortSettings.Direction = sdDescending then
-                          SortSettings.Direction = sdAscending
-                        else
-                          SortSettings.Direction = sdDescending;
-
-                        Sortsettings.Column = sgnIntegetSoD;
-                        QSort;
-
-                        SortSettings.Column = ACol;
-                      }
-                    }
-
-  }
-}
-
-
-
-
-void TFrameNavigation.sgNavigationGetAlignment(Sender: TObject; ARow,
-  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
-{
-  if (ACol = 2) or (ACol = 4) or (ACol = 10) then
-    HAlign = taRightJustify
-  else
-    HAlign = taLeftJustify;
-}
-
-
-void TFrameNavigation.sgNavigationGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if sbNMColourCode->Tag = 1 then {
-    if ARow > 0 then
-	  ABrush.Color = GSettingsHandler->FileCategoryColors[std::to_wstring(TAdvStringGrid(Sender)->Cells[sgnCategoryIndex, ARow])];
-  end
-  else {
-    if gdSelected in AState then
-      ABrush.Color = CGridColourSelected
-    else {
-      if Odd(ARow) then
-        ABrush.Color = CGridColourOn
-      else
-        ABrush.Color = CGridColourOff;
-    }
-  }
-}
-
-
-void TFrameNavigation.sgNavigationSideGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if sbNSBColourCode->Tag = 1 then {
-	if ARow > 0 then
-	  ABrush.Color = GSettingsHandler->FileCategoryColors[std::to_wstring(TAdvStringGrid(Sender)->Cells[sgnCategoryIndex, ARow])];
-  end
-  else {
-    if gdSelected in AState then
-	  ABrush.Color = CGridColourSelected
-	else {
-	  if Odd(ARow) then
-		ABrush.Color = CGridColourOn
-	  else
-		ABrush.Color = CGridColourOff;
-	}
-  }
-}
-
- 1516*/

@@ -10,22 +10,26 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Samples.Gauges.hpp>
 
 #include "XIceCream.h"
+
+#include "DriveDetails.h"
+
 //---------------------------------------------------------------------------
 class TFrameSummary : public TFrame
 {
 __published:	// IDE-managed Components
 	TPageControl *PageControl1;
 	TTabSheet *tsSummary;
-	TTabSheet *TabSheet2;
+	TTabSheet *tsDrive;
 	TSpeedButton *SpeedButton1;
 	TLabel *lSNoF;
 	TLabel *lSNoD;
 	TLabel *lSNoFX;
 	TLabel *lSNoDX;
 	TLabel *lSSoF;
-	TLabel *lSoFX;
+	TLabel *lSSoFX;
 	TLabel *lSSoFoD;
 	TLabel *lSSoFODX;
 	TLabel *lSAFF;
@@ -52,11 +56,36 @@ __published:	// IDE-managed Components
 	TLabel *lSULSSoFX;
 	TPanel *pICQuantity;
 	TPanel *pICSize;
+	TGauge *gDFolder;
+	TGauge *gDUsedSpace;
+	TLabel *lSVolName;
+	TLabel *lSVolNameValue;
+	TLabel *lSVolMaxValue;
+	TLabel *lSVolMax;
+	TLabel *lSSerial;
+	TLabel *lSSerialValue;
+	TLabel *lSFileSystem;
+	TLabel *lSFileSystemValue;
+	TLabel *lSVolFree;
+	TLabel *lSVolFreeValue;
+	TLabel *lDFolder;
+	TLabel *lDUsedSpace;
+	TGauge *g1;
+	TGauge *g2;
+	TGauge *Gauge1;
 	void __fastcall FrameResize(TObject *Sender);
+	void __fastcall lSNoFXClick(TObject *Sender);
+	void __fastcall lSAFSXClick(TObject *Sender);
+	void __fastcall lSEFXClick(TObject *Sender);
+	void __fastcall lSNoDXClick(TObject *Sender);
+	void __fastcall lSLFXClick(TObject *Sender);
+	void __fastcall lSULSSoFXClick(TObject *Sender);
 private:
 
 	XIceCream *icQuantity = nullptr;
 	XIceCream *icSize = nullptr;
+
+    DriveDetails dd;
 
 	void Init();
 	void BuildPreamble();
@@ -64,6 +93,8 @@ private:
 
 	void BuildIceCream();
 	void BuildGauges();
+
+	void BuildDriveSection();
 
 public:
 	__fastcall TFrameSummary(TComponent* Owner);
@@ -75,6 +106,8 @@ public:
 	void Update();
 
 	void SetProcessTime(const std::wstring);
+
+	std::function<void(int)> OnDataSelected;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSummary *FrameSummary;

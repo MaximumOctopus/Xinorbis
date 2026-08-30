@@ -79,7 +79,7 @@ void TabUiUsers::Table(TStringGrid* grid, int DataSource, int display_mode)
 
 	int count = 0;
 	unsigned __int64 size = 0;
-	int row = 1;
+	int Row = 1;
 
 	grid->BeginUpdate();
 
@@ -92,41 +92,28 @@ void TabUiUsers::Table(TStringGrid* grid, int DataSource, int display_mode)
 		case kDisplayModeShowAll:
 			count = user->Count;
 			size  = user->Size;
+
+			grid->Cells[1][Row] = user->Name.c_str();
+			grid->Cells[2][Row] = user->Count;
+			grid->Cells[3][Row] = user->PercentCountString.c_str();
+
+			grid->Cells[5][Row] = Convert::ConvertToUsefulUnit(user->Size).c_str();
+			grid->Cells[6][Row] = user->PercentSizeString.c_str();
+
+			grid->Cells[7][Row] = TColor(kSpectrumColours[(Row - 1) % kSpectrumMod]);
+			grid->Cells[8][Row] = user->Size;
+
+			grid->Cells[9][Row] = (int)(user->PercentCount * 50);
+			grid->Cells[10][Row] = (int)(user->PercentSize * 50);
 			break;
 
 		default:
 			count = user->CategoryDataQty[display_mode];
 			size  = user->CategoryDataSize[display_mode];
+			// to do
 		}
 
-		grid->Cells[kUsersTableName][row] = user->Name.c_str();
-		grid->Cells[kUsersTableCount][row] = count;
-
-		if (GScanEngine->Data[DataSource].FileCount != 0)
-		{
-			grid->Cells[kUsersTableCountAs][row] = Convert::DoubleToPercent(count / GScanEngine->Data[DataSource].FileCount).c_str();
-			grid->Cells[kUsersTableGraphCount][row] = std::round((count / GScanEngine->Data[DataSource].FileCount) * 50);
-		}
-		else
-		{
-			grid->Cells[kUsersTableCountAs][row] = L"100%";
-			grid->Cells[kUsersTableGraphCount][row] = L"50";
-		}
-
-		grid->Cells[kUsersTableSize][row] = Convert::ConvertToUsefulUnit(size).c_str();
-
-		if (GScanEngine->Data[DataSource].TotalSize != 0)
-		{
-			grid->Cells[kUsersTableSizeAs][row] = Convert::DoubleToPercent(size / GScanEngine->Data[DataSource].TotalSize).c_str();
-			grid->Cells[kUsersTableGraphSize][row] = std::round((size / GScanEngine->Data[DataSource].TotalSize) * 50);
-		}
-		else
-		{
-			grid->Cells[kUsersTableSizeAs][row] = L"100%";
-			grid->Cells[kUsersTableGraphSize][row] = L"50";
-		}
-
-		grid->Cells[kUsersTableSortSize][row] = size;
+		Row++;
 	}
 
 //	DoTableSort(oTable, oTable.SortSettings.Column, UsersSortColumns[oTable.SortSettings.Column]);

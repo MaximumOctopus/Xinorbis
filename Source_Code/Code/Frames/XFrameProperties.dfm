@@ -2,7 +2,7 @@ object FrameProperties: TFrameProperties
   Left = 0
   Top = 0
   Width = 1514
-  Height = 700
+  Height = 726
   TabOrder = 0
   object SpeedButton7: TSpeedButton
     Left = 24
@@ -14,8 +14,8 @@ object FrameProperties: TFrameProperties
     Left = 0
     Top = 0
     Width = 1514
-    Height = 700
-    ActivePage = tsTop101
+    Height = 726
+    ActivePage = tsHistory
     Align = alClient
     Images = ilTabs
     TabOrder = 0
@@ -24,10 +24,11 @@ object FrameProperties: TFrameProperties
       object splitCategories: TSplitter
         Left = 497
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitCategoriesMoved
         ExplicitLeft = 503
         ExplicitTop = 33
+        ExplicitHeight = 643
       end
       object TPanel
         Left = 0
@@ -38,7 +39,6 @@ object FrameProperties: TFrameProperties
         BevelOuter = bvNone
         TabOrder = 0
         object sbCategoriesPie: TSpeedButton
-          Tag = 1
           Left = 0
           Top = 0
           Width = 23
@@ -49,7 +49,7 @@ object FrameProperties: TFrameProperties
           OnClick = sbCategoriesPieClick
         end
         object sbCategoriesBar: TSpeedButton
-          Tag = 1
+          Tag = 10
           Left = 29
           Top = 0
           Width = 23
@@ -68,31 +68,47 @@ object FrameProperties: TFrameProperties
         end
         object rbCategoriesBySize: TRadioButton
           Left = 96
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
           Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbCategoriesBySizeClick
         end
         object rbCategoriesByQuantity: TRadioButton
           Left = 215
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
           Caption = '.'
           TabOrder = 1
+          OnClick = rbCategoriesBySizeClick
         end
       end
       object sgCategories: TStringGrid
         Left = 0
         Top = 27
         Width = 497
-        Height = 643
+        Height = 669
         Align = alLeft
         ColCount = 11
+        DefaultDrawing = False
+        DoubleBuffered = True
         FixedCols = 0
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+        ParentDoubleBuffered = False
+        ParentFont = False
         PopupMenu = puTable
+        ScrollBars = ssVertical
         TabOrder = 1
+        OnDrawCell = sgCategoriesDrawCell
         ColWidths = (
           64
           64
@@ -110,7 +126,7 @@ object FrameProperties: TFrameProperties
         Left = 500
         Top = 27
         Width = 1006
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
         View3DOptions.Elevation = 315
@@ -153,7 +169,7 @@ object FrameProperties: TFrameProperties
       object splitTypes: TSplitter
         Left = 265
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitTypesMoved
         ExplicitLeft = 232
         ExplicitTop = 30
@@ -167,8 +183,8 @@ object FrameProperties: TFrameProperties
         Align = alTop
         Caption = 'Panel2'
         TabOrder = 0
-        object SpeedButton18: TSpeedButton
-          Tag = 2
+        object sbTypesPie: TSpeedButton
+          Tag = 1
           Left = 1
           Top = 0
           Width = 23
@@ -178,8 +194,8 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton19: TSpeedButton
-          Tag = 2
+        object sbTypesBar: TSpeedButton
+          Tag = 1
           Left = 30
           Top = 0
           Width = 23
@@ -198,16 +214,18 @@ object FrameProperties: TFrameProperties
         end
         object rbTypesBySize: TRadioButton
           Left = 97
-          Top = 5
+          Top = 4
           Width = 113
           Height = 17
           Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
           OnClick = rbTypesBySizeClick
         end
         object rbTypesByQuantity: TRadioButton
           Left = 216
-          Top = 5
+          Top = 4
           Width = 113
           Height = 17
           Caption = '.'
@@ -219,7 +237,7 @@ object FrameProperties: TFrameProperties
         Left = 268
         Top = 27
         Width = 1238
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
         View3DOptions.Elevation = 315
@@ -260,7 +278,7 @@ object FrameProperties: TFrameProperties
         Left = 0
         Top = 27
         Width = 265
-        Height = 643
+        Height = 669
         Align = alLeft
         Caption = 'Panel14'
         TabOrder = 2
@@ -288,11 +306,13 @@ object FrameProperties: TFrameProperties
           Left = 1
           Top = 404
           Width = 263
-          Height = 238
+          Height = 264
           Align = alClient
-          ColCount = 6
+          ColCount = 11
           FixedCols = 0
+          ScrollBars = ssNone
           TabOrder = 1
+          OnDrawCell = sgCategoriesDrawCell
         end
       end
     end
@@ -305,49 +325,57 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
         object cbExtensionsAll: TCheckBox
           Left = 0
-          Top = 2
+          Top = 5
           Width = 97
           Height = 17
           TabOrder = 0
+          OnClick = cbExtensionsAllClick
         end
         object cbExtensionsOther: TCheckBox
           Left = 128
-          Top = 2
+          Top = 5
           Width = 97
           Height = 17
           TabOrder = 1
+          OnClick = cbExtensionsAllClick
         end
         object cbExtensionsCustom: TCheckBox
           Left = 248
-          Top = 4
+          Top = 5
           Width = 97
           Height = 17
           TabOrder = 2
+          OnClick = cbExtensionsAllClick
         end
         object cbExtensionsColourCode: TCheckBox
           Left = 368
-          Top = 2
+          Top = 5
           Width = 97
           Height = 17
           TabOrder = 3
+          OnClick = cbExtensionsAllClick
         end
       end
       object sgExtensions: TStringGrid
         Left = 0
         Top = 27
         Width = 1506
-        Height = 643
+        Height = 669
         Align = alClient
-        ColCount = 8
+        ColCount = 12
         FixedCols = 0
         RowCount = 2
         PopupMenu = puExtensionsMain
         TabOrder = 1
+        OnDrawCell = sgCategoriesDrawCell
         ColWidths = (
+          64
+          64
+          64
+          64
           64
           64
           64
@@ -363,7 +391,7 @@ object FrameProperties: TFrameProperties
       object splitFolders: TSplitter
         Left = 497
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitFoldersMoved
         ExplicitLeft = 505
         ExplicitTop = 24
@@ -375,12 +403,11 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
-        object SpeedButton10: TSpeedButton
+        object sbFoldersPie: TSpeedButton
           Tag = 3
           Left = 0
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -388,10 +415,10 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton11: TSpeedButton
+        object sbFoldersBar: TSpeedButton
           Tag = 3
           Left = 29
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -400,7 +427,7 @@ object FrameProperties: TFrameProperties
         end
         object sbFoldersConfig: TSpeedButton
           Left = 58
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           NumGlyphs = 2
@@ -420,7 +447,10 @@ object FrameProperties: TFrameProperties
           Width = 113
           Height = 17
           Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbFoldersBySizeClick
         end
         object rbFoldersByQuantity: TRadioButton
           Left = 215
@@ -429,19 +459,26 @@ object FrameProperties: TFrameProperties
           Height = 17
           Caption = '.'
           TabOrder = 1
+          OnClick = rbFoldersBySizeClick
         end
       end
       object sgFolders: TStringGrid
         Left = 0
         Top = 27
         Width = 497
-        Height = 643
+        Height = 669
         Align = alLeft
-        ColCount = 7
+        ColCount = 11
+        DefaultDrawing = False
         FixedCols = 0
         TabOrder = 1
         OnDblClick = sgFoldersDblClick
+        OnDrawCell = sgCategoriesDrawCell
         ColWidths = (
+          64
+          64
+          64
+          64
           64
           64
           64
@@ -454,14 +491,42 @@ object FrameProperties: TFrameProperties
         Left = 500
         Top = 27
         Width = 1006
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
+        View3DOptions.Elevation = 315
+        View3DOptions.Orthogonal = False
+        View3DOptions.Perspective = 0
+        View3DOptions.Rotation = 360
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 2
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
+        object Series4: TPieSeries
+          HoverElement = []
+          Marks.Tail.Margin = 2
+          XValues.Order = loAscending
+          YValues.Name = 'Pie'
+          YValues.Order = loNone
+          Frame.InnerBrush.BackColor = clRed
+          Frame.InnerBrush.Gradient.EndColor = clGray
+          Frame.InnerBrush.Gradient.MidColor = clWhite
+          Frame.InnerBrush.Gradient.StartColor = 4210752
+          Frame.InnerBrush.Gradient.Visible = True
+          Frame.MiddleBrush.BackColor = clYellow
+          Frame.MiddleBrush.Gradient.EndColor = 8553090
+          Frame.MiddleBrush.Gradient.MidColor = clWhite
+          Frame.MiddleBrush.Gradient.StartColor = clGray
+          Frame.MiddleBrush.Gradient.Visible = True
+          Frame.OuterBrush.BackColor = clGreen
+          Frame.OuterBrush.Gradient.EndColor = 4210752
+          Frame.OuterBrush.Gradient.MidColor = clWhite
+          Frame.OuterBrush.Gradient.StartColor = clSilver
+          Frame.OuterBrush.Gradient.Visible = True
+          Frame.Width = 4
+          OtherSlice.Legend.Visible = False
+        end
       end
     end
     object tsMagnitude: TTabSheet
@@ -469,7 +534,7 @@ object FrameProperties: TFrameProperties
       object splitMagnitude: TSplitter
         Left = 497
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitMagnitudeMoved
         ExplicitLeft = 505
         ExplicitTop = 24
@@ -481,12 +546,11 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
-        object SpeedButton16: TSpeedButton
+        object sbMagnitudePie: TSpeedButton
           Tag = 4
           Left = 0
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -494,10 +558,10 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton17: TSpeedButton
+        object sbMagnitudeBar: TSpeedButton
           Tag = 4
           Left = 29
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -509,16 +573,20 @@ object FrameProperties: TFrameProperties
           Top = 4
           Width = 113
           Height = 17
-          Caption = 'rbCategoriesBySize'
+          Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbMagnitudeBySizeClick
         end
         object rbMagnitudeByQuantity: TRadioButton
           Left = 215
           Top = 4
           Width = 113
           Height = 17
-          Caption = 'rbCategoriesByQuantity'
+          Caption = '.'
           TabOrder = 1
+          OnClick = rbMagnitudeBySizeClick
         end
         object ComboBox3: TComboBox
           Left = 400
@@ -527,21 +595,28 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 2
+          OnChange = ComboBox3Change
         end
       end
       object sgMagnitude: TStringGrid
         Left = 0
         Top = 27
         Width = 497
-        Height = 643
+        Height = 669
         Align = alLeft
-        ColCount = 7
+        ColCount = 11
+        DefaultDrawing = False
         FixedCols = 0
         RowCount = 14
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         PopupMenu = puMagnitude
         TabOrder = 1
+        OnDrawCell = sgCategoriesDrawCell
         ColWidths = (
+          64
+          64
+          64
+          64
           64
           64
           64
@@ -554,7 +629,7 @@ object FrameProperties: TFrameProperties
         Left = 500
         Top = 27
         Width = 1006
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
         View3DOptions.Elevation = 315
@@ -597,7 +672,7 @@ object FrameProperties: TFrameProperties
       object Splitter2: TSplitter
         Left = 369
         Top = 27
-        Height = 643
+        Height = 669
         ExplicitLeft = 216
         ExplicitTop = 21
         ExplicitHeight = 646
@@ -609,8 +684,8 @@ object FrameProperties: TFrameProperties
         Height = 27
         Align = alTop
         TabOrder = 0
-        object SpeedButton1: TSpeedButton
-          Tag = 8
+        object sbDatesPie: TSpeedButton
+          Tag = 5
           Left = 0
           Top = 0
           Width = 23
@@ -620,8 +695,8 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton2: TSpeedButton
-          Tag = 8
+        object sbDatesBar: TSpeedButton
+          Tag = 5
           Left = 29
           Top = 0
           Width = 23
@@ -637,22 +712,24 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           NumGlyphs = 2
-          OnClick = sbCategoriesBarClick
+          OnClick = sbDatesCollapseNodesClick
         end
         object rbDatesBySize: TRadioButton
           Left = 72
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
         end
         object rbDatesByQuantity: TRadioButton
           Left = 191
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
           TabOrder = 1
         end
         object cbDatesUsers: TComboBox
@@ -662,6 +739,7 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 2
+          OnChange = cbDatesUsersChange
         end
         object cbDatesDateRange: TComboBox
           Left = 479
@@ -670,23 +748,25 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 3
+          OnChange = cbDatesUsersChange
         end
       end
       object tvDates: TTreeView
         Left = 0
         Top = 27
         Width = 369
-        Height = 643
+        Height = 669
         Align = alLeft
         Indent = 19
         PopupMenu = puTreeDate
         TabOrder = 1
+        ExplicitLeft = 3
       end
       object Panel22: TPanel
         Left = 372
         Top = 27
         Width = 1134
-        Height = 643
+        Height = 669
         Align = alClient
         Caption = 'Panel22'
         TabOrder = 2
@@ -694,18 +774,46 @@ object FrameProperties: TFrameProperties
           Left = 1
           Top = 1
           Width = 1132
-          Height = 541
+          Height = 567
           Title.Text.Strings = (
             'TChart')
+          View3DOptions.Elevation = 315
+          View3DOptions.Orthogonal = False
+          View3DOptions.Perspective = 0
+          View3DOptions.Rotation = 360
           Align = alClient
           PopupMenu = puCharts
           TabOrder = 0
           DefaultCanvas = 'TGDIPlusCanvas'
           ColorPaletteIndex = 13
+          object Series5: TPieSeries
+            HoverElement = []
+            Marks.Tail.Margin = 2
+            XValues.Order = loAscending
+            YValues.Name = 'Pie'
+            YValues.Order = loNone
+            Frame.InnerBrush.BackColor = clRed
+            Frame.InnerBrush.Gradient.EndColor = clGray
+            Frame.InnerBrush.Gradient.MidColor = clWhite
+            Frame.InnerBrush.Gradient.StartColor = 4210752
+            Frame.InnerBrush.Gradient.Visible = True
+            Frame.MiddleBrush.BackColor = clYellow
+            Frame.MiddleBrush.Gradient.EndColor = 8553090
+            Frame.MiddleBrush.Gradient.MidColor = clWhite
+            Frame.MiddleBrush.Gradient.StartColor = clGray
+            Frame.MiddleBrush.Gradient.Visible = True
+            Frame.OuterBrush.BackColor = clGreen
+            Frame.OuterBrush.Gradient.EndColor = 4210752
+            Frame.OuterBrush.Gradient.MidColor = clWhite
+            Frame.OuterBrush.Gradient.StartColor = clSilver
+            Frame.OuterBrush.Gradient.Visible = True
+            Frame.Width = 4
+            OtherSlice.Legend.Visible = False
+          end
         end
         object pDatesIceCream: TPanel
           Left = 1
-          Top = 542
+          Top = 568
           Width = 1132
           Height = 100
           Align = alBottom
@@ -721,14 +829,13 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
       end
       object Panel13: TPanel
         Left = 0
         Top = 27
-        Width = 193
-        Height = 643
+        Width = 195
+        Height = 669
         Align = alLeft
         TabOrder = 1
         object lHistoryFrom: TLabel
@@ -764,6 +871,7 @@ object FrameProperties: TFrameProperties
           Top = 413
           Width = 178
           Height = 22
+          OnClick = sbHistoryRefreshClick
         end
         object lHistoryUser: TLabel
           Left = 9
@@ -781,6 +889,7 @@ object FrameProperties: TFrameProperties
           Time = 0.636775069448049200
           DateFormat = dfLong
           TabOrder = 0
+          OnChange = rbHistoryQuantityClick
         end
         object dtpHistoryTo: TDateTimePicker
           Left = 9
@@ -791,6 +900,7 @@ object FrameProperties: TFrameProperties
           Time = 0.636775069448049200
           DateFormat = dfLong
           TabOrder = 1
+          OnChange = rbHistoryQuantityClick
         end
         object cbHistoryInterval: TComboBox
           Left = 9
@@ -799,6 +909,7 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 2
+          OnChange = rbHistoryQuantityClick
         end
         object cbHistoryDateSelect: TComboBox
           Left = 9
@@ -807,6 +918,7 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 3
+          OnChange = rbHistoryQuantityClick
         end
         object gbHistoryOptions: TGroupBox
           Left = 9
@@ -818,26 +930,29 @@ object FrameProperties: TFrameProperties
           object rbHistoryQuantity: TRadioButton
             Left = 11
             Top = 24
-            Width = 113
+            Width = 150
             Height = 17
             Caption = '.'
             TabOrder = 0
+            OnClick = rbHistoryQuantityClick
           end
           object rbHistorySize: TRadioButton
             Left = 11
             Top = 47
-            Width = 113
+            Width = 150
             Height = 17
             Caption = '.'
             TabOrder = 1
+            OnClick = rbHistoryQuantityClick
           end
           object cbHistoryCumulative: TCheckBox
             Left = 11
             Top = 80
-            Width = 97
+            Width = 150
             Height = 17
             Caption = '.'
             TabOrder = 2
+            OnClick = rbHistoryQuantityClick
           end
         end
         object cbHistoryAutoRefresh: TCheckBox
@@ -855,20 +970,52 @@ object FrameProperties: TFrameProperties
           Height = 23
           Style = csDropDownList
           TabOrder = 6
+          OnChange = rbHistoryQuantityClick
         end
       end
       object vtcHistory: TChart
-        Left = 193
+        Left = 195
         Top = 27
-        Width = 1313
-        Height = 643
+        Width = 1311
+        Height = 669
         Title.Text.Strings = (
           'TChart')
+        View3DOptions.Elevation = 315
+        View3DOptions.Orthogonal = False
+        View3DOptions.Perspective = 0
+        View3DOptions.Rotation = 360
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 2
+        OnClick = vtcHistoryClick
+        ExplicitLeft = 193
+        ExplicitWidth = 1313
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
+        object Series6: TPieSeries
+          HoverElement = []
+          Marks.Tail.Margin = 2
+          XValues.Order = loAscending
+          YValues.Name = 'Pie'
+          YValues.Order = loNone
+          Frame.InnerBrush.BackColor = clRed
+          Frame.InnerBrush.Gradient.EndColor = clGray
+          Frame.InnerBrush.Gradient.MidColor = clWhite
+          Frame.InnerBrush.Gradient.StartColor = 4210752
+          Frame.InnerBrush.Gradient.Visible = True
+          Frame.MiddleBrush.BackColor = clYellow
+          Frame.MiddleBrush.Gradient.EndColor = 8553090
+          Frame.MiddleBrush.Gradient.MidColor = clWhite
+          Frame.MiddleBrush.Gradient.StartColor = clGray
+          Frame.MiddleBrush.Gradient.Visible = True
+          Frame.OuterBrush.BackColor = clGreen
+          Frame.OuterBrush.Gradient.EndColor = 4210752
+          Frame.OuterBrush.Gradient.MidColor = clWhite
+          Frame.OuterBrush.Gradient.StartColor = clSilver
+          Frame.OuterBrush.Gradient.Visible = True
+          Frame.Width = 4
+          OtherSlice.Legend.Visible = False
+        end
       end
     end
     object tsTop101: TTabSheet
@@ -879,26 +1026,25 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
       end
       object pcTop101: TPageControl
         Left = 0
         Top = 27
         Width = 1506
-        Height = 643
-        ActivePage = TabSheet1
+        Height = 669
+        ActivePage = tsTop101Size
         Align = alClient
         TabOrder = 1
-        object TabSheet1: TTabSheet
-          Caption = 'TabSheet1'
+        object tsTop101Size: TTabSheet
           object splitTop101Size: TSplitter
             Left = 881
             Top = 27
-            Height = 586
+            Height = 612
             OnMoved = splitTop101SizeMoved
             ExplicitLeft = 886
             ExplicitTop = 33
+            ExplicitHeight = 586
           end
           object Panel1: TPanel
             Left = 0
@@ -906,7 +1052,6 @@ object FrameProperties: TFrameProperties
             Width = 1498
             Height = 27
             Align = alTop
-            Caption = 'Panel1'
             TabOrder = 0
             object cbTop101SizeUser: TComboBox
               Left = 1
@@ -916,21 +1061,23 @@ object FrameProperties: TFrameProperties
               Cursor = crAppStart
               Style = csDropDownList
               TabOrder = 0
+              OnChange = cbTop101SizeUserChange
             end
             object cbTop101SizeColourCode: TCheckBox
               Left = 183
               Top = 5
               Width = 97
               Height = 17
-              Caption = 'cbTop101SizeColourCode'
+              Caption = '.'
               TabOrder = 1
+              OnClick = cbTop101SizeColourCodeClick
             end
           end
           object Panel15: TPanel
             Left = 884
             Top = 27
             Width = 614
-            Height = 586
+            Height = 612
             Align = alClient
             Caption = 'Panel15'
             TabOrder = 1
@@ -939,24 +1086,26 @@ object FrameProperties: TFrameProperties
               Left = 1
               Top = 1
               Width = 612
-              Height = 584
+              Height = 610
               Align = alClient
-              ColCount = 2
+              ColCount = 3
               FixedCols = 0
               RowCount = 2
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
               PopupMenu = puSearch
               TabOrder = 0
+              OnDrawCell = sgTop101SmallDrawCell
             end
           end
           object Panel16: TPanel
             Left = 0
             Top = 27
             Width = 881
-            Height = 586
+            Height = 612
             Align = alLeft
             Caption = 'Panel15'
             TabOrder = 2
-            object Panel17: TPanel
+            object pTop101Size: TPanel
               Left = 1
               Top = 1
               Width = 879
@@ -969,33 +1118,37 @@ object FrameProperties: TFrameProperties
               Left = 1
               Top = 25
               Width = 879
-              Height = 487
+              Height = 513
               Align = alClient
-              ColCount = 3
+              ColCount = 4
               FixedCols = 0
               RowCount = 2
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
               PopupMenu = puSearch
               TabOrder = 1
+              OnDrawCell = sgTop101BigDrawCell
             end
             object pICTop101: TPanel
               Left = 1
-              Top = 512
+              Top = 538
               Width = 879
               Height = 73
               Align = alBottom
+              Color = 3355443
+              ParentBackground = False
               TabOrder = 2
             end
           end
         end
-        object TabSheet2: TTabSheet
-          Caption = 'TabSheet2'
+        object tsTop101Date: TTabSheet
           ImageIndex = 1
           object splitTop101Dates: TSplitter
             Left = 881
             Top = 27
-            Height = 586
+            Height = 612
             OnMoved = splitTop101DatesMoved
             ExplicitLeft = 889
+            ExplicitHeight = 586
           end
           object Panel18: TPanel
             Left = 0
@@ -1003,44 +1156,46 @@ object FrameProperties: TFrameProperties
             Width = 1498
             Height = 27
             Align = alTop
-            Caption = 'Panel1'
             TabOrder = 0
             object cbTop101DateUser: TComboBox
               Left = 1
-              Top = -2
+              Top = 1
               Width = 176
               Height = 23
               Cursor = crAppStart
               Style = csDropDownList
               TabOrder = 0
+              OnChange = cbTop101DateUserChange
             end
             object cbTop101DateColourCode: TCheckBox
               Left = 359
               Top = 4
               Width = 97
               Height = 17
-              Caption = 'CheckBox1'
+              Caption = '.'
               TabOrder = 1
+              OnClick = cbTop101DateColourCodeClick
             end
             object cbTop101DateDate: TComboBox
               Left = 177
-              Top = -1
+              Top = 1
               Width = 176
               Height = 23
               Cursor = crAppStart
               Style = csDropDownList
               TabOrder = 2
+              OnChange = cbTop101DateUserChange
             end
           end
           object Panel19: TPanel
             Left = 0
             Top = 27
             Width = 881
-            Height = 586
+            Height = 612
             Align = alLeft
             Caption = 'Panel15'
             TabOrder = 1
-            object Panel20: TPanel
+            object pTop101Date: TPanel
               Left = 1
               Top = 1
               Width = 879
@@ -1053,13 +1208,14 @@ object FrameProperties: TFrameProperties
               Left = 1
               Top = 25
               Width = 879
-              Height = 560
+              Height = 586
               Align = alClient
-              ColCount = 4
               FixedCols = 0
               RowCount = 2
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
               PopupMenu = puSearch
               TabOrder = 1
+              OnDrawCell = sgTop101BigDateDrawCell
             end
           end
           object sgTop101SmallDate: TStringGrid
@@ -1067,19 +1223,21 @@ object FrameProperties: TFrameProperties
             Left = 884
             Top = 27
             Width = 614
-            Height = 586
+            Height = 612
             Align = alClient
-            ColCount = 4
             FixedCols = 0
             RowCount = 2
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
             PopupMenu = puSearch
             TabOrder = 2
+            OnDrawCell = sgTop101BigDateDrawCell
           end
         end
       end
     end
     object tsNull: TTabSheet
       ImageIndex = 8
+      OnResize = tsNullResize
       object Splitter11: TSplitter
         Left = 0
         Top = 329
@@ -1112,13 +1270,15 @@ object FrameProperties: TFrameProperties
         Left = 0
         Top = 359
         Width = 1506
-        Height = 311
+        Height = 337
         Align = alClient
         ColCount = 1
+        DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
         PopupMenu = puNullFolders
         TabOrder = 1
+        OnDrawCell = sgNullFilesDrawCell
       end
       object sgNullFiles: TStringGrid
         Left = 0
@@ -1127,10 +1287,12 @@ object FrameProperties: TFrameProperties
         Height = 302
         Align = alTop
         ColCount = 1
+        DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
         PopupMenu = puNullFiles
         TabOrder = 2
+        OnDrawCell = sgNullFilesDrawCell
       end
       object Panel21: TPanel
         Left = 0
@@ -1156,7 +1318,7 @@ object FrameProperties: TFrameProperties
       object splitUsers: TSplitter
         Left = 497
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitUsersMoved
         ExplicitLeft = 505
         ExplicitTop = 24
@@ -1169,8 +1331,8 @@ object FrameProperties: TFrameProperties
         Height = 27
         Align = alTop
         TabOrder = 0
-        object SpeedButton3: TSpeedButton
-          Tag = 11
+        object sbUsersPie: TSpeedButton
+          Tag = 9
           Left = 0
           Top = 0
           Width = 23
@@ -1180,8 +1342,8 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton5: TSpeedButton
-          Tag = 11
+        object sbUsersBar: TSpeedButton
+          Tag = 9
           Left = 29
           Top = 0
           Width = 23
@@ -1197,23 +1359,27 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           NumGlyphs = 2
-          OnClick = sbCategoriesBarClick
+          OnClick = SpeedButton21Click
         end
         object rbUsersSize: TRadioButton
           Left = 72
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbUsersSizeClick
         end
         object rbUsersQuantity: TRadioButton
           Left = 191
-          Top = 2
+          Top = 4
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
           TabOrder = 1
+          OnClick = rbUsersSizeClick
         end
         object cbUsersDisplayMode: TComboBox
           Left = 568
@@ -1222,19 +1388,26 @@ object FrameProperties: TFrameProperties
           Height = 23
           TabOrder = 2
           Text = 'cbUsersDisplayMode'
+          OnChange = cbUsersDisplayModeChange
         end
       end
       object sgUsers: TStringGrid
         Left = 0
         Top = 27
         Width = 497
-        Height = 643
+        Height = 669
         Align = alLeft
-        ColCount = 7
+        ColCount = 11
+        DefaultDrawing = False
         FixedCols = 0
         PopupMenu = puUsers
         TabOrder = 1
+        OnDrawCell = sgCategoriesDrawCell
         ColWidths = (
+          64
+          64
+          64
+          64
           64
           64
           64
@@ -1247,13 +1420,41 @@ object FrameProperties: TFrameProperties
         Left = 500
         Top = 27
         Width = 1006
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
+        View3DOptions.Elevation = 315
+        View3DOptions.Orthogonal = False
+        View3DOptions.Perspective = 0
+        View3DOptions.Rotation = 360
         Align = alClient
         TabOrder = 2
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
+        object Series7: TPieSeries
+          HoverElement = []
+          Marks.Tail.Margin = 2
+          XValues.Order = loAscending
+          YValues.Name = 'Pie'
+          YValues.Order = loNone
+          Frame.InnerBrush.BackColor = clRed
+          Frame.InnerBrush.Gradient.EndColor = clGray
+          Frame.InnerBrush.Gradient.MidColor = clWhite
+          Frame.InnerBrush.Gradient.StartColor = 4210752
+          Frame.InnerBrush.Gradient.Visible = True
+          Frame.MiddleBrush.BackColor = clYellow
+          Frame.MiddleBrush.Gradient.EndColor = 8553090
+          Frame.MiddleBrush.Gradient.MidColor = clWhite
+          Frame.MiddleBrush.Gradient.StartColor = clGray
+          Frame.MiddleBrush.Gradient.Visible = True
+          Frame.OuterBrush.BackColor = clGreen
+          Frame.OuterBrush.Gradient.EndColor = 4210752
+          Frame.OuterBrush.Gradient.MidColor = clWhite
+          Frame.OuterBrush.Gradient.StartColor = clSilver
+          Frame.OuterBrush.Gradient.Visible = True
+          Frame.Width = 4
+          OtherSlice.Legend.Visible = False
+        end
       end
     end
     object tsTemporary: TTabSheet
@@ -1261,7 +1462,7 @@ object FrameProperties: TFrameProperties
       object splitTemporary: TSplitter
         Left = 777
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitTemporaryMoved
         ExplicitLeft = 944
         ExplicitTop = 208
@@ -1273,7 +1474,6 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
         object SpeedButton6: TSpeedButton
           Left = 0
@@ -1287,42 +1487,76 @@ object FrameProperties: TFrameProperties
           Top = 5
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbTempBySizeClick
         end
         object rbTempByQuantity: TRadioButton
           Left = 157
           Top = 5
           Width = 113
           Height = 17
-          Caption = 'RadioButton1'
+          Caption = '.'
           TabOrder = 1
+          OnClick = rbTempBySizeClick
         end
       end
       object sgTemporary: TStringGrid
         Left = 0
         Top = 27
         Width = 777
-        Height = 643
+        Height = 669
         Align = alLeft
-        ColCount = 2
+        ColCount = 3
+        DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
         PopupMenu = puSearch
         TabOrder = 1
+        OnDrawCell = sgTemporaryDrawCell
       end
       object vtcTemporary: TChart
         Left = 780
         Top = 27
         Width = 726
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
+        View3DOptions.Elevation = 315
+        View3DOptions.Orthogonal = False
+        View3DOptions.Perspective = 0
+        View3DOptions.Rotation = 360
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 2
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
+        object Series8: TPieSeries
+          HoverElement = []
+          Marks.Tail.Margin = 2
+          XValues.Order = loAscending
+          YValues.Name = 'Pie'
+          YValues.Order = loNone
+          Frame.InnerBrush.BackColor = clRed
+          Frame.InnerBrush.Gradient.EndColor = clGray
+          Frame.InnerBrush.Gradient.MidColor = clWhite
+          Frame.InnerBrush.Gradient.StartColor = 4210752
+          Frame.InnerBrush.Gradient.Visible = True
+          Frame.MiddleBrush.BackColor = clYellow
+          Frame.MiddleBrush.Gradient.EndColor = 8553090
+          Frame.MiddleBrush.Gradient.MidColor = clWhite
+          Frame.MiddleBrush.Gradient.StartColor = clGray
+          Frame.MiddleBrush.Gradient.Visible = True
+          Frame.OuterBrush.BackColor = clGreen
+          Frame.OuterBrush.Gradient.EndColor = 4210752
+          Frame.OuterBrush.Gradient.MidColor = clWhite
+          Frame.OuterBrush.Gradient.StartColor = clSilver
+          Frame.OuterBrush.Gradient.Visible = True
+          Frame.Width = 4
+          OtherSlice.Legend.Visible = False
+        end
       end
     end
     object tsLength: TTabSheet
@@ -1330,7 +1564,7 @@ object FrameProperties: TFrameProperties
       object splitLengths: TSplitter
         Left = 433
         Top = 27
-        Height = 643
+        Height = 669
         OnMoved = splitLengthsMoved
         ExplicitLeft = 592
         ExplicitTop = 224
@@ -1342,12 +1576,11 @@ object FrameProperties: TFrameProperties
         Width = 1506
         Height = 27
         Align = alTop
-        Caption = 'Panel2'
         TabOrder = 0
-        object SpeedButton13: TSpeedButton
-          Tag = 12
+        object sbLengthsPie: TSpeedButton
+          Tag = 16
           Left = 0
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -1355,10 +1588,10 @@ object FrameProperties: TFrameProperties
           NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
-        object SpeedButton14: TSpeedButton
-          Tag = 12
+        object sbLengthsBar: TSpeedButton
+          Tag = 16
           Left = 29
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
@@ -1367,7 +1600,7 @@ object FrameProperties: TFrameProperties
         end
         object SpeedButton15: TSpeedButton
           Left = 58
-          Top = -1
+          Top = 0
           Width = 23
           Height = 22
           NumGlyphs = 2
@@ -1379,7 +1612,10 @@ object FrameProperties: TFrameProperties
           Width = 113
           Height = 17
           Caption = '.'
+          Checked = True
           TabOrder = 0
+          TabStop = True
+          OnClick = rbLengthSizeClick
         end
         object rbLengthQuantity: TRadioButton
           Left = 215
@@ -1388,32 +1624,64 @@ object FrameProperties: TFrameProperties
           Height = 17
           Caption = '.'
           TabOrder = 1
+          OnClick = rbLengthSizeClick
         end
       end
       object sgLengths: TStringGrid
         Left = 0
         Top = 27
         Width = 433
-        Height = 643
+        Height = 669
         Align = alLeft
-        ColCount = 7
+        ColCount = 11
+        DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
         PopupMenu = puTable
+        ScrollBars = ssVertical
         TabOrder = 1
+        OnDrawCell = sgCategoriesDrawCell
       end
       object vtcLengths: TChart
         Left = 436
         Top = 27
         Width = 1070
-        Height = 643
+        Height = 669
         Title.Text.Strings = (
           'TChart')
+        View3DOptions.Elevation = 315
+        View3DOptions.Orthogonal = False
+        View3DOptions.Perspective = 0
+        View3DOptions.Rotation = 360
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 2
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
+        object Series9: TPieSeries
+          HoverElement = []
+          Marks.Tail.Margin = 2
+          XValues.Order = loAscending
+          YValues.Name = 'Pie'
+          YValues.Order = loNone
+          Frame.InnerBrush.BackColor = clRed
+          Frame.InnerBrush.Gradient.EndColor = clGray
+          Frame.InnerBrush.Gradient.MidColor = clWhite
+          Frame.InnerBrush.Gradient.StartColor = 4210752
+          Frame.InnerBrush.Gradient.Visible = True
+          Frame.MiddleBrush.BackColor = clYellow
+          Frame.MiddleBrush.Gradient.EndColor = 8553090
+          Frame.MiddleBrush.Gradient.MidColor = clWhite
+          Frame.MiddleBrush.Gradient.StartColor = clGray
+          Frame.MiddleBrush.Gradient.Visible = True
+          Frame.OuterBrush.BackColor = clGreen
+          Frame.OuterBrush.Gradient.EndColor = 4210752
+          Frame.OuterBrush.Gradient.MidColor = clWhite
+          Frame.OuterBrush.Gradient.StartColor = clSilver
+          Frame.OuterBrush.Gradient.Visible = True
+          Frame.Width = 4
+          OtherSlice.Legend.Visible = False
+        end
       end
     end
   end

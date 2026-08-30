@@ -109,54 +109,46 @@ std::wstring TFrame2::GetSelectedFileName(int tag)
 	return L"";
 }
 
-/*                to do
-procedure TFrameSearch.sgDuplicatesNameCanSort(Sender: TObject; ACol: Integer;
-  var DoSort: Boolean);
+
+#pragma region Gui
+void __fastcall TFrame2::sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
+          System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-  if Acol = 1 then {
-	DoSort = False; // stops the component for sorting automatically
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
 
-	with TAdvStringGrid(Sender) do {
-	  if SortSettings.Direction = sdDescending then  // make sure we toggle the search direction -
-		SortSettings.Direction = sdAscending        // as this is not done for us
-	  else                                         //
-		SortSettings.Direction = sdDescending;      //
+		if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
 
-	  Sortsettings.Column = 2; //set the hidden column as the sort source
-	  QSort;                  //force a quick sort of above
-
-	  //this line refreshes the component and forces the glyphs to be redrawn
-	  //on our Location column and NOT the column we sorted on!
-	  SortSettings.Column = 1;
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
 	}
-  }
-}
-
-
-procedure TFrameSearch.sgDuplicatesNameGetAlignment(Sender: TObject; ARow,
-  ACol: Integer; var HAlign: TAlignment; var VAlign: TVAlignment);
-{
-  if (ACol = 1) then
-	HAlign = taRightJustify
-  else
-	HAlign = taLeftJustify;
-}
-
-
-procedure TFrameSearch.sgDuplicatesNameGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if gdSelected in AState then
-	ABrush.Color = CGridColourSelected
-  else {
-	if Odd(ARow) then
-	  ABrush.Color = CGridColourOn
 	else
-	  ABrush.Color = CGridColourOff;
-  }
-}
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
 
-*/
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
+}
+#pragma end_region
+
 
 #pragma region Duplicates_Name
 void __fastcall TFrame2::sbDNGoClick(TObject *Sender)

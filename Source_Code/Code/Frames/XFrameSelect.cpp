@@ -36,8 +36,6 @@ __fastcall TFrameSelect::TFrameSelect(TComponent* Owner)
 	: TFrame(Owner)
 {
 	Init();
-
-	eScanPath->Text = dlbSelect->Directory;
 }
 
 
@@ -69,6 +67,7 @@ void TFrameSelect::Init()
 	sgScanHistory->Cells[0][0] = GLanguageHandler->Text[kDate].c_str();
 	sgScanHistory->Cells[1][0] = GLanguageHandler->Text[kTime].c_str();
 	sgScanHistory->Cells[2][0] = GLanguageHandler->Text[kFolder].c_str();
+	sgScanHistory->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 
 	bShowYesterday->Caption = GLanguageHandler->Text[kYesterday].c_str();
 	bShowLastMonth->Caption = GLanguageHandler->Text[kLastMonth].c_str();
@@ -80,12 +79,35 @@ void TFrameSelect::Init()
 	// popup menus
 	miQFTitle->Caption = GLanguageHandler->Text[kFavourites].c_str();
 	miQFAdd->Caption = GLanguageHandler->Text[kAddCurrentFolder].c_str();
+
+	if (GScanHistoryHandler->History.size() != 0)
+	{
+		int index = GScanHistoryHandler->History.size() - 1;
+
+		while (cbScanPath->Items->Count <= 20 && index >= 0)
+		{
+			if (cbScanPath->Items->IndexOf(GScanHistoryHandler->History[index]->Path.c_str()) == -1)
+			{
+				cbScanPath->Items->Insert(0, GScanHistoryHandler->History[index]->Path.c_str());
+			}
+
+			index--;
+		}
+
+        cbScanPath->ItemIndex = 0;
+	}
+	else
+	{
+		cbScanPath->Text = dlbSelect->Directory;
+	}
+
+    BuildScanHistory(0);
 }
 
 
 void TFrameSelect::SaveSettings()
 {
-	GSettingsHandler->State.LastScanPath = eScanPath->Text.c_str();
+	GSettingsHandler->State.LastScanPath = cbScanPath->Text.c_str();
 }
 
 
@@ -94,7 +116,12 @@ void __fastcall TFrameSelect::bScanNowClick(TObject *Sender)
 {
 	if (OnNewScan)
 	{
-		std::wstring path = eScanPath->Text.c_str();
+		std::wstring path = cbScanPath->Text.c_str();
+
+		if (cbScanPath->Items->IndexOf(cbScanPath->Text) == -1)
+		{
+			cbScanPath->Items->Insert(0, cbScanPath->Text.c_str());
+		}
 
 		OnNewScan(path, DataSource, false);
 	}
@@ -103,9 +130,9 @@ void __fastcall TFrameSelect::bScanNowClick(TObject *Sender)
 
 void __fastcall TFrameSelect::bExploreClick(TObject *Sender)
 {
-	if (WindowsUtility::DirectoryExists(eScanPath->Text.c_str()))
+	if (WindowsUtility::DirectoryExists(cbScanPath->Text.c_str()))
 	{
-		std::wstring file_name = eScanPath->Text.c_str();
+		std::wstring file_name = cbScanPath->Text.c_str();
 
 		WindowsUtility::ExecuteFile(L"\"" + file_name + L"\"", L"");
 	}
@@ -128,12 +155,12 @@ void __fastcall TFrameSelect::bSelectClick(TObject *Sender)
 
 		if (!folder.empty())
 		{
-			eScanPath->Text = folder.c_str();
+			cbScanPath->Text = folder.c_str();
 
 			GScanEngine->ExcludedFolders.clear();
 			GScanEngine->ExcludedFiles.clear();
 
-			if (eScanPath->Text[1] == L':')
+			if (cbScanPath->Text[1] == L':')
 			{
 				dcbSelect->Drive     = folder[1];
 				dlbSelect->Directory = folder.c_str();
@@ -190,13 +217,13 @@ void __fastcall TFrameSelect::bCombineClick(TObject *Sender)
 
 void __fastcall TFrameSelect::dlbSelectChange(TObject *Sender)
 {
-	eScanPath->Text = dlbSelect->Directory;
+	cbScanPath->Text = dlbSelect->Directory;
 }
 
 
 void __fastcall TFrameSelect::puScanHistoryPopup(TObject *Sender)
 {
-	std::wstring folder = eScanPath->Text.c_str();
+	std::wstring folder = cbScanPath->Text.c_str();
 
 	miQFAdd->Enabled = !WindowsUtility::DirectoryExists(folder);
 }
@@ -206,7 +233,7 @@ void __fastcall TFrameSelect::miQFTitleClick(TObject *Sender)
 {
 	TMenuItem *mi = (TMenuItem*)Sender;
 
-	eScanPath->Text = GSettingsHandler->QuickFolders[mi->Tag].c_str();
+	cbScanPath->Text = GSettingsHandler->QuickFolders[mi->Tag].c_str();
 }
 
 
@@ -404,5 +431,56 @@ void __fastcall TFrameSelect::tsScanHistoryResize(TObject *Sender)
 	sgScanHistory->ColWidths[kScanHistoryDate] = HistoryWidths[kScanHistoryDate];
 	sgScanHistory->ColWidths[kScanHistoryTime] = HistoryWidths[kScanHistoryTime];
 	sgScanHistory->ColWidths[kScanHistoryPath] = sgScanHistory->Width - (__WidthOfScrollbar + HistoryWidths[kScanHistoryDate] + HistoryWidths[kScanHistoryTime]);
+}
+
+
+void __fastcall TFrameSelect::sgScanHistoryDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		if (State.Contains(gdSelected))
+		{
+			sgScanHistory->Canvas->Brush->Color = TColor(kGridColourSelected);
+
+			sgScanHistory->Canvas->Font->Color = clWhite;
+		}
+		else
+		{
+			sgScanHistory->Canvas->Font->Color = clWhite;
+
+			if (ARow % 2)
+			{
+				sgScanHistory->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				sgScanHistory->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		sgScanHistory->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+		case 1:
+		case 2:
+			sgScanHistory->Canvas->Brush->Style = bsClear;
+			sgScanHistory->Canvas->TextOut(Rect.Left, Rect.Top, sgScanHistory->Cells[ACol][ARow]);
+			break;
+		}
+	}
+	else
+	{
+		sgScanHistory->Canvas->Brush->Color = TColor(kGridHeader);
+		sgScanHistory->Canvas->FillRect(Rect);
+
+		sgScanHistory->Canvas->Brush->Style = bsClear;
+		sgScanHistory->Canvas->Font->Color = clWhite;
+		sgScanHistory->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgScanHistory->Canvas->TextOut(Rect.Left, Rect.Top, sgScanHistory->Cells[ACol][0]);
+		sgScanHistory->Canvas->Font->Style = TFontStyles();
+	}
 }
 #pragma end_region

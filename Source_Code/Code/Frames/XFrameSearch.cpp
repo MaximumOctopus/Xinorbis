@@ -12,9 +12,11 @@
 #include "XFormXinorbisDialog.h"
 
 #include "ConstantsData.h"
+#include "ConstantsImages.h"
 #include "FileExtensionHandler.h"
 #include "GridUtility.h"
 #include "HelpHandler.h"
+#include "ImageHandler.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "Log.h"
@@ -27,8 +29,10 @@
 #include "SystemGlobal.h"
 #include "Utility.h"
 #include "WindowsUtility.h"
+#include "XZip.h"
 
 extern FileExtensionHandler *GFileExtensionHandler;
+extern ImageHandler *GImageHandler;
 extern Log *GLog;
 extern LanguageHandler *GLanguageHandler;
 extern QuickMenuHandler *GQuickMenuHandler;
@@ -37,6 +41,7 @@ extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SplashHandler *GSplashHandler;
 extern SystemGlobal *GSystemGlobal;
+extern XZip *GXZip;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -134,6 +139,13 @@ void TFrameSearch::Init()
 
 	//
 
+	GImageHandler->SetButtonOffImage(sbSCAccessed,   kImageAccessed);
+	GImageHandler->SetButtonOffImage(sbSCModified,   kImageModified);
+	GImageHandler->SetButtonOffImage(sbSCOwner,      kImageOwner);
+	GImageHandler->SetButtonOffImage(sbSCAttributes, kImageAttributes);
+
+	//
+
 	for (int t = 0; t < puQuickSearch->Items->Count; t++)
 	{
 		if (puQuickSearch->Items[t].Tag != -1)
@@ -162,15 +174,11 @@ void TFrameSearch::DeInit()
 {
 	SaveSettings();
 
-	if (SearchEngine != nullptr)
-	{
-        delete SearchEngine;
-	}
+	if (SearchEngine != nullptr) delete SearchEngine;
 
-	if (ice != nullptr)
-	{
-		delete ice;
-	}
+	if (ice != nullptr)	delete ice;
+
+	if (FrameProperties != nullptr)	delete FrameProperties;
 }
 
 
@@ -219,9 +227,9 @@ void __fastcall TFrameSearch::OnRequestNewSearch(int index, const std::wstring s
 
 void __fastcall TFrameSearch::OnNewResults(unsigned __int64 size, int file_count, int folder_count)
 {
-//	TotalSearchSize         = aSize;
-//	TotalSearchFilesCount   = aFilesCount;
-//	TotalSearchFoldersCount = aFolderCount;
+//	TotalSearchSize         = size;
+//	TotalSearchFilesCount   = file_count;
+//	TotalSearchFoldersCount = folder_count;
 }
 #pragma end_region
 
@@ -235,6 +243,8 @@ void __fastcall TFrameSearch::miQuickSearchClick(TObject *Sender)
 
 	switch (qma.Action)
 	{
+	case QMAction::kNone:
+        break;
 	case QMAction::kSearchString:
 		eSearch->Text = qma.Search.c_str();
 		eSearchChange(NULL);
@@ -412,15 +422,23 @@ void __fastcall TFrameSearch::miZIPClick(TObject *Sender)
 		TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 		TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
 
-		int ZipCount = 0; // TO DO XinorbisZip.ZipAllFiles(lFileName, grid->Tag, sgSearchResults, kschIFileName);
+		std::vector<std::wstring> data;
 
-		if (ZipCount == -1)
+		for (FileObject *file : GScanEngine->Data[DataSource].Files)
 		{
-			ShowXDialog(GLanguageHandler->Text[kErrorCompressingFiles],
-						  GLanguageHandler->Text[kErrorCompressingFiles],
-						  XDialogTypeWarning);
+			data.push_back(file->FullPath);
 		}
-		else if (ZipCount == 0)
+
+		if (data.size() != 0)
+		{
+			if (!GXZip->Files(file_name, data, L""))
+			{
+				ShowXDialog(GLanguageHandler->Text[kErrorCompressingFiles],
+							  GLanguageHandler->Text[kErrorCompressingFiles],
+							  XDialogTypeWarning);
+			}
+		}
+		else
 		{
 			ShowXDialog(GLanguageHandler->Text[kWarning],
 					  GLanguageHandler->Text[kNoFilesToCompress] + L" \"" + file_name + L"\".",
@@ -547,7 +565,7 @@ void __fastcall TFrameSearch::miDeleteAllClick(TObject *Sender)
 #pragma region Bottom_Panel
 void __fastcall TFrameSearch::sbSettingsClick(TObject *Sender)
 {
-//
+	ice->Swap();
 }
 
 
@@ -1087,6 +1105,74 @@ void TFrameSearch::UpdateIceCream()
 
 	ice->End();
 }
+
+
+void __fastcall TFrameSearch::sgSearchResultsDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		sgSearchResults->Canvas->Font->Style = TFontStyles();
+
+		if (State.Contains(gdSelected))
+		{
+			sgSearchResults->Canvas->Brush->Color = TColor(kGridColourSelected);
+
+			sgSearchResults->Canvas->Font->Color = clWhite;
+		}
+		else
+		{
+			if (cbSearchColourCode->Checked)
+			{
+				sgSearchResults->Canvas->Brush->Color = TColor(StrToInt(sgSearchResults->Cells[kschIColour][ARow]));
+
+				sgSearchResults->Canvas->Font->Color = clBlack;
+			}
+			else
+			{
+				sgSearchResults->Canvas->Font->Color = clWhite;
+
+				if (ARow % 2)
+				{
+					sgSearchResults->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					sgSearchResults->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
+		sgSearchResults->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case kschVSize:
+		{
+			int left = Rect.Right - sgSearchResults->Canvas->TextWidth(sgSearchResults->Cells[ACol][ARow]) - 2;
+			sgSearchResults->Canvas->TextOut(left, Rect.Top + 3, sgSearchResults->Cells[ACol][ARow]);
+			break;
+		}
+		default:
+			if (sgSearchResults->ColWidths[0] != -1)
+			{
+				sgSearchResults->Canvas->Brush->Style = bsClear;
+				sgSearchResults->Canvas->TextOut(Rect.Left, Rect.Top, sgSearchResults->Cells[ACol][ARow]);
+			}
+			break;
+		}
+	}
+	else
+	{
+		sgSearchResults->Canvas->Brush->Color = TColor(kGridHeader);
+		sgSearchResults->Canvas->FillRect(Rect);
+
+		sgSearchResults->Canvas->Brush->Style = bsClear;
+		sgSearchResults->Canvas->Font->Color = clWhite;
+		sgSearchResults->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgSearchResults->Canvas->TextOut(Rect.Left, Rect.Top, sgSearchResults->Cells[ACol][0]);
+	}
+}
 #pragma end_region
 
 
@@ -1166,107 +1252,17 @@ void TFrameSearch::BuildPropertiesTab(int index)
 
 	Screen->Cursor = crDefault; */
 }
+
+
+void TFrameSearch::CreatePropertiesFrame()
+{
+	FrameProperties = new TFrameProperties(this);
+	FrameProperties->Parent = tsProperties;
+	FrameProperties->Align = alClient;
+	FrameProperties->Visible = true;
+	FrameProperties->Name = L"FPS1";
+	FrameProperties->DataSource = kDataSearch;
+
+  //UpdateGUICustomNames(aDataIndex); */
+}
 #pragma end_region
-
-
-/*              to do
-procedure TFrameSearch.sgSearchResultsCanSort(Sender: TObject; ACol: Integer;
-  var DoSort: Boolean);
-{
-  DoSort = False;
-
-  if TAdvStringGrid(Sender).SortSettings.Direction = sdDescending then
-	TAdvStringGrid(Sender).SortSettings.Direction = sdAscending
-  else
-	TAdvStringGrid(Sender).SortSettings.Direction = sdDescending;
-
-  case ACol of
-    schVSize       : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileSizes));
-    schVCDate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDates));
-	schVADate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesAccessed));
-    schVMDate      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileDatesModified));
-    schVFilename   : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNames));
-    schVOwner      : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareOwnerSD));
-    schVAttributes : GScanEngine[dataSearch].Files.Sort(TComparer<TFileObject>.Construct(CompareFileAttributes));
-  }
-
-  RenderResults(FPageNumber * GSettingsHandler->General.MaxSearchResults,
-			   (FPageNumber * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults - 1);
-  UpdateGUI;
-}
-
-procedure TFrameSearch.sgSearchResultsGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-{
-  if cbSearchColourCode.Checked then {
-    if ARow > 0 then
-      ABrush.Color = GSystemGlobal.FileCategoryColors[StrToInt(TAdvStringGrid(Sender)->Cells[kschIColour, ARow])];
-  end
-  else {
-	if gdSelected in AState then
-      ABrush.Color = CGridColourSelected
-    else {
-      if Odd(ARow) then
-        ABrush.Color = CGridColourOn
-      else
-        ABrush.Color = CGridColourOff;
-    }
-  }
-}
-
-
-const
-  SearchSortColumns     : array[0..6] of integer = (schVFilename, kschISize, 2, 3, 4, 5, 6);
-
-
-procedure TFrameSearch.CreateReportsFrame(aDataIndex : integer);
-{
-  FReportsFrame = TFrameReports.Create(Self);
-  FReportsFrame.Name                        = "FrameReports" + std::to_wstring(aDataIndex);
-  FReportsFrame.Parent                      = tsProperties;
-  FReportsFrame.Source                      = aDataIndex;
-  FReportsFrame.Init;
-  FReportsFrame.Visible                     = True;
-  FReportsFrame.GetLeftOffset               = OnGetLeftOffset;
-  FReportsFrame.GetTopOffset                = OnGetTopOffset;
-
-//  FReportsFrame.OnNewScan                   = RequestNewScan;
-  FReportsFrame.OnNewSearch                 = OnRequestNewSearch;
- {FReportsFrame.OnNewSummary                = RequestNewSummary;
-  FReportsFrame.OnProcessWindowStatusChange = OnProcessWindowStatusChange;
-  FReportsFrame.OnSetStatusBarText          = OnStatusBarChange;
-  FReportsFrame.OnSettingsTab               = OnOpenSettingsTab;
-  FReportsFrame.OnSetTutorialBarText        = OnTutorialBarChange; }
-
-  GReportText.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
-                                   FReportsFrame.sgNullFolders,
-                                   FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small,
-                                   FReportsFrame.sgTop101BigDate,
-                                   FReportsFrame.sgTop101SmallDate);
-
-  GReportXML.SetGrids(aDataIndex,  FReportsFrame.tvFileDates,
-                                   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
-                                   FReportsFrame.cbFileDates,  FReportsFrame.cbFileDatesUsers, FReportsFrame.cbTop101Dates);
-
-
-  GReportHTML.SetGrids(aDataIndex, FReportsFrame.tvFileDates,
-								   FReportsFrame.sgNullFiles,  FReportsFrame.sgNullFolders,    FReportsFrame.sgTop50Big,
-                                   FReportsFrame.sgTop50Small, FReportsFrame.sgTop101BigDate,  FReportsFrame.sgTop101SmallDate,
-                                   FReportsFrame.cbFileDates,  FReportsFrame.cbTop101Dates);
-
-
-  GReportSummary.SetGrids(aDataIndex, FReportsFrame.sgNullFiles,
-                                      FReportsFrame.sgNullFolders,
-                                      FReportsFrame.sgDirList,
-                                      FReportsFrame.sgTop50Big,
-                                      FReportsFrame.sgUsers);
-
-  //UpdateGUICustomNames(aDataIndex);
-}
-
-
-*/
-
-

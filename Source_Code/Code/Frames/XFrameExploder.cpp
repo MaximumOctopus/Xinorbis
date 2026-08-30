@@ -54,6 +54,30 @@ void TFrameExploder::DeInit()
 }
 
 
+void TFrameExploder::Update()
+{
+	if (!NeedsRefresh) return;
+
+	Clear();
+
+	BeginData(GScanEngine->Data[DataSource].Path.String, -1, 0); // -1 for initial data set
+
+	for (int t = 0; t < GScanEngine->Data[DataSource].RootFolders.size(); t++)
+	{
+//		ExploderX->AddData(Folders[t]->Name, t, Folders[t]->Count, Folders[t]->Size, __SpectrumColours[(t - 1) % __SpectrumMod]);
+
+//		if (AddToCache)
+//		{
+//			AddItemToCache(Folders[t]->Name, t, Folders[t]->Count, Folders[t]->Size, __SpectrumColours[(t - 1) % __SpectrumMod]);
+//		}
+	}
+
+	NeedsRefresh = false;
+
+	EndData();
+}
+
+
 void __fastcall TFrameExploder::pExploderResize(TObject *Sender)
 {
 	ExploderX->Resize();
@@ -236,17 +260,6 @@ void TFrameExploder::BeginData(const std::wstring current_folder, int count, uns
 }
 
 
-void TFrameExploder::AddData(const std::wstring folder_name, int folder_id, int file_count, unsigned __int64 file_size, int colour)
-{
-	ExploderX->AddData(folder_name, folder_id, file_count, file_size, colour);
-
-	if (AddToCache)
-	{
-		AddItemToCache(folder_name, folder_id, file_count, file_size, colour);
-	}
-}
-
-
 void TFrameExploder::EndData()
 {
 	ExploderX->EndData();
@@ -263,11 +276,11 @@ void TFrameExploder::BuildFromCache()
 
 	for (int t = 0; t < ExploderCache.size(); t++)
 	{
-		AddData(ExploderCache[t]->FolderName,
-				ExploderCache[t]->FolderID,
-				ExploderCache[t]->FileCount,
-				ExploderCache[t]->FileSize,
-				ExploderCache[t]->Colour);
+		ExploderX->AddData(ExploderCache[t]->FolderName,
+						   ExploderCache[t]->FolderID,
+						   ExploderCache[t]->FileCount,
+						   ExploderCache[t]->FileSize,
+						   ExploderCache[t]->Colour);
 	};
 
 	EndData();
@@ -312,10 +325,20 @@ void TFrameExploder::BuildFromFolderID(int folder_id, int count, unsigned __int6
 					sof.FileCount = file->Category;
 				}
 
-				AddData(file->Name, GScanEngine->Data[DataSource].GetFullFolderIndex(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name + L"\\"),
-						sof.FileCount,
-						sof.Size,
-						kSpectrumColours[ColourMod % kSpectrumMod]);
+				ExploderX->AddData(file->Name,
+								   GScanEngine->Data[DataSource].GetFullFolderIndex(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name + L"\\"),
+								   sof.FileCount,
+								   sof.Size,
+								   kSpectrumColours[ColourMod % kSpectrumMod]);
+
+				if (AddToCache)
+				{
+					AddItemToCache(file->Name,
+								   GScanEngine->Data[DataSource].GetFullFolderIndex(GScanEngine->Data[DataSource].Folders[file->FilePathIndex] + file->Name + L"\\"),
+								   sof.FileCount,
+								   sof.Size,
+								   kSpectrumColours[ColourMod % kSpectrumMod]);
+				}
 
 				total_size += sof.Size;
 				total_count += sof.FileCount;
@@ -329,10 +352,19 @@ void TFrameExploder::BuildFromFolderID(int folder_id, int count, unsigned __int6
 	{
 		if (total_size != size || total_count != count)
 		{
-			AddData(L"/", -1,
-					count - total_count,
-					size - total_size,
-					kSpectrumColours[ColourMod % kSpectrumMod]);
+			ExploderX->AddData(L"/", -1,
+							   count - total_count,
+							   size - total_size,
+							   kSpectrumColours[ColourMod % kSpectrumMod]);
+
+			if (AddToCache)
+			{
+				AddItemToCache(L"/",
+							   -1,
+							   count - total_count,
+							   size - total_size,
+							   kSpectrumColours[ColourMod % kSpectrumMod]);
+			}
 		}
 	}
 
