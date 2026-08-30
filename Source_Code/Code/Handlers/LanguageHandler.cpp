@@ -13,6 +13,7 @@
 #include <fstream>
 
 #include "ConstantsLanguage.h"
+#include "Formatting.h"
 #include "LanguageHandler.h"
 #include "Utility.h"
 
@@ -387,10 +388,10 @@ std::wstring LanguageHandler::FormatForScreen(const std::wstring s)
 {
 	std::wstring output = s;
 
-	output = Utility::ReplaceString(s, L":", L" ");
-	output = Utility::ReplaceString(s, L"\\", L" ");
+	output = Utility::ReplaceString(output, L":", L" ");
+	output = Utility::ReplaceString(output, L"\\", L" ");
 
-	std::remove(output.begin(), output.end(), L' ');
+	output = Formatting::TrimW(output);
 
 	return output;
 }

@@ -74,24 +74,31 @@ void ImageHandler::LoadFlags(const std::wstring folder)
 }
 
 
-void ImageHandler::SetButtonOnImage(TSpeedButton*, int)
+void ImageHandler::SetButtonOnImage(TSpeedButton* button, int inded)
 {
 }
 
 
-void ImageHandler::SetButtonOffImage(TSpeedButton*, int)
+void ImageHandler::SetButtonOffImage(TSpeedButton* button, int inded)
 {
 }
 
 
-//	void ImageHandler::SetButtonImageEnabled(mrbutton : TW7ToolButton; aOffStart : integer; aEnabled : boolean);
-
-
-void ImageHandler::SetFolderHistoryButtonImage(TSpeedButton*, int)
+void ImageHandler::SetFolderHistoryButtonImage(TSpeedButton* button, int index)
 {
 }
 
 
-void ImageHandler::SetPieBarImages(TSpeedButton*, TSpeedButton*)
+void ImageHandler::SetPieBarImages(TSpeedButton* button1, TSpeedButton* button2)
 {
+	if (button1->Down)
+	{
+		SetButtonOnImage(button1, kImagePieGraph);
+		SetButtonOffImage(button2, kImageBarGraph);
+	}
+	else
+	{
+		SetButtonOnImage(button2, kImageBarGraph);
+		SetButtonOffImage(button1, kImagePieGraph);
+	}
 }

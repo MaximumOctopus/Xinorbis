@@ -39,8 +39,6 @@ public:
 	void SetButtonOnImage(TSpeedButton*, int);
 	void SetButtonOffImage(TSpeedButton*, int);
 
-//	void SetButtonImageEnabled(mrbutton : TW7ToolButton; aOffStart : integer; aEnabled : boolean);
-
 	void SetFolderHistoryButtonImage(TSpeedButton*, int);
 
 	void SetPieBarImages(TSpeedButton*, TSpeedButton*);

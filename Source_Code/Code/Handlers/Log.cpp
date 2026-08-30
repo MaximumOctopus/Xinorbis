@@ -16,6 +16,13 @@
 Log *GLog;
 
 
+Log::Log()
+{
+    Add(L"Log is alive!");
+}
+
+
+
 void Log::Add(const std::wstring output)
 {
 	LogData.push_back(DateUtility::DateTime(kDisplayModeConsole) + L"  " + output);

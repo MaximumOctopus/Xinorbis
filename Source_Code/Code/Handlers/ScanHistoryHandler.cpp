@@ -13,10 +13,18 @@
 #include <fstream>
 
 #include "ConstantsSystem.h"
+#include "DateUtility.h"
+#include "Formatting.h"
 #include "Registry.h"
 #include "ScanHistoryHandler.h"
 
 ScanHistoryHandler *GScanHistoryHandler;
+
+
+ScanHistoryHandler::ScanHistoryHandler(const std::wstring path)
+{
+	Load(path + L"scanhistory.dat", true);
+}
 
 
 ScanHistoryHandler::~ScanHistoryHandler()
@@ -27,16 +35,24 @@ ScanHistoryHandler::~ScanHistoryHandler()
 
 void ScanHistoryHandler::Add(const std::wstring path, const std::wstring exclude_files, const std::wstring exclude_folders)
 {
-	//
+	ScanHistoryItem *shi = new ScanHistoryItem();
+
+	shi->Path = path;
+	shi->Date = stoi(DateUtility::GetDate(DateTimeFormat::YYYYMMDD));
+	shi->Time = DateUtility::GetTime(DateTimeFormat::HHMM);
+	shi->ExcludeFiles = exclude_files;
+	shi->ExcludeFolders = exclude_folders;
+
+	History.push_back(shi);
 }
 
-			  // GSystemGlobal.AppDataPath + 'scanhistory.dat'
+
 bool ScanHistoryHandler::Load(const std::wstring path, bool from_file)
 {
 	if (from_file)
 	{
 		FilePath = path;
-        FromFile = from_file;
+		FromFile = from_file;
 
 		std::wifstream file(path);
 
@@ -156,5 +172,29 @@ void ScanHistoryHandler::Clear()
 
 bool ScanHistoryHandler::Save()
 {
-    return false;
+	if (FromFile)
+	{
+		std::ofstream file(FilePath);
+
+		if (file)
+		{
+			for (ScanHistoryItem *item : History)
+			{
+				file << Formatting::to_utf8(item->Path + L"\n");
+				file << Formatting::to_utf8(std::to_wstring(item->Date) + L"\n");
+				file << Formatting::to_utf8(item->Time + L"\n");
+				file << Formatting::to_utf8(item->ExcludeFiles + L"\n");
+				file << Formatting::to_utf8(item->ExcludeFolders + L"\n");
+            }
+
+			file.close();
+
+			return true;
+		}
+	}
+	else
+	{
+	}
+
+	return false;
 }

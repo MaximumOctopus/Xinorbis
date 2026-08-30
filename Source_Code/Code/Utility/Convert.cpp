@@ -24,7 +24,6 @@
 #include "SettingsHandler.h"
 #include "Utility.h"
 
-
 extern LanguageHandler* GLanguageHandler;
 extern SettingsHandler* GSettingsHandler;
 
@@ -78,25 +77,25 @@ std::wstring Convert::ConvertToUsefulUnit(unsigned __int64 value)
 	{
 		double size = (double)value / (double)1024;
 
-		return FloatToStrF(size, ffFixed, 7, 2).c_str();
+		return FloatToStrF(size, ffFixed, 7, 2).c_str() + GLanguageHandler->Units[kUnitKB];
 	}
 	else if (value < 1073741824)
 	{
 		double size = (double)value / (double)1048576;
 
-		return FloatToStrF(size, ffFixed, 7, 2).c_str();
+		return FloatToStrF(size, ffFixed, 7, 2).c_str() + GLanguageHandler->Units[kUnitMB];
 	}
 	else if (value < 1099511627776)
 	{
 		double size = (double)value / (double)1073741824;
 
-		return FloatToStrF(size, ffFixed, 7, 2).c_str();
+		return FloatToStrF(size, ffFixed, 7, 2).c_str() + GLanguageHandler->Units[kUnitGB];
 	}
 	else
 	{
 		double size = (double)value / (double)1099511627776;
 
-		return FloatToStrF(size, ffFixed, 7, 2).c_str();
+		return FloatToStrF(size, ffFixed, 7, 2).c_str() + GLanguageHandler->Units[kUnitTB];
 	}
 }
 
@@ -403,6 +402,7 @@ int Convert::TodayPlusDaysToYYYYMMDD(int days)
 }
 
 
+// input range is: 0.0 to 1.0
 std::wstring Convert::DoubleToPercent(double value)
 {
 	if (value != 0)
@@ -421,7 +421,7 @@ std::wstring Convert::DoubleToPercent(double value)
 			return L">99%";
 		}
 		
-		return FloatToStrF(value * 100, ffFixed, 7, 2).c_str();
+		return (FloatToStrF(value * 100, ffFixed, 7, 2) + L"%").c_str();
 	}
 
 	return L"0%";

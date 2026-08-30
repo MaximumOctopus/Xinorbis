@@ -13,8 +13,10 @@
 #include "FileExtensionHandler.h"
 #include "ImageHandler.h"
 #include "LanguageHandler.h"
+#include "Log.h"
 #include "ReportHandler.h"
 #include "ScanEngine.h"
+#include "ScanHistoryHandler.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
 #include "WindowsUtility.h"
@@ -22,8 +24,10 @@
 extern FileExtensionHandler *GFileExtensionHandler;
 extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
+extern Log *GLog;
 extern ReportHandler *GReportHandler;
 extern ScanEngine *GScanEngine;
+extern ScanHistoryHandler *GScanHistoryHandler;
 extern SettingsHandler *GSettingsHandler;
 
 SystemGlobal *GSystemGlobal;
@@ -45,7 +49,8 @@ SystemGlobal::~SystemGlobal()
 void SystemGlobal::Init()
 {
 	ExePath = WindowsUtility::GetExePath();
-	//AppDataPath = GetUsersPath(AppPath);
+//	AppDataPath = GetUsersPath(AppPath);
+	AppDataPath = ExePath + L"Data\\";
 
 	if (InstallationCheck(WindowsUtility::GetComputerNetName()))
 	{
@@ -71,9 +76,13 @@ void SystemGlobal::CreateObjects()
 	GLanguageHandler = new LanguageHandler();
 	GLanguageHandler->InitLanguage(ExePath, LanguageType::kUK);
 
+	GScanHistoryHandler = new ScanHistoryHandler(ExePath + L"system\\");
+
 	GScanEngine = new ScanEngine();
 
-    GReportHandler = new ReportHandler();
+	GReportHandler = new ReportHandler();
+
+    GLog = new Log();
 }
 
 
@@ -106,8 +115,7 @@ bool SystemGlobal::InstallationCheck(const std::wstring cname)
 
 	CreateIfMissing(AppDataPath);
 
-	CreateIfMissing(AppDataPath + L"FolderHistory\\Database");
-	CreateIfMissing(AppDataPath + L"FolderHistory\\" + cname);
+	CreateIfMissing(AppDataPath + L"Database");
 
 	CreateIfMissing(AppDataPath + L"Reports\\" + cname);
 

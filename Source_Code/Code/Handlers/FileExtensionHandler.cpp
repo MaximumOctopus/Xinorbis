@@ -37,7 +37,7 @@ bool FileExtensionHandler::LoadFileExtensions(const std::wstring folder, bool fo
 {
 	Extensions.clear();
 
-	std::wstring path = folder;
+	std::wstring path = folder + L"system\\config\\";
 
 	if (force_default)
 	{
@@ -46,7 +46,7 @@ bool FileExtensionHandler::LoadFileExtensions(const std::wstring folder, bool fo
 
 	for (int t = 0; t < kFileCategoriesCount; t++)
 	{
-		std::wstring FileName = path + L"system\\config\\" + kFileExtensionFileName[t] + L".txt";
+		std::wstring FileName = path +  kFileExtensionFileName[t] + L".txt";
 
 		std::wifstream file(FileName);
 

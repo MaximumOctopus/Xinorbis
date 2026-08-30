@@ -13,7 +13,7 @@
 #pragma once
 
 
-static const int __WidthOfScrollbar = 22; // (pixels)
+static const int __WidthOfScrollbar = 26; // (pixels)
 
 static const int kNullEntry = -1;
 
@@ -31,6 +31,15 @@ static const int kMainExploderPanelIndex    = 10;
 static const int kLogPanelIndex             = 99;
 
 static const int kDBSelectedFolder   = 0;
+
+static const int kTaskSummary = 0;
+static const int kTaskProperties = 1;
+static const int kTaskStructure = 2;
+static const int kTaskSearch = 3;
+static const int kTaskMap = 4;
+static const int kTaskDuplicatesName = 5;
+static const int kTaskDuplicatesSize = 6;
+static const int kTaskExploder = 7;
 
 static const int kFormFileSpread     = 1;
 static const int kFormReference      = 2;
@@ -121,3 +130,8 @@ static const int TableColumnLookup[56] = { 2,3, 3,4, 4,5, 5,6,              	// 
 										   1,3, 2,4, 3,5, 4,6, 5,7, 6, 2,   	// 10-15 = FH Compare Right
 										   1,5, 2,6, 3,7, 4,8, 5,9, 6, 10,   	// 16-21 = navigation left
 										   1,5, 2,6, 3,7, 4,8, 5,9, 6, 10  };	// 22-27 = navigation side
+
+static const int kGridColourOn = 0x00666666;
+static const int kGridColourOff = 0x00444444;
+static const int kGridColourSelected = 0x00664422;
+static const int kGridHeader = 0x00444444;

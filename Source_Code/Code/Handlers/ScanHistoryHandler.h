@@ -29,6 +29,7 @@ public:
 
 	std::vector<ScanHistoryItem*> History;
 
+    ScanHistoryHandler(const std::wstring);
 	~ScanHistoryHandler();
 
     void Clear();

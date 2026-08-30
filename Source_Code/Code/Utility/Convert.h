@@ -30,7 +30,7 @@ namespace Convert
 	std::wstring ConvertUsefulUnitToString(const std::wstring);
 
 	[[nodiscard]] std::wstring BoolToString(bool);
-	[[nodiscord]] int BoolToInteger(bool);
+	[[nodiscard]] int BoolToInteger(bool);
 
 	[[nodiscard]] int FileTimeToDateInt(FILETIME*);
 	[[nodiscard]] int FileTimeToTimeInt(FILETIME*);
