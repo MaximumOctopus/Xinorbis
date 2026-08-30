@@ -175,8 +175,8 @@ __published:	// IDE-managed Components
 	TMenuItem *miTreeReport;
 	TMenuItem *miXMLReport;
 	TSpeedButton *sbReportDate;
-	TMenuItem *Dbug1;
-	TMenuItem *Debug1;
+	TMenuItem *miDebug;
+	TMenuItem *miDOpenDebug;
 	TSpeedButton *sbReportJSON;
 	TMenuItem *miLang1;
 	TMenuItem *miLang3;
@@ -210,6 +210,13 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbSourceFolderHistory;
 	TImage *iScanWarning;
 	TMenuItem *miXinorbisReport;
+	TMenuItem *N2;
+	TMenuItem *N3;
+	TMenuItem *Select1;
+	TMenuItem *Select2;
+	TMenuItem *Search2;
+	TMenuItem *Search3;
+	TMenuItem *Structure1;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
@@ -302,6 +309,8 @@ __published:	// IDE-managed Components
 	void __fastcall sbSourceLiveClick(TObject *Sender);
 	void __fastcall sbSourceFolderHistoryClick(TObject *Sender);
 	void __fastcall miXinorbisReportClick(TObject *Sender);
+	void __fastcall miDOpenDebugClick(TObject *Sender);
+	void __fastcall Select1Click(TObject *Sender);
 private:
 
 	constexpr static int kSideMenuWelcomeCount  = 2;

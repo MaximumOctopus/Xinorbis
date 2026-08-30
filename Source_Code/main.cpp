@@ -81,6 +81,7 @@
 #include "XFormAbout.h"
 #include "XFormCategoryColours.h"
 #include "XFormCheckVersion.h"
+#include "XFormDebug.h"
 #include "XFormFileAssociations.h"
 #include "XFormFileAges.h"
 #include "XFormFileSpread.h"
@@ -134,9 +135,9 @@ void __fastcall TFormMain::FormCreate(TObject *Sender)
 {
 	GSystemGlobal = new SystemGlobal();
 
-	CreateFrames();
-
 	ConfigureObjects();
+
+	CreateFrames();
 
 	SetLanguageText();
 	SetMenuLanguageText();
@@ -206,7 +207,7 @@ void TFormMain::CreateFrames()
 	FrameSelect->Align = alClient;
 	FrameSelect->OnNewScan = std::bind(OnNewScan, std::placeholders::_1);
 //  FrameSelect.OnChangeFHPath   := RequestNewFHPath;
-    FrameSelect->OnScanWithMultiple = std::bind(RequestNewCombineScan, std::placeholders::_1);
+	FrameSelect->OnScanWithMultiple = std::bind(RequestNewCombineScan, std::placeholders::_1);
 
 	FrameSummary = new TFrameSummary(this);
 	FrameSummary->Parent = pMainCanvas;
@@ -229,14 +230,14 @@ void TFormMain::CreateFrames()
 	FrameProperties->Parent = pMainCanvas;
 	FrameProperties->Align = alClient;
 	FrameProperties->Visible = false;
-//  FrameReports[aDataIndex].IsFHUpdateThreadRunning     := IsFolderHistoryRunning;
-//  FrameReports[aDataIndex].OnNewScan                   := RequestNewScan;
-//  FrameReports[aDataIndex].OnNewSearch                 := RequestNewSearch;
-//  FrameReports[aDataIndex].OnNewSummary                := RequestNewSummary;
-//  FrameReports[aDataIndex].OnProcessWindowStatusChange := OnProcessWindowStatusChange;
-//  FrameReports[aDataIndex].OnSetStatusBarText          := OnStatusBarChange;
-//  FrameReports[aDataIndex].OnSettingsTab               := OnOpenSettingsTab;
-//  FrameReports[aDataIndex].OnSetTutorialBarText        := OnTutorialBarChange;
+//  FrameProperties->IsFHUpdateThreadRunning = IsFolderHistoryRunning;
+	FrameProperties->OnScanWithNewPath = std::bind(RequestNewScan, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	FrameProperties->OnNewSearch = std::bind(RequestNewSearch, std::placeholders::_1, std::placeholders::_2);
+//  FrameProperties->OnNewSummary = RequestNewSummary;
+//  FrameProperties->OnProcessWindowStatusChange = OnProcessWindowStatusChange;
+//  FrameProperties->OnSetStatusBarText = OnStatusBarChange;
+//  FrameProperties->OnSettingsTab = OnOpenSettingsTab;
+//  FrameProperties->OnSetTutorialBarText = OnTutorialBarChange;
 
 	FrameSearch = new TFrameSearch(this);
 	FrameSearch->Parent = pMainCanvas;
@@ -249,7 +250,6 @@ void TFormMain::CreateFrames()
 	FrameStructure->Parent = pMainCanvas;
 	FrameStructure->Align = alClient;
 	FrameStructure->Visible = false;
-	//  FrameNavigation[aDataIndex].OnProcessWindowStatusChange   := OnProcessWindowStatusChange;
 
 //	  FrameWebReports  := TFrameWebReports.Create(Self);
 //  FrameWebReports.Parent  := Panel2;
@@ -260,23 +260,23 @@ void TFormMain::CreateFrames()
 
 void TFormMain::CreateFolderHistoryFrame()
 { /*                                      FolderHistory
-  FrameFolderHistory := TFrameFolderHistory.Create(Self);
-  FrameFolderHistory.Parent  := Panel2;
-  FrameFolderHistory.Visible := False;
-  FrameFolderHistory.Init;
-  FrameFolderHistory.GetLeftOffset                 := OnGetLeftOffset;
-  FrameFolderHistory.GetTopOffset                  := OnGetTopOffset;
-  FrameFolderHistory.IsFHUpdateThreadRunning       := IsFolderHistoryRunning;
-  FrameFolderHistory.OnExtSetSidePanelDisplay      := OnExtSetSidePanelDisplay;
-  FrameFolderHistory.OnOpenSearchWizard            := OnOpenSearchWizard;
-  FrameFolderHistory.OnProcessWindowProgressChange := OnProcessWindowProgressChange;
-  FrameFolderHistory.OnProcessWindowStatusChange   := OnProcessWindowStatusChange;
-  FrameFolderHistory.OnSetStatusBarText            := OnStatusBarChange;
-  FrameFolderHistory.OnSetTutorialBarText          := OnTutorialBarChange;
-  FrameFolderHistory.OnResetDisplay                := OnResetDisplay;
-  FrameFolderHistory.OnScanFromFolderHistory       := ScanFromFolderHistory;
-  FrameFolderHistory.OnUpdateHistoryFinished       := OnUpdateHistoryFinished;
-  FrameFolderHistory.OnChartsHaveChanged           := OnChartsHaveChanged; */
+	FrameFolderHistory := TFrameFolderHistory.Create(Self);
+	FrameFolderHistory.Parent  := Panel2;
+	FrameFolderHistory.Visible := False;
+	FrameFolderHistory.Init;
+	FrameFolderHistory.GetLeftOffset                 := OnGetLeftOffset;
+	FrameFolderHistory.GetTopOffset                  := OnGetTopOffset;
+	FrameFolderHistory.IsFHUpdateThreadRunning       := IsFolderHistoryRunning;
+	FrameFolderHistory.OnExtSetSidePanelDisplay      := OnExtSetSidePanelDisplay;
+	FrameFolderHistory.OnOpenSearchWizard            := OnOpenSearchWizard;
+	FrameFolderHistory.OnProcessWindowProgressChange := OnProcessWindowProgressChange;
+	FrameFolderHistory.OnProcessWindowStatusChange   := OnProcessWindowStatusChange;
+	FrameFolderHistory.OnSetStatusBarText            := OnStatusBarChange;
+	FrameFolderHistory.OnSetTutorialBarText          := OnTutorialBarChange;
+	FrameFolderHistory.OnResetDisplay                := OnResetDisplay;
+	FrameFolderHistory.OnScanFromFolderHistory       := ScanFromFolderHistory;
+	FrameFolderHistory.OnUpdateHistoryFinished       := OnUpdateHistoryFinished;
+	FrameFolderHistory.OnChartsHaveChanged           := OnChartsHaveChanged; */
 }
 
 
@@ -288,7 +288,7 @@ void TFormMain::FreeFrames()
 void TFormMain::SetLanguageText()
 {
 	Caption = (L"xinorbis :: " + __XVersion + L" / " + __XDate).c_str();
-	sbMain->Panels->Items[0]->Text = (GLanguageHandler->Text[kWelcomeTo] + L" Xinorbis " + __XVersion + L" / " + __XDate + L". (c) Paul Alan Freshney 2002-" + Utility::CurrentYear()).c_str();
+	sbMain->SimpleText = (GLanguageHandler->Text[kWelcomeTo] + L" Xinorbis " + __XVersion + L" / " + __XDate + L". (c) Paul Alan Freshney 2002-" + Utility::CurrentYear()).c_str();
 
 	// =========================================================================================
 
@@ -426,6 +426,9 @@ void TFormMain::SetMenuLanguageText()
 	miHCheckForUpdates->Caption = GLanguageHandler->Text[kCheckForUpdates].c_str();
 	miHAbout->Caption           = GLanguageHandler->Text[kAbout].c_str();
 
+	#ifdef _DEBUG
+	miDebug->Visible = true;
+    #endif
 
 	//LoadMenu(FrameSearch.puQuickSearch,          GSystemGlobal.ExePath + 'data\languages\' + languagesymbol + '\QuickSearch.menu');
 // TO DO	LoadMenu(FrameFolderHistory.puFHQuickSearch, GSystemGlobal.ExePath + 'data\languages\' + languagesymbol + '\FHQuickSearch.menu');
@@ -465,7 +468,7 @@ void TFormMain::UpdateGUICustomNames(int data_source)
 void TFormMain::ToggleSoftwareStatus(int index, bool status)
 {
 	FrameSelect->bScanNow->Enabled        = status;
-	FrameSelect->eScanPath->Enabled       = status;
+	FrameSelect->cbScanPath->Enabled      = status;
 	FrameSelect->bSelect->Enabled         = status;
 	FrameSelect->bExcludeFolders->Enabled = status;
 	FrameSelect->bExcludeFiles->Enabled   = status;
@@ -846,26 +849,26 @@ void TFormMain::DoPreferenceChanges()
 
 
 void TFormMain::RequestNewScan(const std::wstring path, int data_source, bool from_file)
-{             /* to do
+{
 	if (from_file)
 	{
-		if Pos('.zsr2', aNewPath) <> 0)
+		if (Utility::GetFileExtension(path) == L".zsr2")
 		{
-			XinorbisScan(aDataIndex, '', aNewPath, ScanTypeNormal, ScanSourceFileXin2Detailed)
+//			XinorbisScan(aDataIndex, '', aNewPath, ScanTypeNormal, ScanSourceFileXin2Detailed)
 		}
-		else if Pos('.zsr', aNewPath) <> 0 then
+		else if (Utility::GetFileExtension(path) == L".zsr")
 		{
-			XinorbisScan(aDataIndex, '', aNewPath, ScanTypeNormal, ScanSourceFileXinDetailed)
+//			XinorbisScan(aDataIndex, '', aNewPath, ScanTypeNormal, ScanSourceFileXinDetailed)
 		}
 		else
 		{
-			BuildMainFromCSV(aDataIndex, aNewPath);
+//			BuildMainFromCSV(aDataIndex, aNewPath);
 		}
 	}
 	else
 	{
-		XinorbisScan(aDataIndex, aNewPath, '', ScanTypeNormal, ScanSourceLive);
-	}                   */
+//		XinorbisScan(aDataIndex, aNewPath, '', ScanTypeNormal, ScanSourceLive);
+	}
 }
 
 
@@ -877,7 +880,7 @@ void TFormMain::RequestNewCombineScan(int status)
 
 void TFormMain::RequestNewSummary(int data_source, bool auto_open)
 {
-	// TO DO BuildSummary(aDataIndex, 0);
+	// TO DO BuildSummary(data_source, 0);
 }
 
 
@@ -894,7 +897,7 @@ void TFormMain::RequestNewFHPath(const std::wstring path)
 
 void TFormMain::RequestNewSearch(const std::wstring search, int data_source)
 {
-	//SetSidePanelDisplay(NullEntry, 4, NullEntry, 1);
+	//SetSidePanelDisplay(kNullEntry, 4, kNullEntry, 1);
 	// make sure to set menu and show search frame ^ ?
 
 	//FrameSearch.DoSearch(aNewSearch);
@@ -1133,6 +1136,8 @@ void TFormMain::DeactivateSource(int source)
 #pragma region Frame_Select
 void __fastcall TFormMain::OnNewScan(const std::wstring folder)
 {
+    GScanHistoryHandler->Add(folder, L"", L"");
+
 	ExecutionParameters ex;
 
 	if (GScanEngine->Execute(true, folder, ex))
@@ -1148,26 +1153,7 @@ void __fastcall TFormMain::OnNewScan(const std::wstring folder)
 #pragma region Frame_Exploder
 void TFormMain::UpdateFrameExploder()
 {
-//  lDataSource := FSource;
-
-//	if lDataSource <> FrameExploder.DataSource then
-	FrameExploder->Clear();
-
-	if (!FrameExploder->HasData)
-	{
-		FrameExploder->BeginData(GScanEngine->Data[DataSource].Path.String, -1, 0); // -1 for initial data set
-
-		for (int t = 0; t < FrameProperties->sgFolders->RowCount; t++)
-		{
-			//FrameExploder->AddData(FrameReports[lDataSource].sgDirList.Cells[1, t],
-//								   GScanDetails[lDataSource].GetFolderIndex(FrameReports[lDataSource].sgDirList.Cells[1, t]),
-//								   std::to_wstring(FrameReports[lDataSource].sgDirList.Cells[2, t]),
-//								   std::to_wstring(FrameReports[lDataSource].sgDirList.Cells[8, t]),
-//								   __SpectrumColours[(t - 1) % __SpectrumMod]);
-		}
-
-		FrameExploder->EndData();
-	}
+	FrameExploder->Update();
 }
 #pragma end_region
 
@@ -1175,27 +1161,7 @@ void TFormMain::UpdateFrameExploder()
 #pragma region Frame_Map
 void TFormMain::UpdateFrameMap()
 {
-//  int lDataSource := FSource;
-
-	//  if lDataSource <> FrameMap.DataSource then
-	FrameMap->Clear();
-
-  // ====================================================================
-
-	if (!FrameMap->HasData)
-	{
-		FrameMap->BeginData();
-
-		for (int t = 0; t < FrameProperties->sgFolders->RowCount; t++)
-		{
-			//FrameMap.AddData(FrameReports[lDataSource].sgDirList.Cells[1, t],
-		  //					 std::to_wstring(FrameReports[lDataSource].sgDirList.Cells[2, t]),
-			 //				 std::to_wstring(FrameReports[lDataSource].sgDirList.Cells[8, t]),
-			 //				 __SpectrumColours[(t - 1) % __SpectrumMod]);
-		}
-
-		FrameMap->EndData();
-	}
+	FrameMap->Update();
 }
 #pragma end_region
 
@@ -1204,8 +1170,10 @@ void TFormMain::UpdateFrameMap()
 void TFormMain::PostScan()
 {
 	FrameSummary->Update();
-
 	FrameSummary->SetProcessTime(GScanEngine->ProcessTime);
+
+	FrameExploder->NeedsRefresh = true;
+	FrameMap->NeedsRefresh = true;
 
 	FrameProperties->Update();
 
@@ -1805,29 +1773,29 @@ void __fastcall TFormMain::lTaskID1Click(TObject *Sender)
 
 	switch (label->Tag)
 	{
-	case 0:
-		SetSidePanelDisplay(kNullEntry, 1, kNullEntry, 1);
+	case kTaskSummary:
+		SetSidePanelDisplay(kNullEntry, kTaskSummary, kNullEntry, 1);
 		break;
-	case 1:
-		SetSidePanelDisplay(kNullEntry, 2, kNullEntry, 1);
+	case kTaskProperties:
+		SetSidePanelDisplay(kNullEntry, kTaskProperties, kNullEntry, 1);
 		break;
-	case 2:
-		SetSidePanelDisplay(kNullEntry, 3, kNullEntry, 1);
+	case kTaskStructure:
+		SetSidePanelDisplay(kNullEntry, kTaskStructure, kNullEntry, 1);
 		break;
-	case 3:
-		SetSidePanelDisplay(kNullEntry, 4, kNullEntry, 1);
+	case kTaskSearch:
+		SetSidePanelDisplay(kNullEntry, kTaskSearch, kNullEntry, 1);
 		break;
-	case 4:
-		SetSidePanelDisplay(kNullEntry, 5, kNullEntry, 1);
+	case kTaskMap:
+		SetSidePanelDisplay(kNullEntry, kTaskMap, kNullEntry, 1);
 		break;
-	case 5:
-		SetSidePanelDisplay(kNullEntry, 6, kNullEntry, 1);
+	case kTaskDuplicatesName:
+		SetSidePanelDisplay(kNullEntry, kTaskDuplicatesName, kNullEntry, 1);
 		break;
-	case 6:
-		SetSidePanelDisplay(kNullEntry, 7, kNullEntry, 1);
+	case kTaskDuplicatesSize:
+		SetSidePanelDisplay(kNullEntry, kTaskDuplicatesSize, kNullEntry, 1);
 		break;
-	case 7:
-		SetSidePanelDisplay(kNullEntry, 8, kNullEntry, 1);
+	case kTaskExploder:
+		SetSidePanelDisplay(kNullEntry, kTaskExploder, kNullEntry, 1);
 		break;
 	}
 }
@@ -1861,15 +1829,19 @@ void TFormMain::SetSidePanelDisplay(int WelcomeId, int TaskId, int TaskSubId, bo
 
 
 void TFormMain::SetWelcomeDisplay(int WelcomeId)
-{/*
-  for t := 1 to SideMenuWelcomeCount do begin
-	if t <> welcomeID then begin
-	  WelcomeOptions[t].Font.Style := [];
-	end;
-  end;
+{
+	for (int t = 0; t < kSideMenuWelcomeCount; t++)
+	{
+		if (t != WelcomeId)
+		{
+			WelcomeOptions[t]->Font->Style.Clear();
+		}
+	}
 
-  if (welcomeID <> -1) and (welcomeID <= SideMenuWelcomeCount) then
-	WelcomeOptions[welcomeID].Font.Style := [fsBold]; */
+	if (WelcomeId != -1 && WelcomeId < kSideMenuWelcomeCount)
+	{
+		WelcomeOptions[WelcomeId]->Font->Style = TFontStyles() << fsBold;
+	}
 }
 
 
@@ -1899,9 +1871,10 @@ void TFormMain::DoWelcome(int WelcomeId)
 
 		if (GSettingsHandler->System.Tutorial)
 		{
-//			OnTutorialBarChange(GSystemGlobal.ExePath + L"data\\languages\\" +
-//													TLanguageHandler.GetLanguageSymbol(XSettings.CurrentLanguage) +
-//													L"\\tutorial\\w" + IntToStr(aWelcomeID) + L".dat");
+//			OnTutorialBarChange(GSystemGlobal.ExePath +
+//								L"data\\languages\\" +
+//								GLanguageHandler->GetLanguageSymbol() +
+//								L"\\tutorial\\w" + std::to_wstring(WelcomeId) + L".dat");
 		}
 	}
 }
@@ -1918,11 +1891,11 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 
 	switch (TaskId)
 	{
-	case 1:
+	case kTaskSummary:
 		HandleResizing(kMainSummaryPanelIndex);
 		FrameSummary->BringToFront();
 		break;
-	case 2:
+	case kTaskProperties:
 		HandleResizing(kMainPropertiesPanelIndex);
 		FrameProperties->BringToFront();
 
@@ -1930,7 +1903,7 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 		 // FrameReports.pMainReports.ActivePageIndex := aTaskSubID;
 
 		break;
-/*	case 3:     folder history stuff
+/*	case kTaskStructure:     folder history stuff
 		if (GUpdateFolderHistoryUpdateThread <> Nil) then begin
 			   ShowXDialog(XText[kWarning], XText[kleaseWaitFolderHistory], XDialogTypeXinorbis);
 			 end
@@ -1953,35 +1926,35 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 			 end;
 		   end;
 		break;          */
-	case 4:
+	case kTaskSearch:
 		HandleResizing(kMainSearchPanelIndex);
 
 		FrameSearch->DataSource = DataSource;
 		FrameSearch->SetTab(0);
 		FrameSearch->BringToFront();
 		break;
-	case 5:
+	case kTaskMap:
 		HandleResizing(kMainMapPanelIndex);
 
 //		UpdateFrameMap();
 
 		FrameMap->BringToFront();
 		break;
-	case 6:
+	case kTaskDuplicatesName:
 		HandleResizing(kMainSearchPanelIndex);
 
 		FrameSearch->DataSource = DataSource;
 		FrameSearch->SetTab(2);
 		FrameSearch->BringToFront();
 		break;
-	case 7:
+	case kTaskDuplicatesSize:
 		HandleResizing(kMainSearchPanelIndex);
 
 		FrameSearch->DataSource = DataSource;
 		FrameSearch->SetTab(3);
 		FrameSearch->BringToFront();
 		break;
-	case 8:
+	case kTaskExploder:
 		HandleResizing(kMainExploderPanelIndex);
 
 //		UpdateFrameExploder();
@@ -2572,7 +2545,7 @@ void __fastcall TFormMain::miHContextHelpClick(TObject *Sender)
 
 void __fastcall TFormMain::miHUserManualClick(TObject *Sender)
 {
-	WindowsUtility::ExecuteFile(L"\"" + GSystemGlobal->ExePath + L"Xinorbis10 User Manual.pdf\"", L"");
+	WindowsUtility::ExecuteFile(L"\"" + GSystemGlobal->ExePath + L"Xinorbis10_User_Manual.pdf\"", L"");
 }
 
 
@@ -2607,8 +2580,41 @@ void __fastcall TFormMain::miHCheckForUpdatesClick(TObject *Sender)
 #pragma end_region
 
 
+#pragma region Menu_Debug
+void __fastcall TFormMain::miDOpenDebugClick(TObject *Sender)
+{
+	FormDebug->ShowModal();
+}
+
+
+void __fastcall TFormMain::Select1Click(TObject *Sender)
+{
+	TMenuItem *mi = (TMenuItem*)Sender;
+
+	switch (mi->Tag)
+	{
+	case 0:
+		//select
+		break;
+	case 1:
+		lTaskID1Click(lTaskID2);
+		break;
+	case 2:
+		//search
+		break;
+	case 3:
+		//summary
+		break;
+	case 4:
+		//structure
+		break;
+	}
+}
+#pragma end_region
+
+
 #pragma region Folder_History
-/*void TFormMain.TryBuildFolderHistoryAvailable;
+/*void TFormMain::TryBuildFolderHistoryAvailable;
 begin
   if (XSettings.HistorySettings.Enabled) and (XSettings.System.UserEnabledFH) then begin
 	FrameFolderHistory.BuildFolderHistoryAvailable;
@@ -2690,7 +2696,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.CSV[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																  WindowsUtility::GetComputerNetName() + L"\\CSV\\autosaves\\" +
-																  Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																  Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".csv";
 	}
 
@@ -2698,7 +2704,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.Date[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																   WindowsUtility::GetComputerNetName() + L"\\CSV\\autosaves\\" +
-																   Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																   Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".csv";
 	}
 
@@ -2706,7 +2712,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.HTML[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																   WindowsUtility::GetComputerNetName() + L"\\HTML\\autosaves\\" +
-																   Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																   Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".htm";
 	}
 
@@ -2714,7 +2720,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.JSON[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																   WindowsUtility::GetComputerNetName() + L"\\CSV\\autosaves\\" +
-																   Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																   Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".csv";
 	}
 
@@ -2722,7 +2728,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.Text[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"\\reports\\" +
 																   WindowsUtility::GetComputerNetName() + L"\\text\\autosaves\\" +
-																   Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																   Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".txt";
 	}
 
@@ -2730,7 +2736,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.Tree[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																   WindowsUtility::GetComputerNetName() + L"\\tree\\autosaves\\" +
-																   Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																   Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																   Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".txt";
 	}
 
@@ -2738,7 +2744,7 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.Xinorbis[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																	  WindowsUtility::GetComputerNetName() + L"\\xinorbis\\autosaves\\" +
-																	  Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																	  Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																	  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".zsr2";
 	}
 
@@ -2748,11 +2754,11 @@ void TFormMain::AutoSaveReports(int data_source)
 	{
 		GSettingsHandler->Reports.XML[kReportLayoutAutoSave].FileName = GSystemGlobal->ExePath + L"reports\\" +
 																  WindowsUtility::GetComputerNetName() + L"\\XML\\autosaves\\" +
-																  Formatting::MakeFileNameCompatible(FrameSelect->eScanPath->Text.c_str()) + L"_" +
+																  Formatting::MakeFileNameCompatible(FrameSelect->cbScanPath->Text.c_str()) + L"_" +
 																  Utility::GetDate(DateTimeFormat::YYYYMMDD) + L"_" + Utility::GetTime(DateTimeFormat::File) + L".xml";
 	}
 
-	GReportHandler->AutoSave(FrameSelect->eScanPath->Text.c_str(), data_source,
+	GReportHandler->AutoSave(FrameSelect->cbScanPath->Text.c_str(), data_source,
 							 GSettingsHandler->Reports.CSV[kReportLayoutAutoSave], GSettingsHandler->Reports.Date[kReportLayoutAutoSave],
 							 GSettingsHandler->Reports.HTML[kReportLayoutAutoSave], GSettingsHandler->Reports.JSON[kReportLayoutAutoSave],
 							 GSettingsHandler->Reports.Text[kReportLayoutAutoSave], GSettingsHandler->Reports.Tree[kReportLayoutAutoSave],
@@ -2841,16 +2847,10 @@ begin
 
   // ===========================================================================
 
-  GXGuiUtil.SetButtonOffImage(FrameSearch.sbSCAccessed,   CImageAccessed);
-  GXGuiUtil.SetButtonOffImage(FrameSearch.sbSCModified,   CImageModified);
-  GXGuiUtil.SetButtonOffImage(FrameSearch.sbSCOwner,      CImageOwner);
-  GXGuiUtil.SetButtonOffImage(FrameSearch.sbSCAttributes, CImageAttributes);
-
-  // ===========================================================================
 
   if (ParamStr(1) <> '') then begin
-    if UpperCase(ExtractFileExt(ParamStr(1))) = '.ZSR2' then
-      XinorbisScan(dataLatestScan, '', ParamStr(1), ScanTypeNormal, ScanSourceFileXin2Detailed)
+	if UpperCase(ExtractFileExt(ParamStr(1))) = '.ZSR2' then
+	  XinorbisScan(dataLatestScan, '', ParamStr(1), ScanTypeNormal, ScanSourceFileXin2Detailed)
     else if UpperCase(ExtractFileExt(ParamStr(1))) = '.ZSR' then
 	  XinorbisScan(dataLatestScan, '', ParamStr(1), ScanTypeNormal, ScanSourceFileXinDetailed)
     else begin
@@ -2944,3 +2944,4 @@ procedure TfrmMain.CreateSearchFrame;
 end;
 
 5569 :: 4438 */
+
