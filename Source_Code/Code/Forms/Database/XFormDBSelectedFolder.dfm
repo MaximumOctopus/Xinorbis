@@ -1,8 +1,7 @@
 object Form20: TForm20
   Left = 0
   Top = 0
-  Caption = 'Form20'
-  ClientHeight = 493
+  ClientHeight = 633
   ClientWidth = 1447
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,7 +9,16 @@ object Form20: TForm20
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
   TextHeight = 15
+  object Splitter1: TSplitter
+    Left = 633
+    Top = 57
+    Height = 535
+    OnMoved = Splitter1Moved
+    ExplicitLeft = 1185
+    ExplicitTop = 51
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -21,7 +29,6 @@ object Form20: TForm20
     Color = 3355443
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 1107
     object Image1: TImage
       Left = 8
       Top = 4
@@ -66,6 +73,7 @@ object Form20: TForm20
         FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
         FF00}
       Transparent = True
+      OnClick = Image1Click
     end
     object lFolder: TLabel
       Left = 40
@@ -109,7 +117,7 @@ object Form20: TForm20
   end
   object Panel2: TPanel
     Left = 0
-    Top = 452
+    Top = 592
     Width = 1447
     Height = 41
     Align = alBottom
@@ -117,8 +125,7 @@ object Form20: TForm20
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 389
-    ExplicitWidth = 1107
+    ExplicitTop = 452
     DesignSize = (
       1447
       41)
@@ -155,6 +162,7 @@ object Form20: TForm20
         79FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF9F8A75A17347A9
         6D33A86D349F73489F8B78FF00FFFF00FFFF00FFFF00FFFF00FF}
       TabOrder = 0
+      OnClick = bHelpClick
     end
     object bCopy: TBitBtn
       Left = 1313
@@ -216,7 +224,7 @@ object Form20: TForm20
         6F6F777777FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       NumGlyphs = 2
       TabOrder = 1
-      ExplicitLeft = 973
+      OnClick = bCopyClick
     end
     object bClose: TBitBtn
       Left = 1351
@@ -254,7 +262,6 @@ object Form20: TForm20
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       ModalResult = 1
       TabOrder = 2
-      ExplicitLeft = 1011
     end
     object bFiles: TBitBtn
       Left = 1158
@@ -264,7 +271,7 @@ object Form20: TForm20
       Anchors = [akTop, akRight]
       Cancel = True
       TabOrder = 3
-      ExplicitLeft = 818
+      OnClick = bFilesClick
     end
     object bSize: TBitBtn
       Tag = 1
@@ -275,14 +282,14 @@ object Form20: TForm20
       Anchors = [akTop, akRight]
       Cancel = True
       TabOrder = 4
-      ExplicitLeft = 892
+      OnClick = bFilesClick
     end
   end
   object vtcSelected: TChart
-    Left = 0
+    Left = 636
     Top = 57
-    Width = 1447
-    Height = 395
+    Width = 811
+    Height = 535
     AllowPanning = pmNone
     Gradient.EndColor = 16579071
     Legend.Alignment = laLeft
@@ -321,8 +328,10 @@ object Form20: TForm20
     BevelOuter = bvNone
     Color = 3355443
     TabOrder = 2
-    ExplicitWidth = 1107
-    ExplicitHeight = 332
+    OnMouseDown = vtcSelectedMouseDown
+    ExplicitLeft = 0
+    ExplicitWidth = 1447
+    ExplicitHeight = 224
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
       15
@@ -343,5 +352,14 @@ object Form20: TForm20
       YValues.Name = 'Bar'
       YValues.Order = loNone
     end
+  end
+  object sgDatabase: TStringGrid
+    Left = 0
+    Top = 57
+    Width = 633
+    Height = 535
+    Align = alLeft
+    TabOrder = 3
+    OnDrawCell = sgDatabaseDrawCell
   end
 end

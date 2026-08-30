@@ -15,85 +15,73 @@ __fastcall TForm20::TForm20(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 
-/*    folder history
 
+void __fastcall TForm20::FormClose(TObject *Sender, TCloseAction &Action)
 {
-  (c) Paul Alan Freshney 2002-2020
-  (c) Aardvark Digital 2002
-  (c) Maximum Octopus Limted 2020
+/*  fd : TFormDetails;
 
-  www.freshney.org :: paul@freshney.org :: maximumoctopus.com :: xinorbis.com
+ begin
+  fd.formID :=_DBSelectedFolder;
+  fd.x      := Left;
+  fd.y      := Top;
+  fd.w      := Width;
+  fd.h      := Height;
+  fd.p1     := sgDatabase.Width;
 
-  Last Modified: January 11th 2020
+  XSettings.SaveFormDetails(fd); */
+
+	Action = caFree;
 }
 
 
-unit X.Form.DBSelectedFolder;
-
-interface
-
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, Grids, BaseGrid, AdvGrid, AdvObj,
-  VCLTee.TeeProcs, VCLTee.TeEngine, VCLTee.Chart, VCLTee.Series, AdvSplitter, AdvUtil,
-  VclTee.TeeGDIPlus,
-
-  X.CFolderHistoryObject, X.Help,
-
-  X.GridUtility, X.LanguageHandler, X.SystemGlobal, X.Windows;
-
-type
-  TfrmDBSelectedFolder = class(TForm)
-    sgDatabase: TAdvStringGrid;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    bHelp: TBitBtn;
-    bCopy: TBitBtn;
-    bClose: TBitBtn;
-    Image1: TImage;
-    lFolder: TLabel;
-    lCount: TLabel;
-    lComputerName: TLabel;
-    bFiles: TBitBtn;
-    bSize: TBitBtn;
-    vtcSelected: TChart;
-    Series1: TBarSeries;
-    Splitter1: TAdvSplitter;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure bHelpClick(Sender: TObject);
-    procedure bCopyClick(Sender: TObject);
-    procedure BuildGraph(Sender: TObject);
-    procedure vtcSelectedMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure sgDatabaseResize(Sender: TObject);
-    procedure sgDatabaseDrawCell(Sender: TObject; ACol, ARow: Integer;
-      Rect: TRect; State: TGridDrawState);
-    procedure sgDatabaseGetCellColor(Sender: TObject; ARow, ACol: Integer;
-      AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-    procedure Image1Click(Sender: TObject);
-  private
-    ComputerName, ScanPath : string;
-    graphsizeformat : integer;
-  public
-    { Public declarations }
-  end;
-
-var
-  frmDBSelectedFolder: TfrmDBSelectedFolder;
-
-procedure DoDBSelectedFolder(const a, b : string);
+void __fastcall TForm20::Image1Click(TObject *Sender)
+{
+// TXWindows.ExecuteFile(0, '"' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\' + '"', '', '');
+}
 
 
-implementation
+void __fastcall TForm20::bHelpClick(TObject *Sender)
+{
+	//HelpHandler::OpenHelpPage(L"dbselectedfolder.htm");
+}
 
-{$R *.dfm}
 
-uses
-  X.Utility, X.MD5, X.Global, X.Settings, X.Constants, X.Conversions,
+void __fastcall TForm20::bFilesClick(TObject *Sender)
+{
+/*  t,dataselect : integer;
+  doutput : double;
 
-  X.Dialogs.Dialog;
+ begin
+  dataselect :=TBitBtn(Sender).Tag;
 
+  vtcSelected.SeriesList[0].Clear;
+
+  for t := 1 to sgDatabase.RowCount - 1 do begin
+	case dataselect of
+	  CDataFiles : vtcSelected.SeriesList[0].Add(StrToFloat(sgDatabase.Cells[1, t]), IntToStr(t), DefaultDisplayColours[1 + (t mod 12)]);
+	  CDataSize  : begin
+					 case graphsizeformat of
+					   CGraphFormatKilobyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024);               // size in KB
+					   CGraphFormatMegabyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024 * 1024);        // size in MB
+					   CGraphFormatGigabyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024 * 1024 * 1024); // size in GB
+					 else
+					   doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024);                   // size in KB
+					 end;
+
+							  vtcSelected.SeriesList[0].Add(doutput, IntToStr(t), DefaultDisplayColours[1 + (t mod 12)]);
+		  end;
+	end;*/
+}
+
+
+void __fastcall TForm20::bCopyClick(TObject *Sender)
+{
+	// TGridUtility.CopyGridToClipboard(0, sgDatabase);
+}
+
+
+
+/*    folder history
 
 const
   CGraphFormatKilobyte = 0;
@@ -145,24 +133,6 @@ procedure TfrmDBSelectedFolder.FormCreate(Sender: TObject);
 
     sgDatabaseResize(Nil);
   end;
-end;
-
-
-procedure TfrmDBSelectedFolder.FormClose(Sender: TObject;  var Action: TCloseAction);
- var
-  fd : TFormDetails;
-
- begin
-  fd.formID :=_DBSelectedFolder;
-  fd.x      := Left;
-  fd.y      := Top;
-  fd.w      := Width;
-  fd.h      := Height;
-  fd.p1     := sgDatabase.Width;
-
-  XSettings.SaveFormDetails(fd);
-
-  Action := caFree;
 end;
 
 
@@ -250,53 +220,14 @@ procedure TfrmDBSelectedFolder.FormShow(Sender: TObject);
 end;
 
 
-procedure TfrmDBSelectedFolder.Image1Click(Sender: TObject);
-begin
-  TXWindows.ExecuteFile(0, '"' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\' + '"', '', '');
-end;
+
+end. */
 
 
-procedure TfrmDBSelectedFolder.sgDatabaseDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
- var
-  l,w : integer;
-
- begin
-  if ARow <> 0 then begin
-    case ACol of
-      1,2,3 : begin
-                w := TAdvStringGrid(Sender).Canvas.TextWidth(TAdvStringGrid(Sender).Cells[ACol, ARow]);
-                l := TAdvStringGrid(Sender).ColWidths[ACol] - w;
-
-                TAdvStringGrid(Sender).Canvas.TextRect(Rect, Rect.Left + l - 2, Rect.Top + 2, TAdvStringGrid(Sender).Cells[ACol, ARow]);
-              end;
-    end;
-  end;
-end;
-
-
-procedure TfrmDBSelectedFolder.sgDatabaseGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-begin
-  if gdSelected in AState then
-    ABrush.Color := CGridColourSelected
-  else begin
-    if Odd(ARow) then
-      ABrush.Color := CGridColourOn
-    else
-      ABrush.Color := CGridColourOff;
-  end;
-end;
-
-
-procedure TfrmDBSelectedFolder.sgDatabaseResize(Sender: TObject);
- begin
-  sgDatabase.ColWidths[0] := sgDatabase.Width - (240 + 23);
-end;
-
-
-procedure TfrmDBSelectedFolder.vtcSelectedMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-  AValueIndex : integer;
+void __fastcall TForm20::vtcSelectedMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+/*  AValueIndex : integer;
 
 begin
   Assert(Sender <> Nil, 'vtcSelectedMouseMove :: Nil chart');
@@ -304,55 +235,52 @@ begin
   AValueIndex := TChart(Sender).SeriesList[0].GetCursorValueIndex;
 
   if AValueIndex > -1 then begin
-    Screen.cursor := crHandPoint;
+	Screen.cursor := crHandPoint;
 
-    sgDatabase.SelectRows(AValueIndex + 1, 1);
+	sgDatabase.SelectRows(AValueIndex + 1, 1);
   end
   else begin
-    Screen.cursor := crDefault;
-  end;
-end;
+	Screen.cursor := crDefault;
+  end;*/
+}
 
 
-procedure TfrmDBSelectedFolder.bHelpClick(Sender: TObject);
- begin
-	HelpHandler::OpenHelpPage(L"dbselectedfolder.htm");
-end;
-
-
-procedure TfrmDBSelectedFolder.bCopyClick(Sender: TObject);
- begin
-  TGridUtility.CopyGridToClipboard(0, sgDatabase);
-end;
-
-
-procedure TfrmDBSelectedFolder.BuildGraph(Sender: TObject);
+void __fastcall TForm20::sgDatabaseDrawCell(TObject *Sender, System::LongInt ACol,
+          System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+/*procedure TfrmDBSelectedFolder.sgDatabaseDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
  var
-  t,dataselect : integer;
-  doutput : double;
+  l,w : integer;
 
  begin
-  dataselect :=TBitBtn(Sender).Tag;
+  if ARow <> 0 then begin
+	case ACol of
+	  1,2,3 : begin
+				w := TAdvStringGrid(Sender).Canvas.TextWidth(TAdvStringGrid(Sender).Cells[ACol, ARow]);
+				l := TAdvStringGrid(Sender).ColWidths[ACol] - w;
 
-  vtcSelected.SeriesList[0].Clear;
-
-  for t := 1 to sgDatabase.RowCount - 1 do begin
-    case dataselect of
-      CDataFiles : vtcSelected.SeriesList[0].Add(StrToFloat(sgDatabase.Cells[1, t]), IntToStr(t), DefaultDisplayColours[1 + (t mod 12)]);
-      CDataSize  : begin
-                     case graphsizeformat of
-                       CGraphFormatKilobyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024);               // size in KB
-                       CGraphFormatMegabyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024 * 1024);        // size in MB
-                       CGraphFormatGigabyte : doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024 * 1024 * 1024); // size in GB
-                     else
-                       doutput := StrToInt64(sgDatabase.Cells[4, t]) / Int64(1024);                   // size in KB
-                     end;
-
-                              vtcSelected.SeriesList[0].Add(doutput, IntToStr(t), DefaultDisplayColours[1 + (t mod 12)]);
-          end;
-    end;
+				TAdvStringGrid(Sender).Canvas.TextRect(Rect, Rect.Left + l - 2, Rect.Top + 2, TAdvStringGrid(Sender).Cells[ACol, ARow]);
+			  end;
+	end;
   end;
 end;
 
+procedure TfrmDBSelectedFolder.sgDatabaseGetCellColor(Sender: TObject; ARow,
+  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+begin
+  if gdSelected in AState then
+	ABrush.Color := CGridColourSelected
+  else begin
+	if Odd(ARow) then
+	  ABrush.Color := CGridColourOn
+	else
+	  ABrush.Color := CGridColourOff;
+  end;
+end;*/
+}
 
-end. */
+
+void __fastcall TForm20::Splitter1Moved(TObject *Sender)
+{
+//	sgDatabase.ColWidths[0] := sgDatabase.Width - (240 + 23);
+}
