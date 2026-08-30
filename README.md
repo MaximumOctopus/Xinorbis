@@ -1,14 +1,20 @@
-A C++ rewrite of Xinorbis is currently in progress. Beta version due Summer/Autumn 2026.
+A C++ rewrite of Xinorbis is currently in progress. Beta version due September/October 2026.
 
 I'll be uploading the code regularly (at least once a week) as I work through the rewrite/remaster.
 
-I'm adding raw functionality first, then once that's working, I'll start tidying and adding the remainder of the missing features.
-
-I don't expect a feature-complete version until the end of 2026. There won't be a stable release until around August/September, but as of late June some functionality is available (though it's going to be buggy and missing major functions for a while...).
+I don't expect a feature-complete version until the end of 2026. There won't be a stable release until around September/October, but as of late August some functionality is available (though it's going to be buggy and missing major functions for a while...).
 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
 
 Database functions are not going to be part of the initial release.
+
+2026/08/30
+
+A lot of improvements in the past couple of weeks. Some QoL stuff, but mostly working on removing the commented-out code, clearing up to-do items, and adding the missing code from the original version (more than I thought!). Many of the Properties tabs now work and its user interface is mostly done.
+
+It's starting to look and feel like a real application! There is still a lot of work to do, but I can now see the finish line in the not-too-distant future. 
+
+The next week or two will see the Properties tabs finished, then I'll work on the rest of the core functions (Search, Duplicates, Summary (nearly finished), Map, Exploder, File Ages, More Detail).
 
 2026/08/16
 
