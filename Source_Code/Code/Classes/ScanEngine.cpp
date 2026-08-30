@@ -846,9 +846,39 @@ void ScanEngine::AnalyseRootFolders()
 
 void ScanEngine::AnalysePostExtensionSpread()
 {
-	for (int t = 0; t < kFileCategoriesCount; t++)
+	for (ConsolidatedData &data : Data[DataSource].ExtensionSpread)
 	{
-		Data[DataSource].ExtensionSpread[t].PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (ConsolidatedData &data : Data[DataSource].Lengths)
+	{
+		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (ConsolidatedData &data : Data[DataSource].Magnitude)
+	{
+		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (RootFolder *folder : Data[DataSource].RootFolders)
+	{
+		folder->PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (UserData *user : Data[DataSource].Users)
+	{
+		user->PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (ConsolidatedData &data : Data[DataSource].FileAttributes)
+	{
+		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
+	}
+
+	for (FileExtension *fe : GFileExtensionHandler->Extensions)
+	{
+		fe->PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
 	}
 }
 

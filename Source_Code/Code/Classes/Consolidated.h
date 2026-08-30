@@ -29,30 +29,30 @@ public:
 	double PercentCount = 0;
 	double PercentSize = 0;
 
-	std::wstring PercentCountString = L"";
-	std::wstring PercentSizeString = L"";
+	std::wstring PercentCountString = L"-";
+	std::wstring PercentSizeString = L"-";
 
 	void PostProcess(int total_count, unsigned __int64 total_size)
 	{
 		if (total_count != 0)
 		{
-			PercentCount = ((double)Count / (double)total_count) * 100;
+			PercentCount = (double)Count / (double)total_count;
 			PercentCountString = Convert::DoubleToPercent(PercentCount);
 		}
 		else
 		{
-			PercentCount = 100;
+			PercentCount = 1.0;
 			PercentCountString = L"100%";
 		}
 
 		if (total_size != 0)
 		{
-			PercentSize = ((double)Size / (double)total_size) * 100;
+			PercentSize = (double)Size / (double)total_size;
 			PercentSizeString = Convert::DoubleToPercent(PercentSize);
 		}
 		else
 		{
-			PercentSize = 100;
+			PercentSize = 1.0;
 			PercentSizeString = L"100%";
 		}
 	}

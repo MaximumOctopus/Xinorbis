@@ -25,6 +25,9 @@ struct DriveDetails
 	std::wstring SerialNumber = L"";
 	std::wstring SerialNumberHex = L"";
 
+	unsigned __int64 SpaceTotal = 0;
+	unsigned __int64 SpaceFree = 0;
+
 	int SectorsPerCluster = 0;
 	int BytesPerSector = 0;
 	int FreeClusters = 0;

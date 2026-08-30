@@ -23,11 +23,19 @@ public:
 	std::wstring Name = L"";
 	std::wstring NameUC = L"";
 
-    int Count = 0;
-    unsigned __int64 Size = 0;
+	int Count = 0;
+	unsigned __int64 Size = 0;
+
+	double PercentCount = 0;
+	double PercentSize = 0;
+
+	std::wstring PercentCountString = L"";
+	std::wstring PercentSizeString = L"";
 
 	int CategoryDataQty[kFileCategoriesCount] = { 0 };
 	unsigned __int64 CategoryDataSize[kFileCategoriesCount] = { 0 };
 
-    UserData(const std::wstring);
+	UserData(const std::wstring);
+
+	void PostProcess(int, unsigned __int64);
 };

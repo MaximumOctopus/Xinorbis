@@ -10,6 +10,7 @@
 //
 // =====================================================================
 
+#include "Convert.h"
 #include "UserData.h"
 
 
@@ -24,4 +25,30 @@ UserData::UserData(const std::wstring name)
         CategoryDataQty[t]  = 0;
         CategoryDataSize[t] = 0;
     }
+}
+
+
+void UserData::PostProcess(int total_count, unsigned __int64 total_size)
+{
+	if (total_count != 0)
+	{
+		PercentCount = (double)Count / (double)total_count;
+		PercentCountString = Convert::DoubleToPercent(PercentCount);
+	}
+	else
+	{
+		PercentCount = 1.0;
+		PercentCountString = L"100%";
+	}
+
+	if (total_size != 0)
+	{
+		PercentSize = (double)Size / (double)total_size;
+		PercentSizeString = Convert::DoubleToPercent(PercentSize);
+	}
+	else
+	{
+		PercentSize = 1.0;
+		PercentSizeString = L"100%";
+	}
 }

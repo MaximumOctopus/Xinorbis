@@ -285,7 +285,7 @@ void ReportSummary::AddSummaryItem(std::ofstream &file, TStringGrid *grid1, TStr
 			{
 				file << Formatting::to_utf8(GLanguageHandler->DriveReport[0] + WindowsUtility::GetDiskTypeString(GScanEngine->Data[DataSource].Path.String + L":") + L"\n");
 
-				if (GScanEngine->Data[DataSource].DiskStats.DriveSpaceTotal >= 0)
+				if (GScanEngine->Data[DataSource].DiskStats.DriveSpaceTotal != 0)
 				{
 					file << Formatting::to_utf8(GLanguageHandler->DriveReport[1] + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceTotal) + L"\n");
 					file << Formatting::to_utf8(GLanguageHandler->DriveReport[2] + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].DiskStats.DriveSpaceFree) + L"\n");
