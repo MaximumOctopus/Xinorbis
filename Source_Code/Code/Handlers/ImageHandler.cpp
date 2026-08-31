@@ -27,6 +27,14 @@ ImageHandler::ImageHandler(const std::wstring folder)
 
 ImageHandler::~ImageHandler()
 {
+	for (int t = 0; t < kButtonImagesCount; t++)
+	{
+		delete ImagesOn[t];
+		delete ImagesOff[t];
+	}
+
+	ImagesOn.clear();
+	ImagesOff.clear();
 }
 
 
@@ -39,13 +47,12 @@ void ImageHandler::LoadIcons(const std::wstring folder)
 		TBitmap *bmon = new TBitmap();
 		bmon->LoadFromFile(file_name.c_str());
 		ImagesOn.push_back(bmon);
-		bmon->Free();
 
 		file_name = folder + L"\\Off\\" + std::to_wstring(t) + L".bmp";
+
 		TBitmap *bmon2 = new TBitmap();
 		bmon2->LoadFromFile(file_name.c_str());
-		ImagesOff.push_back(bmon);
-		bmon2->Free();
+		ImagesOff.push_back(bmon2);
 	}
 
 	for (int t = 0; t < kFileTypeImagesCount; t++)
@@ -55,7 +62,6 @@ void ImageHandler::LoadIcons(const std::wstring folder)
 		TBitmap *bmft = new TBitmap();
 		bmft->LoadFromFile(file_name.c_str());
 		FileTypes.push_back(bmft);
-		bmft->Free();
 	}
 }
 
@@ -68,19 +74,19 @@ void ImageHandler::LoadFlags(const std::wstring folder)
 		flag->LoadFromFile((folder + FlagFiles[t]).c_str());
 
 		Flags.push_back(flag);
-
-		delete flag;
 	}
 }
 
 
-void ImageHandler::SetButtonOnImage(TSpeedButton* button, int inded)
+void ImageHandler::SetButtonOnImage(TSpeedButton* button, int index)
 {
+	button->Glyph->Assign(ImagesOn[index]);
 }
 
 
-void ImageHandler::SetButtonOffImage(TSpeedButton* button, int inded)
+void ImageHandler::SetButtonOffImage(TSpeedButton* button, int index)
 {
+	button->Glyph->Assign(ImagesOff[index]);
 }
 
 
