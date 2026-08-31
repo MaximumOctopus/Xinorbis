@@ -25,6 +25,7 @@
 #include "FileObjectSorted.h"
 #include "RootFolder.h"
 #include "SizeOfFolder.h"
+#include "TempFileObject.h"
 #include "UserData.h"
 
 
@@ -149,7 +150,7 @@ public:
 	std::vector<FileObject*> Files;
 	std::vector<std::wstring> Folders;
 
-	std::vector<std::wstring> TemporaryFiles;
+	std::vector<TempFileObject*> TemporaryFiles;
 
 	std::vector<std::wstring> NullFiles;
 	std::vector<std::wstring> NullFolders;

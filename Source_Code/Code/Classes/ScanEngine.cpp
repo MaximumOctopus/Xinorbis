@@ -657,7 +657,12 @@ bool ScanEngine::Analyse()
 
 				if (found)
 				{
-					TargetData.TemporaryFiles.push_back(TargetData.Folders[file->FilePathIndex] + file->Name);
+					TempFileObject *tfo = new TempFileObject(file->Name,
+															 TargetData.Folders[file->FilePathIndex] + file->Name,
+															 file->Size,
+                                                             file->Owner);
+
+					TargetData.TemporaryFiles.push_back(tfo);
 
 					GFileExtensionHandler->Extensions[kCategory_Temp]->Count++;
 					GFileExtensionHandler->Extensions[kCategory_Temp]->Size += file->Size;
