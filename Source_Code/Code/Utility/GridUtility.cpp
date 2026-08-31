@@ -17,6 +17,9 @@
 
 #include "Formatting.h"
 #include "GridUtility.h"
+#include "ImageHandler.h"
+
+extern ImageHandler *GImageHandler;
 
 
 void GridUtility::ToggleColumn(TStringGrid *grid, TSpeedButton *button, int column_index, int new_width, int glyph_id)
@@ -25,21 +28,25 @@ void GridUtility::ToggleColumn(TStringGrid *grid, TSpeedButton *button, int colu
 	{
 		grid->ColWidths[column_index] = new_width;
 
-//		GXGuiUtil.SetButtonOnImage(buttonID, glyphID);
+		if (button != nullptr)
+		{
+			GImageHandler->SetButtonOnImage(button, glyph_id);
+		}
 	}
 	else
 	{
 		grid->ColWidths[column_index] = -1;
 
-//		GXGuiUtil.SetButtonOffImage(buttonID, glyphID);
+		if (button != nullptr)
+		{
+			GImageHandler->SetButtonOffImage(button, glyph_id);
+		}
 	}
 }
 
 
 void GridUtility::Clear(TStringGrid *grid, bool clear_objects)
 {
-	//  Assert(sGrid <> Nil, 'ClearStringGird :: Grid is nil');
-
 	if (clear_objects)
 	{
 		for (int t = 1; t < grid->RowCount; t++)
