@@ -13,7 +13,7 @@
 #pragma once
 
 
-const static int kButtonImagesCount = 10;
+const static int kButtonImagesCount = 11;
 const static int kFileTypeImagesCount = 67;
 
 const static int kImageCreated    = 1;
