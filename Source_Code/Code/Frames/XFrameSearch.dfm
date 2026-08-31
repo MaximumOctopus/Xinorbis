@@ -192,11 +192,9 @@ object FrameSearch: TFrameSearch
           Height = 499
           Align = alRight
           TabOrder = 0
-          ExplicitLeft = 1168
-          ExplicitTop = 0
           object sbSCAccessed: TSpeedButton
             Left = 14
-            Top = 410
+            Top = 412
             Width = 23
             Height = 22
             OnClick = sbSCAccessedClick
@@ -374,9 +372,9 @@ object FrameSearch: TFrameSearch
             ColCount = 13
             DefaultDrawing = False
             FixedCols = 0
+            PopupMenu = puSearch
             TabOrder = 1
             OnDrawCell = sgSearchResultsDrawCell
-            ExplicitLeft = 2
             ColWidths = (
               116
               118

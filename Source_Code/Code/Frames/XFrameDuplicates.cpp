@@ -111,8 +111,15 @@ std::wstring TFrame2::GetSelectedFileName(int tag)
 
 
 #pragma region Gui
+void __fastcall TFrame2::pcDuplicatesResize(TObject *Sender)
+{
+	sgDuplicatesName->ColWidths[0] = sgDuplicatesName->Width - (64 + __WidthOfScrollbar);
+	sgDuplicatesSize->ColWidths[0] = sgDuplicatesSize->Width - (64 + __WidthOfScrollbar);
+}
+
+
 void __fastcall TFrame2::sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
-          System::LongInt ARow, TRect &Rect, TGridDrawState State)
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
 	if (ARow != 0)
 	{
@@ -135,6 +142,23 @@ void __fastcall TFrame2::sgDuplicatesNameDrawCell(TObject *Sender, System::LongI
 		}
 
 		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 1:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		default:
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+				static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			}
+		}
 	}
 	else
 	{
@@ -712,3 +736,4 @@ void __fastcall TFrame2::miSSaveClick(TObject *Sender)
 	}
 }
 #pragma end_region
+

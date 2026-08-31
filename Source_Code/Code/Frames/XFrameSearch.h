@@ -151,11 +151,6 @@ private:
 
 	ProcessSearch *SearchEngine = nullptr;
 
-//	FMenuChange        : TMenuChange;
-//	FSetStatusBarText  : TSetStatusBarText;
-//	FOpenSearchWizard  : TOpenSearchWizard;
-//	FOnProcessWindowStatus : TProcessWindowStatus;
-
 	void __fastcall miQuickSearchClick(TObject *Sender);
 
 	void Init();

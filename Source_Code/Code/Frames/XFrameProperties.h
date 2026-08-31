@@ -310,7 +310,7 @@ __published:	// IDE-managed Components
 	TComboBox *ComboBox3;
 	TPanel *Panel22;
 	TChart *vtcDates;
-	TPanel *pDatesIceCream;
+	TPanel *pICDates;
 	TPanel *pICTop101;
 	TPieSeries *Series4;
 	TPieSeries *Series5;
@@ -318,6 +318,7 @@ __published:	// IDE-managed Components
 	TPieSeries *Series7;
 	TPieSeries *Series8;
 	TPieSeries *Series9;
+	TLabel *lTempStatus;
 	void __fastcall sbCategoriesPieClick(TObject *Sender);
 	void __fastcall sbCategoriesBarClick(TObject *Sender);
 	void __fastcall miOA1Click(TObject *Sender);
@@ -426,6 +427,7 @@ __published:	// IDE-managed Components
 	void __fastcall sbHistoryRefreshClick(TObject *Sender);
 	void __fastcall rbHistoryQuantityClick(TObject *Sender);
 	void __fastcall vtcHistoryClick(TObject *Sender);
+	void __fastcall rbDatesByQuantityClick(TObject *Sender);
 private:	// User declarations
 
 	static constexpr int CategoryWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
@@ -462,7 +464,8 @@ private:	// User declarations
 
 	std::vector<std::wstring> SearchStrings;
 
-	XIceCream *ice = nullptr;
+	XIceCream *iceDates = nullptr;
+	XIceCream *iceTop101 = nullptr;
 
 	TChart *Charts[kChartCount];
 

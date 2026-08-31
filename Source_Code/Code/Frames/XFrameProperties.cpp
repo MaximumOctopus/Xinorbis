@@ -41,6 +41,7 @@
 #include "TabUiLength.h"
 #include "TabUiMagnitude.h"
 #include "TabUiNull.h"
+#include "TabUiTemp.h"
 #include "TabUiTop101.h"
 #include "TabUiTypes.h"
 #include "TabUiUsers.h"
@@ -362,7 +363,7 @@ void TFrameProperties::UpdateDisplay(int display)
 			int user_id = cbDatesUsers->ItemIndex - 1;
 		}
 
-		TabUiDates::Tree(tvDates, nullptr, DataSource, user_id, cbDatesDateRange->ItemIndex, true, rbDatesByQuantity->Checked);
+		TabUiDates::Tree(tvDates, iceDates, DataSource, user_id, cbDatesDateRange->ItemIndex, true, rbDatesByQuantity->Checked);
 		TabUiDates::Chart(tvDates, vtcDates);
 		break;
 	}
@@ -397,7 +398,7 @@ void TFrameProperties::UpdateDisplay(int display)
 			duser_id = cbTop101DateUser->ItemIndex - 1;
 		}
 
-		pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id).c_str();
+		pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, iceTop101, DataSource, suser_id).c_str();
 		pTop101Date->Caption = TabUiTop101::Date(sgTop101BigDate, sgTop101SmallDate, DataSource, duser_id, cbTop101DateDate->ItemIndex).c_str();
 		break;
 	}
@@ -419,6 +420,8 @@ void TFrameProperties::UpdateDisplay(int display)
 		TabUiUsers::Table(sgUsers, DataSource, cbUsersDisplayMode->ItemIndex);
 		break;
 	case kTabIndexTemp:
+		TabUiTemp::Chart(vtcTemporary, DataSource, rbTempByQuantity->Checked);
+        lTempStatus->Caption = TabUiTemp::Table(sgTemporary, DataSource).c_str();
 		break;
 	case kTabIndexNameLength:
 		if (rbLengthQuantity->Checked)
@@ -621,7 +624,7 @@ void TFrameProperties::BuildCategoriesChart(int LabelOptions)
 
 void __fastcall TFrameProperties::rbCategoriesBySizeClick(TObject *Sender)
 {
-//
+	BuildCategoriesChart(GSettingsHandler->Chart.LabelOptions);
 }
 
 
@@ -1023,7 +1026,7 @@ void __fastcall TFrameProperties::splitFoldersMoved(TObject *Sender)
 
 void __fastcall TFrameProperties::rbFoldersBySizeClick(TObject *Sender)
 {
-//
+	TabUiFolders::Chart(vtcFolders, DataSource, FilterValues[sbFoldersConfig->Tag], GSettingsHandler->Chart.LabelOptions);
 }
 #pragma end_region
 
@@ -1130,7 +1133,7 @@ void __fastcall TFrameProperties::splitMagnitudeMoved(TObject *Sender)
 
 void __fastcall TFrameProperties::rbMagnitudeBySizeClick(TObject *Sender)
 {
-//
+	BuildMagnitudeTable();
 }
 
 
@@ -1144,6 +1147,8 @@ void __fastcall TFrameProperties::ComboBox3Change(TObject *Sender)
 #pragma region Tab_Dates
 void TFrameProperties::InitDatesTab()
 {
+	iceDates = new XIceCream(this, pICDates);
+
 	rbDatesBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbDatesByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
@@ -1167,6 +1172,12 @@ void TFrameProperties::DatesUpdateDropDowns()
 	}
 
 	cbDatesUsers->ItemIndex = 0;
+}
+
+
+void __fastcall TFrameProperties::rbDatesByQuantityClick(TObject *Sender)
+{
+	TabUiDates::Chart(tvDates, vtcDates);
 }
 
 
@@ -1265,7 +1276,7 @@ void __fastcall TFrameProperties::vtcHistoryClick(TObject *Sender)
 #pragma region Tab_Top_101
 void TFrameProperties::InitTop101Tab()
 {
-	ice = new XIceCream(this, pICTop101);
+	iceTop101 = new XIceCream(this, pICTop101);
 
 	tsTop101Size->Caption = GLanguageHandler->Text[kBySize].c_str();
 	tsTop101Date->Caption = GLanguageHandler->Text[kByDate].c_str();
@@ -1350,7 +1361,7 @@ void __fastcall TFrameProperties::cbTop101SizeUserChange(TObject *Sender)
 		suser_id = cbTop101SizeUser->ItemIndex - 1;
 	}
 
-	pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, ice, DataSource, suser_id).c_str();
+	pTop101Size->Caption = TabUiTop101::Size(sgTop101Big, sgTop101Small, iceTop101, DataSource, suser_id).c_str();
 }
 
 
@@ -1718,7 +1729,16 @@ void __fastcall TFrameProperties::splitUsersMoved(TObject *Sender)
 
 void __fastcall TFrameProperties::rbUsersSizeClick(TObject *Sender)
 {
-//
+	if (rbUsersQuantity->Checked)
+	{
+		vtcUsers->Tag = 1;
+	}
+	else
+	{
+		vtcUsers->Tag = 2;
+	}
+
+	TabUiUsers::Chart(vtcUsers, DataSource);
 }
 
 
@@ -1760,14 +1780,58 @@ void __fastcall TFrameProperties::splitTemporaryMoved(TObject *Sender)
 
 void __fastcall TFrameProperties::rbTempBySizeClick(TObject *Sender)
 {
-//
+	TabUiTemp::Chart(vtcTemporary, DataSource, rbTempByQuantity->Checked);
 }
 
 
 void __fastcall TFrameProperties::sgTemporaryDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-//
+	if (ARow != 0)
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles();
+
+        if (State.Contains(gdSelected))
+		{
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+			break;
+		default:
+		{
+			int left = Rect.Right - static_cast<TStringGrid*>(Sender)->Canvas->TextWidth(static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]) - 2;
+			static_cast<TStringGrid*>(Sender)->Canvas->TextOut(left, Rect.Top + 3, static_cast<TStringGrid*>(Sender)->Cells[ACol][ARow]);
+			break;
+		}
+		}
+	}
+	else
+	{
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(kGridHeader);
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
+		static_cast<TStringGrid*>(Sender)->Canvas->Font->Style = TFontStyles() << fsBold;
+		static_cast<TStringGrid*>(Sender)->Canvas->TextOut(Rect.Left, Rect.Top, static_cast<TStringGrid*>(Sender)->Cells[ACol][0]);
+	}
 }
 #pragma end_region
 
@@ -1835,7 +1899,16 @@ void __fastcall TFrameProperties::splitLengthsMoved(TObject *Sender)
 
 void __fastcall TFrameProperties::rbLengthSizeClick(TObject *Sender)
 {
-//
+	if (rbLengthQuantity->Checked)
+	{
+		vtcLengths->Tag = 1;
+	}
+	else
+	{
+		vtcLengths->Tag = 2;
+	}
+
+	TabUiLength::Chart(vtcLengths, DataSource, GSettingsHandler->Chart.LabelOptions);
 }
 #pragma end_region
 

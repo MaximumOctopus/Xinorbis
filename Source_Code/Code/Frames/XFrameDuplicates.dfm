@@ -13,6 +13,7 @@ object Frame2: TFrame2
     ActivePage = tsDuplicatesName
     Align = alClient
     TabOrder = 0
+    OnResize = pcDuplicatesResize
     object tsDuplicatesName: TTabSheet
       object Panel5: TPanel
         Left = 0

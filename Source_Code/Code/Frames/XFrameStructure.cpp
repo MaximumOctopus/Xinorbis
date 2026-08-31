@@ -25,6 +25,7 @@
 #include "SystemGlobal.h"
 #include "Utility.h"
 #include "WindowsUtility.h"
+#include "XZip.h"
 
 extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
@@ -32,6 +33,7 @@ extern Log *GLog;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
 extern SystemGlobal *GSystemGlobal;
+extern XZip *GXZip;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -989,8 +991,6 @@ void __fastcall TFrameStructure::puSearchPopup(TObject *Sender)
 	bool status = false;
 	bool folder = false;
 
-// TO DO 	if (!GSettingsHandler->ProcessWindowsVisible)
-//	{
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 	TStringGrid* sg = (TStringGrid*)pum->PopupComponent;
@@ -1290,14 +1290,16 @@ void __fastcall TFrameStructure::miZIPClick(TObject *Sender)
 
 		int count = -1;
 
-		switch (sg->Tag)
+		std::vector<std::wstring> data;
+
+		for (int t = 1; t < sg->RowCount; t++)
 		{
-		case 4:
-// TO DO			lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent)->Tag, sgNavigation, CLeftFileName);
-			break;
-		case 5:
-//			lZipCount = XinorbisZip.ZipAllFiles(lFileName, TAdvStringGrid(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent)->Tag, sgRightSide, CRightFileName);
-			break;
+			data.push_back(sg->Cells[0][t].c_str());
+		}
+
+		if (data.size() != 0)
+		{
+			count = GXZip->Files(file_name, data, L"Zipping...");
 		}
 
 		if (count == -1)

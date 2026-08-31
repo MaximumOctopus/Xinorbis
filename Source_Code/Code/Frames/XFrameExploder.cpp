@@ -64,12 +64,14 @@ void TFrameExploder::Update()
 
 	for (int t = 0; t < GScanEngine->Data[DataSource].RootFolders.size(); t++)
 	{
-//		ExploderX->AddData(Folders[t]->Name, t, Folders[t]->Count, Folders[t]->Size, __SpectrumColours[(t - 1) % __SpectrumMod]);
+		RootFolder *folder = GScanEngine->Data[DataSource].RootFolders[t];
 
-//		if (AddToCache)
-//		{
-//			AddItemToCache(Folders[t]->Name, t, Folders[t]->Count, Folders[t]->Size, __SpectrumColours[(t - 1) % __SpectrumMod]);
-//		}
+		ExploderX->AddData(folder->Name, t, folder->Count, folder->Size, kSpectrumColours[t % kSpectrumMod]);
+
+		if (AddToCache)
+		{
+			AddItemToCache(folder->Name, t, folder->Count, folder->Size, kSpectrumColours[t % kSpectrumMod]);
+		}
 	}
 
 	NeedsRefresh = false;

@@ -869,29 +869,24 @@ void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
 
 		PageNumber = 0;
 
-//	  if Assigned(FMenuChange) then
-//		FMenuChange("", 0, 1);
+		if (OnMenuChange)
+		{
+			OnMenuChange(L"", 0, 1);
+		}
 
-	  lSearchDetails->Caption = (GLanguageHandler->Text[kSearching] + kEllipsis).c_str();
-	  lSearchDetails->Refresh();
+		lSearchDetails->Caption = (GLanguageHandler->Text[kSearching] + kEllipsis).c_str();
+		lSearchDetails->Refresh();
 
-//	  if eSearch.Items.IndexOf(eSearch->Text) = -1 then {
-//		if eSearch->Text != "" then
-//		  eSearch.Items.Insert(0, eSearch->Text);
-//	  }
+		if (eSearch->Items->IndexOf(eSearch->Text) == -1 && eSearch->Text != L"")
+		{
+			eSearch->Items->Insert(0, eSearch->Text);
+		}
 
 		Command c(PrimaryCommand::Search, eSearch->Text.c_str());
 
 		SearchEngine->Execute(c);
 
 		PostSearch();
-
-//	  FSearchThread = TSearchThread.Create(True);
-//	  FSearchThread.SetData(FSource, eSearch->Text);
-//	  FSearchThread.OnGetResults    = OnNewResults;
-//	  FSearchThread.OnTerminate     = SearchThreadOnTerminate;
-//	  FSearchThread.Priority        = tpHigher;
-//	  FSearchThread.Start
 	}
 }
 
@@ -1263,6 +1258,6 @@ void TFrameSearch::CreatePropertiesFrame()
 	FrameProperties->Name = L"FPS1";
 	FrameProperties->DataSource = kDataSearch;
 
-  //UpdateGUICustomNames(aDataIndex); */
+  //UpdateGUICustomNames(DataSource); */
 }
 #pragma end_region

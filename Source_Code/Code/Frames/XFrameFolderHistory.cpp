@@ -1809,7 +1809,7 @@ procedure TFrameFolderHistory.sbFHCShowLeftClick(Sender: TObject);
   end
   else begin
     sbFHCShowLeft.Tag := 0;
-    GXGuiUtil.SetButtonOnImage(sbFHCShowLeft, CImageShow);
+    GImageHandler->SetButtonOnImage(sbFHCShowLeft, kImageShow);
   end;
 
   sgFHCompareLeft.Refresh;

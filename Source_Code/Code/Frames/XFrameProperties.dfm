@@ -15,7 +15,7 @@ object FrameProperties: TFrameProperties
     Top = 0
     Width = 1514
     Height = 726
-    ActivePage = tsHistory
+    ActivePage = tsDates
     Align = alClient
     Images = ilTabs
     TabOrder = 0
@@ -45,17 +45,14 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbCategoriesBar: TSpeedButton
-          Tag = 10
           Left = 29
           Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object sbCategoriesConfig: TSpeedButton
@@ -63,7 +60,6 @@ object FrameProperties: TFrameProperties
           Top = 0
           Width = 23
           Height = 22
-          NumGlyphs = 2
           OnClick = sbCategoriesConfigClick
         end
         object rbCategoriesBySize: TRadioButton
@@ -191,7 +187,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbTypesBar: TSpeedButton
@@ -201,7 +196,6 @@ object FrameProperties: TFrameProperties
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object SpeedButton20: TSpeedButton
@@ -209,7 +203,6 @@ object FrameProperties: TFrameProperties
           Top = 0
           Width = 23
           Height = 22
-          NumGlyphs = 2
           OnClick = sbCategoriesConfigClick
         end
         object rbTypesBySize: TRadioButton
@@ -412,7 +405,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbFoldersBar: TSpeedButton
@@ -422,7 +414,6 @@ object FrameProperties: TFrameProperties
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object sbFoldersConfig: TSpeedButton
@@ -430,7 +421,6 @@ object FrameProperties: TFrameProperties
           Top = 0
           Width = 23
           Height = 22
-          NumGlyphs = 2
           OnClick = sbFoldersConfigClick
         end
         object sbFoldersMoreDetail: TSpeedButton
@@ -555,7 +545,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbMagnitudeBar: TSpeedButton
@@ -565,7 +554,6 @@ object FrameProperties: TFrameProperties
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object rbMagnitudeBySize: TRadioButton
@@ -692,7 +680,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbDatesBar: TSpeedButton
@@ -702,7 +689,6 @@ object FrameProperties: TFrameProperties
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object sbDatesCollapseNodes: TSpeedButton
@@ -723,6 +709,7 @@ object FrameProperties: TFrameProperties
           Checked = True
           TabOrder = 0
           TabStop = True
+          OnClick = rbDatesByQuantityClick
         end
         object rbDatesByQuantity: TRadioButton
           Left = 191
@@ -731,6 +718,7 @@ object FrameProperties: TFrameProperties
           Height = 17
           Caption = '.'
           TabOrder = 1
+          OnClick = rbDatesByQuantityClick
         end
         object cbDatesUsers: TComboBox
           Left = 328
@@ -760,7 +748,6 @@ object FrameProperties: TFrameProperties
         Indent = 19
         PopupMenu = puTreeDate
         TabOrder = 1
-        ExplicitLeft = 3
       end
       object Panel22: TPanel
         Left = 372
@@ -774,7 +761,7 @@ object FrameProperties: TFrameProperties
           Left = 1
           Top = 1
           Width = 1132
-          Height = 567
+          Height = 594
           Title.Text.Strings = (
             'TChart')
           View3DOptions.Elevation = 315
@@ -784,6 +771,7 @@ object FrameProperties: TFrameProperties
           Align = alClient
           PopupMenu = puCharts
           TabOrder = 0
+          ExplicitHeight = 567
           DefaultCanvas = 'TGDIPlusCanvas'
           ColorPaletteIndex = 13
           object Series5: TPieSeries
@@ -811,13 +799,16 @@ object FrameProperties: TFrameProperties
             OtherSlice.Legend.Visible = False
           end
         end
-        object pDatesIceCream: TPanel
+        object pICDates: TPanel
           Left = 1
-          Top = 568
+          Top = 595
           Width = 1132
-          Height = 100
+          Height = 73
           Align = alBottom
+          Color = 3355443
+          ParentBackground = False
           TabOrder = 1
+          ExplicitTop = 568
         end
       end
     end
@@ -988,8 +979,6 @@ object FrameProperties: TFrameProperties
         PopupMenu = puCharts
         TabOrder = 2
         OnClick = vtcHistoryClick
-        ExplicitLeft = 193
-        ExplicitWidth = 1313
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
         object Series6: TPieSeries
@@ -1262,7 +1251,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
       end
@@ -1339,7 +1327,6 @@ object FrameProperties: TFrameProperties
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbUsersBar: TSpeedButton
@@ -1349,7 +1336,6 @@ object FrameProperties: TFrameProperties
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object SpeedButton21: TSpeedButton
@@ -1480,7 +1466,13 @@ object FrameProperties: TFrameProperties
           Top = 2
           Width = 23
           Height = 22
-          NumGlyphs = 2
+        end
+        object lTempStatus: TLabel
+          Left = 312
+          Top = 6
+          Width = 64
+          Height = 15
+          Caption = 'lTempStatus'
         end
         object rbTempBySize: TRadioButton
           Left = 38
@@ -1509,10 +1501,16 @@ object FrameProperties: TFrameProperties
         Width = 777
         Height = 669
         Align = alLeft
-        ColCount = 3
+        ColCount = 2
         DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         PopupMenu = puSearch
         TabOrder = 1
         OnDrawCell = sgTemporaryDrawCell
@@ -1578,24 +1576,22 @@ object FrameProperties: TFrameProperties
         Align = alTop
         TabOrder = 0
         object sbLengthsPie: TSpeedButton
-          Tag = 16
+          Tag = 11
           Left = 0
           Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
           Down = True
-          NumGlyphs = 2
           OnClick = sbCategoriesPieClick
         end
         object sbLengthsBar: TSpeedButton
-          Tag = 16
+          Tag = 11
           Left = 29
           Top = 0
           Width = 23
           Height = 22
           GroupIndex = 1
-          NumGlyphs = 2
           OnClick = sbCategoriesBarClick
         end
         object SpeedButton15: TSpeedButton
@@ -1603,7 +1599,6 @@ object FrameProperties: TFrameProperties
           Top = 0
           Width = 23
           Height = 22
-          NumGlyphs = 2
           OnClick = SpeedButton15Click
         end
         object rbLengthSize: TRadioButton

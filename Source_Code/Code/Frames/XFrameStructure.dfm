@@ -371,7 +371,6 @@ object FrameStructure: TFrameStructure
         TabOrder = 1
         OnDblClick = sgRightSideDblClick
         OnDrawCell = sgRightSideDrawCell
-        ExplicitLeft = 5
         ColWidths = (
           50
           64

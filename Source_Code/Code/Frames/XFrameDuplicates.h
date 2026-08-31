@@ -79,6 +79,7 @@ __published:	// IDE-managed Components
 	void __fastcall puSearchPopup(TObject *Sender);
 	void __fastcall sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
           System::LongInt ARow, TRect &Rect, TGridDrawState State);
+	void __fastcall pcDuplicatesResize(TObject *Sender);
 private:
 
 	void Init();
