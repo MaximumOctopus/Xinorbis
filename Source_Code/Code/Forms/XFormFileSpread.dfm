@@ -130,7 +130,7 @@ object FormFileSpread: TFormFileSpread
       Top = 1
       Width = 207
       Height = 200
-      ActivePage = tsFileSize
+      ActivePage = tsBenford
       Align = alTop
       TabOrder = 1
       OnChange = pcFileSpreadChange

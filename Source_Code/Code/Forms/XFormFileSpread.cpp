@@ -454,12 +454,12 @@ void TFormFileSpread::BuildBenfordsLaw()
 
 		vtcSpread->SeriesList->Items[0]->Add(zig, std::to_wstring(t + 1).c_str(), TColor(kSpectrumColours[t % kSpectrumMod]));
 
-//		if (cbNormalDistribution->Checked)
-//		{
-//			zig = (log10(t + 1) - log10(t)) * 100;
+		if (cbNormalDistribution->Checked)
+		{
+			zig = (log10(t + 1) - log10(t)) * 100;
 
-//			vtcSpread->SeriesList->Items[1]->Add(zig, std::to_wstring(t + 1), TColor(0xD6D5DB));
-//		}
+			vtcSpread->SeriesList->Items[1]->Add(zig, std::to_wstring(t + 1).c_str(), TColor(0xD6D5DB));
+		}
 	}
 
 	Screen->Cursor = crDefault;
