@@ -215,6 +215,8 @@ bool ScanEngine::Scan(bool process_data, bool process_top_100_size, bool process
 
 		AnalysePostExtensionSpread();
 
+		Data[DataSource].UpdateStatistics();
+
 		if (process_file_dates)
 		{
 			Data[DataSource].BuildFileDates();
@@ -1316,8 +1318,6 @@ int ScanEngine::FindUser(std::wstring name)
 //                                                                XSettings.Navigation.DisplayOptions[side]
 SizeOfFolder ScanEngine::SizeOfFolderNav(const std::wstring folder, const std::wstring display_options)
 {
-	//Assert(aFolderName <> '', 'SizeOfFolder :: blank input error');
-
 	SizeOfFolder sof;
 
 	int index = 0;

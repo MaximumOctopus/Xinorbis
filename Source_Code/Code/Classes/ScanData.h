@@ -29,6 +29,24 @@
 #include "UserData.h"
 
 
+// pre-calculated statistics
+struct Statistics
+{
+	std::wstring LargestFileName = L"";
+	unsigned __int64 LargestFileSize = 0;
+
+	std::wstring LargestFolderNameCount = L"";
+	std::wstring LargestFolderNameSize = L"";
+	int LargestFolderCount = 0;
+	unsigned __int64 LargestFolderSize = 0;
+
+	std::wstring LargestUserNameCount = L"";
+	std::wstring LargestUserNameSize = L"";
+	int LargestUserCount = 0;
+	unsigned __int64 LargestUserSize = 0;
+};
+
+
 struct ScanPath
 {
 	std::wstring FileName = L"";
@@ -75,7 +93,7 @@ struct Disk
 	std::wstring DiskType = L"";
 
 	int SectorsPerCluster = 0;
-	int BbytesPerSector = 0;
+	int BytesPerSector = 0;
 	int FreeClusters = 0;
 	int TotalClusters = 0;
 
@@ -94,7 +112,7 @@ struct Disk
 		DiskType = L"";
 
 		SectorsPerCluster = 0;
-		BbytesPerSector = 0;
+		BytesPerSector = 0;
 		FreeClusters = 0;
 		TotalClusters = 0;
 
@@ -167,6 +185,8 @@ public:
 	std::vector<FileObject*> RootFiles;
 	std::vector<RootFolder*> RootFolders;
 
+    Statistics Stats;
+
 	ScanData();
 
 	void Clear();
@@ -185,6 +205,8 @@ public:
 	void BuildFileDates();
 	void BuildTop100SizeLists();
 	void BuildTop100DateLists();
+
+	void UpdateStatistics();
 
 	int RootIndex();
 

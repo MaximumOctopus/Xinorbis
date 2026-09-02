@@ -427,6 +427,62 @@ int ScanData::GetFolderIndex(const std::wstring folder_name)
 }
 
 
+void ScanData::UpdateStatistics()
+{
+	Stats.LargestFileName = L"";
+	Stats.LargestFileSize = 0;
+
+	for (FileObject *file : Files)
+	{
+		if (file->Size > Stats.LargestFileSize)
+		{
+			Stats.LargestFileName = file->FullPath;
+			Stats.LargestFileSize = file->Size;
+		}
+	}
+
+	Stats.LargestFolderNameCount = L"";
+	Stats.LargestFolderNameSize = L"";
+	Stats.LargestFolderCount = 0;
+	Stats.LargestFolderSize = 0;
+
+	for (RootFolder *folder : RootFolders)
+	{
+		if (folder->Size > Stats.LargestFolderCount)
+		{
+			Stats.LargestFolderNameCount = folder->Name;
+			Stats.LargestFolderCount = folder->Count;
+		}
+
+		if (folder->Size > Stats.LargestFolderSize)
+		{
+			Stats.LargestFolderNameSize = folder->Name;
+			Stats.LargestFolderSize = folder->Size;
+		}
+	}
+
+	Stats.LargestUserNameCount = L"";
+	Stats.LargestUserNameSize = L"";
+	Stats.LargestUserCount = 0;
+	Stats.LargestUserSize = 0;
+
+	for (UserData *user : Users)
+	{
+		if (user->Size > Stats.LargestUserCount)
+		{
+			Stats.LargestUserNameCount = user->Name;
+			Stats.LargestUserCount = user->Count;
+		}
+
+		if (user->Size > Stats.LargestUserSize)
+		{
+			Stats.LargestUserNameSize = user->Name;
+			Stats.LargestUserSize = user->Size;
+		}
+	}
+}
+
+
 // =============================================================================
 // Sorting
 // =============================================================================
