@@ -42,7 +42,7 @@ void NavigateRightSide::Execute()
 
 	if (GScanEngine->Data[DataSource].Files.size() == 0) return;
 
-	//TGridUtility.ClearStringGird(Grid, False);
+	OutputGrid->RowCount = 2;
 
 	GScanEngine->FolderStructure.push_back(GScanEngine->Data[DataSource].Folders[FromFolderId] + L"?" + std::to_wstring(FolderSize));
 
@@ -169,5 +169,10 @@ void NavigateRightSide::Execute()
 				orderx++;
 			}
 		}
+	}
+
+	if (OutputGrid->RowCount > 2)
+	{
+		OutputGrid->RowCount--;
 	}
 }
