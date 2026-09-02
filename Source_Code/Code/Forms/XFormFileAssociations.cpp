@@ -112,8 +112,6 @@ void __fastcall TFormFileAssociations::sCat1MouseDown(TObject *Sender, TMouseBut
 {
 	if (Shift.Contains(ssLeft))
 	{
-//		Assert(cbFACategories.ItemIndex + 1 <= __FileCategoriesCount, 'sColourMouseDown :: Object tag incorrect.');
-
 		TShape *shape = (TShape*)Sender;
 
 		cdMain->Color = shape->Brush->Color;

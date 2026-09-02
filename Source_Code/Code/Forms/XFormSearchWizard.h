@@ -16,9 +16,6 @@
 class TForm11 : public TForm
 {
 __published:	// IDE-managed Components
-	TShape *Shape1;
-	TBitBtn *bCancel;
-	TBitBtn *bOK;
 	TScrollBox *ScrollBox1;
 	TPanel *pContaining;
 	TLabel *lContaining;
@@ -79,7 +76,6 @@ __published:	// IDE-managed Components
 	TPanel *pOwner;
 	TComboBox *cbUSelect;
 	TEdit *eUContent;
-	TBitBtn *bShowSQL;
 	TPanel *pSQL;
 	TEdit *eSQL;
 	TImageList *ImageList1;
@@ -91,6 +87,10 @@ __published:	// IDE-managed Components
 	TCheckBox *cbModified;
 	TCheckBox *cbOwner;
 	TCheckBox *cbAttributes;
+	TPanel *Panel1;
+	TBitBtn *bShowSQL;
+	TBitBtn *bOK;
+	TBitBtn *bCancel;
 	void __fastcall cbContainingClick(TObject *Sender);
 	void __fastcall bShowSQLClick(TObject *Sender);
 	void __fastcall eSLTChange(TObject *Sender);

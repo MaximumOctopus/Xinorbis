@@ -1,8 +1,8 @@
 object Form13: TForm13
   Left = 0
   Top = 0
-  Caption = 'Form13'
-  ClientHeight = 443
+  BorderStyle = bsDialog
+  ClientHeight = 442
   ClientWidth = 709
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,11 +12,11 @@ object Form13: TForm13
   Font.Style = []
   DesignSize = (
     709
-    443)
+    442)
   TextHeight = 15
   object Bevel1: TBevel
     Left = 0
-    Top = 439
+    Top = 438
     Width = 709
     Height = 4
     Align = alBottom
@@ -37,7 +37,7 @@ object Form13: TForm13
     Left = 705
     Top = 4
     Width = 4
-    Height = 435
+    Height = 434
     Align = alRight
     Shape = bsRightLine
     ExplicitTop = 38
@@ -47,19 +47,18 @@ object Form13: TForm13
     Left = 0
     Top = 4
     Width = 4
-    Height = 435
+    Height = 434
     Align = alLeft
     Shape = bsLeftLine
     ExplicitHeight = 337
   end
   object Bevel5: TBevel
     Left = 8
-    Top = 324
+    Top = 395
     Width = 691
     Height = 9
     Anchors = [akLeft, akRight]
     Shape = bsTopLine
-    ExplicitTop = 323
   end
   object lChoose: TLabel
     Left = 8
@@ -131,7 +130,7 @@ object Form13: TForm13
   end
   object sbDelete: TSpeedButton
     Left = 10
-    Top = 293
+    Top = 365
     Width = 35
     Height = 25
     Hint = 'remove all selected items from the scan list'
@@ -237,14 +236,14 @@ object Form13: TForm13
     Left = 8
     Top = 64
     Width = 691
-    Height = 6
+    Height = 5
     Anchors = [akLeft, akTop, akRight, akBottom]
     Shape = bsTopLine
     ExplicitHeight = 4
   end
   object sbExplore: TSpeedButton
     Left = 388
-    Top = 334
+    Top = 405
     Width = 138
     Height = 25
     Hint = 'open the selected folder in Explorer'
@@ -303,21 +302,19 @@ object Form13: TForm13
       FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
       00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
     NumGlyphs = 2
-    ExplicitTop = 332
   end
   object lbCombine: TListBox
     Left = 8
     Top = 88
     Width = 691
-    Height = 201
+    Height = 271
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 15
     TabOrder = 0
-    ExplicitHeight = 199
   end
   object bCancel: TBitBtn
     Left = 620
-    Top = 334
+    Top = 405
     Width = 83
     Height = 25
     Anchors = [akRight, akBottom]
@@ -351,11 +348,10 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     ModalResult = 2
     TabOrder = 1
-    ExplicitTop = 332
   end
   object bScan: TBitBtn
     Left = 532
-    Top = 334
+    Top = 405
     Width = 82
     Height = 25
     Anchors = [akRight, akBottom]
@@ -414,11 +410,10 @@ object Form13: TForm13
     ModalResult = 1
     NumGlyphs = 2
     TabOrder = 2
-    ExplicitTop = 332
   end
   object bLoadList: TBitBtn
     Left = 91
-    Top = 334
+    Top = 405
     Width = 75
     Height = 25
     Hint = 'load a previously saved scan list'
@@ -459,11 +454,10 @@ object Form13: TForm13
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
     TabOrder = 3
-    ExplicitTop = 332
   end
   object bSaveList: TBitBtn
     Left = 10
-    Top = 334
+    Top = 405
     Width = 75
     Height = 25
     Hint = 'save this scan list'
@@ -522,11 +516,10 @@ object Form13: TForm13
       69696969696B6B6B6D6D6D6B6B6B7373738A8A8AFF00FFFF00FF}
     NumGlyphs = 2
     TabOrder = 4
-    ExplicitTop = 332
   end
   object eDirectory: TEdit
     Left = 8
-    Top = 34
+    Top = 35
     Width = 641
     Height = 23
     TabOrder = 5
@@ -534,13 +527,13 @@ object Form13: TForm13
   object odCombine: TOpenDialog
     DefaultExt = 'xcl'
     Filter = 'Xinorbis Scan Lists (.xcl)|*.xcl'
-    Left = 224
-    Top = 368
+    Left = 240
+    Top = 184
   end
   object sdCombine: TSaveDialog
     DefaultExt = 'xcl'
     Filter = 'Xinorbis Scan Lists (.xcl)|*.xcl'
-    Left = 256
-    Top = 368
+    Left = 336
+    Top = 184
   end
 end

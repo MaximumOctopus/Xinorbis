@@ -20,7 +20,6 @@ __fastcall TForm22::TForm22(TComponent* Owner)
 	: TForm(Owner)
 {
 }
-//---------------------------------------------------------------------------
 
 
 void OpenMD5Checksum(const std::wstring file_name, const std::wstring md5)
