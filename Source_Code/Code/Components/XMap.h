@@ -56,6 +56,7 @@ public:
 
 	std::function<void(int)> OnMouseClick;
 	std::function<void(int)> OnMouseOver;
+    std::function<void(const std::wstring)> OnDebug;
 
 	XMap(TComponent* owner, TWinControl* Zig);
 	~XMap();

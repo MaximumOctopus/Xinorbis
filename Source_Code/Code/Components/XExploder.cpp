@@ -52,39 +52,38 @@ XExploder::~XExploder()
 
 void __fastcall XExploder::PaintBoxUpdateSize(TObject *Sender)
 {
+	if (ExploderData.size() == 0) return;
+
 	ClearDisplay();
 
-	if (ExploderData.size() != 0)
+	for (int t = 0; t < ExploderData.size(); t++)
 	{
-		for (int t = 0; t < ExploderData.size(); t++)
-		{
-			XExploderDataObject *xdo = ExploderData[t];
+		XExploderDataObject *xdo = ExploderData[t];
 
-			if (SelectedSlice != t)
-			{
-				DrawPie(xdo->FolderName + L" (" + Convert::ConvertToUsefulUnit(xdo->FileSize) + L")",
-						t * SliceAngle, (t * SliceAngle) + SliceAngle,
-						xdo->PieSize,
-						xdo->Colour);
-			}
+		if (SelectedSlice != t)
+		{
+			DrawPie(xdo->FolderName + L" (" + Convert::ConvertToUsefulUnit(xdo->FileSize) + L")",
+					t * SliceAngle, (t * SliceAngle) + SliceAngle,
+					xdo->PieSize,
+					xdo->Colour);
 		}
+	}
 
-		if (SelectedSlice != -1)
+	if (SelectedSlice != -1)
+	{
+		if (ExploderData.size() > 1)
 		{
-			if (ExploderData.size() > 1)
-			{
-				DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + Convert::ConvertToUsefulUnit(ExploderData[SelectedSlice]->FileSize) + L")",
-						(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
-						ExploderData[SelectedSlice]->PieSize,
-						0x00CCCCCC);
-			}
-			else
-			{
-				DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + Convert::ConvertToUsefulUnit(ExploderData[SelectedSlice]->FileSize) + L")",
-						(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
-						ExploderData[SelectedSlice]->PieSize,
-						ExploderData[SelectedSlice]->Colour);
-			}
+			DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + Convert::ConvertToUsefulUnit(ExploderData[SelectedSlice]->FileSize) + L")",
+					(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
+					ExploderData[SelectedSlice]->PieSize,
+					0x00CCCCCC);
+		}
+		else
+		{
+			DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + Convert::ConvertToUsefulUnit(ExploderData[SelectedSlice]->FileSize) + L")",
+					(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
+					ExploderData[SelectedSlice]->PieSize,
+					ExploderData[SelectedSlice]->Colour);
 		}
 	}
 
@@ -105,7 +104,8 @@ void __fastcall XExploder::PaintBoxUpdateQuantity(TObject* Sender)
 		if (SelectedSlice != t)
 		{
 			DrawPie(xmdo->FolderName + L" (" + std::to_wstring(xmdo->FileCount) + L")",
-					t * SliceAngle, (t * SliceAngle) + SliceAngle,
+					(double)t * SliceAngle,
+					((double)t * SliceAngle) + SliceAngle,
 					xmdo->PieQuantity,
 					xmdo->Colour);
 		}
@@ -116,14 +116,16 @@ void __fastcall XExploder::PaintBoxUpdateQuantity(TObject* Sender)
 		if (ExploderData.size() > 1)
 		{
 			DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + std::to_wstring(ExploderData[SelectedSlice]->FileCount) + L")",
-					(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
+					(double)SelectedSlice * SliceAngle,
+					((double)SelectedSlice * SliceAngle) + SliceAngle,
 					ExploderData[SelectedSlice]->PieQuantity,
 					0x00CCCCCC);
 		}
 		else
 		{
 			DrawPie(ExploderData[SelectedSlice]->FolderName + L" (" + std::to_wstring(ExploderData[SelectedSlice]->FileCount) + L")",
-					(SelectedSlice * SliceAngle), (SelectedSlice * SliceAngle) + SliceAngle,
+					(double)SelectedSlice * SliceAngle,
+					((double)SelectedSlice * SliceAngle) + SliceAngle,
 					ExploderData[SelectedSlice]->PieQuantity,
 					ExploderData[SelectedSlice]->Colour);
 		}
@@ -250,7 +252,7 @@ void XExploder::DrawText(const std::wstring text, int X5, int Y5)
 
 void XExploder::DrawPie(const std::wstring text, double start_angle, double slice_angle, double slice_radius, int colour)
 {
-	int Radius = 50 + std::round(MaxRadius * slice_radius);
+	int Radius = 50 + (int)std::round((double)MaxRadius * (double)slice_radius);
 
 	int X1 = CentreX - Radius;
 	int Y1 = CentreY - Radius;
@@ -258,10 +260,10 @@ void XExploder::DrawPie(const std::wstring text, double start_angle, double slic
 	int Y2 = CentreY + Radius;
 
 //  { negative signs on "Y" values to correct for "flip" from normal math defintion for "Y" dimension }
-	int X3 = CentreX + std::round(Radius * std::cos(DegToRad(start_angle)));
-	int Y3 = CentreY - std::round(Radius * std::sin(DegToRad(start_angle)));
-	int X4 = CentreX + std::round(Radius * std::cos(DegToRad(slice_angle)));
-	int Y4 = CentreY - std::round(Radius * std::sin(DegToRad(slice_angle)));
+	int X3 = CentreX + (int)std::round((double)Radius * std::cos(DegToRad(start_angle)));
+	int Y3 = CentreY - (int)std::round((double)Radius * std::sin(DegToRad(start_angle)));
+	int X4 = CentreX + (int)std::round((double)Radius * std::cos(DegToRad(slice_angle)));
+	int Y4 = CentreY - (int)std::round((double)Radius * std::sin(DegToRad(slice_angle)));
 
 	pbExploder->Canvas->Brush->Color = TColor(colour);
 	pbExploder->Canvas->Brush->Style = bsSolid;
@@ -275,7 +277,7 @@ void XExploder::DrawPie(const std::wstring text, double start_angle, double slic
 	// only draw the text if the slices are above a minimum width (so the text fits nicely)
 	if (SliceForText <= SliceAngle)
 	{
-		int Orientation = std::round(start_angle + ((slice_angle - start_angle) / 2));
+		int Orientation = (int)std::round(start_angle + ((slice_angle - start_angle) / 2));
 
 		pbExploder->Canvas->Font->Size = 12;
 
@@ -288,15 +290,15 @@ void XExploder::DrawPie(const std::wstring text, double start_angle, double slic
 
 			pbExploder->Canvas->Font->Orientation = Orientation * 10;
 
-			X5 = CentreX + std::round((HubRadius + 20 + (pbExploder->Canvas->TextWidth(text.c_str()))) * std::cos(DegToRad(start_angle - 5 + (((slice_angle - start_angle) / 2)))));
-			Y5 = CentreY - std::round((HubRadius + 20 + (pbExploder->Canvas->TextWidth(text.c_str()))) * std::sin(DegToRad(start_angle - 5 + (((slice_angle - start_angle) / 2)))));
+			X5 = CentreX + (int)std::round(((double)(HubRadius + 20) + (double)(pbExploder->Canvas->TextWidth(text.c_str()))) * std::cos(DegToRad(start_angle - 5 + (((slice_angle - start_angle) / 2)))));
+			Y5 = CentreY - (int)std::round(((double)(HubRadius + 20) + (double)(pbExploder->Canvas->TextWidth(text.c_str()))) * std::sin(DegToRad(start_angle - 5 + (((slice_angle - start_angle) / 2)))));
 		}
 		else
 		{
 			pbExploder->Canvas->Font->Orientation = Orientation * 10;
 
-			X5 = CentreX + std::round((HubRadius + 20) * std::cos(DegToRad(start_angle + 10 + (((slice_angle - start_angle) / 2)))));
-			Y5 = CentreY - std::round((HubRadius + 20) * std::sin(DegToRad(start_angle + 10 + (((slice_angle - start_angle) / 2)))));
+			X5 = CentreX + (int)std::round((double)(HubRadius + 20) * std::cos(DegToRad(start_angle + 10 + (((slice_angle - start_angle) / 2)))));
+			Y5 = CentreY - (int)std::round((double)(HubRadius + 20) * std::sin(DegToRad(start_angle + 10 + (((slice_angle - start_angle) / 2)))));
 		}
 
 		DrawText(text, X5, Y5);
@@ -306,10 +308,10 @@ void XExploder::DrawPie(const std::wstring text, double start_angle, double slic
 
 void XExploder::Resize()
 {
-	MaxRadius    = std::round(std::min(pbExploder->Height, pbExploder->Width) / 2) - 50;
+	MaxRadius    = (int)std::round((double)std::min(pbExploder->Height, pbExploder->Width) / 2) - 50;
 
-	CentreX      = std::round(pbExploder->Width / 2);
-	CentreY      = std::round(pbExploder->Height / 2);
+	CentreX      = (int)std::round((double)pbExploder->Width / 2);
+	CentreY      = (int)std::round((double)pbExploder->Height / 2);
 
 	SliceForText = 28; // degrees
 
@@ -411,16 +413,18 @@ void XExploder::EndData()
 int XExploder::GetItemFrom(int x, int y)
 {
 	// first check that we're outside the hub
-	double radius = std::sqrt(((CentreY - y) * (CentreY - y)) + ((x - CentreX) * (x - CentreX)));
+	double xpos = (double)x - (double)CentreX;
+	double ypos = (double)CentreY - (double)y;
+	double radius = std::sqrt(xpos * xpos + ypos * ypos);
 
 	if (radius < HubRadius)
 	{
 	}
 	else
 	{
-		double rad = std::atan2(CentreY - y, x - CentreX);
+		double rad = std::atan2(ypos, xpos);
 
-		int deg = std::round(rad * (180 / 3.14159265359));
+		int deg = (int)std::round(rad * (180 / 3.14159265359));
 
 		if (ExploderData.size() > 0)
 		{
@@ -428,7 +432,7 @@ int XExploder::GetItemFrom(int x, int y)
 			{
 				deg += 360;
 
-				return std::ceil(deg / ((1 / ExploderData.size()) * 360)) - 1;
+				return (int)std::ceil((double)deg / ((1 / (double)ExploderData.size()) * 360)) - 1;
 			}
 		}
 	}
@@ -452,7 +456,7 @@ void XExploder::CalculatePies()
 {
 	if (ExploderData.size() != 0)
 	{
-		SliceAngle = (1 / ExploderData.size()) * 360;
+		SliceAngle = (1 / (double)ExploderData.size()) * 360;
 
 		for (int t = 0; t < ExploderData.size(); t++)
 		{
@@ -460,7 +464,7 @@ void XExploder::CalculatePies()
 
 			if (FolderTotalSize != 0)
 			{
-				xdo->PieSize = (xdo->FileSize  / LargestSize);
+				xdo->PieSize = ((double)xdo->FileSize  / (double)LargestSize);
 			}
 			else
 			{
@@ -469,7 +473,7 @@ void XExploder::CalculatePies()
 
 			if (FolderTotalCount != 0)
 			{
-				xdo->PieQuantity = (xdo->FileCount / LargestQuantity);
+				xdo->PieQuantity = ((double)xdo->FileCount / (double)LargestQuantity);
 			}
 			else
 			{

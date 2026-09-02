@@ -48,8 +48,8 @@ void __fastcall XMap::PaintBoxUpdateSize(TObject* Sender)
 {
 	if (!HasData) return;
 
-	BlocksX = std::floor(pbMap->Width / BlocksPixel);
-	BlocksY = std::floor(pbMap->Height / BlocksPixel);
+	int BlocksX = (int)std::floor((double)pbMap->Width / (double)BlocksPixel);
+	int BlocksY = (int)std::floor((double)pbMap->Height / (double)BlocksPixel);
 
 	int FolderItem = 0;
 
@@ -62,7 +62,7 @@ void __fastcall XMap::PaintBoxUpdateSize(TObject* Sender)
 		pbMap->Canvas->Brush->Color = TColor(MapData[FolderItem]->ColourBW);
 	}
 
-	int Blocks     = std::floor((MapData[FolderItem]->FileSize / FolderTotalSize) * (BlocksX * BlocksY));
+	int Blocks     = (int)std::round(((double)MapData[FolderItem]->FileSize / (double)FolderTotalSize) * (double)(BlocksX * BlocksY));
 	int BlockCount = 0;
 
 	MapData[FolderItem]->BlockStart = 0;
@@ -87,11 +87,12 @@ void __fastcall XMap::PaintBoxUpdateSize(TObject* Sender)
 
 					if (FolderItem < MapData.size())
 					{
-						Blocks     = std::round((MapData[FolderItem]->FileSize / FolderTotalSize) * (BlocksX * BlocksY));
-						BlockCount = 0;
+						Blocks     = (int)std::round(((double)MapData[FolderItem]->FileSize / (double)FolderTotalSize) * (double)(BlocksX * BlocksY));
 
 						MapData[FolderItem]->BlockStart = MapData[FolderItem - 1]->BlockEnd + 1;
 						MapData[FolderItem]->BlockEnd   = MapData[FolderItem]->BlockStart + Blocks - 1;
+
+						BlockCount = 0;
 
 						if (!HighlightMode || Selected == FolderItem)
 						{
@@ -135,8 +136,8 @@ void __fastcall XMap::PaintBoxUpdateQuantity(TObject* Sender)
 {
 	if (!HasData) return;
 
-	int BlocksX = std::floor(pbMap->Width / BlocksPixel);
-	int BlocksY = std::floor(pbMap->Height / BlocksPixel);
+	int BlocksX = (int)std::floor((double)pbMap->Width / (double)BlocksPixel);
+	int BlocksY = (int)std::floor((double)pbMap->Height / (double)BlocksPixel);
 
 	int FolderItem = 0;
 
@@ -149,7 +150,7 @@ void __fastcall XMap::PaintBoxUpdateQuantity(TObject* Sender)
 		pbMap->Canvas->Brush->Color = TColor(MapData[FolderItem]->ColourBW);
 	}
 
-	int Blocks     = std::floor(((double)MapData[FolderItem]->FileCount / (double)FolderTotalCount) * ((double)BlocksX * (double)BlocksY));
+	int Blocks     = (int)std::floor(((double)MapData[FolderItem]->FileCount / (double)FolderTotalCount) * (double)(BlocksX * BlocksY));
 	int BlockCount = 0;
 
 	MapData[FolderItem]->BlockStart = 0;
@@ -174,11 +175,12 @@ void __fastcall XMap::PaintBoxUpdateQuantity(TObject* Sender)
 
 					if (FolderItem < MapData.size())
 					{
-						Blocks     = std::round((MapData[FolderItem]->FileCount / FolderTotalCount) * (BlocksX * BlocksY));
-						BlockCount = 0;
+						Blocks     = (int)std::round(((double)MapData[FolderItem]->FileCount / (double)FolderTotalCount) * ((double)BlocksX * (double)BlocksY));
 
 						MapData[FolderItem]->BlockStart = MapData[FolderItem - 1]->BlockEnd + 1;
 						MapData[FolderItem]->BlockEnd   = MapData[FolderItem]->BlockStart + Blocks - 1;
+
+						BlockCount = 0;
 
 						if (!HighlightMode || Selected == FolderItem)
 						{
@@ -189,10 +191,10 @@ void __fastcall XMap::PaintBoxUpdateQuantity(TObject* Sender)
 							pbMap->Canvas->Brush->Color = TColor(MapData[FolderItem]->ColourBW);
 						}
 					}
-				}
-				else
-				{
-					pbMap->Canvas->Brush->Color = TColor(0x00ffffff);
+					else
+					{
+						pbMap->Canvas->Brush->Color = TColor(0x00ffffff);
+					}
 				}
 			}
 		}
@@ -249,7 +251,7 @@ void __fastcall XMap::PaintBoxMouseMove(TObject *Sender, TShiftState Shift, int 
 			Selected = item;
 
 			pbMap->Invalidate();
-		}
+        }
 	}
 }
 
@@ -265,6 +267,10 @@ void XMap::Clear()
 	FolderTotalCount = 0;
 	FolderTotalSize  = 0;
 
+	for (int t = 0; t < MapData.size(); t++)
+	{
+		delete MapData[t];
+	}
 	MapData.clear();
 
 	Busy = false;
@@ -304,10 +310,13 @@ void XMap::EndData()
 
 int XMap::GetItemFrom(int x, int y)
 {
-	int lX = std::floor(x / BlocksPixel);
-	int lY = std::floor(y / BlocksPixel);
+	int lX = (int)std::floor((double)x / (double)BlocksPixel);
+	int lY = (int)std::floor((double)y / (double)BlocksPixel);
+	double row = std::floor((double)pbMap->Width / (double)BlocksPixel);
 
-	int block = std::floor(lX + ((lY) * ((double)pbMap->Width / (double)BlocksPixel)));
+	int block = (int)std::floor((double)lX + ((double)lY * row));
+
+	if (OnDebug) OnDebug(std::to_wstring(lX) + L", " + std::to_wstring(lY) + L"; " + std::to_wstring(block));
 
 	if (MapData.size() > 0)
 	{
@@ -319,6 +328,8 @@ int XMap::GetItemFrom(int x, int y)
 			}
 		}
 	}
+
+	return -1;
 }
 
 
