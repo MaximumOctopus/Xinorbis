@@ -270,8 +270,6 @@ void __fastcall TFormEditHTMLReport::sHTMLColour1MouseDown(TObject *Sender, TMou
 {
 	if (Shift.Contains(ssLeft))
 	{
-		//Assert(TShape(sender).tag <= HTMLColoursCount, "sHTMLColourMouseDown :: Object tag incorrect.");
-
 		TShape *shape = (TShape*)Sender;
 
 		cdHTML->Color = shape->Brush->Color;

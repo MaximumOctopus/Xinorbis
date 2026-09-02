@@ -42,6 +42,12 @@ void OpenDatabaseInformation()
 }
 
 
+void __fastcall TForm19::FormCreate(TObject *Sender)
+{
+	FormResize(NULL);
+}
+
+
 void __fastcall TForm19::FormResize(TObject *Sender)
 {
 	int total = sgDatabase->ColWidths[0];
@@ -68,47 +74,43 @@ void __fastcall TForm19::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 
-/*    folder history
-const
-  CColumnDateTime  = 120;
-  CColumnTableName = 350;
-  CColumnPCName    = 99;
+void TForm19::Init()
+{
+	sgDatabase->Cells[0][0] = GLanguageHandler->Text[kComputer].c_str();
+	sgDatabase->Cells[1][0] = GLanguageHandler->Text[kFolder].c_str();
+	sgDatabase->Cells[2][0] = GLanguageHandler->Text[kDateTime].c_str();
+	sgDatabase->Cells[3][0] = GLanguageHandler->Text[kTableName].c_str();
 
-  procedure TfrmDatabaseInfo.FormCreate(Sender: TObject);
- var
-  fd : TFormDetails;
+	for (int t = 0; t < 6; t++)
+	{
+		sgDatabase->ColWidths[t] = InfoWidths[t];
+	}
 
- begin
-  sgDatabase.Cells[0, 0] := XText[rsComputer];
-  sgDatabase.Cells[1, 0] := XText[rsFolder];
-  sgDatabase.Cells[2, 0] := XText[rsDateTime];
-  sgDatabase.Cells[3, 0] := XText[rsTableName];
+	bCancel->Caption = GLanguageHandler->Text[kCancel].c_str();
+	bSave->Caption   = GLanguageHandler->Text[kSave].c_str();
 
-  sgDatabase.HideColumns(3, 5);
+	lSize->Caption   = GLanguageHandler->Text[kSize].c_str();
+	lTables->Caption = GLanguageHandler->Text[kTables].c_str();
 
-  bCancel.Caption := XText[rsCancel];
-  bSave.Caption   := XText[rsSave];
+	// =========================================================================
 
-  lSize.Caption   := XText[rsSize];
-  lTables.Caption := XText[rsTables];
+	FormDetails fd = GSettingsHandler->LoadFormDetails(kFormInfoDatabase);
 
-  // ===========================================================================
+	if (fd.FormId != -1)
+	{
+		Left   = fd.X;
+		Top    = fd.Y;
+		Width  = fd.Width;
+		Height = fd.Height;
+	}
 
-  fd := XSettings.LoadFormDetails(_FormInfoDatabase);
-
-  if fd.formID <> -1 then begin
-    Left             := fd.x;
-    Top              := fd.y;
-	Width            := fd.w;
-	Height           := fd.h;
-  end;
-
-  // ===========================================================================
-
-  sgDatabaseResize(Nil);
-end;
+	// ===========================================================================
+}
 
 
+void TForm19::BuildDisplay()
+{
+/*
 procedure TfrmDatabaseInfo.FormShow(Sender: TObject);
  var
   tsl : TStringList;
@@ -193,39 +195,10 @@ procedure TfrmDatabaseInfo.FormShow(Sender: TObject);
 
     lDatabaseSize.HTMLText[0] := '<b>' + TConvert.ConvertToUsefulUnit(lDBSize) + '</b> (<b>' + IntToStr(lDBSize) + '</b> ' + XText[rsBytes] + ')';
   end;
-end;
+end;*/
+}
 
 
-
-
-
-
-
-
-
-
-
-procedure TfrmDatabaseInfo.sgDatabaseClick(Sender: TObject);
- begin
-  bExportCSV.Enabled := True;
-  bExportXML.Enabled := True;
-end;
-
-
-procedure TfrmDatabaseInfo.sgDatabaseGetCellColor(Sender: TObject; ARow,
-  ACol: Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-begin
-  if gdSelected in AState then
-    ABrush.Color := CGridColourSelected
-  else begin
-    if Odd(ARow) then
-      ABrush.Color := CGridColourOn
-    else
-      ABrush.Color := CGridColourOff;
-  end;
-end;
-
-end.*/
 void __fastcall TForm19::sbShowNamesClick(TObject *Sender)
 {
 	if (sgDatabase->ColWidths[3] == -1)
@@ -369,14 +342,14 @@ void TForm19::DeleteFromDatabaseXFH(const std::wstring file_name, const std::wst
           if bob.strings[t][1] = '{' then begin
             if Copy(bob.strings[t + 2], 5, 14) = date then begin
               canwrite := False
-            end
+			end
             else begin
               canwrite := True;
 
               Writeln(tf, '{');
             end;
-          end
-          else begin
+		  end
+		  else begin
 			if canwrite then
 			  Writeln(tf, bob.strings[t]);
 		  end;
@@ -392,5 +365,57 @@ void TForm19::DeleteFromDatabaseXFH(const std::wstring file_name, const std::wst
 	ShowXDialog(L"Error locating database",
 				TLanguageHandler.FillParameter(rsCannotFindFileParam, filename),
 				XDialogTypeWarning);*/
+}
+
+
+void __fastcall TForm19::sgDatabaseDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		sgDatabase->Canvas->Font->Style = TFontStyles();
+
+        if (State.Contains(gdSelected))
+		{
+			sgDatabase->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (ARow % 2)
+			{
+				sgDatabase->Canvas->Brush->Color = TColor(kGridColourOff);
+			}
+			else
+			{
+				sgDatabase->Canvas->Brush->Color = TColor(kGridColourOn);
+			}
+		}
+
+		sgDatabase->Canvas->FillRect(Rect);
+
+		if (sgDatabase->ColWidths[0] != -1)
+		{
+			sgDatabase->Canvas->Brush->Style = bsClear;
+			sgDatabase->Canvas->Font->Color = clWhite;
+			sgDatabase->Canvas->TextOut(Rect.Left, Rect.Top, sgDatabase->Cells[ACol][ARow]);
+		}
+	}
+	else
+	{
+		sgDatabase->Canvas->Brush->Color = TColor(kGridHeader);
+		sgDatabase->Canvas->FillRect(Rect);
+
+		sgDatabase->Canvas->Brush->Style = bsClear;
+		sgDatabase->Canvas->Font->Color = clWhite;
+		sgDatabase->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgDatabase->Canvas->TextOut(Rect.Left, Rect.Top, sgDatabase->Cells[ACol][0]);
+	}
+}
+
+
+void __fastcall TForm19::sgDatabaseClick(TObject *Sender)
+{
+	bExportCSV->Enabled = true;
+	bExportXML->Enabled = true;
 }
 

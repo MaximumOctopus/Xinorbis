@@ -11,6 +11,7 @@ object Form19: TForm19
   Font.Name = 'Segoe UI'
   Font.Style = []
   OnClose = FormClose
+  OnCreate = FormCreate
   OnResize = FormResize
   TextHeight = 15
   object Panel1: TPanel
@@ -479,5 +480,7 @@ object Form19: TForm19
     ColCount = 6
     FixedCols = 0
     TabOrder = 2
+    OnClick = sgDatabaseClick
+    OnDrawCell = sgDatabaseDrawCell
   end
 end

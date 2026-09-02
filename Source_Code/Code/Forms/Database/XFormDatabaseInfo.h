@@ -42,11 +42,19 @@ __published:	// IDE-managed Components
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall Image1Click(TObject *Sender);
+	void __fastcall sgDatabaseDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
+	void __fastcall sgDatabaseClick(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
 private:
 
     constexpr static int InfoWidths[6] = { 99, 147, 101, 320, 64, 50 };
 
 	void DeleteFromDatabaseXFH(const std::wstring, const std::wstring);
+
+	void Init();
+
+    void BuildDisplay();
 
 public:
 	__fastcall TForm19(TComponent* Owner);

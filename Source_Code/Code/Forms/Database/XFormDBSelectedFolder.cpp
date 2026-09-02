@@ -230,8 +230,6 @@ void __fastcall TForm20::vtcSelectedMouseDown(TObject *Sender, TMouseButton Butt
 /*  AValueIndex : integer;
 
 begin
-  Assert(Sender <> Nil, 'vtcSelectedMouseMove :: Nil chart');
-
   AValueIndex := TChart(Sender).SeriesList[0].GetCursorValueIndex;
 
   if AValueIndex > -1 then begin
