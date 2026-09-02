@@ -43,6 +43,7 @@ TFrameStructure *FrameStructure;
 __fastcall TFrameStructure::TFrameStructure(TComponent* Owner)
 	: TFrame(Owner)
 {
+	Init();
 }
 //---------------------------------------------------------------------------
 
@@ -50,6 +51,8 @@ __fastcall TFrameStructure::TFrameStructure(TComponent* Owner)
 #pragma region Frame_Setup
 void TFrameStructure::Init()
 {
+	NRS = new NavigateRightSide();
+
 	FilterChanged = true;
 
 	// =========================================================================
@@ -111,11 +114,6 @@ void TFrameStructure::Init()
 	NavigateFilter[12] = miPUNO13; NavigateFilter[13] = miPUNO14; NavigateFilter[14] = miPUNO15; NavigateFilter[15] = miPUNO16;
 	NavigateFilter[16] = miPUNO17; NavigateFilter[17] = miPUNO18; NavigateFilter[18] = miPUNO19;
 
-	for (int t = 0; t < kFileCategoriesCount; t++)
-	{
-		NavigateFilter[t]->Caption = GLanguageHandler->TypeDescriptions[t].c_str();
-	}
-
 	GImageHandler->SetButtonOffImage(sbNMCreated,     kImageCreated);
 	GImageHandler->SetButtonOffImage(sbNMAccessed,    kImageAccessed);
 	GImageHandler->SetButtonOffImage(sbNMModified,    kImageModified);
@@ -133,17 +131,17 @@ void TFrameStructure::Init()
 
 //	sgLeftSide->HideColumns(5, 16);
 
-	sgLeftSide->ColWidths[0] = 18;
-	sgLeftSide->ColWidths[2] = 60;
-	sgLeftSide->ColWidths[3] = 52;
-	sgLeftSide->ColWidths[4] = 40;
+	for (int t = 0; t < 5; t++)
+	{
+		sgLeftSide->ColWidths[t] = ColumnWidths[t];
+		sgRightSide->ColWidths[t] = ColumnWidths[t];
+	}
 
-//	sgRightSide.HideColumns(5, 16);
-
-	sgRightSide->ColWidths[0] = 18;
-	sgRightSide->ColWidths[2] = 60;
-	sgRightSide->ColWidths[3] = 52;
-	sgRightSide->ColWidths[4] = 40;
+	for (int t = 5; t < 17; t++)
+	{
+		sgLeftSide->ColWidths[t] = -1;
+		sgRightSide->ColWidths[t] = -1;
+	}
 
 	sgLeftSide->DefaultRowHeight  = GSettingsHandler->Appearance.RowHeight;
 	sgRightSide->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
@@ -185,6 +183,12 @@ void TFrameStructure::Init()
 	InitHint();
 
 	InitUpdate();
+}
+
+
+void TFrameStructure::DeInit()
+{
+	delete NRS;
 }
 
 
@@ -311,6 +315,31 @@ std::wstring TFrameStructure::GetSelectedFileName(int side)
 		break;
 	}
 	}
+
+    return L"";
+}
+
+
+void __fastcall TFrameStructure::Splitter2Moved(TObject *Sender)
+{
+	int totall = sgLeftSide->ColWidths[0];
+	int totalr = sgRightSide->ColWidths[0];
+
+	for (int t = 2; t < 17; t++)
+	{
+		if (sgLeftSide->ColWidths[t] != -1)
+		{
+			totall += sgLeftSide->ColWidths[t];
+		}
+
+		if (sgRightSide->ColWidths[t] != -1)
+		{
+			totalr += sgRightSide->ColWidths[t];
+		}
+	}
+
+	sgLeftSide->ColWidths[1] = sgLeftSide->Width - (totall + __WidthOfScrollbar);
+    sgRightSide->ColWidths[1] = sgRightSide->Width - (totalr + __WidthOfScrollbar);
 }
 #pragma end_region
 
@@ -372,10 +401,25 @@ void __fastcall TFrameStructure::sgLeftSideDrawCell(TObject *Sender, System::Lon
 												   Rect.Bottom - 1));
 			}
 			break;
+		default:
+			if (sgLeftSide->ColWidths[0] != -1)
+			{
+				sgLeftSide->Canvas->Brush->Style = bsClear;
+				sgLeftSide->Canvas->Font->Color = clWhite;
+				sgLeftSide->Canvas->TextOut(Rect.Left, Rect.Top, sgLeftSide->Cells[ACol][ARow]);
+			}
+			break;
 		}
 	}
 	else
 	{
+		sgLeftSide->Canvas->Brush->Color = TColor(kGridHeader);
+		sgLeftSide->Canvas->FillRect(Rect);
+
+		sgLeftSide->Canvas->Brush->Style = bsClear;
+		sgLeftSide->Canvas->Font->Color = clWhite;
+		sgLeftSide->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgLeftSide->Canvas->TextOut(Rect.Left, Rect.Top, sgLeftSide->Cells[ACol][0]);
 	}
 }
 
@@ -392,7 +436,7 @@ void __fastcall TFrameStructure::sbNMCreatedClick(TObject *Sender)
 	{
 		GridUtility::ToggleColumn(sgLeftSide, button,
 								  column,
-								  LeftSideWidths[column],
+								  ColumnWidths[column],
 								  TableColumnLookup[button->Tag * 2]);
 
 		Panel25Resize(NULL);
@@ -401,7 +445,7 @@ void __fastcall TFrameStructure::sbNMCreatedClick(TObject *Sender)
 	{
 		GridUtility::ToggleColumn(sgRightSide, button,
 								  column,
-                                  RightSideWidths[column],
+                                  ColumnWidths[column],
 								  TableColumnLookup[button->Tag * 2]);
 
 		Panel26Resize(NULL);
@@ -436,8 +480,6 @@ void __fastcall TFrameStructure::sbNMColourCodeClick(TObject *Sender)
 
 void __fastcall TFrameStructure::sbNLFilterClick(TObject *Sender)
 {
-//	Assert(length(GSettingsHandler->Navigation.DisplayOptions[puNavigateOptions->Tag]) = 20, "sbNRFilterClick :: Error with length.");
-
 	TSpeedButton *button = (TSpeedButton*)Sender;
 
 	puNavigateOptions->Tag = button->Tag;
@@ -494,7 +536,10 @@ void __fastcall TFrameStructure::sgLeftSideDblClick(TObject *Sender)
 		std::wstring is = sgLeftSide->Cells[ksgnIntegerSize][sgLeftSide->Selection.Top].c_str();
 
 		std::wstring s = GScanEngine->Data[DataSource].Path.String + left + L"\\";
-		unsigned __int64 i = stoi(is);
+
+		ShowMessage(is.c_str());
+
+		unsigned __int64 i = std::stoull(is);
 
 		CurrentFolder = s;
 
@@ -565,8 +610,8 @@ void TFrameStructure::BuildNavigationTab()
 
 				if (GScanEngine->Data[DataSource].TotalSize != 0)
 				{
-					sgLeftSide->Cells[4][row]                = Convert::DoubleToPercent(bigtemp.Size / GScanEngine->Data[DataSource].TotalSize).c_str();
-					sgLeftSide->Cells[ksgnIntegerPCent][row] = std::round((bigtemp.Size / GScanEngine->Data[DataSource].TotalSize) * 50);
+					sgLeftSide->Cells[4][row]                = Convert::DoubleToPercent((double)bigtemp.Size / (double)GScanEngine->Data[DataSource].TotalSize).c_str();
+					sgLeftSide->Cells[ksgnIntegerPCent][row] = (int)std::round(((double)bigtemp.Size / (double)GScanEngine->Data[DataSource].TotalSize) * 50);
 				}
 				else
 				{
@@ -598,8 +643,8 @@ void TFrameStructure::BuildNavigationTab()
 
 				if (GScanEngine->Data[DataSource].TotalSize != 0)
 				{
-					sgLeftSide->Cells[4][row]                = Convert::DoubleToPercent(file->Size / GScanEngine->Data[DataSource].TotalSize).c_str();
-					sgLeftSide->Cells[ksgnIntegerPCent][row] = std::round((file->Size / GScanEngine->Data[DataSource].TotalSize) * 50);
+					sgLeftSide->Cells[4][row]                = Convert::DoubleToPercent((double)file->Size / (double)GScanEngine->Data[DataSource].TotalSize).c_str();
+					sgLeftSide->Cells[ksgnIntegerPCent][row] = (int)std::round(((double)file->Size / (double)GScanEngine->Data[DataSource].TotalSize) * 50);
 				}
 				else
 				{
@@ -673,36 +718,52 @@ void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::Lo
 			}
 		}
 
+		sgRightSide->Canvas->FillRect(Rect);
+
 		switch (ACol)
 		{
-		case 0:
+		case ksgnIsFolder:
 			if (ARow != 0)
 			{
 				if (sgRightSide->Cells[ksgnFolderFile][ARow] == L"1")
 				{
-					//XFNImages.Draw(TAdvStringGrid(Sender).Canvas, Rect.Left + 1, Rect.Top, 0, True);
+					XFNImages->Draw(sgRightSide->Canvas, Rect.Left + 1, Rect.Top, 0, true);
 				}
 			}
 			break;
-		case 3:
-			sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[2]);
+		case ksgnGraphSize:
+			sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[0]);
 			sgRightSide->Canvas->Rectangle(Rect);
 
 			if (sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"")
 			{
-				sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[3]);
+				sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[1]);
 				sgRightSide->Canvas->FillRect(TRect(Rect.Left + 1,
-													Rect.Top + 1,
-													Rect.Left + sgRightSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
-													Rect.Bottom - 1));
-
+												   Rect.Top + 1,
+												   Rect.Left + sgRightSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
+												   Rect.Bottom - 1));
 			}
-            break;
+			break;
+		default:
+			if (sgRightSide->ColWidths[0] != -1)
+			{
+				sgRightSide->Canvas->Brush->Style = bsClear;
+				sgRightSide->Canvas->Font->Color = clWhite;
+				sgRightSide->Canvas->TextOut(Rect.Left, Rect.Top, sgRightSide->Cells[ACol][ARow]);
+			}
+			break;
 		}
 	}
 	else
 	{
-    }
+		sgRightSide->Canvas->Brush->Color = TColor(kGridHeader);
+		sgRightSide->Canvas->FillRect(Rect);
+
+		sgRightSide->Canvas->Brush->Style = bsClear;
+		sgRightSide->Canvas->Font->Color = clWhite;
+		sgRightSide->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgRightSide->Canvas->TextOut(Rect.Left, Rect.Top, sgRightSide->Cells[ACol][0]);
+	}
 }
 
 
@@ -925,8 +986,6 @@ void __fastcall TFrameStructure::miCOCopyClick(TObject *Sender)
 
 void __fastcall TFrameStructure::miCOAdvancedClick(TObject *Sender)
 {
-//  Assert(sender != Nil, "miCOAdvancedClick :: sender is nil");
-
 	ChartOptions ceo = GSettingsHandler->Chart;
 
 	ceo.Type = ChartUtility::GetChartType(vtcFS);
@@ -953,8 +1012,6 @@ void __fastcall TFrameStructure::miCOAdvancedClick(TObject *Sender)
 #pragma region Popup_NavigateOptions
 void __fastcall TFrameStructure::miPUNO1Click(TObject *Sender)
 {
-	//Assert(Sender != nil, "miPUNO1Click :: Nil Object");
-
 	TMenuItem *mi = (TMenuItem*)Sender;
 
 	mi->Checked = !mi->Checked;
@@ -1351,6 +1408,4 @@ void __fastcall TFrameStructure::miSaveAsClick(TObject *Sender)
 	}
 }
 #pragma end_region
-
-
 

@@ -32,35 +32,35 @@ extern SystemGlobal *GSystemGlobal;
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TFrame2 *Frame2;
+TFrameDuplicates *FrameDuplicates;
 //---------------------------------------------------------------------------
-__fastcall TFrame2::TFrame2(TComponent* Owner)
+__fastcall TFrameDuplicates::TFrameDuplicates(TComponent* Owner)
 	: TFrame(Owner)
 {
 }
 
 
-void __fastcall TFrame2::FrameResize(TObject *Sender)
+void __fastcall TFrameDuplicates::FrameResize(TObject *Sender)
 {
 	sgDuplicatesName->ColWidths[0] = sgDuplicatesName->Width - (64 + __WidthOfScrollbar);
 	sgDuplicatesSize->ColWidths[0] = sgDuplicatesSize->Width - (64 + __WidthOfScrollbar);
 }
 
 
-void TFrame2::Init()
+void TFrameDuplicates::Init()
 {
 	tsDuplicatesName->Caption = GLanguageHandler->Text[kDuplicatesName].c_str();
 	tsDuplicatesSize->Caption = GLanguageHandler->Text[kDuplicatesSize].c_str();
 
 	sgDuplicatesName->ColWidths[1] = 64;
 	sgDuplicatesName->ColWidths[2] = -1;
-	sgDuplicatesName->Cells[0][0]   = GLanguageHandler->Text[kFilePath].c_str();
-	sgDuplicatesName->Cells[1][0]   = GLanguageHandler->Text[kSize].c_str();
+	sgDuplicatesName->Cells[0][0]  = GLanguageHandler->Text[kFilePath].c_str();
+	sgDuplicatesName->Cells[1][0]  = GLanguageHandler->Text[kSize].c_str();
 
 	sgDuplicatesSize->ColWidths[1] = 64;
 	sgDuplicatesSize->ColWidths[2] = -1;
-	sgDuplicatesSize->Cells[0][0]   = GLanguageHandler->Text[kFilePath].c_str();
-	sgDuplicatesSize->Cells[1][0]   = GLanguageHandler->Text[kSize].c_str();
+	sgDuplicatesSize->Cells[0][0]  = GLanguageHandler->Text[kFilePath].c_str();
+	sgDuplicatesSize->Cells[1][0]  = GLanguageHandler->Text[kSize].c_str();
 
 	miExploreDirectory->Caption = GLanguageHandler->Text[kExploreFolder].c_str();
 
@@ -84,19 +84,19 @@ void TFrame2::Init()
 }
 
 
-void TFrame2::SetTab(int tab)
+void TFrameDuplicates::SetTab(int tab)
 {
 	pcDuplicates->ActivePageIndex = tab;
 }
 
 
-int TFrame2::GetActivePage()
+int TFrameDuplicates::GetActivePage()
 {
 	return pcDuplicates->ActivePageIndex;
 }
 
 
-std::wstring TFrame2::GetSelectedFileName(int tag)
+std::wstring TFrameDuplicates::GetSelectedFileName(int tag)
 {
 	switch (tag)
 	{
@@ -111,14 +111,14 @@ std::wstring TFrame2::GetSelectedFileName(int tag)
 
 
 #pragma region Gui
-void __fastcall TFrame2::pcDuplicatesResize(TObject *Sender)
+void __fastcall TFrameDuplicates::pcDuplicatesResize(TObject *Sender)
 {
 	sgDuplicatesName->ColWidths[0] = sgDuplicatesName->Width - (64 + __WidthOfScrollbar);
 	sgDuplicatesSize->ColWidths[0] = sgDuplicatesSize->Width - (64 + __WidthOfScrollbar);
 }
 
 
-void __fastcall TFrame2::sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFrameDuplicates::sgDuplicatesNameDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
 	if (ARow != 0)
@@ -175,7 +175,7 @@ void __fastcall TFrame2::sgDuplicatesNameDrawCell(TObject *Sender, System::LongI
 
 
 #pragma region Duplicates_Name
-void __fastcall TFrame2::sbDNGoClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDNGoClick(TObject *Sender)
 {
 	Screen->Cursor = crHourGlass;
 
@@ -272,13 +272,13 @@ void __fastcall TFrame2::sbDNGoClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDNHelpClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDNHelpClick(TObject *Sender)
 {
 	HelpHandler::OpenHelpPage(L"a21.htm");
 }
 
 
-void __fastcall TFrame2::sbDNSaveClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDNSaveClick(TObject *Sender)
 {
 	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.txt)|*.txt",
 												  L".txt",
@@ -311,7 +311,7 @@ void __fastcall TFrame2::sbDNSaveClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDNCSVClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDNCSVClick(TObject *Sender)
 {
 	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.csv)|*.csv",
 												  L".csv",
@@ -348,7 +348,7 @@ void __fastcall TFrame2::sbDNCSVClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDNClipboardClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDNClipboardClick(TObject *Sender)
 {
 	GridUtility::CopyGridToClipboard(sgDuplicatesName, 0);
 }
@@ -356,7 +356,7 @@ void __fastcall TFrame2::sbDNClipboardClick(TObject *Sender)
 
 
 #pragma region Duplicates_Size
-void __fastcall TFrame2::sbDSGoClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDSGoClick(TObject *Sender)
 {
 	Screen->Cursor = crHourGlass;
 
@@ -437,13 +437,13 @@ void __fastcall TFrame2::sbDSGoClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDSHelpClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDSHelpClick(TObject *Sender)
 {
 	HelpHandler::OpenHelpPage(L"a31.htm");
 }
 
 
-void __fastcall TFrame2::sbDSSaveClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDSSaveClick(TObject *Sender)
 {
 	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kXFileList] + L" (*.txt)|*.txt",
 												  L".txt",
@@ -477,7 +477,7 @@ void __fastcall TFrame2::sbDSSaveClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDSCSVClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDSCSVClick(TObject *Sender)
 {
 	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.csv)|*.csv",
 												  L".csv",
@@ -514,7 +514,7 @@ void __fastcall TFrame2::sbDSCSVClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::sbDSClipboardClick(TObject *Sender)
+void __fastcall TFrameDuplicates::sbDSClipboardClick(TObject *Sender)
 {
 	GridUtility::CopyGridToClipboard(sgDuplicatesSize, 0);
 }
@@ -522,7 +522,7 @@ void __fastcall TFrame2::sbDSClipboardClick(TObject *Sender)
 
 
 #pragma region Popup_Search
-void __fastcall TFrame2::puSearchPopup(TObject *Sender)
+void __fastcall TFrameDuplicates::puSearchPopup(TObject *Sender)
 {
 	bool status = true;
 
@@ -551,7 +551,7 @@ void __fastcall TFrame2::puSearchPopup(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miSearchOpenClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miSearchOpenClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -566,7 +566,7 @@ void __fastcall TFrame2::miSearchOpenClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miSearchOpenCustomClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miSearchOpenCustomClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -588,7 +588,7 @@ void __fastcall TFrame2::miSearchOpenCustomClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miExploreDirectoryClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miExploreDirectoryClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -605,7 +605,7 @@ void __fastcall TFrame2::miExploreDirectoryClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miSFilePropertiesClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miSFilePropertiesClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -620,7 +620,7 @@ void __fastcall TFrame2::miSFilePropertiesClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miHexEditClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miHexEditClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -635,7 +635,7 @@ void __fastcall TFrame2::miHexEditClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miGenerateMD5Click(TObject *Sender)
+void __fastcall TFrameDuplicates::miGenerateMD5Click(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -650,7 +650,7 @@ void __fastcall TFrame2::miGenerateMD5Click(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miCopySelectedClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miCopySelectedClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -668,7 +668,7 @@ void __fastcall TFrame2::miCopySelectedClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miMoveSelectedClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miMoveSelectedClick(TObject *Sender)
 {
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
@@ -686,7 +686,7 @@ void __fastcall TFrame2::miMoveSelectedClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miDeleteSelectedClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miDeleteSelectedClick(TObject *Sender)
 {
 	if (MessageDlg(GLanguageHandler->Text[kDialog3].c_str(), mtWarning, mbYesNo, 0) == mrYes)
 	{
@@ -703,7 +703,7 @@ void __fastcall TFrame2::miDeleteSelectedClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miSearchExportToCBClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miSearchExportToCBClick(TObject *Sender)
 {
 	TMenuItem *mi = (TMenuItem*)Sender;
 	TPopupMenu *pum = (TPopupMenu*)mi->GetParentMenu();
@@ -720,7 +720,7 @@ void __fastcall TFrame2::miSearchExportToCBClick(TObject *Sender)
 }
 
 
-void __fastcall TFrame2::miSSaveClick(TObject *Sender)
+void __fastcall TFrameDuplicates::miSSaveClick(TObject *Sender)
 {
 	TMenuItem *mi = (TMenuItem*)Sender;
 	TPopupMenu *pum = (TPopupMenu*)mi->GetParentMenu();

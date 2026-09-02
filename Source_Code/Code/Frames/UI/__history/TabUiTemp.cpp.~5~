@@ -10,7 +10,6 @@
 //
 // =====================================================================
 
-#include "ConstantsData.h"
 #include "Convert.h"
 #include "LanguageHandler.h"
 #include "ScanEngine.h"
@@ -33,11 +32,11 @@ void TabUiTemp::Chart(TChart* chart, int DataSource, bool quantity)
 
 			if (GScanEngine->Data[DataSource].FileCount != 0)
 			{
-				chart->SeriesList->Items[0]->Add(100 - ((GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Count) / GScanEngine->Data[DataSource].FileCount) * 100,
+				chart->SeriesList->Items[0]->Add(100 - ((GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Count) / GScanEngine->Data[DataSource].FileCount) * 100,
 												 GLanguageHandler->Text[kAllOtherFiles].c_str(),
 												 TColor(0x444444));
 
-				chart->SeriesList->Items[0]->Add(((GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Size) / GScanEngine->Data[DataSource].FileCount) * 100,
+				chart->SeriesList->Items[0]->Add(((GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Size) / GScanEngine->Data[DataSource].FileCount) * 100,
 												 GLanguageHandler->Text[kTempFiles].c_str(),
 												 TColor(0x00CCFF));
 			}
@@ -46,10 +45,10 @@ void TabUiTemp::Chart(TChart* chart, int DataSource, bool quantity)
 		{
 			chart->Title->Text->Strings[0] = GLanguageHandler->Text[kTempFilePTSF].c_str();
 
-			chart->SeriesList->Items[0]->Add(100 - ((GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Count) / GScanEngine->Data[DataSource].TotalSize) * 100,
+			chart->SeriesList->Items[0]->Add(100 - ((GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Count) / GScanEngine->Data[DataSource].TotalSize) * 100,
 											 GLanguageHandler->Text[kAllOtherFiles].c_str(),
 											 TColor(0x444444));
-			chart->SeriesList->Items[0]->Add(((GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Size) / GScanEngine->Data[DataSource].TotalSize) * 100,
+			chart->SeriesList->Items[0]->Add(((GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Size) / GScanEngine->Data[DataSource].TotalSize) * 100,
 											 GLanguageHandler->Text[kTempFiles].c_str(),
 											 TColor(0x00CCFF));
 		}
@@ -62,11 +61,10 @@ std::wstring TabUiTemp::Table(TStringGrid* grid, int DataSource)
 	//grid->ClearRows(1, grid.RowCount - 1);
 	grid->RowCount = 2;
 
-	if (GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Count != 0)
+	if (GScanEngine->Data[DataSource].TemporaryFiles.size() == 0)
 	{
-		grid->Cells[0][1] = GLanguageHandler->Text[kNoneFound].c_str();
-
-		return GLanguageHandler->Text[kNoTempFilesFound];
+		grid->Cells[kUsersTableName][1] = GLanguageHandler->Text[kNoneFound].c_str();
+		return;
 	}
 
 	int count = 0;
@@ -89,7 +87,14 @@ std::wstring TabUiTemp::Table(TStringGrid* grid, int DataSource)
 
 	grid->EndUpdate();
 
-	return std::to_wstring(GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Count) + L" " +
-		   GLanguageHandler->Text[kFiles] +
-		   L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Size) + L")";
+	if (GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Count != 0)
+	{
+		return std::to_wstring(GScanEngine->Data[DataSource].ExtensionSpread[kCategoryTemp].Count) + L" " +
+			   GLanguageHandler->Text[kFiles] +
+			   L" (" + Convert::ConvertToUsefulUnit(GScanEngine[aDataIndex].ExtensionSpread[kCategoryTemp].Size) + L")";
+	}
+	else
+	{
+		return GLanguageHandler->Text[kNoTempFilesFound];
+	}
 }

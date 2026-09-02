@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "XFrameMap.h"
+#include "XFormMoreDetail.h"
 
 #include "Convert.h"
 #include "LanguageHandler.h"
@@ -31,6 +32,7 @@ void TFrameMap::Init()
 	MapX = new XMap(this, pMap);
 	MapX->OnMouseClick = std::bind(OnMouseClick, std::placeholders::_1);
 	MapX->OnMouseOver  = OnMouseMove;
+	MapX->OnDebug = OnDebug;
 
 	HasData = false;
 	OldIndex = -1;
@@ -38,6 +40,8 @@ void TFrameMap::Init()
 	rbBySize->Caption = GLanguageHandler->Text[kBySize].c_str();
 	rbByQuantity->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 	lMapSize->Caption = GLanguageHandler->Text[kSize].c_str();
+
+	cbHighlightMode->Caption = GLanguageHandler->Text[kHighlight].c_str();
 }
 
 
@@ -93,12 +97,10 @@ void __fastcall TFrameMap::cbMapSizeSelectChange(TObject *Sender)
 	switch (cbMapSizeSelect->ItemIndex)
 	{
 	case kBlockSizeA:
-		MapX->BlocksSize = 4;
-		MapX->BlocksGap  = 1;
+		MapX->SetBlocksSize(4);
 		break;
 	case kBlockSizeB:
-		MapX->BlocksSize = 5;
-		MapX->BlocksGap  = 1;
+		MapX->SetBlocksSize(5);
 		break;
 	}
 }
@@ -118,23 +120,29 @@ void __fastcall TFrameMap::OnMouseMove(int folder_id)
 		{
 			XMapDataObject *xdo = MapX->GetItem(folder_id);
 
+			std::wstring caption = L"";
+
 			if (xdo->FolderName == L"\\")
 			{
-				lMapFolder->Caption = xdo->FolderName.c_str();
+				caption = xdo->FolderName;
 			}
 			else
 			{
-				std::wstring caption = L"\\" + xdo->FolderName + L"\\";
-
-				lMapFolder->Caption = caption.c_str();
+				caption = L"\\" + xdo->FolderName + L"\\";
 			}
 
-			std::wstring ftc = FloatToStrF((xdo->FileCount / MapX->FolderTotalCount) * 100, ffFixed, 7, 2).c_str();
-            std::wstring fts = FloatToStrF((xdo->FileSize / MapX->FolderTotalSize) * 100, ffFixed, 7, 2).c_str();
+			#ifdef _DEBUG
+            caption += L" (" + std::to_wstring(xdo->BlockStart) + L" to " + std::to_wstring(xdo->BlockEnd) + L")";
+			#endif
 
-			lMapDetails1->Caption = (std::to_wstring(xdo->FileCount) + L" " + GLanguageHandler->Text[kFiles] + L" " + ftc + L"%)").c_str();
+			lMapFolder->Caption = caption.c_str();
 
-			lMapDetails2->Caption = (Convert::ConvertToUsefulUnit(xdo->FileSize) + L" " + fts + L"%)").c_str();
+			std::wstring ftc = FloatToStrF(((double)xdo->FileCount / (double)MapX->FolderTotalCount) * 100, ffFixed, 7, 2).c_str();
+			std::wstring fts = FloatToStrF(((double)xdo->FileSize / (double)MapX->FolderTotalSize) * 100, ffFixed, 7, 2).c_str();
+
+			lMapDetails1->Caption = (std::to_wstring(xdo->FileCount) + L" " + GLanguageHandler->Text[kFiles] + L" (" + ftc + L"%)").c_str();
+
+			lMapDetails2->Caption = (Convert::ConvertToUsefulUnit(xdo->FileSize) + L" (" + fts + L"%)").c_str();
 
 			shapeMap->Brush->Color = TColor(xdo->Colour);
 
@@ -162,13 +170,19 @@ void __fastcall TFrameMap::OnMouseClick(int folder_id)
 
 		if (xdo->FolderName == L"\\")
 		{
-//			DoExplore( GScanDetails[FSource].ScanPath)
+			OpenMoreDetails(0, GScanEngine->Data[DataSource].Path.String);
 		}
 		else
 		{
-//			DoExplore(FSource, GScanDetails[FSource].ScanPath + TXMDO.FolderName + '\');
+			OpenMoreDetails(0, GScanEngine->Data[DataSource].Path.String + xdo->FolderName + L"\\");
 		}
 	}
+}
+
+
+void __fastcall TFrameMap::OnDebug(const std::wstring debug)
+{
+	lDebug->Caption = debug.c_str();
 }
 
 

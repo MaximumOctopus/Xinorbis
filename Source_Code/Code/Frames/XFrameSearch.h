@@ -196,6 +196,7 @@ public:
 
 	std::function<void(const std::wstring, int, int)> OnMenuChange;
 	std::function<void(int)> OnOpenSearchWizard;
+    std::function<void(const std::wstring)> OnStatusBarText;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSearch *FrameSearch;

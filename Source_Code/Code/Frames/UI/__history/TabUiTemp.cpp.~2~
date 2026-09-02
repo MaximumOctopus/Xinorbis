@@ -1,0 +1,54 @@
+// =====================================================================
+//
+//   Xinorbis 10.0
+//
+// (c) Paul Alan Freshney 2002-2026
+//
+// paul@freshney.org
+//
+// https://github.com/MaximumOctopus/Xinorbis
+//
+// =====================================================================
+
+#include "ScanEngine.h"
+#include "TabUiTemp.h"
+
+extern ScanEngine *GScanEngine;
+
+
+void TabUiTemp::Chart(TChart* chart, int DataSource, bool quantity)
+{
+}
+
+
+void TabUiTemp::Table(TStringGrid* grid, int DataSource)
+{
+	//grid->ClearRows(1, grid.RowCount - 1);
+	grid->RowCount = 2;
+
+	if (GScanEngine->Data[DataSource].TemporaryFiles.size() == 0)
+	{
+		grid->Cells[kUsersTableName][1] = GLanguageHandler->Text[kNoneFound].c_str();
+		return;
+	}
+
+	int count = 0;
+	unsigned __int64 size = 0;
+	int Row = 1;
+
+	grid->BeginUpdate();
+
+	grid->RowCount = GScanEngine->Data[DataSource].TemporaryFiles.size() + 1;
+
+	for (TempFileObject *file : GScanEngine->Data[DataSource].TemporaryFiles)
+	{
+		grid->Cells[0][Row] = file->Name.c_str();
+		grid->Cells[1][Row] = Convert::ConvertToUsefulUnit(file->Size).c_str();
+
+		Row++;
+	}
+
+//	DoTableSort(oTable, oTable.SortSettings.Column, UsersSortColumns[oTable.SortSettings.Column]);
+
+	grid->EndUpdate();
+}

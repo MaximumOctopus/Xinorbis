@@ -1,8 +1,13 @@
-object Frame2: TFrame2
+object FrameDuplicates: TFrameDuplicates
   Left = 0
   Top = 0
   Width = 1240
   Height = 655
+  DoubleBuffered = True
+  Color = 3355443
+  ParentBackground = False
+  ParentColor = False
+  ParentDoubleBuffered = False
   TabOrder = 0
   OnResize = FrameResize
   object pcDuplicates: TPageControl

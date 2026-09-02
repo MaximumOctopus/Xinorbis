@@ -541,9 +541,10 @@ public:		// User declarations
 	int CurrentTab();
 	void SetTab(int);
 
+	std::function<void(int)> OnChartsChanged;
 	std::function<void(const std::wstring, int)> OnNewSearch;
 	std::function<void(const std::wstring, int, bool)> OnScanWithNewPath;
-	std::function<void(int)> OnChartsChanged;
+	std::function<void(const std::wstring)> OnStatusBarText;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameProperties *FrameProperties;

@@ -1766,7 +1766,7 @@ void TFrameProperties::InitTempTab()
 
 	sgTemporary->ColWidths[0] = TempWidths[0];
 	sgTemporary->ColWidths[1] = TempWidths[1];
-	sgTemporary->ColWidths[2] = -1;
+	//sgTemporary->ColWidths[2] = -1;
 }
 
 
@@ -2145,8 +2145,6 @@ void __fastcall TFrameProperties::miLengthNonZeroClick(TObject *Sender)
 #pragma region PopupMenu_Magnitude
 void __fastcall TFrameProperties::miMagnitudeExportClick(TObject *Sender)
 {
-//  Assert(grid != NULL, 'miMagnitudeExportClick :: Grid is NULL');
-
 	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kMagnitude] + L"_" + GLanguageHandler->Text[kExport]));
 
 	if (!file_name.empty())

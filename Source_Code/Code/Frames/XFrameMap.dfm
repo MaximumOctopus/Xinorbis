@@ -3,6 +3,8 @@ object FrameMap: TFrameMap
   Top = 0
   Width = 1102
   Height = 672
+  DoubleBuffered = True
+  ParentDoubleBuffered = False
   TabOrder = 0
   object Panel1: TPanel
     Left = 0
@@ -10,6 +12,8 @@ object FrameMap: TFrameMap
     Width = 1102
     Height = 58
     Align = alTop
+    Color = 3355443
+    ParentBackground = False
     TabOrder = 0
     object lMapFolder: TLabel
       Left = 260
@@ -45,9 +49,16 @@ object FrameMap: TFrameMap
       Height = 15
       Caption = '.'
     end
+    object lDebug: TLabel
+      Left = 584
+      Top = 16
+      Width = 38
+      Height = 15
+      Caption = 'lDebug'
+    end
     object cbMapSizeSelect: TComboBox
       Left = 72
-      Top = 27
+      Top = 29
       Width = 38
       Height = 23
       Style = csDropDownList
@@ -60,8 +71,8 @@ object FrameMap: TFrameMap
         'B')
     end
     object cbHighlightMode: TCheckBox
-      Left = 152
-      Top = 32
+      Left = 120
+      Top = 35
       Width = 49
       Height = 17
       TabOrder = 1
@@ -73,7 +84,9 @@ object FrameMap: TFrameMap
       Width = 106
       Height = 17
       Caption = '.'
+      Checked = True
       TabOrder = 2
+      TabStop = True
       OnClick = rbBySizeClick
     end
     object rbByQuantity: TRadioButton
@@ -92,6 +105,8 @@ object FrameMap: TFrameMap
     Width = 1102
     Height = 614
     Align = alClient
+    Color = 3355443
+    ParentBackground = False
     TabOrder = 1
   end
 end

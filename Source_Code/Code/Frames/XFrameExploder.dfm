@@ -122,7 +122,9 @@ object FrameExploder: TFrameExploder
       Width = 106
       Height = 17
       Caption = '.'
+      Checked = True
       TabOrder = 2
+      TabStop = True
       OnClick = rbBySizeClick
     end
   end

@@ -112,6 +112,8 @@ void TabUiLength::Chart(TChart* chart, int DataSource, int label_options)
 
 void TabUiLength::Table(TStringGrid* grid, int DataSource, int index, bool add_all)
 {
+//  Assert((aDataIndex >= 0) and (aDataIndex <= 2), 'InformationTabTableTable :: invalid dataindex :: ' + inttostr(aDataIndex));
+
   //if XSettings.System.Debug then TMSLogger.Info('InformationTabTableTable : ' + IntToStr(aDataIndex) + '/' + IntToStr(oTableDisplay) + '/' + IntToStr(GScanDetails[aDataIndex].Files.Count));
 
 //  if XSettings.Forms.ProgressForm <> Nil then

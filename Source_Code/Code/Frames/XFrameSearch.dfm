@@ -3,6 +3,11 @@ object FrameSearch: TFrameSearch
   Top = 0
   Width = 1339
   Height = 651
+  DoubleBuffered = True
+  Color = 3355443
+  ParentBackground = False
+  ParentColor = False
+  ParentDoubleBuffered = False
   TabOrder = 0
   OnResize = FrameResize
   object pcSearch: TPageControl

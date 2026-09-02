@@ -3,6 +3,8 @@ object FrameProperties: TFrameProperties
   Top = 0
   Width = 1514
   Height = 726
+  DoubleBuffered = True
+  ParentDoubleBuffered = False
   TabOrder = 0
   object SpeedButton7: TSpeedButton
     Left = 24
@@ -15,10 +17,11 @@ object FrameProperties: TFrameProperties
     Top = 0
     Width = 1514
     Height = 726
-    ActivePage = tsDates
+    ActivePage = tsCategories
     Align = alClient
     Images = ilTabs
     TabOrder = 0
+    StyleName = 'Carbon'
     OnChange = pcPropertiesChange
     object tsCategories: TTabSheet
       object splitCategories: TSplitter
@@ -771,7 +774,6 @@ object FrameProperties: TFrameProperties
           Align = alClient
           PopupMenu = puCharts
           TabOrder = 0
-          ExplicitHeight = 567
           DefaultCanvas = 'TGDIPlusCanvas'
           ColorPaletteIndex = 13
           object Series5: TPieSeries
@@ -808,7 +810,6 @@ object FrameProperties: TFrameProperties
           Color = 3355443
           ParentBackground = False
           TabOrder = 1
-          ExplicitTop = 568
         end
       end
     end

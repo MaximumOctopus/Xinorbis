@@ -13,7 +13,7 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.Menus.hpp>
 //---------------------------------------------------------------------------
-class TFrame2 : public TFrame
+class TFrameDuplicates : public TFrame
 {
 __published:	// IDE-managed Components
 	TPageControl *pcDuplicates;
@@ -87,7 +87,7 @@ private:
 	std::wstring GetSelectedFileName(int);
 
 public:
-	__fastcall TFrame2(TComponent* Owner);
+	__fastcall TFrameDuplicates(TComponent* Owner);
 
 	int DataSource = 0;
 
@@ -96,6 +96,6 @@ public:
 
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFrame2 *Frame2;
+extern PACKAGE TFrameDuplicates *FrameDuplicates;
 //---------------------------------------------------------------------------
 #endif

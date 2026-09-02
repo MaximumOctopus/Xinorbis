@@ -203,35 +203,40 @@ void TFrameSummary::BuildSummaryLabels()
 		lSAFFX->Caption = L"-";
 	}
 
-//	lNFX->Caption = IntToStr(aNullFileCount);
-//	lNDX->Caption = IntToStr(aNullFolderCount);
+	lSLFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFileName.c_str();
+
+	lSLFSoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFolderNameSize.c_str();
+	lSLFNoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFolderNameCount.c_str();
+
+	lSULSSoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestUserNameSize.c_str();
+	lSULSNoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestUserNameCount.c_str();
 }
 
 
 void TFrameSummary::BuildGauges()
-{                       /*
-	gSLDCount->Progress = StrToInt64(lDirList.Cells[2, zCount]), GScanDetails[aDataIndex].FileCount);
-	gSLDSize->Progress  = StrToInt64(lDirList.Cells[8, zSize]),  GScanDetails[aDataIndex].TotalSize);
+{
+	if (GScanEngine->Data[DataSource].TotalSize != 0)
+	{
+		gSLF->Progress = (GScanEngine->Data[DataSource].Stats.LargestFileSize / GScanEngine->Data[DataSource].TotalSize) * 100;
+	}
+	else
+	{
+		gSLF->Progress = 0;
+	}
+
+	gSLDCount->Progress = (GScanEngine->Data[DataSource].Stats.LargestFolderCount / GScanEngine->Data[DataSource].FileCount) * 100;
+	gSLDSize->Progress  = (GScanEngine->Data[DataSource].Stats.LargestFolderSize / GScanEngine->Data[DataSource].TotalSize) * 100;
 
 	if (GScanEngine->Data[DataSource].Users.size() != 0)
 	{
-		gSLUCount->Progress =  StrToInt64(FrameReports[aDataIndex].sgUsers.Cells[2, zCount]), GScanDetails[aDataIndex].FileCount);
-		gSLUSize->Progress  =  StrToInt64(FrameReports[aDataIndex].sgUsers.Cells[7, zSize]),  GScanDetails[aDataIndex].TotalSize);
+		gSLUCount->Progress = (GScanEngine->Data[DataSource].Stats.LargestUserCount / GScanEngine->Data[DataSource].FileCount) * 100;
+		gSLUSize->Progress  = (GScanEngine->Data[DataSource].Stats.LargestUserSize / GScanEngine->Data[DataSource].TotalSize) * 100;
 	}
 	else
 	{
 		gSLUCount->Progress = 0;
 		gSLUSize->Progress  = 0;
 	}
-
-	if (GScanEngine->Data[DataSource].TotalSize != 0 && FrameReports[aDataIndex].sgTop50Big.Cells[3, 1] <> '')
-	{
-		gSLF->Progress = SetDisplay((StrToInt64(FrameReports[aDataIndex].sgTop50Big.Cells[3, 1]) / GScanDetails[aDataIndex].TotalSize) * 100)
-	}
-	else
-	{
-		gSLF->Progress = 0;
-	}                     */
 }
 
 

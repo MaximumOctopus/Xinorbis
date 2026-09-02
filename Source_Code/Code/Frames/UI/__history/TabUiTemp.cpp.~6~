@@ -91,5 +91,5 @@ std::wstring TabUiTemp::Table(TStringGrid* grid, int DataSource)
 
 	return std::to_wstring(GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Count) + L" " +
 		   GLanguageHandler->Text[kFiles] +
-		   L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[kCategory_Temp].Size) + L")";
+		   L" (" + Convert::ConvertToUsefulUnit(GScanEngine[aDataIndex].ExtensionSpread[kCategory_Temp].Size) + L")";
 }

@@ -105,6 +105,7 @@ __published:	// IDE-managed Components
 	TChart *vtcFS;
 	TPieSeries *Series3;
 	TLabel *lNavigationDetails;
+	TSplitter *Splitter2;
 	void __fastcall miPUNO1Click(TObject *Sender);
 	void __fastcall puSearchPopup(TObject *Sender);
 	void __fastcall miHexEditClick(TObject *Sender);
@@ -138,6 +139,8 @@ __published:	// IDE-managed Components
           TRect &Rect, TGridDrawState State);
 	void __fastcall sgRightSideDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
+	void __fastcall Splitter2Moved(TObject *Sender);
+
 private:
 
 	static constexpr int kLeftFileName  = 1;
@@ -145,11 +148,8 @@ private:
 	static constexpr int kLeftOptions  = 0;
 	static constexpr int kRightOptions = 1;
 
-	static constexpr int LeftSideWidths[17]  = { 64, 64, 64, 64, 64, 64, 64, 64, 64,
+	static constexpr int ColumnWidths[17]  = { 18, 60, 52, 40, 64, 64, 64, 64, 64,
 												 64, 64, 64, 64, 64, 64, 64, 64 };
-
-	static constexpr int RightSideWidths[17] = { 28, 148, 64, 64, 64, 64, 64, 64, 64,
-												 64,  64, 64, 64, 64, 64, 64, 64 };
 
 	TMenuItem* NavigateFilter[19];
 
@@ -160,15 +160,14 @@ private:
     std::wstring CurrentFolder = L"";
 
 	// init
-    void Init();
+	void Init();
+    void DeInit();
 	void InitUpdate();
 	void InitHint();
 
 	// settings
 	void LoadSettings();
 	void SaveSettings();
-
-	void BuildNavigationTab();
 
 	void UpdateRightSide(int, unsigned __int64);
     void BuildRightSide();
@@ -184,6 +183,8 @@ public:
     void SelectAndDblClick(int, int);
 
 	void UpdateGUICustomNames();
+
+	void BuildNavigationTab();
 
 	std::function<void()> OnChartsHaveChanged;
 };

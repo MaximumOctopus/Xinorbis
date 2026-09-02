@@ -860,11 +860,8 @@ std::wstring TFrameSearch::GetSearchText()
 #pragma region Tab_Search
 void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
 {
-//f not(GSettingsHandler->ProcessWindowsVisible) then {
 	if (eSearch->Text != L"")
 	{
-		//FSearchDataChanged = True;
-
 		sbGoSearch->Enabled = false;
 
 		PageNumber = 0;
@@ -914,10 +911,10 @@ void TFrameSearch::PostSearch()
 		OnMenuChange(GLanguageHandler->Text[kSearch], 0, 0);
 	}
 
-//	if (SetStatusBarText)
-//	{
-//		FSetStatusBarText(GLanguageHandler->Text[kSearchFinished]);
-//	}
+	if (OnStatusBarText)
+	{
+		OnStatusBarText(GLanguageHandler->Text[kSearchFinished]);
+	}
 
 	FirstPage = 0;
 	LastPage  = (int)std::ceil((double)GScanEngine->Data[kDataSearch].Files.size() / (double)GSettingsHandler->General.MaxSearchResults) - 1;
@@ -1036,19 +1033,12 @@ void __fastcall TFrameSearch::sbSaveSearchClick(TObject *Sender)
 
 void TFrameSearch::SearchCSVReport()
 {
- // lCSVOutput : TStringList;
-//  tempCSVOptions : TCSVReportOptions;
-  //	lCSVOutput = TStringList.Create;
+	CSVReportOptions tcsvo = GSettingsHandler->Reports.CSV[kReportLayoutQuick];
+	tcsvo.Category = -1;
+	tcsvo.Data  = kDataFileList;
+	tcsvo.FileName = L"";
 
-//	tempCSVOptions = GSettingsHandler->Report.CSVOptions[LayoutQuick];
-  //	tempCSVOptions.CSVData  = CDataFileList;
-//	tempCSVOptions.FileName = "";
-  //	tempCSVOptions.Category = -1;
-
-//	GReportCSV.GenerateCSVReport(dataSearch, lCSVOutput, tempCSVOptions, LayoutQuick);
-
-	//Clipboard.AsText = lCSVOutput->Text;
-
+	GReportHandler->SaveCSV(tcsvo, kDataSearch, true, false);
 }
 
 

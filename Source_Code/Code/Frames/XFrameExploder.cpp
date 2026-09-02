@@ -34,7 +34,7 @@ void TFrameExploder::Init()
 	DirectoryIndex = -1;
 
 	ExploderX = new XExploder(this, pExploder);
-	ExploderX->BackgroundColour  = 0x00333333;
+	ExploderX->BackgroundColour  = clWhite;
 	ExploderX->OnMouseClick      = OnMouseClick;
 	ExploderX->OnMouseRightClick = OnMouseRightClick;
 	ExploderX->OnMouseDblClick   = OnMouseDblClick;
@@ -220,6 +220,7 @@ void __fastcall TFrameExploder::OnMouseRightClick(int folder_id)
 void TFrameExploder::Clear()
 {
 	HasData = false;
+    NeedsRefresh = true;
 
 	OldIndex = -1;
 }
@@ -390,13 +391,15 @@ void TFrameExploder::AddItemToCache(const std::wstring folder_name, int folder_i
 
 int TFrameExploder::GetDataSource()
 {
-	return 0;
+	return DataSource;
 }
 
 
 void TFrameExploder::SetDataSource(int source)
 {
-    // to
+	DataSource = source;
+
+	Clear();
 }
 
 

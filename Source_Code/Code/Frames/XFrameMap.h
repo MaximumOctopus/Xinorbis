@@ -26,6 +26,7 @@ __published:	// IDE-managed Components
 	TRadioButton *rbBySize;
 	TRadioButton *rbByQuantity;
 	TPanel *pMap;
+	TLabel *lDebug;
 	void __fastcall rbBySizeClick(TObject *Sender);
 	void __fastcall cbMapSizeSelectChange(TObject *Sender);
 	void __fastcall cbHighlightModeClick(TObject *Sender);
@@ -42,6 +43,7 @@ private:
 
 	void __fastcall OnMouseClick(int);
 	void __fastcall OnMouseMove(int);
+	void __fastcall OnDebug(const std::wstring);
 
 public:
 	__fastcall TFrameMap(TComponent* Owner);

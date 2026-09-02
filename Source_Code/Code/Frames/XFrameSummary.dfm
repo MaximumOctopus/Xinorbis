@@ -14,6 +14,8 @@ object FrameSummary: TFrameSummary
     ActivePage = tsSummary
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = 176
+    ExplicitTop = 24
     object tsSummary: TTabSheet
       DesignSize = (
         1024
@@ -196,7 +198,7 @@ object FrameSummary: TFrameSummary
       end
       object lSLFSoFX: TLabel
         Left = 104
-        Top = 224
+        Top = 225
         Width = 34
         Height = 15
         Cursor = crHandPoint
@@ -260,7 +262,7 @@ object FrameSummary: TFrameSummary
         Caption = 'Label1'
         OnClick = lSULSSoFXClick
       end
-      object g1: TGauge
+      object gSLDSize: TGauge
         Left = 16
         Top = 207
         Width = 45
@@ -271,7 +273,7 @@ object FrameSummary: TFrameSummary
         ParentColor = False
         Progress = 0
       end
-      object g2: TGauge
+      object gSLUSize: TGauge
         Left = 16
         Top = 258
         Width = 45
@@ -282,9 +284,31 @@ object FrameSummary: TFrameSummary
         ParentColor = False
         Progress = 0
       end
-      object Gauge1: TGauge
+      object gSLF: TGauge
         Left = 16
         Top = 156
+        Width = 45
+        Height = 45
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object gSLDCount: TGauge
+        Left = 472
+        Top = 204
+        Width = 45
+        Height = 45
+        BorderStyle = bsNone
+        Color = 3355443
+        Kind = gkPie
+        ParentColor = False
+        Progress = 0
+      end
+      object gSLUCount: TGauge
+        Left = 472
+        Top = 255
         Width = 45
         Height = 45
         BorderStyle = bsNone

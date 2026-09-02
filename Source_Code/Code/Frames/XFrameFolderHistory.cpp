@@ -77,8 +77,6 @@ void __fastcall TFrameFolderHistory::miCOAdvancedClick(TObject *Sender)
   mychart : TChart;
   tceo    : TChartOptions;
 
-  Assert(sender <> Nil, 'miCOAdvancedClick :: sender is nil');
-
   mychart := TChart(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent);
 
   tceo := XSettings.Charts.Options;
@@ -131,8 +129,6 @@ void __fastcall TFrameFolderHistory::puFHCompareSavePopup(TObject *Sender)
   end;
 
  begin
-  Assert(Sender <> Nil, 'puFHCompareSavePopup :: sender is nil');
-
   miFHCSSaveDo.Caption   := XText[rsSaveDoExist];
   miFHCSSaveDont.Caption := XText[rsSaveDontExist];
 
@@ -1590,8 +1586,6 @@ var
 
 begin
   if (bFHISelect.Tag <> -1) then begin
-
-    Assert(bFHISelect.Tag < clbFolderHistory.Count, 'sbFHBuildInformationTabsClick :: Invalid FileHistory Entry [' + IntToStr(bFHISelect.Tag) + '] [' + IntToStr(clbFolderHistory.Count) + ']');
 
     DT := TConvert.DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory.Items[bFHISelect.Tag]);
 

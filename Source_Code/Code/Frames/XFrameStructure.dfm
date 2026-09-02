@@ -14,6 +14,15 @@ object FrameStructure: TFrameStructure
     FullRepaint = False
     ParentBackground = False
     TabOrder = 0
+    object Splitter2: TSplitter
+      Left = 329
+      Top = 1
+      Height = 649
+      OnMoved = Splitter2Moved
+      ExplicitLeft = 376
+      ExplicitTop = 240
+      ExplicitHeight = 100
+    end
     object Panel25: TPanel
       Left = 1
       Top = 1
@@ -143,6 +152,8 @@ object FrameStructure: TFrameStructure
         TabOrder = 1
         OnDblClick = sgLeftSideDblClick
         OnDrawCell = sgLeftSideDrawCell
+        ExplicitLeft = -2
+        ExplicitTop = 31
         ColWidths = (
           64
           61
@@ -164,17 +175,20 @@ object FrameStructure: TFrameStructure
       end
     end
     object Panel26: TPanel
-      Left = 329
+      Left = 332
       Top = 1
-      Width = 907
+      Width = 904
       Height = 649
       Align = alClient
       TabOrder = 1
       OnResize = Panel26Resize
+      ExplicitLeft = 585
+      ExplicitTop = 105
+      ExplicitWidth = 907
       object Splitter1: TSplitter
         Left = 1
         Top = 329
-        Width = 905
+        Width = 902
         Height = 3
         Cursor = crVSplit
         Align = alTop
@@ -184,7 +198,7 @@ object FrameStructure: TFrameStructure
       object Panel27: TPanel
         Left = 1
         Top = 1
-        Width = 905
+        Width = 902
         Height = 26
         Align = alTop
         BevelOuter = bvNone
@@ -192,6 +206,8 @@ object FrameStructure: TFrameStructure
         FullRepaint = False
         ParentBackground = False
         TabOrder = 0
+        ExplicitLeft = 33
+        ExplicitWidth = 905
         object sbNavigationBack: TSpeedButton
           Left = 1
           Top = 2
@@ -362,15 +378,19 @@ object FrameStructure: TFrameStructure
         Tag = 1
         Left = 1
         Top = 27
-        Width = 905
+        Width = 902
         Height = 302
         Align = alTop
         ColCount = 17
         DefaultDrawing = False
         FixedCols = 0
+        RowCount = 2
         TabOrder = 1
         OnDblClick = sgRightSideDblClick
         OnDrawCell = sgRightSideDrawCell
+        ExplicitLeft = 31
+        ExplicitTop = 31
+        ExplicitWidth = 905
         ColWidths = (
           50
           64
@@ -393,7 +413,7 @@ object FrameStructure: TFrameStructure
       object vtcFS: TChart
         Left = 1
         Top = 332
-        Width = 905
+        Width = 902
         Height = 316
         Gradient.Direction = gdBottomTop
         Gradient.EndColor = clCream
@@ -431,6 +451,7 @@ object FrameStructure: TFrameStructure
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 2
+        ExplicitWidth = 905
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
         object Series3: TPieSeries

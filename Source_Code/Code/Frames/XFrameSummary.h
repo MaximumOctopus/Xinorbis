@@ -70,9 +70,11 @@ __published:	// IDE-managed Components
 	TLabel *lSVolFreeValue;
 	TLabel *lDFolder;
 	TLabel *lDUsedSpace;
-	TGauge *g1;
-	TGauge *g2;
-	TGauge *Gauge1;
+	TGauge *gSLDSize;
+	TGauge *gSLUSize;
+	TGauge *gSLF;
+	TGauge *gSLDCount;
+	TGauge *gSLUCount;
 	void __fastcall FrameResize(TObject *Sender);
 	void __fastcall lSNoFXClick(TObject *Sender);
 	void __fastcall lSAFSXClick(TObject *Sender);
