@@ -359,6 +359,7 @@ private:
 
 	// Frame_Events
 	void __fastcall OnNewScan(const std::wstring);
+    void __fastcall OnStatusBarText(const std::wstring);
 
 	// GUI_Navigation
 

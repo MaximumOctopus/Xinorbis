@@ -91,6 +91,7 @@
 #include "XFormReference.h"
 #include "XFormSearchWizard.h"
 #include "XFormSettings.h"
+#include "XFormUserWizard.h"
 #include "XFormXinorbisDialog.h"
 
 #include "XFormEditCSVReport.h"
@@ -101,6 +102,7 @@
 
 #include "XFormReportOptions.h"
 
+#include "XFrameDuplicates.h"
 #include "XFrameExploder.h"
 #include "XFrameMap.h"
 #include "XFrameProperties.h"
@@ -235,7 +237,7 @@ void TFormMain::CreateFrames()
 	FrameProperties->OnNewSearch = std::bind(RequestNewSearch, std::placeholders::_1, std::placeholders::_2);
 //  FrameProperties->OnNewSummary = RequestNewSummary;
 //  FrameProperties->OnProcessWindowStatusChange = OnProcessWindowStatusChange;
-//  FrameProperties->OnSetStatusBarText = OnStatusBarChange;
+	FrameProperties->OnStatusBarText = std::bind(OnStatusBarText, std::placeholders::_1);
 //  FrameProperties->OnSettingsTab = OnOpenSettingsTab;
 //  FrameProperties->OnSetTutorialBarText = OnTutorialBarChange;
 
@@ -245,6 +247,12 @@ void TFormMain::CreateFrames()
 	FrameSearch->Visible = false;
 	FrameSearch->OnMenuChange = std::bind(OnMenuChange, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	FrameSearch->OnOpenSearchWizard = std::bind(OnOpenSearchWizard, std::placeholders::_1);
+	FrameSearch->OnStatusBarText = std::bind(OnStatusBarText, std::placeholders::_1);
+
+	FrameDuplicates = new TFrameDuplicates(this);
+	FrameDuplicates->Parent = pMainCanvas;
+	FrameDuplicates->Align = alClient;
+    FrameDuplicates->Visible = false;
 
 	FrameStructure = new TFrameStructure(this);
 	FrameStructure->Parent = pMainCanvas;
@@ -1147,6 +1155,14 @@ void __fastcall TFormMain::OnNewScan(const std::wstring folder)
         PostScan();
 	}
 }
+
+
+void __fastcall TFormMain::OnStatusBarText(const std::wstring caption)
+{
+	std::wstring status_text = Convert::TimeToString(Now(), true) + L" " + caption;
+
+	sbMain->SimpleText = status_text.c_str();
+}
 #pragma end_region
 
 
@@ -1764,6 +1780,8 @@ void TFormMain::ToggleSoftwareStatus(bool newstatus)
 	lAdvID1->Enabled = newstatus;
 	lAdvID2->Enabled = newstatus;
 	lAdvID3->Enabled = newstatus;
+
+    tbWizard->Enabled = newstatus;
 }
 
 
@@ -1903,29 +1921,15 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 		 // FrameReports.pMainReports.ActivePageIndex := aTaskSubID;
 
 		break;
-/*	case kTaskStructure:     folder history stuff
-		if (GUpdateFolderHistoryUpdateThread <> Nil) then begin
-			   ShowXDialog(XText[kWarning], XText[kleaseWaitFolderHistory], XDialogTypeXinorbis);
-			 end
-			 else begin
-			   HandleResizing(pMainNavigationPanelIndex);
-			   FrameNavigation[FSource].BringToFront;
+	case kTaskStructure:
+		HandleResizing(kMainStructurePanelIndex);
 
-			   if XSettings.System.JustInTimeProcessed[FSource, TabNavigation] = False then begin
-				 case FSource of
-				   dataLatestScan    : GScanDetails[FSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNamePathLS));
-				   dataFolderHistory : GScanDetails[FSource].Files.Sort(TComparer<TFileObject>.Construct(CompareFileNamePathFH));
-				 end;
+		GScanEngine->Data[DataSource].SortByProperty(SortMode::kFullPath);
 
-				 FrameNavigation[FSource].BuildNavigationTab;
-
-				 FrameNavigation[FSource].SelectAndDblClick(1, 1);
-
-				 XSettings.System.JustInTimeProcessed[FSource, TabNavigation] := True;
-			   end;
-			 end;
-		   end;
-		break;          */
+		FrameStructure->BringToFront();
+		FrameStructure->BuildNavigationTab();
+		FrameStructure->SelectAndDblClick(1, 1);
+		break;
 	case kTaskSearch:
 		HandleResizing(kMainSearchPanelIndex);
 
@@ -1936,28 +1940,28 @@ void TFormMain::DoTask(int TaskId, int TaskSubId)
 	case kTaskMap:
 		HandleResizing(kMainMapPanelIndex);
 
-//		UpdateFrameMap();
+		UpdateFrameMap();
 
 		FrameMap->BringToFront();
 		break;
 	case kTaskDuplicatesName:
-		HandleResizing(kMainSearchPanelIndex);
+		HandleResizing(kMainDuplicatesPanelIndex);
 
-		FrameSearch->DataSource = DataSource;
-		FrameSearch->SetTab(2);
-		FrameSearch->BringToFront();
+		FrameDuplicates->DataSource = DataSource;
+		FrameDuplicates->SetTab(0);
+		FrameDuplicates->BringToFront();
 		break;
 	case kTaskDuplicatesSize:
-		HandleResizing(kMainSearchPanelIndex);
+		HandleResizing(kMainDuplicatesPanelIndex);
 
-		FrameSearch->DataSource = DataSource;
-		FrameSearch->SetTab(3);
-		FrameSearch->BringToFront();
+		FrameDuplicates->DataSource = DataSource;
+		FrameDuplicates->SetTab(1);
+		FrameDuplicates->BringToFront();
 		break;
 	case kTaskExploder:
 		HandleResizing(kMainExploderPanelIndex);
 
-//		UpdateFrameExploder();
+		UpdateFrameExploder();
 
 		FrameExploder->BringToFront();
 		break;
@@ -2010,7 +2014,7 @@ void TFormMain::HandleResizing(int NewPanelInFront)
 
 			//FrameReports.pMainReportsResize(Nil);
 			break;
-		case kMainNavigationPanelIndex:
+		case kMainStructurePanelIndex:
 			FrameStructure->Visible = false;
 			FrameStructure->Align = alNone;
 
@@ -2020,6 +2024,10 @@ void TFormMain::HandleResizing(int NewPanelInFront)
 		case kMainSearchPanelIndex:
 			FrameSearch->Visible = false;
 			FrameSearch->Align = alNone;
+			break;
+		case kMainDuplicatesPanelIndex:
+			FrameDuplicates->Visible = false;
+			FrameDuplicates->Align = alNone;
 			break;
 		case kMainFileHistoryPanelIndex:
 //			FrameFolderHistory->Visible = false;
@@ -2065,7 +2073,7 @@ void TFormMain::HandleResizing(int NewPanelInFront)
 
 		//FrameProperties[FSource].pMainReportsResize(Nil);
 		break;
-	case kMainNavigationPanelIndex:
+	case kMainStructurePanelIndex:
 		FrameStructure->Visible = true;
 		FrameStructure->Align = alClient;
 
@@ -2075,7 +2083,11 @@ void TFormMain::HandleResizing(int NewPanelInFront)
 	case kMainSearchPanelIndex:
 		FrameSearch->Visible = true;
 		FrameSearch->Align = alClient;
-//		FrameSearch->FrameResize(Nil);
+		FrameSearch->FrameResize(NULL);
+		break;
+	case kMainDuplicatesPanelIndex:
+		FrameDuplicates->Visible = true;
+		FrameDuplicates->Align = alClient;
 		break;
 	case kMainFileHistoryPanelIndex:
 		  //	FrameFolderHistory->Visible = true;
@@ -2184,7 +2196,7 @@ void __fastcall TFormMain::miSSearchClick(TObject *Sender)
 
 void __fastcall TFormMain::miSWizardClick(TObject *Sender)
 {
-	std::wstring s = OpenSearchWizard();
+	std::wstring s = OpenUserWizard();
 
 	if (!s.empty())
 	{
