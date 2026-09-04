@@ -834,6 +834,7 @@ const static int kLastYear                         = 801;
 const static int kUnableToConnectToMaximumOctopusCom = 802;
 const static int kUpdateCheck                      = 803;
 const static int kHighlight                        = 804;
+const static int kFastAnalysis                     = 805;
 
-const static int kLanguageConstantsCount = 805;
+const static int kLanguageConstantsCount = 806;
 
