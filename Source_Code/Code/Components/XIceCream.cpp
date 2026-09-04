@@ -25,6 +25,7 @@ XIceCream::XIceCream(TComponent *owner, TWinControl *Zig)
 	PaintBox->OnPaint = PaintBoxUpdate;
 
 	TextY = std::round(((double)IdCubeSize - (double)PaintBox->Canvas->TextHeight(L"Yg")) / 2);
+	TextH = PaintBox->Canvas->TextHeight(L"Yg");
 }
 
 
@@ -160,6 +161,7 @@ void __fastcall XIceCream::PaintBoxUpdate(TObject *Sender)
 		PaintBox->Canvas->Brush->Color = PaintBox->Color;
 		PaintBox->Canvas->Pen->Color = clNone;
 		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY, s->DisplayName.c_str());
+		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY + TextH, FloatToStrF(s->Value, ffFixed, 7, 2) + L"%");
 
 		text_x += s->DisplayNameWidth + 10;
 	}

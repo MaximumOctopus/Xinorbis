@@ -55,7 +55,8 @@ class XIceCream
 	int IdCubeSize = 15;
 	int IdCubeY = 40;
 
-	int TextY = 0;
+	int TextY = 0; // start y-pos to write data
+	int TextH = 0; // height of text item
 
 	int CreateShade(int, ColourMode);
 
