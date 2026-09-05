@@ -1,7 +1,6 @@
 object FormFileAges: TFormFileAges
   Left = 0
   Top = 0
-  Caption = 'FormFileAges'
   ClientHeight = 589
   ClientWidth = 940
   Color = clBtnFace
@@ -30,7 +29,6 @@ object FormFileAges: TFormFileAges
       Width = 761
       Height = 27
       Align = alTop
-      Caption = 'pStatus'
       TabOrder = 0
     end
     object sgResults: TStringGrid

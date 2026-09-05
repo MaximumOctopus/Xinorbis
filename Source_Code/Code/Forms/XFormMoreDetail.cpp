@@ -20,9 +20,9 @@ extern SettingsHandler *GSettingsHandler;
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TForm16 *Form16;
+TFormMoreDetail *FormMoreDetail;
 //---------------------------------------------------------------------------
-__fastcall TForm16::TForm16(TComponent* Owner)
+__fastcall TFormMoreDetail::TFormMoreDetail(TComponent* Owner)
 	: TForm(Owner)
 {
 }
@@ -30,16 +30,16 @@ __fastcall TForm16::TForm16(TComponent* Owner)
 
 void OpenMoreDetails(int index, const std::wstring path)
 {
-	Form16->DirectoryList.push_back(path);
+	FormMoreDetail->DirectoryList.push_back(path);
 
-	Form16->ExplorePath = path;
-	Form16->DataSource = index;
+	FormMoreDetail->ExplorePath = path;
+	FormMoreDetail->DataSource = index;
 
-  	Form16->Show();
+  	FormMoreDetail->Show();
 }
 
 
-void __fastcall TForm16::FormConstrainedResize(TObject *Sender, int &MinWidth, int &MinHeight,
+void __fastcall TFormMoreDetail::FormConstrainedResize(TObject *Sender, int &MinWidth, int &MinHeight,
 		  int &MaxWidth, int &MaxHeight)
 {
 	MinWidth  = 500;
@@ -47,7 +47,7 @@ void __fastcall TForm16::FormConstrainedResize(TObject *Sender, int &MinWidth, i
 }
 
 
-void __fastcall TForm16::FormShow(TObject *Sender)
+void __fastcall TFormMoreDetail::FormShow(TObject *Sender)
 {
 	Screen->Cursor = crHourGlass;
 
@@ -59,7 +59,7 @@ void __fastcall TForm16::FormShow(TObject *Sender)
 }
 
 
-void __fastcall TForm16::FormResize(TObject *Sender)
+void __fastcall TFormMoreDetail::FormResize(TObject *Sender)
 {
 	sgExplore->ColWidths[0] = 18;
 	sgExplore->ColWidths[1] = sgExplore->Width - 351;
@@ -71,7 +71,7 @@ void __fastcall TForm16::FormResize(TObject *Sender)
 }
 
 
-void __fastcall TForm16::FormClose(TObject *Sender, TCloseAction &Action)
+void __fastcall TFormMoreDetail::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	FormDetails fd(kFormExplore, Left, Top, Width, Height);
 
@@ -79,16 +79,16 @@ void __fastcall TForm16::FormClose(TObject *Sender, TCloseAction &Action)
 
 	DirectoryList.clear();
 
-//	if (FULSP)
-//	{
-//		FULSP(kFormExplore);
-//    }
+	if (OnHide)
+	{
+		OnHide(kFormExplore);
+    }
 
 	Action = caHide;
 }
 
 
-void TForm16::Init()
+void TFormMoreDetail::Init()
 {
 	std::wstring things[3];
 	things[0] = GLanguageHandler->Text[kOn];
@@ -227,7 +227,7 @@ void TForm16::Init()
 
 
 #pragma region LeftSide_Parameters
-void __fastcall TForm16::cbContainingTextClick(TObject *Sender)
+void __fastcall TFormMoreDetail::cbContainingTextClick(TObject *Sender)
 {
 	TCheckBox *cb = (TCheckBox*)Sender;
 
@@ -255,7 +255,7 @@ void __fastcall TForm16::cbContainingTextClick(TObject *Sender)
 #pragma end_region
 
 
-void __fastcall TForm16::sbBackClick(TObject *Sender)
+void __fastcall TFormMoreDetail::sbBackClick(TObject *Sender)
 {
 	DirectoryList.pop_back();
 
@@ -268,7 +268,7 @@ void __fastcall TForm16::sbBackClick(TObject *Sender)
 }
 
 
-void __fastcall TForm16::sgExploreDblClick(TObject *Sender)
+void __fastcall TFormMoreDetail::sgExploreDblClick(TObject *Sender)
 {
 	if (sgExplore->Cells[kColFolderName][sgExplore->Selection.Top] != L"\\")
 	{
@@ -290,7 +290,7 @@ void __fastcall TForm16::sgExploreDblClick(TObject *Sender)
 }
 
 
-void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFormMoreDetail::sgExploreDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
 	if (ARow != 0)
@@ -321,12 +321,12 @@ void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol
 			ilExplore->Draw(sgExplore->Canvas, Rect.Left + 1, Rect.Top, 0, true);
 			break;
 		case kColFilesAsPercent:
-			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
 			sgExplore->Canvas->Rectangle(Rect);
 
 			if (sgExplore->Cells[kColFileCountPCache][ARow] != L"0")
 			{
-				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
 				sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
 												  Rect.Top + 1,
 												  Rect.Left + sgExplore->Cells[kColFileCountPCache][ARow].ToInt(),
@@ -338,12 +338,12 @@ void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol
 			sgExplore->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExplore->Cells[kColFilesAsPercent][ARow]);
 			break;
 		case kColSizeAsPercent:
-			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[4]);
+			sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
 			sgExplore->Canvas->Rectangle(Rect);
 
 			if (sgExplore->Cells[kColSizePCache][ARow] != L"0")
 			{
-				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[5]);
+				sgExplore->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
 				sgExplore->Canvas->FillRect(TRect(Rect.Left + 1,
 												  Rect.Top + 1,
 												  Rect.Left + sgExplore->Cells[kColSizePCache][ARow].ToInt(),
@@ -362,13 +362,13 @@ void __fastcall TForm16::sgExploreDrawCell(TObject *Sender, System::LongInt ACol
 }
 
 
-void __fastcall TForm16::bFilterClick(TObject *Sender)
+void __fastcall TFormMoreDetail::bFilterClick(TObject *Sender)
 {
 	BuildFrom(DirectoryList[DirectoryList.size() - 1]);
 }
 
 
-void __fastcall TForm16::cbUSelectChange(TObject *Sender)
+void __fastcall TFormMoreDetail::cbUSelectChange(TObject *Sender)
 {
 	if (cbUSelect->ItemIndex == 0)
 	{
@@ -381,7 +381,7 @@ void __fastcall TForm16::cbUSelectChange(TObject *Sender)
 }
 
 
-void __fastcall TForm16::eSLTEnter(TObject *Sender)
+void __fastcall TFormMoreDetail::eSLTEnter(TObject *Sender)
 {
 	TEdit *edit = (TEdit*)Sender;
 
@@ -389,7 +389,7 @@ void __fastcall TForm16::eSLTEnter(TObject *Sender)
 }
 
 
-void __fastcall TForm16::eSLTExit(TObject *Sender)
+void __fastcall TFormMoreDetail::eSLTExit(TObject *Sender)
 {
 	TEdit *edit = (TEdit*)Sender;
 
@@ -402,13 +402,13 @@ void __fastcall TForm16::eSLTExit(TObject *Sender)
 }
 
 
-void __fastcall TForm16::bHelpClick(TObject *Sender)
+void __fastcall TFormMoreDetail::bHelpClick(TObject *Sender)
 {
 	//Help.OpenHelpPage("a41.htm");
 }
 
 
-void __fastcall TForm16::miExploreFolderClick(TObject *Sender)
+void __fastcall TFormMoreDetail::miExploreFolderClick(TObject *Sender)
 {
 	std::wstring s = DirectoryList[DirectoryList.size() - 1] + sgExplore->Cells[kColFolderName][sgExplore->Selection.Top].c_str() + L"\\";
 
@@ -419,7 +419,7 @@ void __fastcall TForm16::miExploreFolderClick(TObject *Sender)
 }
 
 
-void TForm16::CheckForValidSearch()
+void TFormMoreDetail::CheckForValidSearch()
 {
 	if (cbContainingText->Checked || cbCreatedDate->Checked || cbAccessedDate->Checked || cbModifiedDate->Checked ||
 		cbFileSize->Checked || cbCategory->Checked || cbFileOwner->Checked || cbFileAttributes->Checked || cbNameLength->Checked)
@@ -433,7 +433,7 @@ void TForm16::CheckForValidSearch()
 }
 
 
-void TForm16::BuildFrom(const std::wstring path)
+void TFormMoreDetail::BuildFrom(const std::wstring path)
 {
 	auto GetInnerDirectory = [path](const std::wstring s) -> std::wstring
 	{
@@ -807,7 +807,7 @@ void TForm16::BuildFrom(const std::wstring path)
 }
 
 
-void __fastcall TForm16::cbCreated1Change(TObject *Sender)
+void __fastcall TFormMoreDetail::cbCreated1Change(TObject *Sender)
 {
 	TComboBox *cb = (TComboBox*)Sender;
 

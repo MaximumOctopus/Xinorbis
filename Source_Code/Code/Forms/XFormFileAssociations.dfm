@@ -2,9 +2,8 @@ object FormFileAssociations: TFormFileAssociations
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'FormFileAssociations'
   ClientHeight = 430
-  ClientWidth = 723
+  ClientWidth = 677
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +14,7 @@ object FormFileAssociations: TFormFileAssociations
   OnClose = FormClose
   TextHeight = 15
   object lCategory: TLabel
-    Left = 17
+    Left = 8
     Top = 8
     Width = 3
     Height = 15
@@ -29,7 +28,7 @@ object FormFileAssociations: TFormFileAssociations
     Shape = bsTopLine
   end
   object cbFACategories: TComboBox
-    Left = 17
+    Left = 8
     Top = 24
     Width = 209
     Height = 23
@@ -38,7 +37,7 @@ object FormFileAssociations: TFormFileAssociations
     OnChange = cbFACategoriesChange
   end
   object GroupBox2: TGroupBox
-    Left = 57
+    Left = 8
     Top = 67
     Width = 521
     Height = 60
@@ -124,7 +123,7 @@ object FormFileAssociations: TFormFileAssociations
     end
   end
   object gbAFE: TGroupBox
-    Left = 57
+    Left = 8
     Top = 133
     Width = 663
     Height = 238
@@ -488,7 +487,7 @@ object FormFileAssociations: TFormFileAssociations
     end
   end
   object bSave: TBitBtn
-    Left = 472
+    Left = 423
     Top = 400
     Width = 126
     Height = 25
@@ -531,8 +530,8 @@ object FormFileAssociations: TFormFileAssociations
     TabOrder = 3
   end
   object bCancel: TBitBtn
-    Left = 604
-    Top = 401
+    Left = 555
+    Top = 400
     Width = 116
     Height = 25
     Cancel = True
@@ -568,7 +567,7 @@ object FormFileAssociations: TFormFileAssociations
   end
   object bHelp: TBitBtn
     Left = 8
-    Top = 401
+    Top = 400
     Width = 161
     Height = 25
     Glyph.Data = {

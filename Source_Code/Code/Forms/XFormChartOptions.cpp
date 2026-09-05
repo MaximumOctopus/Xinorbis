@@ -196,6 +196,8 @@ ChartOptions TForm17::SetFromGui(ChartOptions co)
 	co.ChartFrom     = vtcOptions->Gradient->StartColor;
 	co.ChartTo       = vtcOptions->Gradient->EndColor;
 	co.ChartGradient = cbShowGradient->Checked;
+
+    return co;
 }
 
 

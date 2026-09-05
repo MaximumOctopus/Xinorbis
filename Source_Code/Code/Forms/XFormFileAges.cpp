@@ -87,12 +87,12 @@ void __fastcall TFormFileAges::FormClose(TObject *Sender, TCloseAction &Action)
 
 //	XSettings.SaveFormDetails(fd);
 
-//	if Assigned(FULSP) then
-//	{
-//		FULSP(_FormFileAges);
-//	}
+	if (OnHide)
+	{
+		OnHide(kFormFileAges);
+	}
 
-//	Action = caHide;
+	Action = caHide;
 }
 
 

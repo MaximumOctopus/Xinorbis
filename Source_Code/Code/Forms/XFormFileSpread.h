@@ -109,7 +109,7 @@ public:
 
 	void SetSource(int);
 
-    std::function<void(int)> OnULSP;
+    std::function<void(int)> OnHide;
 };
 
 void OpenFileSpread(int);

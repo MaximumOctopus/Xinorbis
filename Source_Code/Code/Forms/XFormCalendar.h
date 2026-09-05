@@ -56,12 +56,17 @@ private:
 
 	constexpr static int kGridColours[6] = { 0x00EEEEEE, 0x00C6FFC9, 0x00C1FFFF, 0x00B9DEFF, 0x00B7B7FF, 0x00FFD5FE };
 
+	constexpr static int ColWidths[38] = { 69, 20, 20, 20, 20, 21, 20, 20, 20, 20,
+										   20, 20, 20, 21, 20, 20, 20, 20, 20, 20,
+										   20, 20, 20, 20, 20, 20, 21, 20, 20, 20,
+										   19, 19, 20, 20, 20, 21, 20, 20 };
+
 	int FileHistoryData[37][12];
 	std::vector<std::wstring> FileHistoryInput;
 
 	std::wstring OldText = L"";
 
-	std::wstring SelectedDate = L"";
+    std::wstring SelectedDate = L"";
 
 	void Init();
 

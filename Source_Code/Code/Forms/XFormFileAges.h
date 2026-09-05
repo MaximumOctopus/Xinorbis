@@ -72,6 +72,8 @@ private:
 
 public:
 	__fastcall TFormFileAges(TComponent* Owner);
+
+	std::function<void(int)> OnHide;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormFileAges *FormFileAges;

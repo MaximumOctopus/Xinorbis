@@ -18,7 +18,7 @@
 #include <vector>
 
 //---------------------------------------------------------------------------
-class TForm16 : public TForm
+class TFormMoreDetail : public TForm
 {
 __published:	// IDE-managed Components
 	TPanel *Panel2;
@@ -152,17 +152,19 @@ private:
 	void BuildFrom(const std::wstring);
 
 public:
-	__fastcall TForm16(TComponent* Owner);
+	__fastcall TFormMoreDetail(TComponent* Owner);
 
 	int DataSource = 0;
 
 	std::vector<std::wstring> DirectoryList;
 	std::wstring ExplorePath = L"";
+
+	std::function<void(int)> OnHide;
 };
 
 void OpenMoreDetails(int, const std::wstring);
 
 //---------------------------------------------------------------------------
-extern PACKAGE TForm16 *Form16;
+extern PACKAGE TFormMoreDetail *FormMoreDetail;
 //---------------------------------------------------------------------------
 #endif

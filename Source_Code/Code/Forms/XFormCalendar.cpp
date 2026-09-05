@@ -3,6 +3,8 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <System.DateUtils.hpp>
+
 #include "XFormCalendar.h"
 
 #include "Convert.h"
@@ -32,7 +34,7 @@ std::wstring OpenCalendar(const std::vector<std::wstring> &data)
 
 	std::wstring selection = L"";
 
-	if (Form21->ShowModal())
+	if (Form21->ShowModal() == mrOk)
 	{
 		selection = Form21->SelectedDateTime;
 	}
@@ -68,6 +70,8 @@ void TForm21::Init()
 		day += GLanguageHandler->Text[kDayInitials][mm % 7];
 
 		sgCalendar->Cells[mm + 1][0] = day.c_str();
+
+		sgCalendar->ColWidths[mm] = ColWidths[mm];
 	}
 
 	lTitle->Caption = GLanguageHandler->Text[kAvailableFolderHistoryScans].c_str();
@@ -130,7 +134,7 @@ void __fastcall TForm21::cbTimesClick(TObject *Sender)
 //
 //		SelectedDateTime  := SelectedDate + s.substr(0, 2) + s.substr(3, 2) + s.substr(6, 2);
 
-//	lSelected.Caption := TConvert.IntDateToString(StrToInt(SelectedDate)) + ' ' + s;
+//	lSelected.Caption := Convert::IntDateToString(StrToInt(SelectedDate)) + ' ' + s;
 
 		bUse->Enabled = true;
 	}
@@ -193,9 +197,9 @@ void __fastcall TForm21::sgCalendarDrawCell(TObject *Sender, System::LongInt ACo
 	{
 		if (FileHistoryData[ACol][ARow] != -1)
 		{
-//			TAdvStringGrid(Sender).Canvas.Brush.Color := GridColours[FileHistoryData[ACol, ARow]];
-//			TAdvStringGrid(Sender).Canvas.FillRect(Rect);
-//			TAdvStringGrid(Sender).Canvas.TextOut(Rect.Left + 5, Rect.Top + 2, TAdvStringGrid(Sender).Cells[ACol, ARow]);
+			sgCalendar->Canvas->Brush->Color = TColor(kGridColours[FileHistoryData[ACol][ARow]]);
+			sgCalendar->Canvas->FillRect(Rect);
+			sgCalendar->Canvas->TextOut(Rect.Left + 5, Rect.Top + 2, sgCalendar->Cells[ACol][ARow]);
 		}
 	}
 }
@@ -222,67 +226,85 @@ int TForm21::GetLastYear()
 
 
 void TForm21::BuildDate(int year)
-{/*
- var
-  t, i, z  : integer;
-  dt       : TDateTime;
-  cmm, cdd, cyy : integer;
-  xdate    : string;
-
- begin
+{
   // ===========================================================================
   // == Build FileHistory array ================================================
   // ===========================================================================
 
-  for t := 1 to 37 do
-    for z := 1 to 12 do begin
-      case t of
-        6,7,13,14,20,21,27,28,34,35 : FileHistoryData[t, z] := 0;
-      else
-        FileHistoryData[t, z] := -1;
-      end;
-    end;
+	for (int t = 0; t < 37; t++)
+	{
+		for (int z = 0; z < 12; z++)
+		{
+			switch (t)
+			{
+			case 5:
+			case 6:
+			case 12:
+			case 13:
+			case 19:
+			case 20:
+			case 26:
+			case 27:
+			case 33:
+			case 34:
+				FileHistoryData[t][z] = 0;
+				break;
 
-  for t := 0 to FileHistoryInput.Count - 1 do begin
-    xdate := TConvert.DateTimeFToYYYYMMDD(FileHistoryInput[t]);
+			default:
+				FileHistoryData[t][z] = -1;
+			}
+		}
+	}
 
-    cyy   := StrToIntDef(Copy(xdate, 1, 4), 1900);
+	for (int t = 0; t < FileHistoryInput.size(); t++)
+	{
+		std::wstring xdate = Convert::DateTimeFToYYYYMMDD(FileHistoryInput[t]);
 
-    if (cyy = year) then begin
-      cmm := StrToInt(Copy(xdate, 5, 2));
-      cdd := StrToInt(Copy(xdate, 7, 2));
+		int cyy = stoi(xdate.substr(0, 4));
 
-      dt := EncodeDate(cyy, cmm, 1);
-      z  := DayOfTheWeek(dt);
+		if (cyy = year)
+		{
+			int cmm = stoi(xdate.substr(4, 2));
+			int cdd = stoi(xdate.substr(6, 2));
 
-      if FileHistoryData[(cdd + z) - 1, cmm] <= 0 then
-        FileHistoryData[(cdd + z) - 1, cmm] := 1
-      else begin
-        if FileHistoryData[(cdd + z) - 1, cmm] < 5 then
-          FileHistoryData[(cdd + z) - 1, cmm] := FileHistoryData[(cdd + z) - 1, cmm] + 1;
-      end;
-    end;
-  end;
+			TDateTime dt = EncodeDate(cyy, cmm, 1);
+			int z = DayOfTheWeek(dt);
 
-  // ===========================================================================
-  // ===========================================================================
+			if (FileHistoryData[(cdd + z) - 1][cmm] <= 0)
+			{
+				FileHistoryData[(cdd + z) - 1][cmm] = 1;
+			}
+			else
+			{
+				if (FileHistoryData[(cdd + z) - 1][cmm] < 5)
+				{
+					FileHistoryData[(cdd + z) - 1][cmm] = FileHistoryData[(cdd + z) - 1][cmm] + 1;
+				}
+			}
+		}
+	}
 
-  sgCalendar.BeginUpdate;
+	// ===========================================================================
+	// ===========================================================================
 
-  sgCalendar.ClearRows(1, 12);
+	sgCalendar->BeginUpdate();
 
-  for t := 1 to 12 do begin
-    sgCalendar.Cells[0, t] := Months[t];
+//	sgCalendar->ClearRows(1, 12);
 
-    dt := EncodeDate(year, t, 1);
+	for (int t = 0; t < 12; t++)
+	{
+		sgCalendar->Cells[0][t] = GLanguageHandler->Months[t].c_str();
 
-    z  := DayOfTheWeek(dt);
+		TDateTime dt = EncodeDate(year, t, 1);
 
-    for i := 1 to DaysInAMonth(year, t) do begin
-      sgCalendar.Cells[(i + z) - 1, t] := IntToStr(i);
-    end;
-  end;
+		int z  = DayOfTheWeek(dt);
 
-  sgCalendar.EndUpdate; */
+		for (int i = 0; i < DaysInAMonth(year, t); i++)
+		{
+			sgCalendar->Cells[i + z][t] = IntToStr(i);
+		}
+	}
+
+	sgCalendar->EndUpdate();
 }
 

@@ -1,15 +1,16 @@
 object Form21: TForm21
   Left = 0
   Top = 0
-  Caption = 'Form21'
-  ClientHeight = 454
-  ClientWidth = 1327
+  BorderStyle = bsDialog
+  ClientHeight = 395
+  ClientWidth = 850
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poMainFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 15
@@ -36,8 +37,8 @@ object Form21: TForm21
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 105
-    Height = 413
+    Width = 109
+    Height = 354
     Align = alLeft
     BevelEdges = [beLeft, beTop, beBottom]
     BevelOuter = bvNone
@@ -153,15 +154,17 @@ object Form21: TForm21
   end
   object Panel2: TPanel
     Left = 0
-    Top = 413
-    Width = 1327
+    Top = 354
+    Width = 850
     Height = 41
     Align = alBottom
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
+    ExplicitTop = 413
+    ExplicitWidth = 1327
     DesignSize = (
-      1327
+      850
       41)
     object cbExcludeEmpty: TCheckBox
       Left = 8
@@ -172,7 +175,7 @@ object Form21: TForm21
       TabOrder = 0
     end
     object bUse: TBitBtn
-      Left = 1135
+      Left = 658
       Top = 6
       Width = 88
       Height = 25
@@ -233,9 +236,10 @@ object Form21: TForm21
       ModalResult = 1
       NumGlyphs = 2
       TabOrder = 1
+      ExplicitLeft = 1135
     end
     object bCancel: TBitBtn
-      Left = 1229
+      Left = 752
       Top = 6
       Width = 88
       Height = 25
@@ -270,19 +274,23 @@ object Form21: TForm21
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       ModalResult = 2
       TabOrder = 2
+      ExplicitLeft = 1229
     end
   end
   object Panel3: TPanel
-    Left = 105
+    Left = 109
     Top = 0
-    Width = 1222
-    Height = 413
+    Width = 741
+    Height = 354
     Align = alClient
     BevelEdges = [beLeft, beTop, beRight]
     BevelOuter = bvNone
     Color = clWhite
     ParentBackground = False
     TabOrder = 2
+    ExplicitLeft = 105
+    ExplicitWidth = 1222
+    ExplicitHeight = 413
     object lTitle: TLabel
       Left = 10
       Top = 8
@@ -297,10 +305,14 @@ object Form21: TForm21
       ParentFont = False
     end
     object sgCalendar: TStringGrid
-      Left = 64
-      Top = 22
-      Width = 665
-      Height = 307
+      Left = 0
+      Top = 0
+      Width = 741
+      Height = 354
+      Align = alClient
+      ColCount = 38
+      FixedCols = 0
+      RowCount = 13
       TabOrder = 0
       OnDrawCell = sgCalendarDrawCell
       OnSelectCell = sgCalendarSelectCell

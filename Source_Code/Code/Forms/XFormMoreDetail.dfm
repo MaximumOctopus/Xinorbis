@@ -1,7 +1,7 @@
-object Form16: TForm16
+object FormMoreDetail: TFormMoreDetail
   Left = 0
   Top = 0
-  Caption = 'Form16'
+  Caption = 'FormMoreDetail'
   ClientHeight = 441
   ClientWidth = 901
   Color = clBtnFace

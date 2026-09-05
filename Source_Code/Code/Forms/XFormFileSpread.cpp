@@ -99,9 +99,9 @@ void __fastcall TFormFileSpread::FormClose(TObject *Sender, TCloseAction &Action
 
 	GSettingsHandler->SaveFormDetails(fd);
 
-	if (OnULSP)
+	if (OnHide)
 	{
-		OnULSP(kFormFileSpread);
+		OnHide(kFormFileSpread);
 	}
 
 	Action = caHide;
@@ -553,8 +553,6 @@ void __fastcall TFormFileSpread::miSaveChartClick(TObject *Sender)
 
 void __fastcall TFormFileSpread::miCopyToClipboardClick(TObject *Sender)
 {
-//  	TChart *chart = TChart(Tpopupmenu(TMenuItem(Sender).GetParentMenu).PopupComponent);
-
 	ChartUtility::CopyChartToClipboard(vtcSpread);
 }
 

@@ -130,7 +130,7 @@ object FormFileSpread: TFormFileSpread
       Top = 1
       Width = 207
       Height = 200
-      ActivePage = tsBenford
+      ActivePage = tsFileSize
       Align = alTop
       TabOrder = 1
       OnChange = pcFileSpreadChange
@@ -245,8 +245,6 @@ object FormFileSpread: TFormFileSpread
     Top = 0
     Width = 1094
     Height = 705
-    Title.Text.Strings = (
-      'TChart')
     Align = alClient
     TabOrder = 2
     OnMouseMove = vtcSpreadMouseMove

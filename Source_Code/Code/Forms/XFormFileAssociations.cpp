@@ -41,12 +41,18 @@ bool OpenFileAssociations()
 {
 	TFormFileAssociations *FormFileAssociations = new TFormFileAssociations(Application);
 
+	bool user_save = false;
+
 	if (FormFileAssociations->ShowModal() == mrOk)
 	{
 		FormFileAssociations->SaveCustomNames();
+
+        user_save = true;
 	}
 
 	delete FormFileAssociations;
+
+	return user_save;
 }
 
 
@@ -463,7 +469,7 @@ void TFormFileAssociations::SaveCustomNames()
 	{
 		for (int t = 0; t < 10; t++)
 		{
-			GLanguageHandler->TypeDescriptions[10 + t] == OldCustomNames[t];
+			GLanguageHandler->TypeDescriptions[10 + t] = OldCustomNames[t];
 
 			GSettingsHandler->WriteString(L"TypeDescriptions", L"TypeDescriptions" + std::to_wstring(t + 1), GLanguageHandler->TypeDescriptions[10 + t]);
 		}
