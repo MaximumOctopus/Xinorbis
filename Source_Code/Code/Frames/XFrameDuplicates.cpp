@@ -53,6 +53,9 @@ void TFrameDuplicates::Init()
 	tsDuplicatesName->Caption = GLanguageHandler->Text[kDuplicatesName].c_str();
 	tsDuplicatesSize->Caption = GLanguageHandler->Text[kDuplicatesSize].c_str();
 
+	sgDuplicatesName->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgDuplicatesSize->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+
 	sgDuplicatesName->ColWidths[1] = 64;
 	sgDuplicatesName->ColWidths[2] = -1;
 	sgDuplicatesName->Cells[0][0]  = GLanguageHandler->Text[kFilePath].c_str();

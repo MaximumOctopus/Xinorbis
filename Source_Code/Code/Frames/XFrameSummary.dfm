@@ -250,7 +250,7 @@ object FrameSummary: TFrameSummary
       end
       object lSummaryBySize: TLabel
         Left = 80
-        Top = 418
+        Top = 425
         Width = 34
         Height = 15
         Caption = 'Label1'
@@ -385,7 +385,7 @@ object FrameSummary: TFrameSummary
         Left = 80
         Top = 339
         Width = 929
-        Height = 63
+        Height = 80
         Anchors = [akLeft, akTop, akRight]
         BevelOuter = bvNone
         Color = 3355443
@@ -394,9 +394,9 @@ object FrameSummary: TFrameSummary
       end
       object pICSize: TPanel
         Left = 80
-        Top = 439
+        Top = 446
         Width = 929
-        Height = 63
+        Height = 80
         Anchors = [akLeft, akTop, akRight]
         BevelOuter = bvNone
         Color = 3355443

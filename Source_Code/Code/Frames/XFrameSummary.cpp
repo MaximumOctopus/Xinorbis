@@ -152,18 +152,22 @@ void TFrameSummary::SetProcessTime(const std::wstring process_time)
 
 void TFrameSummary::BuildPreamble()
 {
-//	if XSettings.LastScanMultiple then begin
-//	lSScanPath.Caption := XText[kMultipleFolders];
-//	lSScanPath.Hint    := '';
+/*	if XSettings.LastScanMultiple)
+	{
+		lSScanPath.Caption := XText[kMultipleFolders];
+		lSScanPath.Hint    := '';
 
-//	for t := 0 to GScanDetails[FSource].MultipleList.Count - 1 do begin
-//	  lSScanPath.Hint := lSScanPath.Hint + GScanDetails[FSource].MultipleList[t];
+		for t := 0 to GScanDetails[FSource].MultipleList.Count - 1)
+		{
+			lSScanPath.Hint := lSScanPath.Hint + GScanDetails[FSource].MultipleList[t];
 
-//	  if t <> GScanDetails[FSource].MultipleList.Count - 1 then
-//		lSScanPath.Hint := lSScanPath.Hint + #13;
-//	end;
-//	end
-//	else begin
+			if t <> GScanDetails[FSource].MultipleList.Count - 1)
+
+				lSScanPath.Hint := lSScanPath.Hint + #13;
+			}
+		}
+	}
+	else begin*/
 	lScanPath->Caption = GScanEngine->Data[DataSource].Path.String.c_str();
 	lScanPath->Hint    = GScanEngine->Data[DataSource].Path.String.c_str();
 }
@@ -264,7 +268,7 @@ void TFrameSummary::BuildIceCream()
 			if (GScanEngine->Data[DataSource].ExtensionSpread[t].Count != 0)
 			{
 				icQuantity->Add(0,
-								GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount,
+								GScanEngine->Data[DataSource].ExtensionSpread[t].PercentCount * 100,
 								GLanguageHandler->TypeDescriptions[t],
 								GLanguageHandler->TypeDescriptions[t] + L" (" + std::to_wstring(GScanEngine->Data[DataSource].ExtensionSpread[t].Count) + L" " + GLanguageHandler->Text[kFiles] + L")",
 								GSettingsHandler->FileCategoryColors[t]);
@@ -276,7 +280,7 @@ void TFrameSummary::BuildIceCream()
 			if (GScanEngine->Data[DataSource].ExtensionSpread[t].Size != 0)
 			{
 				icSize->Add(0,
-							GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize,
+							GScanEngine->Data[DataSource].ExtensionSpread[t].PercentSize * 100,
 							GLanguageHandler->TypeDescriptions[t],
 							GLanguageHandler->TypeDescriptions[t] + L" (" + Convert::ConvertToUsefulUnit(GScanEngine->Data[DataSource].ExtensionSpread[t].Size) + L")",
 							GSettingsHandler->FileCategoryColors[t]);

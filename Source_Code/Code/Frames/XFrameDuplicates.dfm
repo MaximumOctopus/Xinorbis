@@ -317,6 +317,7 @@ object FrameDuplicates: TFrameDuplicates
         ColCount = 3
         FixedCols = 0
         RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         TabOrder = 1
         OnDrawCell = sgDuplicatesNameDrawCell
       end
@@ -621,8 +622,10 @@ object FrameDuplicates: TFrameDuplicates
         DefaultDrawing = False
         FixedCols = 0
         RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         TabOrder = 1
         OnDrawCell = sgDuplicatesNameDrawCell
+        ExplicitLeft = -3
       end
     end
   end
