@@ -325,6 +325,8 @@ void TFormMain::SetLanguageText()
 	lWelcomeScan->Caption = GLanguageHandler->Text[kScanDriveFolder].c_str();
 	lWelcomeFolderHistory->Caption = GLanguageHandler->Text[kFolderHistory].c_str();
 
+	cbFastAnalysis->Caption = GLanguageHandler->Text[kFastAnalysis].c_str();
+
 	lDataSource->Caption = GLanguageHandler->Text[kDataSource].c_str();
 
 	sbSourceLive->Caption = GLanguageHandler->Text[kScan].c_str();
@@ -1007,10 +1009,7 @@ void TFormMain::BuildMainFromCSV(const std::wstring file_name, int data_source) 
 
 void TFormMain::CombineScan()   // use FSouce when reactivating code
 { /*       to do
-//  t : integer;
-
-begin
-{  ScanMultiple := DoCombine;
+  ScanMultiple := DoCombine;
 
   if ScanMultiple.Count <> 0 then begin
     XSettings.LastScanMultiple := True;
@@ -1714,7 +1713,7 @@ void __fastcall TFormMain::sbReportXMLMouseDown(TObject *Sender, TMouseButton Bu
 
 void __fastcall TFormMain::sbReportSettingsClick(TObject *Sender)
 {
-//
+	OpenReportSettings(8);
 }
 
 
@@ -1761,6 +1760,12 @@ void __fastcall TFormMain::lWelcomeFolderHistoryMouseDown(TObject *Sender, TMous
 	{
 		miRReportBrowserClick(NULL);
 	}
+}
+
+
+void __fastcall TFormMain::cbFastAnalysisClick(TObject *Sender)
+{
+    GSettingsHandler->Optimisations.UseFastAnalysis = cbFastAnalysis->Checked;
 }
 #pragma end_region
 
@@ -1837,9 +1842,9 @@ void TFormMain::SetSidePanelDisplay(int WelcomeId, int TaskId, int TaskSubId, bo
 
 	if (TaskId == -1 && WelcomeId == -1)
 	{
-		//HandleResizing(pMainPanelIndex); TO DO
+		HandleResizing(kMainPanelIndex);
 
-//		FrameSelect.BringToFront;
+		FrameSelect->BringToFront();
 	}
 
 	//UpdateLeftPanelStatus;
@@ -2477,6 +2482,7 @@ void __fastcall TFormMain::miDFileSizeSpreadClick(TObject *Sender)
 	if (FormFileSpread == nullptr)
 	{
 		FormFileSpread = new TFormFileSpread(this);
+        FormFileSpread->OnHide = std::bind(OnFormClose, std::placeholders::_1);
 	}
 
 	FormFileSpread->Show();
@@ -2497,6 +2503,12 @@ void __fastcall TFormMain::miDDuplicatesFileSizeClick(TObject *Sender)
 
 void __fastcall TFormMain::miDFolderDetailClick(TObject *Sender)
 {
+	if (FormMoreDetail == nullptr)
+	{
+		FormMoreDetail = new TFormMoreDetail(this);
+		FormMoreDetail->OnHide = std::bind(OnFormClose, std::placeholders::_1);
+	}
+
 	OpenMoreDetails(0, GScanEngine->Data[DataSource].Path.String);
 }
 
@@ -2506,6 +2518,7 @@ void __fastcall TFormMain::miDFileAgeClick(TObject *Sender)
 	if (FormFileAges == nullptr)
 	{
 		FormFileAges = new TFormFileAges(this);
+		FormFileAges->OnHide = std::bind(OnFormClose, std::placeholders::_1);
 	}
 
 	FormFileAges->Show();
@@ -2891,13 +2904,6 @@ begin
   OnTutorialBarChange('intro');
 end;
 
-procedure TfrmMain.Init;
-begin
-  frmSpread.OnHide        := OnFormClose;
-  frmFileAges.OnHide      := OnFormClose;
-  frmExplore.OnHide       := OnFormClose;
-}
-
 procedure TfrmMain.CreateReportsFrame(aDataIndex : integer);
   GReportText.SetGrids(aDataIndex, FrameReports[aDataIndex].sgNullFiles,
 								   FrameReports[aDataIndex].sgNullFolders,
@@ -2956,4 +2962,3 @@ procedure TfrmMain.CreateSearchFrame;
 end;
 
 5569 :: 4438 */
-

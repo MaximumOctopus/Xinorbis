@@ -768,7 +768,7 @@
         </CppCompile>
         <CppCompile Include="Code\Forms\XFormMoreDetail.cpp">
             <VirtualFolder>{43FA2AE2-32D5-44B9-8907-40E9EC4B8E18}</VirtualFolder>
-            <Form>Form16</Form>
+            <Form>FormMoreDetail</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\XFormMoreDetail.h</DependentOn>
             <BuildOrder>85</BuildOrder>

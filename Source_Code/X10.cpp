@@ -19,7 +19,7 @@ USEFORM("Code\Forms\XFormUserWizard.cpp", Form12);
 USEFORM("Code\Forms\XFormShowMD5.cpp", Form22);
 USEFORM("Code\Forms\XFormReference.cpp", Form2);
 USEFORM("Code\Forms\XFormQuickMenuBuilder.cpp", Form9);
-USEFORM("Code\Forms\XFormMoreDetail.cpp", Form16);
+USEFORM("Code\Forms\XFormMoreDetail.cpp", FormMoreDetail);
 USEFORM("Code\Forms\XFormReportOptions.cpp", Form8);
 USEFORM("Code\Forms\XFormSearchWizard.cpp", Form11);
 USEFORM("Code\Forms\XFormSearchSyntax.cpp", FormSearchSyntax);

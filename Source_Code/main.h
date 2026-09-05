@@ -61,7 +61,6 @@ __published:	// IDE-managed Components
 	TToolButton *tbSaveReports;
 	TToolButton *tbOpen;
 	TToolButton *tbSettings;
-	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
 	TToolButton *ToolButton6;
 	TToolButton *ToolButton7;
@@ -311,6 +310,7 @@ __published:	// IDE-managed Components
 	void __fastcall miXinorbisReportClick(TObject *Sender);
 	void __fastcall miDOpenDebugClick(TObject *Sender);
 	void __fastcall Select1Click(TObject *Sender);
+	void __fastcall cbFastAnalysisClick(TObject *Sender);
 private:
 
 	constexpr static int kSideMenuWelcomeCount  = 2;

@@ -620,6 +620,7 @@ object FormMain: TFormMain
         Height = 17
         Caption = '.'
         TabOrder = 0
+        OnClick = cbFastAnalysisClick
       end
     end
   end
@@ -654,16 +655,8 @@ object FormMain: TFormMain
       ImageIndex = 2
       OnClick = miESettingsClick
     end
-    object ToolButton4: TToolButton
-      Left = 117
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton4'
-      ImageIndex = 3
-      Style = tbsSeparator
-    end
     object ToolButton5: TToolButton
-      Left = 125
+      Left = 117
       Top = 0
       Width = 8
       Caption = 'ToolButton5'
@@ -671,14 +664,14 @@ object FormMain: TFormMain
       Style = tbsSeparator
     end
     object ToolButton7: TToolButton
-      Left = 133
+      Left = 125
       Top = 0
       Caption = 'ToolButton7'
       Visible = False
       OnClick = ToolButton7Click
     end
     object ToolButton8: TToolButton
-      Left = 172
+      Left = 164
       Top = 0
       Caption = 'ToolButton8'
       ImageIndex = 6
@@ -686,7 +679,7 @@ object FormMain: TFormMain
       OnClick = ToolButton8Click
     end
     object ToolButton6: TToolButton
-      Left = 211
+      Left = 203
       Top = 0
       Width = 8
       Caption = 'ToolButton6'
@@ -695,7 +688,7 @@ object FormMain: TFormMain
       Visible = False
     end
     object tbWizard: TToolButton
-      Left = 219
+      Left = 211
       Top = 0
       Caption = 'tbWizard'
       Enabled = False
@@ -703,14 +696,14 @@ object FormMain: TFormMain
       OnClick = miSWizardClick
     end
     object tbRefresh: TToolButton
-      Left = 258
+      Left = 250
       Top = 0
       Caption = 'tbRefresh'
       ImageIndex = 4
       OnClick = tbRefreshClick
     end
     object ToolButton11: TToolButton
-      Left = 297
+      Left = 289
       Top = 0
       Width = 8
       Caption = 'ToolButton11'
@@ -718,7 +711,7 @@ object FormMain: TFormMain
       Style = tbsSeparator
     end
     object tbAbout: TToolButton
-      Left = 305
+      Left = 297
       Top = 0
       Caption = 'tbAbout'
       ImageIndex = 5
