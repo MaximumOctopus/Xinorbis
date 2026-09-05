@@ -791,3 +791,16 @@ Year --------------------------------------- Qty --- As % ----- Size --- As % --
 -- Dupli catz (Size) -----------------------------------------------------------
 -- Benford'z Lawz --------------------------------------------------------------
 FOLDR
+Data
+Reportz
+Date reportz
+JSON reportz
+Help lolcats!
+Sub-menu Template
+2day
+Last 6 munfs
+Last Year
+Unable 2 connect 2 "maximumoctopus.com"
+Update check
+Highlight
+Fast analysis

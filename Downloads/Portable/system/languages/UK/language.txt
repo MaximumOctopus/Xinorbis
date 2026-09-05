@@ -802,3 +802,5 @@ Last 6 Months
 Last Year
 Unable to connect to "maximumoctopus.com"
 Update check
+Highlight
+Fast analysis
