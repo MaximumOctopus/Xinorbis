@@ -6,7 +6,11 @@ I don't expect a feature-complete version until the end of 2026. There won't be 
 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
 
-Database functions are not going to be part of the initial release.
+2026/09/05
+
+We're about two months into the rewrite and most of the core functions are working! Hurray! There are still bugs and things to do (but it's mostly minor fixes and tweaks), but we're not far off a beta version.
+
+We're further through the rewrite than I expected, so I'll be adding the database (Folder History) functions in the near future.
 
 2026/08/30
 
