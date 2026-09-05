@@ -307,7 +307,7 @@ __published:	// IDE-managed Components
 	TPieSeries *Series3;
 	TStringGrid *sgTypes;
 	TSplitter *Splitter12;
-	TComboBox *ComboBox3;
+	TComboBox *cbMagnitudeUsers;
 	TPanel *Panel22;
 	TChart *vtcDates;
 	TPanel *pICDates;
@@ -400,7 +400,7 @@ __published:	// IDE-managed Components
 	void __fastcall cbExtensionsAllClick(TObject *Sender);
 	void __fastcall rbFoldersBySizeClick(TObject *Sender);
 	void __fastcall rbMagnitudeBySizeClick(TObject *Sender);
-	void __fastcall ComboBox3Change(TObject *Sender);
+	void __fastcall cbMagnitudeUsersChange(TObject *Sender);
 	void __fastcall cbDatesUsersChange(TObject *Sender);
 	void __fastcall sbDatesCollapseNodesClick(TObject *Sender);
 	void __fastcall rbUsersSizeClick(TObject *Sender);
@@ -428,6 +428,9 @@ __published:	// IDE-managed Components
 	void __fastcall rbHistoryQuantityClick(TObject *Sender);
 	void __fastcall vtcHistoryClick(TObject *Sender);
 	void __fastcall rbDatesByQuantityClick(TObject *Sender);
+	void __fastcall cbExtensionsColourCodeClick(TObject *Sender);
+	void __fastcall sgExtensionsDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+          TRect &Rect, TGridDrawState State);
 private:	// User declarations
 
 	static constexpr int CategoryWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
@@ -495,6 +498,7 @@ private:	// User declarations
 
 	// tab magnitude
 	void InitMagnitudeTab();
+	void MagnitudeUpdateDropDowns();
 	void BuildMagnitudeTable();
 	void BuildMagnitudeChart(bool);
 

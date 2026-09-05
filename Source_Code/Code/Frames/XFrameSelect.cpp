@@ -12,13 +12,16 @@
 #include "XFormXinorbisDialog.h"
 
 #include "ConstantsGui.h"
+#include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "LoadDialogs.h"
 #include "ReportInformation.h"
+#include "SaveDialogs.h"
 #include "ScanEngine.h"
 #include "ScanHistoryHandler.h"
 #include "SettingsHandler.h"
 #include "SystemGlobal.h"
+#include "Utility.h"
 #include "WindowsUtility.h"
 
 extern LanguageHandler* GLanguageHandler;
@@ -77,6 +80,10 @@ void TFrameSelect::Init()
 	bShowLastWeek->Caption  = GLanguageHandler->Text[kLastWeek].c_str();
 
 	// popup menus
+	miExploreFromScanHistory->Caption = GLanguageHandler->Text[kExploreFolder].c_str();
+	miShowInFolderHistory->Caption    = GLanguageHandler->Text[kOpenInFileHistory].c_str();
+	miSaveAs->Caption                 = (GLanguageHandler->Text[kSaveAs] + kEllipsis).c_str();
+
 	miQFTitle->Caption = GLanguageHandler->Text[kFavourites].c_str();
 	miQFAdd->Caption = GLanguageHandler->Text[kAddCurrentFolder].c_str();
 
@@ -172,7 +179,9 @@ void __fastcall TFrameSelect::bSelectClick(TObject *Sender)
 
 void __fastcall TFrameSelect::bFavouritesClick(TObject *Sender)
 {
-//
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puQuickFolder->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
@@ -218,45 +227,6 @@ void __fastcall TFrameSelect::bCombineClick(TObject *Sender)
 void __fastcall TFrameSelect::dlbSelectChange(TObject *Sender)
 {
 	cbScanPath->Text = dlbSelect->Directory;
-}
-
-
-void __fastcall TFrameSelect::puScanHistoryPopup(TObject *Sender)
-{
-	std::wstring folder = cbScanPath->Text.c_str();
-
-	miQFAdd->Enabled = !WindowsUtility::DirectoryExists(folder);
-}
-
-
-void __fastcall TFrameSelect::miQFTitleClick(TObject *Sender)
-{
-	TMenuItem *mi = (TMenuItem*)Sender;
-
-	cbScanPath->Text = GSettingsHandler->QuickFolders[mi->Tag].c_str();
-}
-
-
-void TFrameSelect::UpdateQuickFolders()
-{
-	for (int t = 0; t < puQuickFolder->Items->Count; t++)
-	{
-		puQuickFolder->Items[t].Free();
-	}
-
-	for (int t = 0; t < kQuickFolderCount; t++)
-	{
-		if (GSettingsHandler->QuickFolders[t] != L"")
-		{
-			TMenuItem *mi = new TMenuItem(this);
-
-			mi->Caption = GSettingsHandler->QuickFolders[t].c_str();
-			mi->Tag = t;
-			mi->OnClick = miQFTitleClick;
-
-			puQuickFolder->Items->Add(mi);
-		}
-	}
 }
 #pragma end_region
 
@@ -481,6 +451,85 @@ void __fastcall TFrameSelect::sgScanHistoryDrawCell(TObject *Sender, System::Lon
 		sgScanHistory->Canvas->Font->Style = TFontStyles() << fsBold;
 		sgScanHistory->Canvas->TextOut(Rect.Left, Rect.Top, sgScanHistory->Cells[ACol][0]);
 		sgScanHistory->Canvas->Font->Style = TFontStyles();
+	}
+}
+#pragma end_region
+
+
+#pragma region Popup_ScanHistory
+void __fastcall TFrameSelect::puScanHistoryPopup(TObject *Sender)
+{
+	std::wstring folder = cbScanPath->Text.c_str();
+
+	miQFAdd->Enabled = !WindowsUtility::DirectoryExists(folder);
+}
+
+
+void __fastcall TFrameSelect::miExploreFromScanHistoryClick(TObject *Sender)
+{
+	if (sgScanHistory->Selection.Top > 0)
+	{
+		std::wstring path = sgScanHistory->Cells[2][sgScanHistory->Selection.Top].c_str();
+
+		WindowsUtility::ExecuteFile(L"\"" + path + L"\"", L"");
+	}
+}
+
+
+void __fastcall TFrameSelect::miShowInFolderHistoryClick(TObject *Sender)
+{
+	if (sgScanHistory->Selection.Top > 0)
+	{
+		if (OnChangeFolderHistoryPath)
+		{
+			std::wstring path = sgScanHistory->Cells[2][sgScanHistory->Selection.Top].c_str();
+
+			OnChangeFolderHistoryPath(path);
+		}
+	}
+}
+
+
+void __fastcall TFrameSelect::miSaveAsClick(TObject *Sender)
+{
+	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kScanHistory]));
+
+	if (!file_name.empty())
+	{
+		GridUtility::SaveGrid(sgScanHistory, file_name);
+	}
+}
+#pragma end_region
+
+
+#pragma region Popup_QuickFolder
+void __fastcall TFrameSelect::miQFTitleClick(TObject *Sender)
+{
+	TMenuItem *mi = (TMenuItem*)Sender;
+
+	cbScanPath->Text = GSettingsHandler->QuickFolders[mi->Tag].c_str();
+}
+
+
+void TFrameSelect::UpdateQuickFolders()
+{
+	for (int t = 0; t < puQuickFolder->Items->Count; t++)
+	{
+		puQuickFolder->Items[t].Free();
+	}
+
+	for (int t = 0; t < kQuickFolderCount; t++)
+	{
+		if (GSettingsHandler->QuickFolders[t] != L"")
+		{
+			TMenuItem *mi = new TMenuItem(this);
+
+			mi->Caption = GSettingsHandler->QuickFolders[t].c_str();
+			mi->Tag = t;
+			mi->OnClick = miQFTitleClick;
+
+			puQuickFolder->Items->Add(mi);
+		}
 	}
 }
 #pragma end_region

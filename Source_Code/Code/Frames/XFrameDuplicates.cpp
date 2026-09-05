@@ -37,6 +37,7 @@ TFrameDuplicates *FrameDuplicates;
 __fastcall TFrameDuplicates::TFrameDuplicates(TComponent* Owner)
 	: TFrame(Owner)
 {
+	Init();
 }
 
 

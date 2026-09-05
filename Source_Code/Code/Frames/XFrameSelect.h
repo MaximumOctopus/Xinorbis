@@ -69,6 +69,9 @@ __published:	// IDE-managed Components
 	void __fastcall tsScanHistoryResize(TObject *Sender);
 	void __fastcall sgScanHistoryDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
+	void __fastcall miExploreFromScanHistoryClick(TObject *Sender);
+	void __fastcall miShowInFolderHistoryClick(TObject *Sender);
+	void __fastcall miSaveAsClick(TObject *Sender);
 private:
 
 	const int kScanHistoryDate = 0;
@@ -99,7 +102,8 @@ public:
     void SaveSettings();
 
 	std::function<void(const std::wstring, int, bool)> OnNewScan;
-    std::function<void(int)> OnScanWithMultiple;
+	std::function<void(int)> OnScanWithMultiple;
+    std::function<void(const std::wstring)> OnChangeFolderHistoryPath;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameSelect *FrameSelect;

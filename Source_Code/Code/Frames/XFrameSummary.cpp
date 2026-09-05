@@ -203,34 +203,46 @@ void TFrameSummary::BuildSummaryLabels()
 		lSAFFX->Caption = L"-";
 	}
 
-	lSLFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFileName.c_str();
+	Statistics stats = GScanEngine->Data[DataSource].Stats;
 
-	lSLFSoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFolderNameSize.c_str();
-	lSLFNoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestFolderNameCount.c_str();
+	lSLFX->Caption = (stats.LargestFileName + L" (" + Convert::ConvertToUsefulUnit(stats.LargestFileSize) + L")").c_str();
 
-	lSULSSoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestUserNameSize.c_str();
-	lSULSNoFX->Caption = GScanEngine->Data[DataSource].Stats.LargestUserNameCount.c_str();
+	lSLFSoFX->Caption = (stats.LargestFolderNameSize + L" (" +
+						 Convert::ConvertToUsefulUnit(stats.LargestFolderSize) + L", " +
+						 Convert::DoubleToPercent((double)stats.LargestFolderSize / (double)GScanEngine->Data[DataSource].TotalSize) + L" of files)").c_str();
+	lSLFNoFX->Caption = (stats.LargestFolderNameCount + L" (" +
+						 std::to_wstring(stats.LargestFolderCount) + L", " +
+						 Convert::DoubleToPercent((double)stats.LargestFolderCount / (double)GScanEngine->Data[DataSource].FileCount) + L" of files)").c_str();
+
+	lSULSSoFX->Caption = (stats.LargestUserNameSize + L" (" +
+						  Convert::ConvertToUsefulUnit(stats.LargestUserSize) + L", " +
+						  Convert::DoubleToPercent((double)stats.LargestUserSize / (double)GScanEngine->Data[DataSource].TotalSize) + L" of files)").c_str();
+	lSULSNoFX->Caption = (stats.LargestUserNameCount + L" (" +
+						  std::to_wstring(stats.LargestUserCount) + L", " +
+						  Convert::DoubleToPercent((double)stats.LargestUserCount / (double)GScanEngine->Data[DataSource].FileCount) + L" of files)").c_str();
 }
 
 
 void TFrameSummary::BuildGauges()
 {
+	Statistics stats = GScanEngine->Data[DataSource].Stats;
+
 	if (GScanEngine->Data[DataSource].TotalSize != 0)
 	{
-		gSLF->Progress = (GScanEngine->Data[DataSource].Stats.LargestFileSize / GScanEngine->Data[DataSource].TotalSize) * 100;
+		gSLF->Progress = ((double)stats.LargestFileSize / (double)GScanEngine->Data[DataSource].TotalSize) * 100;
 	}
 	else
 	{
 		gSLF->Progress = 0;
 	}
 
-	gSLDCount->Progress = (GScanEngine->Data[DataSource].Stats.LargestFolderCount / GScanEngine->Data[DataSource].FileCount) * 100;
-	gSLDSize->Progress  = (GScanEngine->Data[DataSource].Stats.LargestFolderSize / GScanEngine->Data[DataSource].TotalSize) * 100;
+	gSLDCount->Progress = ((double)stats.LargestFolderCount / (double)GScanEngine->Data[DataSource].FileCount) * 100;
+	gSLDSize->Progress  = ((double)stats.LargestFolderSize / (double)GScanEngine->Data[DataSource].TotalSize) * 100;
 
 	if (GScanEngine->Data[DataSource].Users.size() != 0)
 	{
-		gSLUCount->Progress = (GScanEngine->Data[DataSource].Stats.LargestUserCount / GScanEngine->Data[DataSource].FileCount) * 100;
-		gSLUSize->Progress  = (GScanEngine->Data[DataSource].Stats.LargestUserSize / GScanEngine->Data[DataSource].TotalSize) * 100;
+		gSLUCount->Progress = ((double)stats.LargestUserCount / (double)GScanEngine->Data[DataSource].FileCount) * 100;
+		gSLUSize->Progress  = ((double)stats.LargestUserSize / (double)GScanEngine->Data[DataSource].TotalSize) * 100;
 	}
 	else
 	{

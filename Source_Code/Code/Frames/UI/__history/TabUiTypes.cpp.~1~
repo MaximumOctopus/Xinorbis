@@ -137,6 +137,11 @@ int TabUiTypes::TreePost(TTreeView* view)
 
 void TabUiTypes::List(TStringGrid* grid, int DataSource)
 {
+//	if XSettings.Forms.ProgressForm <> Nil then begin
+//	XSettings.Forms.ProgressForm.SetProcessText(XText[kBuilding] + ' ' + XText[kFileTypes]);
+//	XSettings.System.JustInTimeProcessed[aDataIndex, TabIndexTypes] := True;
+//	end;
+
 	grid->BeginUpdate();
 
 	int row = 1;

@@ -97,6 +97,8 @@ void TFrameSearch::Init()
 	sgSearchResults->Cells[kschVOwner][0]      = GLanguageHandler->Text[kFileOwner].c_str();
 	sgSearchResults->Cells[kschVAttributes][0] = GLanguageHandler->Text[kAttr].c_str();
 
+	sgSearchResults->ColWidths[kschVSize] = 64;
+	sgSearchResults->ColWidths[kschVCDate] = 64;
 	sgSearchResults->ColWidths[kschVADate] = -1;
 	sgSearchResults->ColWidths[kschVMDate] = -1;
 	sgSearchResults->ColWidths[kschVAttributes] = -1;
@@ -222,14 +224,6 @@ std::wstring TFrameSearch::GetSelectedFileName(int tag)
 void __fastcall TFrameSearch::OnRequestNewSearch(int index, const std::wstring search)
 {
 	ExecuteSearch(search);
-}
-
-
-void __fastcall TFrameSearch::OnNewResults(unsigned __int64 size, int file_count, int folder_count)
-{
-//	TotalSearchSize         = size;
-//	TotalSearchFilesCount   = file_count;
-//	TotalSearchFoldersCount = folder_count;
 }
 #pragma end_region
 
@@ -620,8 +614,6 @@ void TFrameSearch::LoadSettings()
 	{
 		GLog->AddError(L"Error loading settings in FrameSearch");
 	}
-
-	BuildSearchCharts();
 }
 
 
@@ -656,14 +648,14 @@ void TFrameSearch::RenderResults(int index_from, int index_to)
 		index_from = 0;
 	}
 
-	if (index_to > GScanEngine->Data[kDataSearch].Files.size() - 1)
+	if (index_to > GScanEngine->Data[DataTarget].Files.size() - 1)
 	{
-		index_to = GScanEngine->Data[kDataSearch].Files.size() - 1;
+		index_to = GScanEngine->Data[DataTarget].Files.size() - 1;
 	}
 
 	GridUtility::Clear(sgSearchResults, false);
 
-	if (GScanEngine->Data[kDataSearch].Files.size() != 0)
+	if (GScanEngine->Data[DataTarget].Files.size() != 0)
 	{
 		sgSearchResults->BeginUpdate();
 		sgSearchResults->RowCount = 2;
@@ -673,19 +665,19 @@ void TFrameSearch::RenderResults(int index_from, int index_to)
 
 		while (index < index_to)
 		{
-			FileObject *tfo = GScanEngine->Data[kDataSearch].Files[index];
+			FileObject *tfo = GScanEngine->Data[DataTarget].Files[index];
 
 			// == File Name / Path =============================================
 			if (cbSearchShowPath->Checked)
 			{
-				sgSearchResults->Cells[kschVFileName][row] = (GScanEngine->Data[kDataSearch].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
+				sgSearchResults->Cells[kschVFileName][row] = (GScanEngine->Data[DataTarget].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
 			}
 			else
 			{
 				sgSearchResults->Cells[kschVFileName][row] = tfo->Name.c_str();
 			}
 
-			sgSearchResults->Cells[kschIFileName][row] = (GScanEngine->Data[kDataSearch].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
+			sgSearchResults->Cells[kschIFileName][row] = (GScanEngine->Data[DataSource].Folders[tfo->FilePathIndex] + tfo->Name).c_str();
 
 			// == File Size ====================================================
 			if (faDirectory & tfo->Attributes)
@@ -715,7 +707,7 @@ void TFrameSearch::RenderResults(int index_from, int index_to)
 			sgSearchResults->Cells[kschVAttributes][row] = ts.c_str();
 
 			// == User =========================================================
-			sgSearchResults->Cells[kschVOwner][row] = GScanEngine->Data[kDataSearch].Users[tfo->Owner]->Name.c_str();
+			sgSearchResults->Cells[kschVOwner][row] = GScanEngine->Data[DataSource].Users[tfo->Owner]->Name.c_str();
 
 			// == Dates ========================================================
 			sgSearchResults->Cells[kschVCDate][row] = Convert::IntDateToString(tfo->DateCreated).c_str();
@@ -774,15 +766,19 @@ void TFrameSearch::UpdateGUI()
 	{
 		std::wstring ts = L"";
 
+		int TotalSearchFilesCount = GScanEngine->Data[DataTarget].FileCount;
+		int TotalSearchFoldersCount = GScanEngine->Data[DataTarget].FolderCount;
+		unsigned __int64 TotalSearchSize = GScanEngine->Data[DataTarget].TotalSize;
+
 		if (TotalSearchFilesCount != 0)
 		{
-			if (GScanEngine->Data[DataSource].Files.size() == 0)
+			if (GScanEngine->Data[DataSource].FileCount == 0)
 			{
 				ts = GLanguageHandler->Text[kFound] + L" " + std::to_wstring(TotalSearchFilesCount) + L" " + GLanguageHandler->Text[kFiles] + L" (100%)";
 			}
 			else
 			{
-				std::wstring sp = FloatToStrF(((TotalSearchFilesCount) / GScanEngine->Data[DataSource].FileCount) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+				std::wstring sp = FloatToStrF((((double)TotalSearchFilesCount) / (double)GScanEngine->Data[DataSource].FileCount) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
 
 				ts = GLanguageHandler->Text[kFound] + L" " + std::to_wstring(TotalSearchFilesCount) + L" " + GLanguageHandler->Text[kFiles] + L" (" + sp + L"%)";
 			}
@@ -790,7 +786,7 @@ void TFrameSearch::UpdateGUI()
 
 		if (TotalSearchFoldersCount != 0)
 		{
-			std::wstring cp = FloatToStrF((TotalSearchFoldersCount) / GScanEngine->Data[DataSource].FolderCount * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+			std::wstring cp = FloatToStrF(((double)TotalSearchFoldersCount) / (double)GScanEngine->Data[DataSource].FolderCount * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
 
 			if (ts.empty())
 			{
@@ -804,7 +800,7 @@ void TFrameSearch::UpdateGUI()
 
 		if (GScanEngine->Data[DataSource].TotalSize != 0)
 		{
-			std::wstring sp = FloatToStrF((TotalSearchSize / GScanEngine->Data[DataSource].TotalSize) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
+			std::wstring sp = FloatToStrF(((double)TotalSearchSize / (double)GScanEngine->Data[DataSource].TotalSize) * 100, ffFixed, 7, 2, GSettingsHandler->XinorbisFormat).c_str();
 
 			ts += L", " + Convert::ConvertToUsefulUnit(TotalSearchSize) + L" (" + sp + L"%)";
 		}
@@ -822,12 +818,14 @@ void TFrameSearch::UpdateGUI()
 
 void TFrameSearch::UpdateSearchGUI()
 {
+	int super_total = GScanEngine->Data[DataTarget].FileCount + GScanEngine->Data[DataTarget].FolderCount;
+
 	lPageNumber->Caption = (std::to_wstring(PageNumber + 1) + L" (" + std::to_wstring(LastPage) + L")").c_str();
 
 	lShowing->Caption = (GLanguageHandler->Text[kShowing] + L" " +
 						 std::to_wstring((PageNumber * GSettingsHandler->General.MaxSearchResults) + 1) +
 						 kEllipsis + std::to_wstring((PageNumber * GSettingsHandler->General.MaxSearchResults) + sgSearchResults->RowCount - 1) + L" " +
-						 GLanguageHandler->Text[kOf] + L" " + std::to_wstring(TotalSearchFilesCount + TotalSearchFoldersCount) + L".").c_str();
+						 GLanguageHandler->Text[kOf] + L" " + std::to_wstring(super_total) + L".").c_str();
 
 	if (PageNumber > FirstPage)
 	{
@@ -888,21 +886,36 @@ void __fastcall TFrameSearch::sbGoSearchClick(TObject *Sender)
 }
 
 
+void __fastcall TFrameSearch::eSearchKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+	if (Key == VK_RETURN)
+	{
+		if (eSearch->Text != L"")
+		{
+            sbGoSearchClick(NULL);
+		}
+	}
+}
+
+
 void TFrameSearch::PostSearch()
 {
 	for (UserData *user : GScanEngine->Data[DataSource].Users)
 	{
 		UserData *ud = new UserData(user->Name);
 
-		GScanEngine->Data[kDataSearch].Users.push_back(ud);
+		GScanEngine->Data[DataTarget].Users.push_back(ud);
 	}
 
 	for (std::wstring folder : GScanEngine->Data[DataSource].Folders)
 	{
-		GScanEngine->Data[kDataSearch].Folders.push_back(folder);
+		GScanEngine->Data[DataTarget].Folders.push_back(folder);
 	}
 
-	GScanEngine->Data[kDataSearch].Path.String = GScanEngine->Data[DataSource].Path.String;
+	GScanEngine->Data[DataTarget].PostProcess();
+	GScanEngine->Data[DataTarget].ProcessExtensionSpread();
+
+	GScanEngine->Data[DataTarget].Path.String = GScanEngine->Data[DataTarget].Path.String;
 
 	// =========================================================================
 
@@ -923,10 +936,7 @@ void TFrameSearch::PostSearch()
 
 	UpdateGUI();
 
-//	if (pSearchChart.Visible then
-//    BuildSearchChart;
-
-	UpdateIceCream();
+	BuildSearchCharts();
 
 	sbGoSearch->Enabled = true;
 }
@@ -1062,11 +1072,13 @@ void TFrameSearch::BuildSearchCharts()
  {
 	if (GScanEngine->Data[DataSource].Files.size() != 0 && GScanEngine->Data[DataSource].TotalSize != 0)
 	{
-		gaugeQuantity->Progress = ((TotalSearchFilesCount + TotalSearchFoldersCount) / (GScanEngine->Data[DataSource].FileCount + GScanEngine->Data[DataSource].FolderCount)) * 100;
-		gaugeSize->Progress = (TotalSearchSize / GScanEngine->Data[DataSource].TotalSize) * 100;
+		double q = (((double)GScanEngine->Data[DataTarget].FileCount + (double)GScanEngine->Data[DataTarget].FolderCount) / ((double)GScanEngine->Data[DataSource].FileCount + (double)GScanEngine->Data[DataSource].FolderCount)) * 100;
+		double s = ((double)GScanEngine->Data[DataTarget].TotalSize / (double)GScanEngine->Data[DataSource].TotalSize) * 100;
+
+		gaugeQuantity->Progress = q;
+		gaugeSize->Progress = s;
 
 		UpdateIceCream();
-
 	}
 }
 
@@ -1077,15 +1089,21 @@ void TFrameSearch::UpdateIceCream()
 
 	for (int t = 1; t < kFileCategoriesCount; t++)
 	{
-		ice->Add(0, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentCount,
-					GLanguageHandler->TypeDescriptions[t],
-					std::to_wstring(GScanEngine->Data[DataTarget].ExtensionSpread[t].Count) + L" files",
-					GSettingsHandler->FileCategoryColors[t]);
+		if (GScanEngine->Data[DataTarget].ExtensionSpread[t].Count != 0)
+		{
+			ice->Add(0, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentCount,
+						GLanguageHandler->TypeDescriptions[t],
+						std::to_wstring(GScanEngine->Data[DataTarget].ExtensionSpread[t].Count) + L" files",
+						GSettingsHandler->FileCategoryColors[t]);
+		}
 
-		ice->Add(1, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentSize,
-					GLanguageHandler->TypeDescriptions[t],
-					Convert::ConvertToUsefulUnit(GScanEngine->Data[DataTarget].ExtensionSpread[t].Size),
-					GSettingsHandler->FileCategoryColors[t]);
+		if (GScanEngine->Data[DataTarget].ExtensionSpread[t].Size != 0)
+		{
+			ice->Add(1, GScanEngine->Data[DataTarget].ExtensionSpread[t].PercentSize,
+						GLanguageHandler->TypeDescriptions[t],
+						Convert::ConvertToUsefulUnit(GScanEngine->Data[DataTarget].ExtensionSpread[t].Size),
+						GSettingsHandler->FileCategoryColors[t]);
+        }
 	}
 
 	ice->End();

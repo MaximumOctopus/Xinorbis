@@ -27,7 +27,7 @@ object FrameFolderHistory: TFrameFolderHistory
           Width = 97
           Height = 53
         end
-        object Label1: TLabel
+        object lFHAvailableComputer: TLabel
           Left = 111
           Top = 7
           Width = 9
@@ -62,7 +62,7 @@ object FrameFolderHistory: TFrameFolderHistory
           Style = csDropDownList
           TabOrder = 1
         end
-        object ComboBox2: TComboBox
+        object cbFHAvailableComputer: TComboBox
           Left = 264
           Top = 4
           Width = 249
@@ -466,10 +466,6 @@ object FrameFolderHistory: TFrameFolderHistory
         ActivePage = TabSheet1
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = 232
-        ExplicitTop = 248
-        ExplicitWidth = 289
-        ExplicitHeight = 193
         object TabSheet1: TTabSheet
           Caption = 'TabSheet1'
         end

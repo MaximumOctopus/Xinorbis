@@ -277,14 +277,16 @@ void TFrameProperties::Update()
 	BuildExtensionsTable();
 
 	BuildMagnitudeTable();
-
-	Top101UpdateDropDowns();
 }
 
 
 void TFrameProperties::UpdateControls()
 {
+	MagnitudeUpdateDropDowns();
+	DatesUpdateDropDowns();
 	UpdateHistoryDropDowns();
+	Top101UpdateDropDowns();
+	UsersUpdateDropDowns();
 }
 
 
@@ -719,7 +721,7 @@ void __fastcall TFrameProperties::sgCategoriesDrawCell(TObject *Sender, System::
 		}
 		case 3:
 		{
-			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xff8822);
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
 			static_cast<TStringGrid*>(Sender)->Canvas->Rectangle(Rect);
 
 			if (static_cast<TStringGrid*>(Sender)->Cells[9][ARow] != L"0")
@@ -730,7 +732,7 @@ void __fastcall TFrameProperties::sgCategoriesDrawCell(TObject *Sender, System::
 				zRect.Left   = Rect.Left + 1;
 				zRect.Right  = Rect.Left + StrToInt(static_cast<TStringGrid*>(Sender)->Cells[9][ARow]);
 
-				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xdd4411);
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
 				static_cast<TStringGrid*>(Sender)->Canvas->FillRect(zRect);
 			}
 
@@ -741,19 +743,19 @@ void __fastcall TFrameProperties::sgCategoriesDrawCell(TObject *Sender, System::
 		}
 		case 6:
 		{
-			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xff8822);
+			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
 			static_cast<TStringGrid*>(Sender)->Canvas->Rectangle(Rect);
 
 			if (static_cast<TStringGrid*>(Sender)->Cells[10][ARow] != L"0")
 			{
 				TRect zRect;
-			  zRect.Top    = Rect.Top + 1;
-			  zRect.Bottom = Rect.Bottom - 1;
-			  zRect.Left   = Rect.Left + 1;
-			  zRect.Right  = Rect.Left + StrToInt(static_cast<TStringGrid*>(Sender)->Cells[10][ARow]);
+				zRect.Top    = Rect.Top + 1;
+				zRect.Bottom = Rect.Bottom - 1;
+				zRect.Left   = Rect.Left + 1;
+				zRect.Right  = Rect.Left + StrToInt(static_cast<TStringGrid*>(Sender)->Cells[10][ARow]);
 
-			  static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(0xdd4411);
-			  static_cast<TStringGrid*>(Sender)->Canvas->FillRect(zRect);
+				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
+				static_cast<TStringGrid*>(Sender)->Canvas->FillRect(zRect);
 			}
 
 			static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
@@ -762,7 +764,7 @@ void __fastcall TFrameProperties::sgCategoriesDrawCell(TObject *Sender, System::
 			break;
 		}
 		default:
-			if (static_cast<TStringGrid*>(Sender)->ColWidths[0] != -1)
+			if (static_cast<TStringGrid*>(Sender)->ColWidths[ACol] != -1)
 			{
 				static_cast<TStringGrid*>(Sender)->Canvas->Brush->Style = bsClear;
 				static_cast<TStringGrid*>(Sender)->Canvas->Font->Color = clWhite;
@@ -854,7 +856,7 @@ void __fastcall TFrameProperties::splitTypesMoved(TObject *Sender)
 {
 	int total = 0;
 
-	for (int t = 1; t < 6; t++)
+	for (int t = 2; t < 7; t++)
 	{
 		total += sgTypes->ColWidths[t];
 	}
@@ -904,7 +906,7 @@ void TFrameProperties::BuildExtensionsTable()
 			sgExtensions->Cells[5][row] = Convert::ConvertToUsefulUnit(GFileExtensionHandler->Extensions[t]->Size).c_str();
 			sgExtensions->Cells[6][row] = GFileExtensionHandler->Extensions[t]->PercentSizeString.c_str();
 
-			sgExtensions->Cells[7][row] = 0;
+			sgExtensions->Cells[7][row] = GSettingsHandler->FileCategoryColors[GFileExtensionHandler->Extensions[t]->Category];
 			sgExtensions->Cells[8][row] = GFileExtensionHandler->Extensions[t]->Size;
 			sgExtensions->Cells[9][row] = (int)(GFileExtensionHandler->Extensions[t]->PercentCount * 50);
 			sgExtensions->Cells[10][row] = (int)(GFileExtensionHandler->Extensions[t]->PercentSize * 50);
@@ -940,6 +942,121 @@ void __fastcall TFrameProperties::tsExtensionsResize(TObject *Sender)
 void __fastcall TFrameProperties::cbExtensionsAllClick(TObject *Sender)
 {
 //
+}
+
+
+void __fastcall TFrameProperties::cbExtensionsColourCodeClick(TObject *Sender)
+{
+	sgExtensions->Invalidate();
+}
+
+
+void __fastcall TFrameProperties::sgExtensionsDrawCell(TObject *Sender, System::LongInt ACol,
+		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
+{
+	if (ARow != 0)
+	{
+		sgExtensions->Canvas->Font->Style = TFontStyles();
+
+        if (State.Contains(gdSelected))
+		{
+			sgExtensions->Canvas->Brush->Color = TColor(kGridColourSelected);
+		}
+		else
+		{
+			if (cbExtensionsColourCode->Checked)
+			{
+				sgExtensions->Canvas->Brush->Color = TColor(StrToInt(sgExtensions->Cells[7][ARow]));
+			}
+			else
+			{
+				if (ARow % 2)
+				{
+					sgExtensions->Canvas->Brush->Color = TColor(kGridColourOff);
+				}
+				else
+				{
+					sgExtensions->Canvas->Brush->Color = TColor(kGridColourOn);
+				}
+			}
+		}
+
+		static_cast<TStringGrid*>(Sender)->Canvas->FillRect(Rect);
+
+		switch (ACol)
+		{
+		case 0:
+			break;
+		case 2:
+		case 5:
+		{
+			int left = Rect.Right - sgExtensions->Canvas->TextWidth(sgExtensions->Cells[ACol][ARow]) - 2;
+			sgExtensions->Canvas->TextOut(left, Rect.Top + 3, sgExtensions->Cells[ACol][ARow]);
+			break;
+		}
+		case 3:
+		{
+			sgExtensions->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
+			sgExtensions->Canvas->Rectangle(Rect);
+
+			if (sgExtensions->Cells[9][ARow] != L"0")
+			{
+				TRect zRect;
+				zRect.Top    = Rect.Top + 1;
+				zRect.Bottom = Rect.Bottom - 1;
+				zRect.Left   = Rect.Left + 1;
+				zRect.Right  = Rect.Left + StrToInt(sgExtensions->Cells[9][ARow]);
+
+				sgExtensions->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
+				sgExtensions->Canvas->FillRect(zRect);
+			}
+
+			sgExtensions->Canvas->Brush->Style = bsClear;
+			sgExtensions->Canvas->Font->Color  = clBlack;
+			sgExtensions->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExtensions->Cells[3][ARow]);
+			break;
+		}
+		case 6:
+		{
+			sgExtensions->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[4]);
+			sgExtensions->Canvas->Rectangle(Rect);
+
+			if (sgExtensions->Cells[10][ARow] != L"0")
+			{
+				TRect zRect;
+				zRect.Top    = Rect.Top + 1;
+				zRect.Bottom = Rect.Bottom - 1;
+				zRect.Left   = Rect.Left + 1;
+				zRect.Right  = Rect.Left + StrToInt(sgExtensions->Cells[10][ARow]);
+
+				sgExtensions->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[5]);
+				sgExtensions->Canvas->FillRect(zRect);
+			}
+
+			sgExtensions->Canvas->Brush->Style = bsClear;
+			sgExtensions->Canvas->Font->Color  = clBlack;
+			sgExtensions->Canvas->TextOut(Rect.Left + 5, Rect.Top + 3, sgExtensions->Cells[6][ARow]);
+			break;
+		}
+		default:
+			if (sgExtensions->ColWidths[ACol] != -1)
+			{
+				sgExtensions->Canvas->Brush->Style = bsClear;
+				sgExtensions->Canvas->Font->Color = clWhite;
+				sgExtensions->Canvas->TextOut(Rect.Left, Rect.Top, sgExtensions->Cells[ACol][ARow]);
+			}
+		}
+	}
+	else
+	{
+		sgExtensions->Canvas->Brush->Color = TColor(kGridHeader);
+		sgExtensions->Canvas->FillRect(Rect);
+
+		sgExtensions->Canvas->Brush->Style = bsClear;
+		sgExtensions->Canvas->Font->Color = clWhite;
+		sgExtensions->Canvas->Font->Style = TFontStyles() << fsBold;
+		sgExtensions->Canvas->TextOut(Rect.Left, Rect.Top, sgExtensions->Cells[ACol][0]);
+	}
 }
 #pragma end_region
 
@@ -1053,6 +1170,20 @@ void TFrameProperties::InitMagnitudeTab()
 }
 
 
+void TFrameProperties::MagnitudeUpdateDropDowns()
+{
+	cbMagnitudeUsers->Items->Clear();
+	cbMagnitudeUsers->Items->Add(GLanguageHandler->Text[kAllUsers].c_str());
+
+	for (int t = 0; t < GScanEngine->Data[DataSource].Users.size(); t++)
+	{
+		cbMagnitudeUsers->Items->Add(GScanEngine->Data[DataSource].Users[t]->Name.c_str());
+	}
+
+	cbMagnitudeUsers->ItemIndex = 0;
+}
+
+
 void TFrameProperties::BuildMagnitudeTable()
 {
 	for (int t = 0; t < kMagnitudesCount; t++)
@@ -1137,7 +1268,7 @@ void __fastcall TFrameProperties::rbMagnitudeBySizeClick(TObject *Sender)
 }
 
 
-void __fastcall TFrameProperties::ComboBox3Change(TObject *Sender)
+void __fastcall TFrameProperties::cbMagnitudeUsersChange(TObject *Sender)
 {
 //
 }
@@ -1853,6 +1984,16 @@ void TFrameProperties::InitLengthTab()
 	sgLengths->Cells[3][0] = GLanguageHandler->Text[kAsPercent].c_str();
 	sgLengths->Cells[5][0] = GLanguageHandler->Text[kSize].c_str();
 	sgLengths->Cells[6][0] = GLanguageHandler->Text[kAsPercent].c_str();
+
+	sgLengths->Cells[1][1] = L"No data";
+	sgLengths->Cells[2][1] = 0;
+	sgLengths->Cells[3][1] = L"0";
+	sgLengths->Cells[5][1] = L"";
+	sgLengths->Cells[6][1] = L"";
+	sgLengths->Cells[7][1] = 0x555555;
+	sgLengths->Cells[8][1] = 0;
+	sgLengths->Cells[9][1] = 0;
+	sgLengths->Cells[10][1] = 0;
 
 	for (int t = 0; t < 11; t++)
 	{

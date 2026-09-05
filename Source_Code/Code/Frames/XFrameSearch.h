@@ -116,6 +116,7 @@ __published:	// IDE-managed Components
 	void __fastcall pcSearchChange(TObject *Sender);
 	void __fastcall sgSearchResultsDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
+	void __fastcall eSearchKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:
 
 	constexpr static int kschVFileName     = 0;
@@ -145,10 +146,6 @@ private:
 	//TFrameReports *FrameReports;
 	bool SearchDataChanged = false;
 
-	unsigned __int64 TotalSearchSize = 0;	// values from search thread
-	int TotalSearchFilesCount = 0;			//
-	int TotalSearchFoldersCount = 0;		//
-
 	ProcessSearch *SearchEngine = nullptr;
 
 	void __fastcall miQuickSearchClick(TObject *Sender);
@@ -176,7 +173,6 @@ private:
 	void SaveSettings();
 
 	void __fastcall OnRequestNewSearch(int, const std::wstring);
-	void __fastcall OnNewResults(unsigned __int64, int, int);
 
 public:
 	__fastcall TFrameSearch(TComponent* Owner);

@@ -180,6 +180,8 @@ object FrameSearch: TFrameSearch
           Width = 1318
           Height = 84
           Anchors = [akLeft, akTop, akRight]
+          Color = 3355443
+          ParentBackground = False
           TabOrder = 0
         end
       end
@@ -258,10 +260,10 @@ object FrameSearch: TFrameSearch
             Height = 145
             BorderStyle = bsNone
             Color = 3355443
-            ForeColor = clGray
+            ForeColor = clSilver
             Kind = gkPie
             ParentColor = False
-            Progress = 20
+            Progress = 0
           end
           object gaugeSize: TGauge
             Left = 6
@@ -270,10 +272,10 @@ object FrameSearch: TFrameSearch
             Height = 145
             BorderStyle = bsNone
             Color = 3355443
-            ForeColor = clGray
+            ForeColor = clSilver
             Kind = gkPie
             ParentColor = False
-            Progress = 20
+            Progress = 0
           end
           object cbSearchShowPath: TCheckBox
             Left = 14
@@ -366,6 +368,7 @@ object FrameSearch: TFrameSearch
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
+              OnKeyDown = eSearchKeyDown
             end
           end
           object sgSearchResults: TStringGrid
@@ -377,6 +380,7 @@ object FrameSearch: TFrameSearch
             ColCount = 13
             DefaultDrawing = False
             FixedCols = 0
+            RowCount = 2
             PopupMenu = puSearch
             TabOrder = 1
             OnDrawCell = sgSearchResultsDrawCell

@@ -46,9 +46,9 @@ __published:	// IDE-managed Components
 	TPanel *Panel1;
 	TEdit *Edit2;
 	TComboBox *ComboBox1;
-	TComboBox *ComboBox2;
+	TComboBox *cbFHAvailableComputer;
 	TSpeedButton *SpeedButton1;
-	TLabel *Label1;
+	TLabel *lFHAvailableComputer;
 	TLabel *Label2;
 	TCheckBox *CheckBox1;
 	TSpeedButton *SpeedButton2;

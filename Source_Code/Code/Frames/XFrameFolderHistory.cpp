@@ -258,9 +258,6 @@ void __fastcall TFrameFolderHistory::miGenericClipboardHTMLClick(TObject *Sender
 #pragma end_region
 
 
-
-
-
 #pragma region TimeLine
 /*void TFrameFolderHistory::BuildTimeLine;
 var

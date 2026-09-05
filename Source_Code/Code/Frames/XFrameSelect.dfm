@@ -464,6 +464,8 @@ object FrameSelect: TFrameSelect
         Align = alClient
         DefaultDrawing = False
         FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+        PopupMenu = puScanHistory
         TabOrder = 1
         OnDrawCell = sgScanHistoryDrawCell
       end
@@ -476,18 +478,21 @@ object FrameSelect: TFrameSelect
     object miExploreFromScanHistory: TMenuItem
       Caption = '.'
       ImageIndex = 4
+      OnClick = miExploreFromScanHistoryClick
     end
     object N20: TMenuItem
       Caption = '-'
     end
     object miShowInFolderHistory: TMenuItem
       Caption = '.'
+      OnClick = miShowInFolderHistoryClick
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object miSaveAs: TMenuItem
       Caption = '.'
+      OnClick = miSaveAsClick
     end
   end
   object puQuickFolder: TPopupMenu

@@ -174,23 +174,6 @@ void TabUiLength::Table(TStringGrid* grid, int DataSource, int index, bool add_a
 	{
 		grid->RowCount--;
 	}
-	else
-	{
-		grid->Cells[1][Row] = L"No data";
-
-		grid->Cells[2][Row] = 0;
-		grid->Cells[3][Row] = L"0";
-
-		grid->Cells[5][Row] = L"";
-		grid->Cells[6][Row] = L"";
-
-		grid->Cells[7][Row] = 0x448844;
-
-		grid->Cells[8][Row] = 0;
-
-		grid->Cells[9][Row]  = 0;
-		grid->Cells[10][Row] = 0;
-	}
 
 	grid->EndUpdate();
 

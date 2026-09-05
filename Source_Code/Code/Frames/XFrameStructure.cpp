@@ -389,12 +389,12 @@ void __fastcall TFrameStructure::sgLeftSideDrawCell(TObject *Sender, System::Lon
 			}
 			break;
 		case ksgnGraphSize:
-			sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[0]);
+			sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[0]);
 			sgLeftSide->Canvas->Rectangle(Rect);
 
 			if (sgLeftSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgLeftSide->Cells[ksgnIntegerPCent][ARow] != L"")
 			{
-				sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[1]);
+				sgLeftSide->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[1]);
 				sgLeftSide->Canvas->FillRect(TRect(Rect.Left + 1,
 												   Rect.Top + 1,
 												   Rect.Left + sgLeftSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
@@ -523,13 +523,6 @@ void __fastcall TFrameStructure::sgLeftSideDblClick(TObject *Sender)
 		// =====================================================================
 
 		Screen->Cursor = crHourGlass;
-
-//		if Assigned(NavSideBarThread) then
-//		{
-//			NavSideBarThread.Terminate;
-// TO DO			NavSideBarThread.WaitFor;
-//			FreeAndNil(NavSideBarThread);
-//		}
 
 		std::wstring left = sgLeftSide->Cells[1][sgLeftSide->Selection.Top].c_str();
 
@@ -732,12 +725,12 @@ void __fastcall TFrameStructure::sgRightSideDrawCell(TObject *Sender, System::Lo
 			}
 			break;
 		case ksgnGraphSize:
-			sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[0]);
+			sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[0]);
 			sgRightSide->Canvas->Rectangle(Rect);
 
 			if (sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"0" && sgRightSide->Cells[ksgnIntegerPCent][ARow] != L"")
 			{
-				sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Navigation.BarColours[1]);
+				sgRightSide->Canvas->Brush->Color = TColor(GSettingsHandler->Appearance.BarColours[1]);
 				sgRightSide->Canvas->FillRect(TRect(Rect.Left + 1,
 												   Rect.Top + 1,
 												   Rect.Left + sgRightSide->Cells[ksgnIntegerPCent][ARow].ToInt(),
