@@ -353,7 +353,7 @@ void TFormSettings::BuildNavigationTable()
 	{
 		sgNavigationSide->Cells[0][t] = Things[t - 1].c_str();
 
-		sgNavigationSide->Cells[8][t] = (int)std::round(((double)t * 10) / 2);
+//		sgNavigationSide->Cells[8][t] = IntToStr(round((t * 10) / 2));
 	}
 
 	sgNavigationSide->ColWidths[1] = 10;

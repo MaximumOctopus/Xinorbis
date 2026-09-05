@@ -2,7 +2,7 @@ object FormSettings: TFormSettings
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  ClientHeight = 516
+  ClientHeight = 521
   ClientWidth = 922
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,6 +14,13 @@ object FormSettings: TFormSettings
   OnCreate = FormCreate
   OnShow = FormShow
   TextHeight = 15
+  object Bevel10: TBevel
+    Left = 6
+    Top = 484
+    Width = 901
+    Height = 4
+    Shape = bsTopLine
+  end
   object pOptimisations: TPanel
     Left = 182
     Top = 6
@@ -1201,7 +1208,7 @@ object FormSettings: TFormSettings
   end
   object bSave: TBitBtn
     Left = 668
-    Top = 486
+    Top = 489
     Width = 126
     Height = 25
     Caption = '.'
@@ -1245,7 +1252,7 @@ object FormSettings: TFormSettings
   end
   object bCancel: TBitBtn
     Left = 800
-    Top = 486
+    Top = 490
     Width = 116
     Height = 25
     Cancel = True
@@ -1282,7 +1289,7 @@ object FormSettings: TFormSettings
   end
   object bHelp: TBitBtn
     Left = -2
-    Top = 486
+    Top = 490
     Width = 161
     Height = 25
     Caption = '.'
@@ -1611,14 +1618,14 @@ object FormSettings: TFormSettings
   end
   object cdMain: TColorDialog
     Options = [cdFullOpen]
-    Left = 45
-    Top = 400
+    Left = 253
+    Top = 472
   end
   object puFSpecial: TPopupMenu
     AutoHotkeys = maManual
     AutoLineReduction = maManual
-    Left = 117
-    Top = 400
+    Left = 325
+    Top = 472
     object miFSH1: TMenuItem
       Caption = '.'
       OnClick = miFSH1Click

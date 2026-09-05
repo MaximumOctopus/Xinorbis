@@ -17,6 +17,7 @@
 class TFormSettings : public TForm
 {
 __published:	// IDE-managed Components
+	TBevel *Bevel10;
 	TPanel *pPostScan;
 	TLabel *lPostScan;
 	TComboBox *cbIPPostScan;
