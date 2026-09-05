@@ -19,99 +19,110 @@ void CompareFolderLeftSide::Execute()
   addrow   : boolean;
 
 begin
-  FreeOnTerminate := True;
+	if XSettings.Database.UseODBC)
+	{
+		if InitODBC(XSettings.Database.ODBConnectionString)
+		{
+		}
+		else
+		{
+			Exit;
+		}
+	}
 
-  FCriticalSection.Acquire;
+	for t := 0 to __FileCategoriesCount)
+	{
+		extspreadt[t, 1] := 0;
+		extspreadt[t, 2] := 0;
+	}
 
-  if XSettings.Database.UseODBC then begin
-    if InitODBC(XSettings.Database.ODBConnectionString) then
-      {}
-    else
-      Exit;
-  end;
+	tnumfiless             := 0;
+	tFileTotalSpace        := 0;
+	tnumfiless_folder      := 0;
+	tFileTotalSpace_folder := 0;
 
-  for t := 0 to __FileCategoriesCount do begin
-    extspreadt[t, 1] := 0;
-    extspreadt[t, 2] := 0;
-  end;
+	// =========================================================================
+	// =========================================================================
+	// =========================================================================
 
-  tnumfiless             := 0;
-  tFileTotalSpace        := 0;
-  tnumfiless_folder      := 0;
-  tFileTotalSpace_folder := 0;
+	grid.BeginUpdate;
 
-  // ==========================================================================
-  // ==========================================================================
-  // ==========================================================================
+	grid.ClearRows(1, grid.RowCount - 2);
+	grid.BeginUpdate;
+	grid.RowCount := 2;
 
-  grid.BeginUpdate;
+	CompareData[XLeftSide].Data[XFileCount]   := 0;
+	CompareData[XLeftSide].Data[XFolderCount] := 0;
+	CompareData[XLeftSide].Data[XFileSize]    := 0;
 
-  grid.ClearRows(1, grid.RowCount - 2);
-  grid.BeginUpdate;
-  grid.RowCount := 2;
+	if XSettings.Database.UseODBC)
+	{
+		ProcessODBC(SQL);
+	}
+	else
+	{
+		ProcessSqlite(SQL);
+	}
 
-  CompareData[XLeftSide].Data[XFileCount]   := 0;
-  CompareData[XLeftSide].Data[XFolderCount] := 0;
-  CompareData[XLeftSide].Data[XFileSize]    := 0;
+	t := 1;
 
-  if XSettings.Database.UseODBC then begin
-    ProcessODBC(SQL);
-  end
-  else begin
-    ProcessSqlite(SQL);
-  end;
+	while t <= __FileCategoriesCount)
+	{
+		addrow := True;
 
-  t := 1;
+		if addrow)
+		{
+			grid.Cells[1, grid.RowCount - 1] := TypeDescriptions[t];
+			grid.Cells[2, grid.RowCount - 1] := IntToStr(extspreadt[t, 1]);
 
-  while t <= __FileCategoriesCount do begin
-    addrow := True;
+			if tnumfiless <> 0)
+			{
+				grid.Cells[3, grid.RowCount - 1] := TConvert.RealToPercent(extspreadt[t, 1] / tnumfiless);
+				grid.Cells[9, grid.RowCount - 1] := IntToStr(Round((extspreadt[t, 1] / tnumfiless) * 50));
+			}
+			else
+			{
+				grid.Cells[3, grid.RowCount - 1] := '100%';
+				grid.Cells[9, grid.RowCount - 1] := '100';
+			}
 
-    if addrow then begin
-      grid.Cells[1, grid.RowCount - 1] := TypeDescriptions[t];
-      grid.Cells[2, grid.RowCount - 1] := IntToStr(extspreadt[t, 1]);
+			grid.Cells[5, grid.RowCount - 1] := TConvert.ConvertToUsefulUnit(extspreadt[t, 2]);
 
-      if tnumfiless <> 0 then begin
-        grid.Cells[3, grid.RowCount - 1] := TConvert.RealToPercent(extspreadt[t, 1] / tnumfiless);
-        grid.Cells[9, grid.RowCount - 1] := IntToStr(Round((extspreadt[t, 1] / tnumfiless) * 50));
-      end
-      else begin
-        grid.Cells[3, grid.RowCount - 1] := '100%';
-        grid.Cells[9, grid.RowCount - 1] := '100';
-      end;
+			if tFileTotalSpace <> 0)
+			{
+				grid.Cells[6, grid.RowCount - 1]  := TConvert.RealToPercent(extspreadt[t, 2] / tFileTotalSpace);
+				grid.Cells[10, grid.RowCount - 1] := IntToStr(Round((extspreadt[t, 2] / tFileTotalSpace) * 50))
+			}
+			else
+			{
+				grid.Cells[6, grid.RowCount - 1]  := '100%';
+				grid.Cells[10, grid.RowCount - 1] := '100';
+			}
 
-      grid.Cells[5, grid.RowCount - 1] := TConvert.ConvertToUsefulUnit(extspreadt[t, 2]);
+			grid.Cells[7, grid.RowCount - 1]  := IntToStr(t);
+			grid.Cells[8, grid.RowCount - 1]  := IntToStr(extspreadt[t, 2]);
 
-      if tFileTotalSpace <> 0 then begin
-        grid.Cells[6, grid.RowCount - 1]  := TConvert.RealToPercent(extspreadt[t, 2] / tFileTotalSpace);
-        grid.Cells[10, grid.RowCount - 1] := IntToStr(Round((extspreadt[t, 2] / tFileTotalSpace) * 50))
-      end
-      else begin
-        grid.Cells[6, grid.RowCount - 1]  := '100%';
-        grid.Cells[10, grid.RowCount - 1] := '100';
-      end;
+			grid.RowCount := grid.RowCount + 1;
+		}
 
-      grid.Cells[7, grid.RowCount - 1]  := IntToStr(t);
-      grid.Cells[8, grid.RowCount - 1]  := IntToStr(extspreadt[t, 2]);
+		inc(t);
+	}
 
-      grid.RowCount := grid.RowCount + 1;
-    end;
+	slabel.Caption := IntToStr(tnumfiless_folder) +
+					' (<b>' + TConvert.ConvertToUsefulUnit(tFileTotalSpace_folder) + '</b>) of ' + IntToStr(tnumfiless) + ' (<b>' + TConvert.ConvertToUsefulUnit(tFileTotalSpace) + '</b>)';
 
-    inc(t);
-  end;
+	grid.RowCount := grid.RowCount - 1;
 
-  slabel.Caption := IntToStr(tnumfiless_folder) +
-                    ' (<b>' + TConvert.ConvertToUsefulUnit(tFileTotalSpace_folder) + '</b>) of ' + IntToStr(tnumfiless) + ' (<b>' + TConvert.ConvertToUsefulUnit(tFileTotalSpace) + '</b>)';
+	// =========================================================================
+	// =========================================================================
+	// =========================================================================
 
-  grid.RowCount := grid.RowCount - 1;
+	grid.EndUpdate;
 
-  // ==========================================================================
-  // ==========================================================================
-  // ==========================================================================
-
-  grid.EndUpdate;
-
-  if XSettings.Database.UseODBC then
-	CloseODBC;*/
+	if XSettings.Database.UseODBC)
+	{
+		CloseODBC;
+	}*/
 }
 
 
@@ -129,35 +140,39 @@ void CompareFolderLeftSide::ProcessODBC(const std::wstring sql)
 {
 /*  XQuery   : TADOQuery;
 
-begin
-  XQuery := TADOQuery.Create(nil);
+	XQuery := TADOQuery.Create(nil);
 
-  try
-    XQuery.Connection := XODBC;
-    XQuery.SQL.Add(sql);
-    XQuery.Open;
+	try
+	{
+		XQuery.Connection := XODBC;
+		XQuery.SQL.Add(sql);
+		XQuery.Open;
 
-    while not XQuery.eof do begin
+		while not XQuery.eof)
+		{
+			if XQuery.FieldByname('Directory').AsString <> '1')
+			{
+				if Pos(folder, UpperCase(XQuery.FieldByName('FilePath').AsString)) <> 0)
+				{
+					inc(extspreadt[XQuery.FieldByname('Category').AsInteger, 1]);
+					inc(extspreadt[XQuery.FieldByname('Category').AsInteger, 2], StrToInt64(XQuery.FieldByName('FileSize').AsString));
 
-      if XQuery.FieldByname('Directory').AsString <> '1' then begin
+					inc(tnumfiless_folder);
+					inc(tFileTotalSpace_folder, StrToInt64(XQuery.FieldByName('FileSize').AsString));
+				}
 
-        if Pos(folder, UpperCase(XQuery.FieldByName('FilePath').AsString)) <> 0 then begin
-          inc(extspreadt[XQuery.FieldByname('Category').AsInteger, 1]);
-          inc(extspreadt[XQuery.FieldByname('Category').AsInteger, 2], StrToInt64(XQuery.FieldByName('FileSize').AsString));
+				inc(tnumfiless);
+				inc(tFileTotalSpace, XQuery.FieldByName('FileSize').AsLargeInt);
+			}
 
-          inc(tnumfiless_folder);
-          inc(tFileTotalSpace_folder, StrToInt64(XQuery.FieldByName('FileSize').AsString));
-        end;
+			XQuery.Next;
+		}
+	}
+	catch(...)
+	{
+	}
 
-        inc(tnumfiless);
-        inc(tFileTotalSpace, XQuery.FieldByName('FileSize').AsLargeInt);
-      end;
-
-      XQuery.Next;
-    end;
-  finally
-    XQuery.Free;
-  end;*/
+	XQuery.Free;*/
 }
 
 
@@ -167,42 +182,49 @@ void CompareFolderLeftSide::ProcessSqlite(const std::wstring sql)
   lResults : TDataSet;
 
 begin
-  lSQliteConnection := TSQLConnection.Create(Nil);
+	lSQliteConnection := TSQLConnection.Create(Nil);
 
-  lSQliteConnection.DriverName  := 'Sqlite';
-  lSQliteConnection.LoginPrompt := False;
-  lSQliteConnection.Params.Add('Database=' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
+	lSQliteConnection.DriverName  := 'Sqlite';
+	lSQliteConnection.LoginPrompt := False;
+	lSQliteConnection.Params.Add('Database=' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
 
-  try
-	lSQliteConnection.Connected := True;
+	try
+	{
+		lSQliteConnection.Connected := True;
 
-	lSQliteConnection.Execute(aSQL, nil, lResults);
+		lSQliteConnection.Execute(aSQL, nil, lResults);
 
-	if not lResults.IsEmpty then begin
-	  lResults.First;
+		if not lResults.IsEmpty)
+		{
+			lResults.First;
 
-	  while not lResults.Eof do begin
-		if lResults.Fields[fDirectory].AsString <> '1' then begin
+			while not lResults.Eof)
+			{
+				if lResults.Fields[fDirectory].AsString <> '1')
+				{
+					if Pos(folder, UpperCase(lResults.Fields[fFilePath].AsString)) <> 0)
+					{
+						inc(extspreadt[lResults.Fields[fCategory].AsInteger, 1]);
+						inc(extspreadt[lResults.Fields[fCategory].AsInteger, 2], lResults.Fields[fFileSize].AsLargeInt);
 
-		  if Pos(folder, UpperCase(lResults.Fields[fFilePath].AsString)) <> 0 then begin
-			inc(extspreadt[lResults.Fields[fCategory].AsInteger, 1]);
-			inc(extspreadt[lResults.Fields[fCategory].AsInteger, 2], lResults.Fields[fFileSize].AsLargeInt);
+						inc(tnumfiless_folder);
+						inc(tFileTotalSpace_folder, lResults.Fields[fFileSize].AsLargeInt);
+					}
 
-			inc(tnumfiless_folder);
-			inc(tFileTotalSpace_folder, lResults.Fields[fFileSize].AsLargeInt);
-		  end;
+					inc(tnumfiless);
+					inc(tFileTotalSpace, lResults.Fields[fFileSize].AsLargeInt);
+				}
 
-		  inc(tnumfiless);
-		  inc(tFileTotalSpace, lResults.Fields[fFileSize].AsLargeInt);
-		end;
+				lResults.Next;
+			}
+		}
+	}
+	catch(...)
+	{
+	}
 
-		lResults.Next;
-	  end;
-	end;
-  finally
 	lSQliteConnection.Connected := False;
-	FreeAndNil(lSQliteConnection);
-  end;*/
+	FreeAndNil(lSQliteConnection);*/
 }
 
 
@@ -214,13 +236,16 @@ begin
 bool CompareFolderLeftSide::InitODBC(const std::wstring connection_string)
 {
 /*  try
-	XODBC := TADOConnection.Create(nil);
-	XODBC.LoginPrompt      := False;
-	XODBC.ConnectionString := connectionstring;
-	XODBC.Connected        := True;
-  except
-	Result := False;
-  end;*/
+	{
+		XODBC := TADOConnection.Create(nil);
+		XODBC.LoginPrompt      := False;
+		XODBC.ConnectionString := connectionstring;
+		XODBC.Connected        := True;
+	}
+	catch(...)
+	{
+		return false;
+	}*/
 
 	return true;
 }

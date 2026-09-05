@@ -77,69 +77,93 @@ void CompareLeftSide::ProcessODBC(const std::wstring sql)
 begin
   XQuery := TADOQuery.Create(nil);
 
-  try
-    XQuery.Connection:=XODBC;
-    XQuery.SQL.Add(sql);
-    XQuery.Open;
+	try
+		XQuery.Connection:=XODBC;
+		XQuery.SQL.Add(sql);
+		XQuery.Open;
 
-    while not XQuery.eof do begin
-      if option2 then
-        grid.Cells[FHschFilename, grid.RowCount - 1] := XQuery.FieldByName('FilePath').AsString + XQuery.FieldByname('FileName').AsString
-      else
-        grid.Cells[FHschFilename, grid.RowCount - 1] := XQuery.FieldByName('FileName').AsString;
+		while not XQuery.eof)
+		{
+			if option2)
+			{
+				grid.Cells[FHschFilename, grid.RowCount - 1] := XQuery.FieldByName('FilePath').AsString + XQuery.FieldByname('FileName').AsString
+			}
+			else
+			{
+				grid.Cells[FHschFilename, grid.RowCount - 1] := XQuery.FieldByName('FileName').AsString;
+			}
 
-      if XQuery.FieldByname('Directory').AsString = '1' then
-        grid.Cells[FHschSize, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
-      else
-        grid.Cells[FHschSize, grid.RowCount - 1] := TConvert.GetSizeString(option1, StrToInt64(XQuery.FieldByName('FileSize').AsString));
+			if XQuery.FieldByname('Directory').AsString = '1')
+			{
+				grid.Cells[FHschSize, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
+			}
+			else
+			{
+				grid.Cells[FHschSize, grid.RowCount - 1] := TConvert.GetSizeString(option1, StrToInt64(XQuery.FieldByName('FileSize').AsString));
+			}
 
-      if XQuery.FieldByname('Directory').AsString = '1' then
-        grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
-      else
-        grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := TConvert.GetSizeString(option1, StrToInt64(XQuery.FieldByName('FileSize').AsString));
+			if XQuery.FieldByname('Directory').AsString = '1')
+			{
+				grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
+			}
+			else
+			{
+				grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := TConvert.GetSizeString(option1, StrToInt64(XQuery.FieldByName('FileSize').AsString));
+			}
 
-      grid.Cells[FHschCreated, grid.RowCount - 1]  := TConvert.StrDateToFString(XQuery.FieldByName('FileDateC').AsString);
-      grid.Cells[FHschAccessed, grid.RowCount - 1] := TConvert.StrDateToFString(XQuery.FieldByName('FileDateA').AsString);
-      grid.Cells[FHschModified, grid.RowCount - 1] := TConvert.StrDateToFString(XQuery.FieldByName('FileDateM').AsString);
-      grid.Cells[FHschOwner, grid.RowCount - 1]    := XQuery.FieldByName('Owner').AsString;
+			grid.Cells[FHschCreated, grid.RowCount - 1]  := TConvert.StrDateToFString(XQuery.FieldByName('FileDateC').AsString);
+			grid.Cells[FHschAccessed, grid.RowCount - 1] := TConvert.StrDateToFString(XQuery.FieldByName('FileDateA').AsString);
+			grid.Cells[FHschModified, grid.RowCount - 1] := TConvert.StrDateToFString(XQuery.FieldByName('FileDateM').AsString);
+			grid.Cells[FHschOwner, grid.RowCount - 1]    := XQuery.FieldByName('Owner').AsString;
 
-      status := '------';
+			status := '------';
 
-      if XQuery.FieldByname('Directory').AsInteger = 1 then status[1] := 'D';
-      if XQuery.FieldByname('Readonly').AsInteger  = 1 then status[2] := 'R';
-      if XQuery.FieldByname('Hidden').AsInteger    = 1 then status[3] := 'H';
-      if XQuery.FieldByname('System').AsInteger    = 1 then status[4] := 'S';
-      if XQuery.FieldByname('Archive').AsInteger   = 1 then status[5] := 'A';
-      if XQuery.FieldByname('Temp').AsInteger      = 1 then status[6] := 'T';
+			if XQuery.FieldByname('Directory').AsInteger = 1 then status[1] := 'D';
+			if XQuery.FieldByname('Readonly').AsInteger  = 1 then status[2] := 'R';
+			if XQuery.FieldByname('Hidden').AsInteger    = 1 then status[3] := 'H';
+			if XQuery.FieldByname('System').AsInteger    = 1 then status[4] := 'S';
+			if XQuery.FieldByname('Archive').AsInteger   = 1 then status[5] := 'A';
+			if XQuery.FieldByname('Temp').AsInteger      = 1 then status[6] := 'T';
 
-      grid.Cells[FHschStatus, grid.RowCount - 1]   := status;
+			grid.Cells[FHschStatus, grid.RowCount - 1]   := status;
 
-      grid.Cells[FHschCategory, grid.RowCount - 1] := XQuery.FieldByname('Category').AsString;
+			grid.Cells[FHschCategory, grid.RowCount - 1] := XQuery.FieldByname('Category').AsString;
 
-      if XQuery.FieldByName('Directory').AsInteger = 1 then
-        grid.Cells[FHschSortSize,       grid.RowCount - 1] := '-1'
-      else
-        grid.Cells[FHschSortSize,       grid.RowCount - 1] := XQuery.FieldByname('FileSize').AsString;
+			if XQuery.FieldByName('Directory').AsInteger = 1)
+			{
+				grid.Cells[FHschSortSize,       grid.RowCount - 1] := '-1'
+			}
+			else
+			{
+				grid.Cells[FHschSortSize,       grid.RowCount - 1] := XQuery.FieldByname('FileSize').AsString;
+			}
 
-      grid.Cells[FHschSortSizeOnDisk, grid.RowCount - 1] := XQuery.FieldByname('FileSizeDisk').AsString;
-      grid.Cells[FHschSortCreated,    grid.RowCount - 1] := XQuery.FieldByname('FileDateC').AsString;
-      grid.Cells[FHschSortAccessed,   grid.RowCount - 1] := XQuery.FieldByname('FileDateA').AsString;
-      grid.Cells[FHschSortModified,   grid.RowCount - 1] := XQuery.FieldByname('FileDateM').AsString;
+			grid.Cells[FHschSortSizeOnDisk, grid.RowCount - 1] := XQuery.FieldByname('FileSizeDisk').AsString;
+			grid.Cells[FHschSortCreated,    grid.RowCount - 1] := XQuery.FieldByname('FileDateC').AsString;
+			grid.Cells[FHschSortAccessed,   grid.RowCount - 1] := XQuery.FieldByname('FileDateA').AsString;
+			grid.Cells[FHschSortModified,   grid.RowCount - 1] := XQuery.FieldByname('FileDateM').AsString;
 
-      grid.RowCount := grid.RowCount + 1;
+			grid.RowCount := grid.RowCount + 1;
 
-      inc(CompareData[XLeftSide].Data[XFileSize], StrToInt64(XQuery.FieldByName('FileSize').AsString));
+			inc(CompareData[XLeftSide].Data[XFileSize], StrToInt64(XQuery.FieldByName('FileSize').AsString));
 
-      if XQuery.FieldByname('Directory').AsInteger = 1 then // is folder
-        inc(CompareData[XLeftSide].Data[XFolderCount])
-      else
-        inc(CompareData[XLeftSide].Data[XFileCount]);
+			if XQuery.FieldByname('Directory').AsInteger = 1) // is folder
+			{
+				inc(CompareData[XLeftSide].Data[XFolderCount])
+			}
+			else
+			{
+				inc(CompareData[XLeftSide].Data[XFileCount]);
+			}
 
-      XQuery.Next;
-    end;
-  finally
-    XQuery.Free;
-  end;*/
+			XQuery.Next;
+		}
+	}
+	catch(...)
+	{
+	}
+
+	XQuery.Free;*/
 }
 
 
@@ -151,83 +175,107 @@ void CompareLeftSide::ProcessSqlite(const std::wstring sql)
   status : string;
 
 begin
-  lSQliteConnection := TSQLConnection.Create(Nil);
+	lSQliteConnection := TSQLConnection.Create(Nil);
 
-  lSQliteConnection.DriverName  := 'Sqlite';
-  lSQliteConnection.LoginPrompt := False;
-  lSQliteConnection.Params.Add('Database=' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
+	lSQliteConnection.DriverName  := 'Sqlite';
+	lSQliteConnection.LoginPrompt := False;
+	lSQliteConnection.Params.Add('Database=' + GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
 
-  try
-    lSQliteConnection.Connected := True;
+	try
+		lSQliteConnection.Connected := True;
 
-    lSQliteConnection.Execute(aSQL, nil, lResults);
+		lSQliteConnection.Execute(aSQL, nil, lResults);
 
-    if not lResults.IsEmpty then begin
-      lResults.First;
+		if not lResults.IsEmpty then begin
+			lResults.First;
 
-      while not lResults.Eof do begin
-        if option2 then
-          grid.Cells[FHschFilename, grid.RowCount - 1] := lResults.Fields[fFilePath].AsString + lResults.Fields[fFileName].AsString
-        else
-          grid.Cells[FHschFilename, grid.RowCount - 1] := lResults.Fields[fFileName].AsString;
+			while not lResults.Eof)
+			{
+				if option2)
+				{
+					grid.Cells[FHschFilename, grid.RowCount - 1] := lResults.Fields[fFilePath].AsString + lResults.Fields[fFileName].AsString
+				}
+				else
+				{
+					grid.Cells[FHschFilename, grid.RowCount - 1] := lResults.Fields[fFileName].AsString;
+				}
 
-        if lResults.Fields[fDirectory].AsString = '1' then
-          grid.Cells[FHschSize, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
-        else
-          grid.Cells[FHschSize, grid.RowCount - 1] := TConvert.GetSizeString(option1, lResults.Fields[fFileSize].AsLargeInt);
+				if lResults.Fields[fDirectory].AsString = '1')
+				{
+					grid.Cells[FHschSize, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
+				}
+				else
+				{
+					grid.Cells[FHschSize, grid.RowCount - 1] := TConvert.GetSizeString(option1, lResults.Fields[fFileSize].AsLargeInt);
+				}
 
-        if lResults.Fields[fDirectory].AsString = '1' then
-          grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
-        else
-          grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := TConvert.GetSizeString(option1, lResults.Fields[fFileSizeDisk].AsLargeInt);
+				if lResults.Fields[fDirectory].AsString = '1')
+				{
+					grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := ' ' + UpperCase(XText[rsFolder])
+				}
+				else
+				{
+					grid.Cells[FHschSizeOnDisk, grid.RowCount - 1] := TConvert.GetSizeString(option1, lResults.Fields[fFileSizeDisk].AsLargeInt);
+				}
 
-        grid.Cells[FHschCreated, grid.RowCount - 1]  := TConvert.StrDateToFString(lResults.Fields[fFileDateC].AsString);
-        grid.Cells[FHschAccessed, grid.RowCount - 1] := TConvert.StrDateToFString(lResults.Fields[fFileDateA].AsString);
-        grid.Cells[FHschModified, grid.RowCount - 1] := TConvert.StrDateToFString(lResults.Fields[fFileDateM].AsString);
-        grid.Cells[FHschOwner, grid.RowCount - 1]    := lResults.Fields[fOwner].AsString;
+				grid.Cells[FHschCreated, grid.RowCount - 1]  := TConvert.StrDateToFString(lResults.Fields[fFileDateC].AsString);
+				grid.Cells[FHschAccessed, grid.RowCount - 1] := TConvert.StrDateToFString(lResults.Fields[fFileDateA].AsString);
+				grid.Cells[FHschModified, grid.RowCount - 1] := TConvert.StrDateToFString(lResults.Fields[fFileDateM].AsString);
+				grid.Cells[FHschOwner, grid.RowCount - 1]    := lResults.Fields[fOwner].AsString;
 
-        status := '------';
+				status := '------';
 
-        if lResults.Fields[fDirectory].AsString = '1' then status[1] := 'D';
-        if lResults.Fields[fReadonly].AsString = '1'  then status[2] := 'R';
-        if lResults.Fields[fHidden].AsString = '1'    then status[3] := 'H';
-        if lResults.Fields[fSystem].AsString = '1'    then status[4] := 'S';
-        if lResults.Fields[fArchive].AsString = '1'   then status[5] := 'A';
-        if lResults.Fields[fTemp].AsString = '1'      then status[6] := 'T';
+				if lResults.Fields[fDirectory].AsString = '1' then status[1] := 'D';
+				if lResults.Fields[fReadonly].AsString = '1'  then status[2] := 'R';
+				if lResults.Fields[fHidden].AsString = '1'    then status[3] := 'H';
+				if lResults.Fields[fSystem].AsString = '1'    then status[4] := 'S';
+				if lResults.Fields[fArchive].AsString = '1'   then status[5] := 'A';
+				if lResults.Fields[fTemp].AsString = '1'      then status[6] := 'T';
 
-		grid.Cells[FHschStatus, grid.RowCount - 1]   := status;
+				grid.Cells[FHschStatus, grid.RowCount - 1]   := status;
 
-        grid.Cells[FHschCategory, grid.RowCount - 1] := lResults.Fields[fCategory].AsString;
+				grid.Cells[FHschCategory, grid.RowCount - 1] := lResults.Fields[fCategory].AsString;
 
-        if lResults.Fields[fDirectory].AsString = '1' then
-          grid.Cells[FHschSortSize,       grid.RowCount - 1] := '-1'
-        else
-          grid.Cells[FHschSortSize,       grid.RowCount - 1] := lResults.Fields[fFileSize].AsString;
+				if lResults.Fields[fDirectory].AsString = '1')
+				{
+					grid.Cells[FHschSortSize,       grid.RowCount - 1] := '-1'
+				}
+				else
+				{
+					grid.Cells[FHschSortSize,       grid.RowCount - 1] := lResults.Fields[fFileSize].AsString;
+				}
 
-        grid.Cells[FHschSortSizeOnDisk, grid.RowCount - 1] := lResults.Fields[fFileSizeDisk].AsString;
-        grid.Cells[FHschSortCreated,    grid.RowCount - 1] := lResults.Fields[fFileDateC].AsString;
-        grid.Cells[FHschSortAccessed,   grid.RowCount - 1] := lResults.Fields[fFileDateA].AsString;
-        grid.Cells[FHschSortModified,   grid.RowCount - 1] := lResults.Fields[fFileDateM].AsString;
+				grid.Cells[FHschSortSizeOnDisk, grid.RowCount - 1] := lResults.Fields[fFileSizeDisk].AsString;
+				grid.Cells[FHschSortCreated,    grid.RowCount - 1] := lResults.Fields[fFileDateC].AsString;
+				grid.Cells[FHschSortAccessed,   grid.RowCount - 1] := lResults.Fields[fFileDateA].AsString;
+				grid.Cells[FHschSortModified,   grid.RowCount - 1] := lResults.Fields[fFileDateM].AsString;
 
-        grid.RowCount := grid.RowCount + 1;
+				grid.RowCount := grid.RowCount + 1;
 
-        inc(CompareData[XLeftSide].Data[XFileSize], lResults.Fields[fFileSize].AsLargeInt);
+				inc(CompareData[XLeftSide].Data[XFileSize], lResults.Fields[fFileSize].AsLargeInt);
 
-        if lResults.Fields[fDirectory].AsString = '1' then // is folder
-          inc(CompareData[XLeftSide].Data[XFolderCount])
-        else
-          inc(CompareData[XLeftSide].Data[XFileCount]);
+				if lResults.Fields[fDirectory].AsString = '1') // is folder
+				{
+					inc(CompareData[XLeftSide].Data[XFolderCount])
+				}
+				else
+				{
+					inc(CompareData[XLeftSide].Data[XFileCount]);
+				}
 
-        lResults.Next;
-      end;
+				lResults.Next;
+			}
 
-      grid.RowCount := grid.RowCount - 1;
-    end;
+			grid.RowCount := grid.RowCount - 1;
+		}
+	}
+	catch(...)
+	{
+		lSQliteConnection.Connected := False;
 
-  finally
-    lSQliteConnection.Connected := False;
-    FreeAndNil(lSQliteConnection);
-  end;*/
+	}
+
+	FreeAndNil(lSQliteConnection);*/
 }
 
 
@@ -239,15 +287,18 @@ begin
 bool CompareLeftSide::InitODBC(const std::wstring connection_string)
 {
 /*  try
-	XODBC := TADOConnection.Create(nil);
-	XODBC.LoginPrompt      := False;
-	XODBC.ConnectionString := connectionstring;
-	XODBC.Connected        := True;
-  except
-	Result := False;
-  end;*/
+	{
+		XODBC := TADOConnection.Create(nil);
+		XODBC.LoginPrompt      := False;
+		XODBC.ConnectionString := connectionstring;
+		XODBC.Connected        := True;
+	}
+	catch(...)
+	{
+		return false;
+	}*/
 
-  return true;
+	return true;
 }
 
 
