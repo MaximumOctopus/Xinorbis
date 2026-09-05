@@ -549,6 +549,14 @@
             <VirtualFolder>{1610ADCA-2B39-4271-B278-368AB49CB14E}</VirtualFolder>
             <BuildOrder>212</BuildOrder>
         </None>
+        <CppCompile Include="Code\Database\XDatabase.cpp">
+            <VirtualFolder>{1610ADCA-2B39-4271-B278-368AB49CB14E}</VirtualFolder>
+            <BuildOrder>240</BuildOrder>
+        </CppCompile>
+        <None Include="Code\Database\XDatabase.h">
+            <VirtualFolder>{1610ADCA-2B39-4271-B278-368AB49CB14E}</VirtualFolder>
+            <BuildOrder>241</BuildOrder>
+        </None>
         <CppCompile Include="Code\Forms\Database\XFormDatabaseInfo.cpp">
             <VirtualFolder>{360DE7F8-646B-4D68-BA6E-CBC28A73D17D}</VirtualFolder>
             <Form>Form19</Form>
@@ -607,14 +615,14 @@
         </CppCompile>
         <CppCompile Include="Code\Forms\Splash\XFormProgress.cpp">
             <VirtualFolder>{450357A9-DF0B-4538-9F8C-B71666B6F10B}</VirtualFolder>
-            <Form>Form18</Form>
+            <Form>FormProgress</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Splash\XFormProgress.h</DependentOn>
             <BuildOrder>107</BuildOrder>
         </CppCompile>
         <CppCompile Include="Code\Forms\Splash\XFormSplash.cpp">
             <VirtualFolder>{450357A9-DF0B-4538-9F8C-B71666B6F10B}</VirtualFolder>
-            <Form>FormProgress</Form>
+            <Form>FormSplash</Form>
             <FormType>dfm</FormType>
             <DependentOn>Code\Forms\Splash\XFormSplash.h</DependentOn>
             <BuildOrder>100</BuildOrder>
@@ -1316,55 +1324,55 @@
         </PCHCompile>
         <FormResources Include="Code\Frames\XFrameWebReports.dfm"/>
         <FormResources Include="Code\Frames\XFrameSummary.dfm"/>
-        <FormResources Include="Code\Frames\XFrameMap.dfm"/>
+        <FormResources Include="Code\Frames\XFrameStructure.dfm"/>
         <FormResources Include="Code\Frames\XFrameFolderHistory.dfm"/>
         <FormResources Include="Code\Frames\XFrameExploder.dfm"/>
-        <FormResources Include="Code\Frames\XFrameProperties.dfm"/>
-        <FormResources Include="Code\Frames\XFrameStructure.dfm"/>
+        <FormResources Include="Code\Frames\XFrameDuplicates.dfm"/>
+        <FormResources Include="Code\Frames\XFrameMap.dfm"/>
         <FormResources Include="Code\Frames\XFrameSelect.dfm"/>
         <FormResources Include="Code\Frames\XFrameSearch.dfm"/>
+        <FormResources Include="Code\Frames\XFrameProperties.dfm"/>
         <FormResources Include="Code\Forms\XFormUserWizard.dfm"/>
         <FormResources Include="Code\Forms\XFormShowMD5.dfm"/>
-        <FormResources Include="Code\Forms\XFormReference.dfm"/>
+        <FormResources Include="Code\Forms\XFormSearchWizard.dfm"/>
         <FormResources Include="Code\Forms\XFormQuickMenuBuilder.dfm"/>
         <FormResources Include="Code\Forms\XFormMoreDetail.dfm"/>
-        <FormResources Include="Code\Forms\XFormReportOptions.dfm"/>
-        <FormResources Include="Code\Forms\XFormSearchWizard.dfm"/>
+        <FormResources Include="Code\Forms\XFormGetSizeBetween.dfm"/>
+        <FormResources Include="Code\Forms\XFormReference.dfm"/>
         <FormResources Include="Code\Forms\XFormSearchSyntax.dfm"/>
         <FormResources Include="Code\Forms\XFormReportSave.dfm"/>
-        <FormResources Include="Code\Frames\XFrameDuplicates.dfm"/>
+        <FormResources Include="Code\Forms\XFormReportOptions.dfm"/>
         <FormResources Include="main.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormDebug.dfm"/>
         <FormResources Include="Code\Forms\System\XFormCheckVersion.dfm"/>
         <FormResources Include="Code\Forms\Splash\XFormSplash.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormHelp.dfm"/>
-        <FormResources Include="Code\Forms\System\XFormSettings.dfm"/>
+        <FormResources Include="Code\Forms\Splash\XFormProgress.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormDebug.dfm"/>
         <FormResources Include="Code\Forms\System\XFormSelectLanguage.dfm"/>
         <FormResources Include="Code\Forms\System\XFormLog.dfm"/>
-        <FormResources Include="Code\Forms\Splash\XFormProgress.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditCSVReport.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormHelp.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditXmlReport.dfm"/>
         <FormResources Include="Code\Forms\Data\XFormImportFromCSV.dfm"/>
         <FormResources Include="Code\Forms\Database\XFormDBSelectedFolder.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditHTMLReport.dfm"/>
-        <FormResources Include="Code\Forms\Editing\XFormEditXmlReport.dfm"/>
+        <FormResources Include="Code\Forms\Database\XFormDatabaseInfo.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditCSVReport.dfm"/>
         <FormResources Include="Code\Forms\Editing\XFormEditTreeReport.dfm"/>
         <FormResources Include="Code\Forms\Editing\XFormEditTextReport.dfm"/>
-        <FormResources Include="Code\Forms\XFormFileSpread.dfm"/>
+        <FormResources Include="Code\Forms\Editing\XFormEditHTMLReport.dfm"/>
         <FormResources Include="Code\Forms\XFormFileAssociations.dfm"/>
         <FormResources Include="Code\Forms\XFormFileAges.dfm"/>
-        <FormResources Include="Code\Forms\XFormGetCopyMove.dfm"/>
-        <FormResources Include="Code\Forms\XFormGetSizeBetween.dfm"/>
+        <FormResources Include="Code\Forms\XFormExcludeFolders.dfm"/>
+        <FormResources Include="Code\Forms\XFormFileSpread.dfm"/>
         <FormResources Include="Code\Forms\XFormGetDateBetween.dfm"/>
         <FormResources Include="Code\Forms\XFormGetDate.dfm"/>
-        <FormResources Include="Code\Forms\XFormExcludeFolders.dfm"/>
-        <FormResources Include="Code\Forms\XFormCalendar.dfm"/>
+        <FormResources Include="Code\Forms\XFormGetCopyMove.dfm"/>
+        <FormResources Include="Code\Forms\XFormExcludeFiles.dfm"/>
         <FormResources Include="Code\Forms\XFormAbout.dfm"/>
         <FormResources Include="Code\Forms\System\XFormXinorbisDialog.dfm"/>
-        <FormResources Include="Code\Forms\XFormCategoryColours.dfm"/>
-        <FormResources Include="Code\Forms\XFormExcludeFiles.dfm"/>
+        <FormResources Include="Code\Forms\System\XFormSettings.dfm"/>
+        <FormResources Include="Code\Forms\XFormCalendar.dfm"/>
         <FormResources Include="Code\Forms\XFormCombine.dfm"/>
         <FormResources Include="Code\Forms\XFormChartOptions.dfm"/>
-        <FormResources Include="Code\Forms\Database\XFormDatabaseInfo.dfm"/>
+        <FormResources Include="Code\Forms\XFormCategoryColours.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

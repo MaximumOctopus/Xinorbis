@@ -2802,13 +2802,7 @@ begin
   Init;
   TGLobal.InitialiseSortCode;
 
-  GXGuiUtil := TGuiUtil.Create(GSystemGlobal.ExePath + 'data\system\images\');
-
   Randomize;
-  CreateReportObjects; // needs to be before frames!
-
-  CreateFrames;
-  ConfigureObjects;
 
   // ===========================================================================
 
@@ -2834,12 +2828,6 @@ begin
 
   // ===========================================================================
 
-  FrameSelect.BuildScanHistoryTable(0);
-
-
-  if not FileExtensionsObject.LoadFileExtensionLists(XSettings.CustomSettings.SettingsSaveLocation) then
-	GLog->Add(L"Failed to load file extension data!");
-
   if ParamStr(ParamCount) = '/languagedebug' then
 	LoadLanguageDetails(XSettings.CurrentLanguage, True)
   else
@@ -2853,22 +2841,7 @@ begin
 
   // ---------------------------------------------------------------------------
 
-  DoPreferenceChanges;
-  TXWindows.GetNetworkDrives;
-
-  TXWindows.SetupFormatSettings;
-
-  FormDisplay.PanelInFront := pMainPanelIndex;
-  FormDisplay.Source       := -1;
-
-  FrameSelect.BringToFront;
-
   TryBuildFolderHistoryAvailable;
-
-  // ===========================================================================
-
-  HandleResizing(pScanSelectionPanelIndex);
-  FrameSelect.BringToFront;
 
   // ===========================================================================
 
@@ -2902,63 +2875,4 @@ begin
 
 
   OnTutorialBarChange('intro');
-end;
-
-procedure TfrmMain.CreateReportsFrame(aDataIndex : integer);
-  GReportText.SetGrids(aDataIndex, FrameReports[aDataIndex].sgNullFiles,
-								   FrameReports[aDataIndex].sgNullFolders,
-								   FrameReports[aDataIndex].sgTop50Big,
-								   FrameReports[aDataIndex].sgTop50Small,
-								   FrameReports[aDataIndex].sgTop101BigDate,
-								   FrameReports[aDataIndex].sgTop101SmallDate);
-
-  GReportXML.SetGrids(aDataIndex,  FrameReports[aDataIndex].tvFileDates,
-								   FrameReports[aDataIndex].sgNullFiles,  FrameReports[aDataIndex].sgNullFolders,    FrameReports[aDataIndex].sgTop50Big,
-								   FrameReports[aDataIndex].sgTop50Small, FrameReports[aDataIndex].sgTop101BigDate,  FrameReports[aDataIndex].sgTop101SmallDate,
-								   FrameReports[aDataIndex].cbFileDates,  FrameReports[aDataIndex].cbFileDatesUsers, FrameReports[aDataIndex].cbTop101Dates);
-
-
-  GReportHTML.SetGrids(aDataIndex, FrameReports[aDataIndex].tvFileDates,
-								   FrameReports[aDataIndex].sgNullFiles,  FrameReports[aDataIndex].sgNullFolders,    FrameReports[aDataIndex].sgTop50Big,
-								   FrameReports[aDataIndex].sgTop50Small, FrameReports[aDataIndex].sgTop101BigDate,  FrameReports[aDataIndex].sgTop101SmallDate,
-								   FrameReports[aDataIndex].cbFileDates,  FrameReports[aDataIndex].cbTop101Dates);
-
-
-  GReportSummary.SetGrids(aDataIndex, FrameReports[aDataIndex].sgNullFiles,
-									  FrameReports[aDataIndex].sgNullFolders,
-									  FrameReports[aDataIndex].sgDirList,
-									  FrameReports[aDataIndex].sgTop50Big,
-									  FrameReports[aDataIndex].sgUsers);
-
-  UpdateGUICustomNames(aDataIndex);
-end;
-
-
-procedure TfrmMain.CreateSearchFrame;
-  GReportText.SetGrids(dataSearch, FrameSearch.ReportFrame.sgNullFiles,
-								   FrameSearch.ReportFrame.sgNullFolders,
-								   FrameSearch.ReportFrame.sgTop50Big,
-								   FrameSearch.ReportFrame.sgTop50Small,
-								   FrameSearch.ReportFrame.sgTop101BigDate,
-								   FrameSearch.ReportFrame.sgTop101SmallDate);
-
-  GReportXML.SetGrids(dataSearch,  FrameSearch.ReportFrame.tvFileDates,
-								   FrameSearch.ReportFrame.sgNullFiles,  FrameSearch.ReportFrame.sgNullFolders,    FrameSearch.ReportFrame.sgTop50Big,
-								   FrameSearch.ReportFrame.sgTop50Small, FrameSearch.ReportFrame.sgTop101BigDate,  FrameSearch.ReportFrame.sgTop101SmallDate,
-								   FrameSearch.ReportFrame.cbFileDates,  FrameSearch.ReportFrame.cbFileDatesUsers, FrameSearch.ReportFrame.cbTop101Dates);
-
-
-  GReportHTML.SetGrids(dataSearch, FrameSearch.ReportFrame.tvFileDates,
-								   FrameSearch.ReportFrame.sgNullFiles,  FrameSearch.ReportFrame.sgNullFolders,    FrameSearch.ReportFrame.sgTop50Big,
-								   FrameSearch.ReportFrame.sgTop50Small, FrameSearch.ReportFrame.sgTop101BigDate,  FrameSearch.ReportFrame.sgTop101SmallDate,
-								   FrameSearch.ReportFrame.cbFileDates,  FrameSearch.ReportFrame.cbTop101Dates);
-
-
-  GReportSummary.SetGrids(dataSearch, FrameSearch.ReportFrame.sgNullFiles,
-									  FrameSearch.ReportFrame.sgNullFolders,
-									  FrameSearch.ReportFrame.sgDirList,
-									  FrameSearch.ReportFrame.sgTop50Big,
-									  FrameSearch.ReportFrame.sgUsers);
-end;
-
-5569 :: 4438 */
+end; */
