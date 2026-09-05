@@ -140,13 +140,12 @@ struct OptimisationSettings
 	int ProgressUpdate = 0;
 
 	// calculated optimisation settings based on user parameters
-	bool UseFastAnalysis = true;
+	bool UseFastAnalysis = false;
 };
 
 
 struct NavigationOptions
 {
-	int BarColours[6];
 	std::wstring Display[2] = { L"11111111111111111111", L"11111111111111111111" };
 };
 
@@ -237,6 +236,8 @@ class SettingsHandler
 
 	Ini* __iniFile;
 
+	std::wstring ExePath = L"";
+
 	void SetupFormat();
 
     bool ClearFormDetails(int);
@@ -286,7 +287,7 @@ public:
 
 	bool SaveDefaults();
 
-	SettingsHandler();
+	SettingsHandler(const std::wstring);
 
     bool Save(int, int, int, int, const std::wstring);
 

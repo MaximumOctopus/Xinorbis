@@ -21,17 +21,16 @@
 #include "Ini.h"
 #include "Registry.h"
 #include "SettingsHandler.h"
-#include "SystemGlobal.h"
 #include "WindowsUtility.h"
 
 SettingsHandler *GSettingsHandler;
 
-extern SystemGlobal* GSystemGlobal;
 
-
-SettingsHandler::SettingsHandler()
+SettingsHandler::SettingsHandler(const std::wstring exe_path)
 {
-	Custom.SettingsSaveLocation  = SettingsSource::Registry;
+    ExePath = exe_path;
+
+	Custom.SettingsSaveLocation  = SettingsSource::ConfigIni;
 
 	//if (LoadCustomSettings())
    //	{
@@ -341,8 +340,8 @@ void SettingsHandler::ProcessProcessingSetting(ParameterOption option)
 bool SettingsHandler::OpenSettings(bool read_only)
 {
     if (Custom.SettingsSaveLocation == SettingsSource::ConfigIni)
-    {
-		__iniFile = new Ini(GSystemGlobal->ExePath + L"custom.ini");
+	{
+		__iniFile = new Ini(ExePath + L"custom.ini");
 
 		if (__iniFile->Loaded)
 		{
@@ -391,9 +390,9 @@ bool SettingsHandler::CloseSettings()
 
 bool SettingsHandler::LoadCustomSettings()
 {
-	if (WindowsUtility::FileExists(GSystemGlobal->ExePath + L"custom.ini"))
+	if (WindowsUtility::FileExists(ExePath + L"custom.ini"))
 	{
-		std::unique_ptr<Ini> IniFile = std::make_unique<Ini>(GSystemGlobal->ExePath + L"custom.ini");
+		std::unique_ptr<Ini> IniFile = std::make_unique<Ini>(ExePath + L"custom.ini");
 
 		if (IniFile->Loaded)
 		{
@@ -887,7 +886,7 @@ bool SettingsHandler::Save(int X, int Y, int W, int H, const std::wstring curren
 
 		for (int t = 0; t < 6; t++)
 		{
-			WriteInteger(L"Prefs", L"NavColour" + std::to_wstring(t), Navigation.BarColours[t]);
+			WriteInteger(L"Prefs", L"NavColour" + std::to_wstring(t), Appearance.BarColours[t]);
 		}
 
 		// ===========================================================================
@@ -920,7 +919,11 @@ bool SettingsHandler::Save(int X, int Y, int W, int H, const std::wstring curren
 		// ===========================================================================
 
 		CloseSettings();
+
+		return true;
 	}
+
+	return false;
 }
 
 
@@ -1244,11 +1247,11 @@ bool SettingsHandler::ClearFormDetails(int FormId)
 {
 	if (Custom.SettingsSaveLocation == SettingsSource::ConfigIni)
 	{
-		Ini *ini = new Ini(GSystemGlobal->ExePath + L"\\custom.ini");
+		Ini *ini = new Ini(ExePath + L"\\custom.ini");
 
 		if (ini->DeleteSection(L"Form_" + std::to_wstring(FormId)))
 		{
-			ini->SaveFile(GSystemGlobal->ExePath + L"\\custom.ini");
+			ini->SaveFile(ExePath + L"\\custom.ini");
 		}
 
 		delete ini;

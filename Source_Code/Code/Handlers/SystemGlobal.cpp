@@ -66,7 +66,7 @@ void SystemGlobal::Init()
 void SystemGlobal::CreateObjects()
 {
 	// load settings first!
-	GSettingsHandler = new SettingsHandler();
+	GSettingsHandler = new SettingsHandler(ExePath);
 
 	GImageHandler = new ImageHandler(ExePath);
 
@@ -106,9 +106,9 @@ bool SystemGlobal::InstallationCheck(const std::wstring cname)
 			{
 				return false;
 			}
-
-			return true;
 		}
+
+		return true;
 	};
 
   	CreateIfMissing(ExePath + L"Logs");
@@ -155,4 +155,6 @@ bool SystemGlobal::InstallationCheck(const std::wstring cname)
 	CreateIfMissing(AppDataPath + L"Reports\\" + cname + L"\\XML_Compare\\quick");
 
 	CreateIfMissing(AppDataPath + L"Saves\\Custom Reports");
+
+	return true;
 }
