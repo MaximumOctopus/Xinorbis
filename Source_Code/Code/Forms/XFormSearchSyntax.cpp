@@ -29,7 +29,7 @@ __fastcall TFormSearchSyntax::TFormSearchSyntax(TComponent* Owner)
 
 void OpenSearchSyntax()
 {
-	TFormSearchSyntax *FormSearchSyntax = new TFormSearchSyntax(Application);
+	FormSearchSyntax = new TFormSearchSyntax(Application);
 
 	FormSearchSyntax->Show();
 }

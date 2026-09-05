@@ -39,7 +39,7 @@ __fastcall TFormFileAssociations::TFormFileAssociations(TComponent* Owner)
 
 bool OpenFileAssociations()
 {
-	TFormFileAssociations *FormFileAssociations = new TFormFileAssociations(Application);
+	FormFileAssociations = new TFormFileAssociations(Application);
 
 	bool user_save = false;
 

@@ -24,7 +24,7 @@ __fastcall TFormGetCopyMove::TFormGetCopyMove(TComponent* Owner)
 
 std::wstring GetCopyMoveFolder(const std::wstring title)
 {
-	TFormGetCopyMove *FormGetCopyMove = new TFormGetCopyMove(Application);
+	FormGetCopyMove = new TFormGetCopyMove(Application);
 
     FormGetCopyMove->Init(title);
 

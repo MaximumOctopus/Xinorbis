@@ -573,7 +573,6 @@ object Form11: TForm11
       Height = 24
       Align = alTop
       TabOrder = 7
-      ExplicitTop = 279
       object cbUSelect: TComboBox
         Left = 24
         Top = 32

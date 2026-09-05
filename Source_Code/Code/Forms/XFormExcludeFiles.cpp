@@ -25,7 +25,7 @@ __fastcall TForm14::TForm14(TComponent* Owner)
 
 void OpenExcludedFiles(std::vector<std::wstring> &files)
 {
-	TForm14 *Form14 = new TForm14(Application);
+	Form14 = new TForm14(Application);
 
 	if (files.size() != 0)
 	{

@@ -17,9 +17,11 @@ __published:	// IDE-managed Components
 	TBitBtn *BitBtn1;
 	TBitBtn *BitBtn2;
 	void __fastcall FormCreate(TObject *Sender);
-private:	// User declarations
-public:		// User declarations
+private:
+public:
 	__fastcall TForm7(TComponent* Owner);
+
+    TDateTime GetSelection();
 };
 
 TDateTime GetDate();

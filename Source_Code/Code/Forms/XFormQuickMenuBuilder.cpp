@@ -26,7 +26,7 @@ __fastcall TForm9::TForm9(TComponent* Owner)
 
 void OpenQuickMenuBuilder()
 {
-	TForm9 *Form9 = new TForm9(Application);
+	Form9 = new TForm9(Application);
 
 	Form9->ShowModal();
 

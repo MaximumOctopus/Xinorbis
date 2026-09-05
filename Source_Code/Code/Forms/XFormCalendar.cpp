@@ -130,11 +130,11 @@ void __fastcall TForm21::cbTimesClick(TObject *Sender)
 {
 	if (cbTimes->ItemIndex >= 0)
 	{
-//		std::wstring s = cbTimes->Items->Strings[cbTimes->ItemIndex].c_str();
-//
-//		SelectedDateTime  := SelectedDate + s.substr(0, 2) + s.substr(3, 2) + s.substr(6, 2);
+		std::wstring s = cbTimes->Items->Strings[cbTimes->ItemIndex].c_str();
 
-//	lSelected.Caption := Convert::IntDateToString(StrToInt(SelectedDate)) + ' ' + s;
+		SelectedDateTime = SelectedDate + s.substr(0, 2) + s.substr(3, 2) + s.substr(6, 2);
+
+		lSelected->Caption = (Convert::IntDateToString(stoi(SelectedDate)) + L" " + s).c_str();
 
 		bUse->Enabled = true;
 	}
@@ -142,51 +142,58 @@ void __fastcall TForm21::cbTimesClick(TObject *Sender)
 
 
 void __fastcall TForm21::sgCalendarSelectCell(TObject *Sender, System::LongInt ACol,
-          System::LongInt ARow, bool &CanSelect)
-{                /*
-  temp : string;
-  t : integer;
+		  System::LongInt ARow, bool &CanSelect)
+{
+	SelectedDate = L"";
 
-begin
-  SelectedDate      := '';
+	lSelected->Caption = L"";
+	bUse->Enabled      = false;
+	cbTimes->Clear();
 
-  lSelected.Caption := '';
-  bUse.Enabled      := False;
-  cbTimes.Clear;
+	if (ARow > 1 && ACol > 1)
+	{
+		if (sgCalendar->Cells[ACol][ARow] != L"")
+		{
+			std::wstring SelectedCell = sgCalendar->Cells[ACol][ARow].c_str();
 
-  if (ARow > 1) and (ACol > 1) then begin
-    if sgCalendar.Cells[ACol, ARow] <> '' then begin
-      SelectedDate := IntToStr(SpinEdit1.Value);
+			SelectedDate = std::to_wstring(seYear->Value);
 
-      if ARow < 10 then
-        SelectedDate := SelectedDate + '0' + IntToStr(ARow)
-      else
-        SelectedDate := SelectedDate + IntToStr(ARow);
+			if (ARow < 10)
+			{
+				SelectedDate = SelectedDate + L"0" + std::to_wstring(ARow);
+			}
+			else
+			{
+				SelectedDate = SelectedDate + std::to_wstring(ARow);
+			}
 
-      if StrToInt(sgCalendar.Cells[ACol, ARow]) < 10 then
-        SelectedDate := SelectedDate + '0' + sgCalendar.Cells[ACol, ARow]
-      else
-        SelectedDate := SelectedDate+sgCalendar.Cells[ACol, ARow];
+			if (stoi(SelectedCell) < 10)
+			{
+				SelectedDate = SelectedDate + L"0" + SelectedCell;
+			}
+			else
+			{
+				SelectedDate = SelectedDate + SelectedCell;
+			}
 
-      temp := TConvert.IntDateToString(StrToInt(SelectedDate));
+			std::wstring temp = Convert::IntDateToString(stoi(SelectedDate));
 
-      for t := 0 to FileHistoryInput.Count - 1 do begin
-        if Pos(temp, FileHistoryInput[t]) <> 0 then begin
-          cbTimes.Items.Add(Copy(FileHistoryInput[t], 12, 8));
-        end;
-      end;
+			for (int t = 0; t < FileHistoryInput.size(); t++)
+			{
+				if (FileHistoryInput[t].find(temp) != std::wstring::npos)
+				{
+					cbTimes->Items->Add(FileHistoryInput[t].substr(11, 8).c_str());
+				}
+			}
 
-      if cbTimes.Count = 1 then begin
-        cbTimes.ItemIndex := 0;
+			if (cbTimes->Count == 1)
+			{
+				cbTimes->ItemIndex = 0;
 
-        cbTimesClick(Nil);
-      end;
-    end
-    else begin
-    end;
-  end
-  else begin
-  end;*/
+				cbTimesClick(NULL);
+			}
+		}
+	}
 }
 
 

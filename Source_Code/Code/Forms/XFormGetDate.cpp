@@ -21,7 +21,9 @@ TDateTime GetDate()
 
 	if (Form7->ShowModal() == mrOk)
 	{
+		delete Form7;
 
+		return Form7->GetSelection();
 	}
 
 	delete Form7;
@@ -33,4 +35,10 @@ TDateTime GetDate()
 void __fastcall TForm7::FormCreate(TObject *Sender)
 {
 	cMain->Date = Now();
+}
+
+
+TDateTime TForm7::GetSelection()
+{
+    return cMain->Date;
 }

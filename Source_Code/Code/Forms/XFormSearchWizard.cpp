@@ -25,7 +25,7 @@ __fastcall TForm11::TForm11(TComponent* Owner)
 
 std::wstring OpenSearchWizard()
 {
-	TForm11 *Form11 = new TForm11(Application);
+	Form11 = new TForm11(Application);
 
 	std::wstring search = L"";
 

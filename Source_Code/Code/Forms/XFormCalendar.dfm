@@ -161,8 +161,6 @@ object Form21: TForm21
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 413
-    ExplicitWidth = 1327
     DesignSize = (
       850
       41)
@@ -236,7 +234,6 @@ object Form21: TForm21
       ModalResult = 1
       NumGlyphs = 2
       TabOrder = 1
-      ExplicitLeft = 1135
     end
     object bCancel: TBitBtn
       Left = 752
@@ -274,7 +271,6 @@ object Form21: TForm21
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       ModalResult = 2
       TabOrder = 2
-      ExplicitLeft = 1229
     end
   end
   object Panel3: TPanel
@@ -288,9 +284,6 @@ object Form21: TForm21
     Color = clWhite
     ParentBackground = False
     TabOrder = 2
-    ExplicitLeft = 105
-    ExplicitWidth = 1222
-    ExplicitHeight = 413
     object lTitle: TLabel
       Left = 10
       Top = 8

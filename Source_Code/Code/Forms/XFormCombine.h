@@ -10,6 +10,9 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ExtCtrls.hpp>
+
+#include <vector>
+
 //---------------------------------------------------------------------------
 class TForm13 : public TForm
 {
@@ -34,10 +37,26 @@ __published:	// IDE-managed Components
 	TEdit *eDirectory;
 	TOpenDialog *odCombine;
 	TSaveDialog *sdCombine;
-private:	// User declarations
-public:		// User declarations
+	void __fastcall sbDrive2AddClick(TObject *Sender);
+	void __fastcall bSaveListClick(TObject *Sender);
+	void __fastcall bLoadListClick(TObject *Sender);
+	void __fastcall eDirectoryKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall SpeedButton4Click(TObject *Sender);
+	void __fastcall sbExploreClick(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall lbCombineClick(TObject *Sender);
+	void __fastcall sbDeleteClick(TObject *Sender);
+private:
+
+	void Init();
+
+public:
 	__fastcall TForm13(TComponent* Owner);
 };
+
+void OpenCombine(std::vector<std::wstring> &);
+
 //---------------------------------------------------------------------------
 extern PACKAGE TForm13 *Form13;
 //---------------------------------------------------------------------------

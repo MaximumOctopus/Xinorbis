@@ -33,7 +33,7 @@ __fastcall TForm8::TForm8(TComponent* Owner)
 
 void OpenReportSettings(int open_at_tab)
 {
-	TForm8 *Form8 = new TForm8(Application);
+	Form8 = new TForm8(Application);
 
 	if (open_at_tab != -1)
 	{

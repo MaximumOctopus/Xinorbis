@@ -26,7 +26,7 @@ __fastcall TFormCategoryColours::TFormCategoryColours(TComponent* Owner)
 
 void OpenCategoryColours()
 {
-	TFormCategoryColours *FormCategoryColours = new TFormCategoryColours(Application);
+	FormCategoryColours = new TFormCategoryColours(Application);
 
 	FormCategoryColours->ShowModal();
 

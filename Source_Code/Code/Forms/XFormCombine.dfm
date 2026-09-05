@@ -10,6 +10,8 @@ object Form13: TForm13
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
+  OnCreate = FormCreate
   DesignSize = (
     709
     442)
@@ -127,6 +129,7 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     NumGlyphs = 2
+    OnClick = sbDrive2AddClick
   end
   object sbDelete: TSpeedButton
     Left = 10
@@ -188,6 +191,7 @@ object Form13: TForm13
       FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
       00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
     NumGlyphs = 2
+    OnClick = sbDeleteClick
   end
   object SpeedButton4: TSpeedButton
     Left = 655
@@ -224,6 +228,7 @@ object Form13: TForm13
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+    OnClick = SpeedButton4Click
   end
   object lFolderList: TLabel
     Left = 8
@@ -302,6 +307,7 @@ object Form13: TForm13
       FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
       00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
     NumGlyphs = 2
+    OnClick = sbExploreClick
   end
   object lbCombine: TListBox
     Left = 8
@@ -311,6 +317,7 @@ object Form13: TForm13
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 15
     TabOrder = 0
+    OnClick = lbCombineClick
   end
   object bCancel: TBitBtn
     Left = 620
@@ -454,6 +461,7 @@ object Form13: TForm13
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00}
     TabOrder = 3
+    OnClick = bLoadListClick
   end
   object bSaveList: TBitBtn
     Left = 10
@@ -516,6 +524,7 @@ object Form13: TForm13
       69696969696B6B6B6D6D6D6B6B6B7373738A8A8AFF00FFFF00FF}
     NumGlyphs = 2
     TabOrder = 4
+    OnClick = bSaveListClick
   end
   object eDirectory: TEdit
     Left = 8
@@ -523,6 +532,7 @@ object Form13: TForm13
     Width = 641
     Height = 23
     TabOrder = 5
+    OnKeyPress = eDirectoryKeyPress
   end
   object odCombine: TOpenDialog
     DefaultExt = 'xcl'
