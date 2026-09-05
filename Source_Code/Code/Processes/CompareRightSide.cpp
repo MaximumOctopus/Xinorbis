@@ -13,122 +13,9 @@
 #include "CompareRightSide.h"
 
 
-/*
+void CompareRightSide::Execute()
 {
-  (c) Paul Alan Freshney 2002-2020
-  (c) Aardvark Digital 2002
-  (c) Maximum Octopus Limted 2020
-
-  www.freshney.org :: paul@freshney.org :: maximumoctopus.com :: xinorbis.com
-
-  Last Modified: January 11th 2020
-}
-
-
-unit X.Thread.CompareRight;
-
-interface
-
-uses
-  StdCtrls, SysUtils, classes, AdvGrid, ADODB, Data.DB, Data.SqlExpr,
-
-  SyncObjs,
-
-  X.Utility, X.Constants, X.LanguageHandler, X.CSizeOfFolder, X.SystemGlobal;
-
-
-type
-  TCompareRightThread = class(TThread)
-  private
-    FCriticalSection : TCriticalSection;
-
-    function  InitODBC(const connectionstring : string): boolean;
-    procedure CloseODBC;
-  public
-    destructor Destroy; override;
-
-    procedure SetData(const s : string; o1 : integer; o2 : boolean; gridx : TAdvStringGrid);
-  protected
-    XODBC    : TADOConnection;
-    SQL      : string;
-    option1  : integer;
-    option2  : boolean;
-    grid     : TAdvStringGrid;
-
-    procedure Execute; override;
-
-    procedure ProcessODBC(aSQL : string);
-    procedure ProcessSqlite(aSQL : string);
-  end;
-
-implementation
-
-
-uses {main,}
-
-     X.Conversions, X.Settings, X.Global;
-
-
-destructor TCompareRightThread.Destroy;
-begin
-  FCriticalSection.Free;
-
-  inherited;
-end;
-
-
-// =================================================================================================
-// == ODBC Specific ================================================================================
-// =================================================================================================
-
-
-procedure TCompareRightThread.SetData(const s : string; o1 : integer; o2 : boolean; gridx : TAdvStringGrid);
- begin
-  SQL     := s;
-  option1 := o1;
-  option2 := o2;
-  grid    := gridx;
-
-  FCriticalSection := TCriticalSection.Create;
-end;
-
-
-function  TCompareRightThread.InitODBC(const connectionstring : string): boolean;
- begin
-  Result := True;
-
-  try
-    XODBC := TADOConnection.Create(nil);
-    XODBC.LoginPrompt      := False;
-    XODBC.ConnectionString := connectionstring;
-    XODBC.Connected        := True;
-  except
-    Result := False;
-  end;
-end;
-
-
-procedure TCompareRightThread.CloseODBC;
- begin
-  if XODBC.Connected then
-    XODBC.Close;
-
-  XODBC.Free;
-end;
-
-
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-
-
-procedure TCompareRightThread.Execute;
-begin
-  FreeOnTerminate := True;
-
-  FCriticalSection.Acquire;
-
-  if XSettings.Database.UseODBC then begin
+/*  if XSettings.Database.UseODBC then begin
     if InitODBC(XSettings.Database.ODBConnectionString) then
       {}
     else
@@ -161,13 +48,23 @@ begin
   if XSettings.Database.UseODBC then
     CloseODBC;
 
-  FCriticalSection.Leave;
-end;
+  FCriticalSection.Leave;*/
+}
 
 
-procedure TCompareRightThread.ProcessODBC(aSQL : string);
-var
-  status : string;
+void CompareRightSide::SetData(const std::wstring s, int o1, bool o2, TStringGrid* gridx)
+{
+	SQL = s;
+	Option1 = o1;
+	Option2 = o2;
+
+	grid = gridx;
+}
+
+
+void CompareRightSide::ProcessODBC(const std::wstring sql)
+{
+/*  status : string;
   XQuery : TADOQuery;
 
 begin
@@ -235,12 +132,13 @@ begin
     end;
   finally
     XQuery.Free;
-  end;
-end;
+  end; */
+}
 
 
-procedure TCompareRightThread.ProcessSqlite(aSQL : string);
-var
+void CompareRightSide::ProcessSqlite(const std::wstring sql)
+{
+/*
   lSQliteConnection : TSQLConnection;
   lResults : TDataSet;
   status : string;
@@ -322,9 +220,36 @@ begin
   finally
     lSQliteConnection.Connected := False;
     FreeAndNil(lSQliteConnection);
-  end;
-end;
+  end;*/
+}
 
 
-end.
-*/
+// =================================================================================================
+// == ODBC Specific ================================================================================
+// =================================================================================================
+
+
+bool CompareRightSide::InitODBC(const std::wstring connection_string)
+{
+	/*try
+	{
+		XODBC := TADOConnection.Create(nil);
+		XODBC.LoginPrompt      := False;
+		XODBC.ConnectionString := connectionstring;
+		XODBC.Connected        := True;
+	}
+	except
+		Result := False;
+	}*/
+
+	return true;
+}
+
+
+void CompareRightSide::CloseODBC()
+{
+/*	if XODBC.Connected then
+	XODBC.Close;
+
+  XODBC.Free;*/
+}

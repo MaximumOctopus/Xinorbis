@@ -33,16 +33,15 @@ void NavigateRightSide::SetData(TStringGrid* grid, int data_source, int from_fol
 void NavigateRightSide::Execute()
 {
 	std::wstring s = L"";
-	int orderx = 0;
 	unsigned __int64 FileSize = 0;
 	int FileCount   = 0;
 	int FolderCount = 0;
 
     SizeOfFolder sof;
 
-	if (GScanEngine->Data[DataSource].Files.size() == 0) return;
-
 	OutputGrid->RowCount = 2;
+
+	if (GScanEngine->Data[DataSource].Files.size() == 0) return;
 
 	GScanEngine->FolderStructure.push_back(GScanEngine->Data[DataSource].Folders[FromFolderId] + L"?" + std::to_wstring(FolderSize));
 
@@ -57,7 +56,7 @@ void NavigateRightSide::Execute()
 			if (faDirectory & file->Attributes ||
 				GSettingsHandler->Navigation.Display[1][file->Category] == L'1')
 			{
-				if (!(faDirectory & file->Attributes))  // file
+				if (!(faDirectory & file->Attributes))
 				{
 					OutputGrid->Cells[ksgnFileName][row] = file->Name.c_str();
 
@@ -95,7 +94,7 @@ void NavigateRightSide::Execute()
 					OutputGrid->Cells[ksgnSizeOnDisk][row]     = Convert::ConvertToUsefulUnit(file->SizeOnDisk).c_str();
 					OutputGrid->Cells[ksgnIntegetSoD][row]     = file->SizeOnDisk;
 
-					OutputGrid->Cells[ksgnOrderIndex][row]     = orderx + 500000;
+					OutputGrid->Cells[ksgnOrderIndex][row]     = row + 500000;
 
 					OutputGrid->Cells[ksgnCategoryIndex][row]  = file->Category;
 
@@ -150,14 +149,14 @@ void NavigateRightSide::Execute()
 						OutputGrid->Cells[ksgnIntegerPCent][row] = L"100";
 					}
 
-					OutputGrid->Cells[ksgnIntegerSize][row]    = sof.Size;
+					OutputGrid->Cells[ksgnIntegerSize][row] = sof.Size;
 
 					FileSize += sof.Size;
 
-					OutputGrid->Cells[ksgnFolderFile][row]     = L"1";
-					OutputGrid->Cells[ksgnOrderIndex][row]     = orderx;
+					OutputGrid->Cells[ksgnFolderFile][row] = L"1";
+					OutputGrid->Cells[ksgnOrderIndex][row] = row;
 
-					OutputGrid->Cells[ksgnCategoryIndex][row]  = L"0";
+					OutputGrid->Cells[ksgnCategoryIndex][row] = L"0";
 
 					FolderCount++;
 				}
@@ -165,10 +164,35 @@ void NavigateRightSide::Execute()
 				OutputGrid->RowCount++;
 
 				row++;
-
-				orderx++;
 			}
 		}
+	}
+
+	if (row == 1)
+	{
+		OutputGrid->Cells[ksgnFileName][row] = L"N/A";
+
+		OutputGrid->Cells[ksgnStringSize][row] = L"";
+		OutputGrid->Cells[ksgnIntegerSize][row] = 0;
+
+		OutputGrid->Cells[ksgnStringPCent][row]  = L"100%";
+		OutputGrid->Cells[ksgnIntegerPCent][row] = L"100";
+
+		OutputGrid->Cells[ksgnFolderFile][row]   = L"0";
+
+		OutputGrid->Cells[ksgnCreatedDate][row]  = L"";
+		OutputGrid->Cells[ksgnAccessedDate][row] = L"";
+		OutputGrid->Cells[ksgnModifiedDate][row] = L"";
+		OutputGrid->Cells[ksgnUserName][row]     = L"";
+
+		OutputGrid->Cells[ksgnAttributes][row] = L"----";
+
+		OutputGrid->Cells[ksgnSizeOnDisk][row] = L"";
+		OutputGrid->Cells[ksgnIntegetSoD][row] = 0;
+
+		OutputGrid->Cells[ksgnOrderIndex][row] = 0;
+
+		OutputGrid->Cells[ksgnCategoryIndex][row] = 0;
 	}
 
 	if (OutputGrid->RowCount > 2)

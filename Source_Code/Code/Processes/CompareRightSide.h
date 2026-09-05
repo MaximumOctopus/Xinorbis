@@ -12,8 +12,27 @@
 
 #pragma once
 
+#include <Vcl.Grids.hpp>
+
 
 class CompareRightSide
 {
+   //	XODBC    : TADOConnection;
+
+	std::wstring SQL = L"";
+	int Option1 = 0;
+	bool Option2 = false;
+	TStringGrid *grid = nullptr;
+
+	void ProcessODBC(const std::wstring);
+	void ProcessSqlite(const std::wstring);
+
+	bool InitODBC(const std::wstring);
+	void CloseODBC();
+
 public:
+
+	void Execute();
+
+	void SetData(const std::wstring, int, bool, TStringGrid*);
 };

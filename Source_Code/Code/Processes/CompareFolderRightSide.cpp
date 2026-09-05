@@ -13,126 +13,12 @@
 #include "CompareFolderRightSide.h"
 
 
-/*
+void CompareFolderRightSide::Execute()
 {
-  (c) Paul Alan Freshney 2002-2020
-  (c) Aardvark Digital 2002
-  (c) Maximum Octopus Limted 2020
-
-  www.freshney.org :: paul@freshney.org :: maximumoctopus.com :: xinorbis.com
-
-  Last Modified: January 11th 2020
-}
-
-
-unit X.Thread.CompareFolderRight;
-
-interface
-
-uses
-  StdCtrls, SysUtils, classes, AdvGrid, ADODB, Data.DB, Data.SqlExpr,
-  SyncObjs, HTMLabel,
-
-  X.Utility, X.Constants, X.CSizeOfFolder, X.SystemGlobal;
-
-type
-  TCompareFolderRightThread = class(TThread)
-  private
-    FCriticalSection : TCriticalSection;
-
-    function  InitODBC(const connectionstring : string): boolean;
-    procedure CloseODBC;
-
-    procedure ProcessODBC(aSQL : string);
-    procedure ProcessSqlite(aSQL : string);
-  public
-    destructor Destroy; override;
-
-    procedure SetData(const s : string; o1 : string; o2 : THTMLabel; gridx : TAdvStringGrid);
-  protected
-    XODBC      : TADOConnection;
-    SQL        : string;
-    folder     : string;
-    grid       : TAdvStringGrid;
-    slabel     : THTMLabel;
-    extspreadt : array[0..__FileCategoriesCount, 1..2] of Int64;   //maintains extension match counts - 1..count, 2..size
-    tnumfiless, tnumfiless_folder : integer;
-    tFileTotalSpace, tFileTotalSpace_folder : int64;
-
-    procedure Execute; override;
-  end;
-
-
-implementation
-
-
-uses
-  X.Conversions, X.Global, X.Settings;
-
-
-destructor TCompareFolderRightThread.Destroy;
-begin
-  FCriticalSection.Free;
-
-  inherited;
-end;
-
-
-// =================================================================================================
-// == ODBC Specific ================================================================================
-// =================================================================================================
-
-
-function TCompareFolderRightThread.InitODBC(const connectionstring : string): boolean;
- begin
-  Result := True;
-
-  try
-    XODBC := TADOConnection.Create(nil);
-    XODBC.LoginPrompt      := False;
-    XODBC.ConnectionString := connectionstring;
-    XODBC.Connected        := True;
-  except
-    Result := False;
-  end;
-end;
-
-
-procedure TCompareFolderRightThread.CloseODBC;
- begin
-  if XODBC.Connected then
-    XODBC.Close;
-
-  XODBC.Free;
-end;
-
-
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-
-
-procedure TCompareFolderRightThread.SetData(const s : string; o1 : string; o2 : THTMLabel; gridx : TAdvStringGrid);
- begin
-  SQL    := s;
-  folder := '\' + UpperCase(o1) + '\';
-  slabel := o2;
-  grid   := gridx;
-
-  FCriticalSection := TCriticalSection.Create;
-end;
-
-
-procedure TCompareFolderRightThread.Execute;
-var
-  t        : integer;
+/*  t        : integer;
   addrow   : boolean;
 
 begin
-  FreeOnTerminate := True;
-
-  FCriticalSection.Acquire;
-
   if XSettings.Database.UseODBC then begin
     if InitODBC(XSettings.Database.ODBConnectionString) then
       {}
@@ -221,15 +107,23 @@ begin
   grid.EndUpdate;
 
   if XSettings.Database.UseODBC then
-    CloseODBC;
-
-  FCriticalSection.Leave;
-end;
+	CloseODBC;    */
+}
 
 
-procedure TCompareFolderRightThread.ProcessODBC(aSQL : string);
-var
-  XQuery   : TADOQuery;
+void CompareFolderRightSide::SetData(const std::wstring s, const std::wstring o1, bool o2, TStringGrid* gridx)
+{
+//procedure TCompareFolderLeftThread.SetData(const s : string; o1 : string; o2 : THTMLabel; gridx : TAdvStringGrid);
+	SQL = s;
+//	Folder = L"\\" + UpperCase(o1) + L"\\";
+//  slabel := o2;
+  	grid  = gridx;
+}
+
+
+void CompareFolderRightSide::ProcessODBC(const std::wstring sql)
+{
+/*  XQuery   : TADOQuery;
 
 begin
   XQuery := TADOQuery.Create(nil);
@@ -259,13 +153,13 @@ begin
     end;
   finally
     XQuery.Free;
-  end;
-end;
+  end;*/
+}
 
 
-procedure TCompareFolderRightThread.ProcessSqlite(aSQL : string);
-var
-  lSQliteConnection : TSQLConnection;
+void CompareFolderRightSide::ProcessSqlite(const std::wstring sql)
+{
+/*  lSQliteConnection : TSQLConnection;
   lResults : TDataSet;
 
 begin
@@ -283,7 +177,7 @@ begin
     if not lResults.IsEmpty then begin
       lResults.First;
 
-      while not lResults.Eof do begin
+	  while not lResults.Eof do begin
         if lResults.Fields[fDirectory].AsString <> '1' then begin
 
           if Pos(folder, UpperCase(lResults.Fields[fFilePath].AsString)) <> 0 then begin
@@ -304,9 +198,34 @@ begin
   finally
     lSQliteConnection.Connected := False;
     FreeAndNil(lSQliteConnection);
-  end;
-end;
+  end; */
+}
 
 
-end.
-*/
+// =================================================================================================
+// == ODBC Specific ================================================================================
+// =================================================================================================
+
+
+bool CompareFolderRightSide::InitODBC(const std::wstring connection_string)
+{
+/*  try
+	XODBC := TADOConnection.Create(nil);
+	XODBC.LoginPrompt      := False;
+	XODBC.ConnectionString := connectionstring;
+	XODBC.Connected        := True;
+  except
+	Result := False;
+  end;*/
+
+  return true;
+}
+
+
+void CompareFolderRightSide::CloseODBC()
+{
+/* if XODBC.Connected then
+	XODBC.Close;
+
+  XODBC.Free;*/
+}
