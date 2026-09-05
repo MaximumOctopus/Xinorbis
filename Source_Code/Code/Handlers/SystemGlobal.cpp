@@ -73,7 +73,7 @@ void SystemGlobal::CreateObjects()
 	//
 	GFileExtensionHandler = new FileExtensionHandler(ExePath);
 
-	GLanguageHandler = new LanguageHandler();
+	GLanguageHandler = new LanguageHandler(false);
 	GLanguageHandler->InitLanguage(ExePath, LanguageType::kUK);
 
 	GScanHistoryHandler = new ScanHistoryHandler(ExePath + L"system\\");

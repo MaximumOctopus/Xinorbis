@@ -20,9 +20,9 @@
 LanguageHandler *GLanguageHandler;
 
 
-LanguageHandler::LanguageHandler()
+LanguageHandler::LanguageHandler(bool debug)
 {
-
+	DebugMode = debug;
 }
 
 
@@ -63,7 +63,14 @@ bool LanguageHandler::LoadLanguage(const std::wstring file_name)
 
 		while (std::getline(file, s))
 		{
-			Text.push_back(s);
+			if (!DebugMode)
+			{
+				Text.push_back(s);
+			}
+			else
+			{
+                Text.push_back(L"#" + Text.size() + 1);
+			}
 		}
 
 		file.close();

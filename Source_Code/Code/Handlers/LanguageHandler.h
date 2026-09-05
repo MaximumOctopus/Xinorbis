@@ -22,6 +22,8 @@
 
 class LanguageHandler
 {
+    bool DebugMode = false;
+
 	bool LoadLanguage(const std::wstring);
 	bool LoadUnits(const std::wstring);
 
@@ -65,7 +67,7 @@ public:
 													L"100$M - 150$M", L"150$M - 200$M", L"200$M - 250$M", L"250$M - 500$M", L"500$M - 1$G",
 													L"1$G - 2$G", L"2$G - 5$G", L"5$G+L" };
 
-	LanguageHandler();
+	LanguageHandler(bool);
 
 	bool InitLanguage(const std::wstring, LanguageType);
 

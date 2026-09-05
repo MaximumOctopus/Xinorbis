@@ -17,11 +17,16 @@ class SplashHandler
 {
 public:
 
+	SplashHandler();
+	~SplashHandler();
+
 	bool ProcessWindowsVisible();
 
 	void ShowProcessWindow();
 	void HideProcessWindow();
 	void SetProgressBar(int);
+
+    void SetIcon(int);
 
 	void ShowZipWindow();
 	void HideZipWindow();

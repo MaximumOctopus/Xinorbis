@@ -12,27 +12,49 @@
 
 #include "SplashHandler.h"
 
+#include "XFormProgress.h"
+
 SplashHandler *GSplashHandler;
+
+
+SplashHandler::SplashHandler()
+{
+	FormProgress = new TFormProgress(Application);
+}
+
+
+SplashHandler::~SplashHandler()
+{
+	delete FormProgress;
+}
 
 
 bool SplashHandler::ProcessWindowsVisible()
 {
-	return false;
+	return FormProgress->Visible;
 }
 
 
 void SplashHandler::ShowProcessWindow()
 {
+	FormProgress->Visible = true;
 }
 
 
 void SplashHandler::HideProcessWindow()
 {
+	FormProgress->Visible = false;
 }
 
 
 void SplashHandler::SetProgressBar(int progress)
 {
+}
+
+
+void SplashHandler::SetIcon(int icon)
+{
+	FormProgress->SetProcessIcon(icon);
 }
 
 
