@@ -12,28 +12,28 @@ extern LanguageHandler *GLanguageHandler;
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TForm18 *Form18;
+TFormProgress *FormProgress;
 //---------------------------------------------------------------------------
-__fastcall TForm18::TForm18(TComponent* Owner)
+__fastcall TFormProgress::TFormProgress(TComponent* Owner)
 	: TForm(Owner)
 {
 }
 //---------------------------------------------------------------------------
 
 
-void __fastcall TForm18::FormCreate(TObject *Sender)
+void __fastcall TFormProgress::FormCreate(TObject *Sender)
 {
 	sbStop->Caption = GLanguageHandler->Text[kCancel].c_str();
 }
 
 
-void __fastcall TForm18::FormClose(TObject *Sender, TCloseAction &Action)
+void __fastcall TFormProgress::FormClose(TObject *Sender, TCloseAction &Action)
 {
 	Action = caFree;
 }
 
 
-void TForm18::SetProcessText(const std::wstring s)
+void TFormProgress::SetProcessText(const std::wstring s)
 {
 	lStatus->Caption = s.c_str();
 	lStatus->Refresh();
@@ -46,21 +46,21 @@ void TForm18::SetProcessText(const std::wstring s)
 }
 
 
-void TForm18::SetPercentage(const std::wstring s)
+void TFormProgress::SetPercentage(const std::wstring s)
 {
 	lStatus2->Caption = s.c_str();
 	lStatus2->Invalidate();
 }
 
 
-void TForm18::SetStatus3(const std::wstring s)
+void TFormProgress::SetStatus3(const std::wstring s)
 {
 	lStatus3->Caption = s.c_str();
 	lStatus3->Invalidate();
 }
 
 
-void TForm18::SetProcessIcon(int i)
+void TFormProgress::SetProcessIcon(int i)
 {
 	TImage *image = nullptr;
 
@@ -91,21 +91,21 @@ void TForm18::SetProcessIcon(int i)
 }
 
 
-void TForm18::SetProcessBar(int position)
+void TFormProgress::SetProcessBar(int position)
 {
 //  pbProcess.Position := newposition;
 //  pbProcess.Invalidate;
 }
 
 
-void TForm18::SetAbort()
+void TFormProgress::SetAbort()
 {
 	//lAbortStatus.Visible := True;
 	//lAbortStatus.Invalidate;
 }
 
 
-void __fastcall TForm18::sbStopClick(TObject *Sender)
+void __fastcall TFormProgress::sbStopClick(TObject *Sender)
 {
 // stopscan := True;
 

@@ -148,6 +148,8 @@ public:		// User declarations
     int DataSource = 0;
 
 	bool OneOffCustom = false;
+
+    void Update(int, bool);
 };
 
 HTMLReportOptions OpenHTMLReportOptions(int, bool);

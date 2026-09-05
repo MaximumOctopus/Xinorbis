@@ -35,19 +35,11 @@ __fastcall TFormEditHTMLReport::TFormEditHTMLReport(TComponent* Owner)
 
 HTMLReportOptions OpenHTMLReportOptions(int report_id, bool one_off_custom)
 {
-	TFormEditHTMLReport* FormEditHTMLReport = new TFormEditHTMLReport(Application);
+	FormEditHTMLReport = new TFormEditHTMLReport(Application);
 
 	FormEditHTMLReport->OneOffCustom = one_off_custom;
 
-//	  cbHTMLLayouts.ItemIndex = aReportID;
-
-//	  sbEditHTMLLayoutClick(Nil);
-
-	if (one_off_custom)
-	{
-//		sbEditHTMLLayout->Visible = False;
-//		cbHTMLLayouts->Visible    = False;
-	}
+	FormEditHTMLReport->Update(report_id, one_off_custom);
 
 	FormEditHTMLReport->ShowModal();
 
@@ -199,6 +191,20 @@ void TFormEditHTMLReport::Init()
 }
 
 
+void TFormEditHTMLReport::Update(int report_id, bool ooc)
+{
+	cbHTMLLayouts->ItemIndex = report_id;
+
+	sbEditHTMLLayoutClick(NULL);
+
+	if (ooc)
+	{
+		sbEditHTMLLayout->Visible = false;
+		cbHTMLLayouts->Visible    = false;
+	}
+}
+
+
 void __fastcall TFormEditHTMLReport::lbSummaryLayoutClick(TObject *Sender)
 {
 	bool status = true;
@@ -303,7 +309,7 @@ void __fastcall TFormEditHTMLReport::sbSaveClick(TObject *Sender)
 {
 	BuildReport(InternalReport);
 
-  // save colours ==============================================================
+  	// save colours ============================================================
 
 	for (int t = 0; t < kHTMLColoursCount; t++)
 	{
@@ -328,7 +334,6 @@ void __fastcall TFormEditHTMLReport::sbRemoveClick(TObject *Sender)
 	sbDown->Enabled   = false;
 
 	AutoRefresh();
-
 }
 
 

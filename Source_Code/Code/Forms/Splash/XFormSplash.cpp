@@ -7,9 +7,9 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-TFormProgress *FormProgress;
+TFormSplash *FormSplash;
 //---------------------------------------------------------------------------
-__fastcall TFormProgress::TFormProgress(TComponent* Owner)
+__fastcall TFormSplash::TFormSplash(TComponent* Owner)
 	: TForm(Owner)
 {
 }

@@ -10,11 +10,12 @@
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Graphics.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
-class TForm18 : public TForm
+class TFormProgress : public TForm
 {
 __published:	// IDE-managed Components
-	TImage *Image1;
+	TImage *iBackground;
 	TImage *iProgress1;
 	TImage *iProgress2;
 	TImage *iProgress3;
@@ -30,7 +31,7 @@ __published:	// IDE-managed Components
 	void __fastcall sbStopClick(TObject *Sender);
 private:
 public:
-	__fastcall TForm18(TComponent* Owner);
+	__fastcall TFormProgress(TComponent* Owner);
 
 	void SetProcessBar(int);
 
@@ -41,6 +42,6 @@ public:
 	void SetProcessIcon(int);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TForm18 *Form18;
+extern PACKAGE TFormProgress *FormProgress;
 //---------------------------------------------------------------------------
 #endif

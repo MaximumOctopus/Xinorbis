@@ -27,11 +27,11 @@ __fastcall TFormEditXmlReport::TFormEditXmlReport(TComponent* Owner)
 
 XMLReportOptions OpenXMLReportOptions(int report_id, bool one_off_custom)
 {
-	TFormEditXmlReport *FormEditXmlReport = new TFormEditXmlReport(Application);
+	FormEditXmlReport = new TFormEditXmlReport(Application);
 
 	FormEditXmlReport->cbXMLLayouts->ItemIndex = report_id;
 
-//	  sbEditXMLLayoutClick(Nil);
+	FormEditXmlReport->sbEditXMLLayoutClick(NULL);
 
 	FormEditXmlReport->ShowModal();
 

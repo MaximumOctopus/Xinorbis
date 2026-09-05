@@ -8,14 +8,14 @@
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
 //---------------------------------------------------------------------------
-class TFormProgress : public TForm
+class TFormSplash : public TForm
 {
 __published:	// IDE-managed Components
 private:	// User declarations
 public:		// User declarations
-	__fastcall TFormProgress(TComponent* Owner);
+	__fastcall TFormSplash(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TFormProgress *FormProgress;
+extern PACKAGE TFormSplash *FormSplash;
 //---------------------------------------------------------------------------
 #endif

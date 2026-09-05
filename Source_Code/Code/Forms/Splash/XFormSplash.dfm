@@ -1,7 +1,7 @@
-object FormProgress: TFormProgress
+object FormSplash: TFormSplash
   Left = 0
   Top = 0
-  Caption = 'FormProgress'
+  Caption = 'FormSplash'
   ClientHeight = 441
   ClientWidth = 624
   Color = clBtnFace

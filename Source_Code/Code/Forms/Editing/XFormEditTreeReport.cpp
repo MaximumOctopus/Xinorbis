@@ -32,7 +32,7 @@ __fastcall TFormEditTreeReport::TFormEditTreeReport(TComponent* Owner)
 
 TreeReportOptions OpenTreeReportOptions(int report_id, bool one_off_custom)
 {
-	TFormEditTreeReport *FormEditTreeReport = new TFormEditTreeReport(Application);
+	FormEditTreeReport = new TFormEditTreeReport(Application);
 
 	FormEditTreeReport->SetOneOff(one_off_custom);
 

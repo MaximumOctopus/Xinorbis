@@ -30,7 +30,7 @@ __fastcall TFormEditTextReport::TFormEditTextReport(TComponent* Owner)
 
 TextReportOptions OpenTextReportOptions(int report_id, bool one_off_custom)
 {
-	TFormEditTextReport* FormEditTextReport = new TFormEditTextReport(Application);
+	FormEditTextReport = new TFormEditTextReport(Application);
 
 	FormEditTextReport->OneOffCustom = one_off_custom;
 

@@ -111,91 +111,89 @@ void TForm19::Init()
 void TForm19::BuildDisplay()
 {
 /*
-procedure TfrmDatabaseInfo.FormShow(Sender: TObject);
- var
   tsl : TStringList;
-  t : integer;
   ttd, oldttd : TTableDetails;
   tf: file of Byte;
-  lDBSize : int64;
 
- begin
-  Caption               := XText[rsFileHistoryDBInfo];
-  sbShowNames.Caption   := XText[rsShowNames];
-  sbDeleteTable.Caption := XText[rsDelete];
+	unsigned __int64 DBSize = 0;
 
-  sgDatabase.ClearRows(1, sgDatabase.RowCount - 1);
-  sgDatabase.RowCount   := 2;
+	Caption               = GLanguageHandler->Text[kFileHistoryDBInfo].c_str();
+	sbShowNames.Caption   = GLanguageHandler->Text[kShowNames].c_str();
+	sbDeleteTable.Caption = GLanguageHandler->Text[kDelete].c_str();
 
-  if XSettings.Database.UseODBC then begin
-    lDatabaseSize.HTMLText[0] := '<i>' + XText[rsUnknown] + '</i>';
-  end
-  else begin
-    lDBSize := 0;
+//	sgDatabase->ClearRows(1, sgDatabase.RowCount - 1);
+	sgDatabase->RowCount = 2;
 
-    if FileExists(GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db') then begin
-      AssignFile(tf, GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
-      {$I-}
-      Reset(tf);
+	if (XSettings.Database.UseODBC)
+	{
+		lDatabaseSize.HTMLText[0] := '<i>' + XText[rsUnknown] + '</i>';
+	}
 
-      if IOResult <> 0 then begin
+	if (FileExists(GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db')
+	{
+		AssignFile(tf, GSystemGlobal.AppDataPath + 'FolderHistory\Database\Xinorbis.db');
+	  {$I-}
+	  Reset(tf);
 
-      end
+	  if IOResult <> 0 then begin
+
+	  end
 	  else begin
-		lDBSize := FileSize(tf);
-        CloseFile(tf);
-      end;
-      {$I+}
-    end;
+		DBSize := FileSize(tf);
+		CloseFile(tf);
+	  end;
+	  {$I+}
+	}
 
-    if lDBSize <> 0 then begin
-      // ===========================================================================
+	if (DBSize != 0)
+	{
+		tsl := GetAllAvailableTables;
+		tsl.Sort;
 
-      tsl := GetAllAvailableTables;
-      tsl.Sort;
+		lTableCount.HTMLText[0] := '<b>' + IntToStr(tsl.Count) + '</b>';
 
-      lTableCount.HTMLText[0] := '<b>' + IntToStr(tsl.Count) + '</b>';
+		for t := 0 to tsl.Count - 1)
+		{
+			ttd := TConvert.SplitTableName(tsl.Strings[t]);
 
-      for t := 0 to tsl.Count - 1 do begin
-        ttd := TConvert.SplitTableName(tsl.Strings[t]);
+			if (ttd.Date = oldttd.Date) and (ttd.Time = oldttd.Time) and (ttd.Computer = oldttd.Computer + 'F')
+			{
+				sgDatabase->Cells[5, t]     := '1.1';
+				sgDatabase->Cells[5, t + 1] := '1.1';
 
-        if (ttd.Date = oldttd.Date) and (ttd.Time = oldttd.Time) and (ttd.Computer = oldttd.Computer + 'F') then begin
-          sgDatabase.Cells[5, t]     := '1.1';
-          sgDatabase.Cells[5, t + 1] := '1.1';
+				sgDatabase->Cells[0, t + 1] := oldttd.Computer;
+			}
+			else
+			{
+				sgDatabase->Cells[5, t + 1] := '1.0';
+				sgDatabase->Cells[0, t + 1] := ttd.Computer;
+			}
 
-          sgDatabase.Cells[0, t + 1] := oldttd.Computer;
-        end
-        else begin
-          sgDatabase.Cells[5, t + 1] := '1.0';
-          sgDatabase.Cells[0, t + 1] := ttd.Computer;
-        end;
+			sgDatabase->Cells[1, t + 1] := ttd.Path;
+			sgDatabase->Cells[2, t + 1] := ttd.DateYYYYMMDD + '  ' + ttd.TimeHHMMSS;
+			sgDatabase->Cells[3, t + 1] := tsl.Strings[t];
 
-        sgDatabase.Cells[1, t + 1] := ttd.Path;
-        sgDatabase.Cells[2, t + 1] := ttd.DateYYYYMMDD + '  ' + ttd.TimeHHMMSS;
-        sgDatabase.Cells[3, t + 1] := tsl.Strings[t];
+			sgDatabase->Cells[4, t + 1] := ttd.Date + ttd.Time;
 
-        sgDatabase.Cells[4, t + 1] := ttd.Date + ttd.Time;
+			sgDatabase->RowCount++;
 
-        sgDatabase.RowCount := sgDatabase.RowCount + 1;
+			oldttd := ttd;
+		}
 
-        oldttd := ttd;
-      end;
+		sgDatabase->RowCount--;
+	}
+	else
+	{
+		sgDatabase->Cells[0][1] = GLanguageHandler->Text[kDatabaseIsEmpty].c_str();
 
-	  sgDatabase.RowCount := sgDatabase.RowCount - 1;
-	end
-    else begin
-      sgDatabase.Cells[0, 1] := XText[rsDatabaseIsEmpty];
+		sbShowNames->Enabled   = false;
+		sbDeleteTable->Enabled = false;
+		bSave->Enabled         = false;
+		bExportCSV->Enabled    = false;
+		bExportXML->Enabled    = false;
+	}
 
-      sbShowNames.Enabled   := False;
-      sbDeleteTable.Enabled := False;
-      bSave.Enabled         := False;
-      bExportCSV.Enabled    := False;
-      bExportXML.Enabled    := False;
-    end;
-
-    lDatabaseSize.HTMLText[0] := '<b>' + TConvert.ConvertToUsefulUnit(lDBSize) + '</b> (<b>' + IntToStr(lDBSize) + '</b> ' + XText[rsBytes] + ')';
-  end;
-end;*/
+	lDatabaseSize.HTMLText[0] := '<b>' + TConvert.ConvertToUsefulUnit(DBSize) + '</b> (<b>' + IntToStr(DBSize) + '</b> ' + XText[rsBytes] + ')';*/
 }
 
 
@@ -224,16 +222,17 @@ void __fastcall TForm19::sbDeleteTableClick(TObject *Sender)
 	{
 		if (MessageDlg(GLanguageHandler->Text[kDeleteFHAreYouSure].c_str(), mtWarning, mbYesNo], 0) == mrYes)
 		{
-			bExportCSV.Enabled := False;
-			bExportXML.Enabled := False;
+			bExportCSV->Enabled = false;
+			bExportXML->Enabled = false;
 
-			DeleteTable(sgDatabase.Cells[3, sgDatabase.Selection.Top]);
+			DeleteTable(sgDatabase->Cells[3][sgDatabase->Selection.Top].c_str());
+
 			DeleteFromDatabaseXFH(GSystemGlobal.AppDataPath + 'FolderHistory\' +
 									sgDatabase.Cells[0, sgDatabase.Selection.Top] + '\' +
 									TMD5.Generate(UpperCase(sgDatabase.Cells[1, sgDatabase.Selection.Top])) + '.xfh',
 									sgDatabase.Cells[4, sgDatabase.Selection.Top]);
 
-			sgDatabase.RemoveRows(sgDatabase.Selection.Top, 1);
+			sgDatabase->RemoveRows(sgDatabase.Selection.Top, 1);
 		}
 	}          */
 }
