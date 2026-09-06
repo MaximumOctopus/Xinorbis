@@ -7,6 +7,7 @@
 
 #include "XFormChartOptions.h"
 #include "XFormGetCopyMove.h"
+#include "XFormShowMD5.h"
 #include "XFormXinorbisDialog.h"
 
 #include "ChartUtility.h"
@@ -653,8 +654,8 @@ void TFrameStructure::BuildNavigationTab()
 
 				sgLeftSide->Cells[ksgnUserName][row]         = GScanEngine->Data[DataSource].Users[file->Owner]->Name.c_str();
 
-//				sgLeftSide->Cells[ksgnSizeOnDisk][row]       = Convert::ConvertToUsefulUnit(Convert::GetSizeOnDisk(file->Size));
-//				sgLeftSide->Cells[ksgnIntegetSoD][row]       = Convert::GetSizeOnDisk(file->Size)); TO DO
+				sgLeftSide->Cells[ksgnSizeOnDisk][row]       = Convert::ConvertToUsefulUnit(file->SizeOnDisk).c_str();
+				sgLeftSide->Cells[ksgnIntegetSoD][row]       = file->SizeOnDisk;
 
 				sgLeftSide->Cells[ksgnFolderFile][row]       = L"0";
 				sgLeftSide->Cells[ksgnOrderIndex][row]       = orderx + 50000;
@@ -674,8 +675,6 @@ void TFrameStructure::BuildNavigationTab()
 	}
 
 	sgLeftSide->EndUpdate();
-
-// TO DO	TGridUtility.DoTableSort(sgNavigation, sgLeftSide->SortSettings.Column, NavigationSortColumns[sgLeftSide->SortSettings.Column]);
 }
 #pragma end_region
 
@@ -1144,7 +1143,7 @@ void __fastcall TFrameStructure::miGenerateMD5Click(TObject *Sender)
 
 	if (!s.empty())
 	{
-// TO DO		ShowMD5Checksum(s, TMD5.Generate(s));
+		OpenMD5Checksum(s, Utility::GetMD5(s));
 	}
 }
 

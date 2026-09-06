@@ -9,6 +9,7 @@
 #include "XFrameSearch.h"
 
 #include "XFormGetCopyMove.h"
+#include "XFormShowMD5.h"
 #include "XFormXinorbisDialog.h"
 
 #include "ConstantsData.h"
@@ -383,7 +384,7 @@ void __fastcall TFrameSearch::miGenerateMD5Click(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		// TO DO	ShowMD5Checksum(file_name, TMD5.Generate(file_name));
+		OpenMD5Checksum(file_name, Utility::GetMD5(file_name));
 	}
 }
 

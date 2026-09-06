@@ -2883,7 +2883,9 @@ void __fastcall TFrameProperties::miDGenerateMD5Click(TObject *Sender)
 {
 	if (FileExists(tvDates->Selected->Text))
 	{
-		//ShowMD5Checksum(tvDates.Selected.Text, TMD5.Generate(tvFile->Selected->Text));
+		std::wstring file_name = tvDates->Selected->Text.c_str();
+
+		OpenMD5Checksum(file_name, Utility::GetMD5(file_name));
 	}
 }
 

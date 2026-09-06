@@ -7,6 +7,7 @@
 
 #include "XFrameDuplicates.h"
 #include "XFormGetCopyMove.h"
+#include "XFormShowMD5.h"
 #include "XFormXinorbisDialog.h"
 
 #include "ConstantsGui.h"
@@ -649,7 +650,7 @@ void __fastcall TFrameDuplicates::miGenerateMD5Click(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		//ShowMD5Checksum(file_name, TMD5.Generate(file_name));
+		OpenMD5Checksum(file_name, Utility::GetMD5(file_name));
 	}
 }
 

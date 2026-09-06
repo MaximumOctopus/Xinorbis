@@ -311,6 +311,8 @@ object FrameSearch: TFrameSearch
             Height = 56
             Align = alTop
             TabOrder = 0
+            ExplicitLeft = 2
+            ExplicitTop = -5
             DesignSize = (
               1160
               56)
