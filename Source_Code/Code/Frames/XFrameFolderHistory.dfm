@@ -1,13 +1,13 @@
 object FrameFolderHistory: TFrameFolderHistory
   Left = 0
   Top = 0
-  Width = 1600
+  Width = 1575
   Height = 879
   TabOrder = 0
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 1600
+    Width = 1575
     Height = 879
     ActivePage = tsStats
     Align = alClient
@@ -17,7 +17,7 @@ object FrameFolderHistory: TFrameFolderHistory
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1592
+        Width = 1567
         Height = 105
         Align = alTop
         TabOrder = 0
@@ -26,6 +26,7 @@ object FrameFolderHistory: TFrameFolderHistory
           Top = 4
           Width = 97
           Height = 53
+          OnClick = SpeedButton1Click
         end
         object lFHAvailableComputer: TLabel
           Left = 111
@@ -41,26 +42,36 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 15
           Caption = '...'
         end
-        object SpeedButton2: TSpeedButton
+        object bFHISelect: TSpeedButton
           Left = 39
           Top = 76
           Width = 122
           Height = 22
+          OnClick = bFHISelectClick
         end
-        object Edit2: TEdit
+        object SpeedButton2: TSpeedButton
+          Left = 10
+          Top = 77
+          Width = 23
+          Height = 22
+          OnClick = SpeedButton2Click
+        end
+        object cbFHAvailablePath: TEdit
           Left = 343
           Top = 33
           Width = 489
           Height = 23
           TabOrder = 0
+          OnChange = cbFHAvailablePathChange
         end
-        object ComboBox1: TComboBox
+        object cbFHAvailableFilter: TComboBox
           Left = 264
           Top = 33
           Width = 73
           Height = 23
           Style = csDropDownList
           TabOrder = 1
+          OnChange = cbFHAvailableFilterChange
         end
         object cbFHAvailableComputer: TComboBox
           Left = 264
@@ -69,23 +80,18 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 23
           Style = csDropDownList
           TabOrder = 2
-        end
-        object CheckBox1: TCheckBox
-          Left = 8
-          Top = 79
-          Width = 25
-          Height = 17
-          TabOrder = 3
+          OnChange = cbFHAvailableComputerChange
         end
       end
-      object PageControl2: TPageControl
+      object pcStats: TPageControl
         Left = 0
         Top = 105
-        Width = 1592
+        Width = 1567
         Height = 744
-        ActivePage = tsChart
+        ActivePage = tsTable
         Align = alClient
         TabOrder = 1
+        OnChange = pcStatsChange
         object tsChart: TTabSheet
           Caption = 'tsChart'
           object Panel2: TPanel
@@ -109,15 +115,15 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 15
                 Caption = 'lMagnitude'
               end
-              object cbFiles: TCheckBox
+              object cbChartFiles: TCheckBox
                 Left = 3
-                Top = 1
+                Top = 3
                 Width = 97
                 Height = 17
-                Caption = 'cbFiles'
+                Caption = 'cbChartFiles'
                 TabOrder = 0
               end
-              object RadioButton3: TRadioButton
+              object rbChartCount: TRadioButton
                 Left = 31
                 Top = 26
                 Width = 113
@@ -125,7 +131,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Caption = 'rbCount'
                 TabOrder = 1
               end
-              object rbSize: TRadioButton
+              object rbChartSize: TRadioButton
                 Left = 129
                 Top = 26
                 Width = 113
@@ -297,7 +303,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 22
                 OnClick = sbFHCF1Click
               end
-              object cbCategory: TCheckBox
+              object cbChartCategory: TCheckBox
                 Left = 3
                 Top = 1
                 Width = 97
@@ -355,7 +361,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 15
                 Caption = '.'
               end
-              object CheckListBox1: TCheckListBox
+              object clbFolderHistory: TCheckListBox
                 Left = 1
                 Top = 79
                 Width = 245
@@ -368,7 +374,7 @@ object FrameFolderHistory: TFrameFolderHistory
           object Chart1: TChart
             Left = 249
             Top = 0
-            Width = 1335
+            Width = 1310
             Height = 714
             Title.Text.Strings = (
               'TChart')
@@ -384,7 +390,7 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel6: TPanel
             Left = 0
             Top = 0
-            Width = 1584
+            Width = 1559
             Height = 30
             Align = alTop
             TabOrder = 0
@@ -408,11 +414,12 @@ object FrameFolderHistory: TFrameFolderHistory
           object StringGrid1: TStringGrid
             Left = 0
             Top = 30
-            Width = 1584
+            Width = 1559
             Height = 684
             Align = alClient
             FixedCols = 0
             TabOrder = 1
+            OnDrawCell = StringGrid1DrawCell
           end
         end
         object tsTimeLine: TTabSheet
@@ -421,7 +428,7 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel7: TPanel
             Left = 0
             Top = 0
-            Width = 1584
+            Width = 1559
             Height = 30
             Align = alTop
             TabOrder = 0
@@ -461,33 +468,639 @@ object FrameFolderHistory: TFrameFolderHistory
       object PageControl3: TPageControl
         Left = 0
         Top = 0
-        Width = 1592
+        Width = 1567
         Height = 849
-        ActivePage = TabSheet1
+        ActivePage = tsCompareFolder
         Align = alClient
         TabOrder = 0
-        object TabSheet1: TTabSheet
-          Caption = 'TabSheet1'
+        object tsCompareGrid: TTabSheet
+          Caption = 'tsCompareGrid'
+          object Splitter1: TSplitter
+            Left = 729
+            Top = 56
+            Height = 763
+            OnMoved = Splitter1Moved
+            ExplicitLeft = 687
+            ExplicitTop = 62
+          end
+          object Panel8: TPanel
+            Left = 0
+            Top = 0
+            Width = 1559
+            Height = 56
+            Align = alTop
+            TabOrder = 0
+            DesignSize = (
+              1559
+              56)
+            object sbQuickSearch: TSpeedButton
+              Left = 0
+              Top = 0
+              Width = 23
+              Height = 22
+              ImageIndex = 0
+            end
+            object sbGoSearch: TSpeedButton
+              Left = 29
+              Top = 0
+              Width = 23
+              Height = 22
+              ImageIndex = 1
+              OnClick = sbGoSearchClick
+            end
+            object sbSearchSyntax: TSpeedButton
+              Left = 1534
+              Top = 0
+              Width = 23
+              Height = 22
+              Anchors = [akTop, akRight]
+              ImageIndex = 3
+              ExplicitLeft = 1559
+            end
+            object lSearchDetails: TLabel
+              Left = 1
+              Top = 32
+              Width = 22
+              Height = 15
+              Caption = 'N/A'
+            end
+            object eSearch: TComboBox
+              Left = 58
+              Top = 0
+              Width = 1470
+              Height = 23
+              Anchors = [akLeft, akTop, akRight]
+              TabOrder = 0
+              OnChange = eSearchChange
+              OnKeyPress = eSearchKeyPress
+            end
+            object ComboBox2: TComboBox
+              Left = 58
+              Top = 29
+              Width = 136
+              Height = 23
+              Style = csDropDownList
+              TabOrder = 1
+            end
+            object cbCompareShowFullPath: TCheckBox
+              Left = 200
+              Top = 33
+              Width = 113
+              Height = 17
+              Caption = 'cbCompareShowFullPath'
+              TabOrder = 2
+            end
+            object cbCompareColourCode: TCheckBox
+              Left = 319
+              Top = 33
+              Width = 130
+              Height = 17
+              Caption = 'CheckBox2'
+              TabOrder = 3
+              OnClick = cbCompareColourCodeClick
+            end
+          end
+          object Panel9: TPanel
+            Left = 0
+            Top = 56
+            Width = 729
+            Height = 763
+            Align = alLeft
+            TabOrder = 1
+            object Panel11: TPanel
+              Left = 1
+              Top = 1
+              Width = 727
+              Height = 34
+              Align = alTop
+              TabOrder = 0
+              object SpeedButton7: TSpeedButton
+                Left = 2
+                Top = 6
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object SpeedButton8: TSpeedButton
+                Left = 167
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton9: TSpeedButton
+                Left = 196
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton10: TSpeedButton
+                Left = 225
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton11: TSpeedButton
+                Left = 254
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton12: TSpeedButton
+                Left = 283
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton13: TSpeedButton
+                Left = 312
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton14: TSpeedButton
+                Left = 341
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton8Click
+              end
+              object SpeedButton15: TSpeedButton
+                Left = 370
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton15Click
+              end
+              object Label1: TLabel
+                Left = 414
+                Top = 9
+                Width = 34
+                Height = 15
+                Caption = 'Label1'
+              end
+              object BitBtn1: TBitBtn
+                Left = 31
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = BitBtn1Click
+              end
+            end
+            object StringGrid2: TStringGrid
+              Left = 1
+              Top = 35
+              Width = 727
+              Height = 727
+              Align = alClient
+              FixedCols = 0
+              TabOrder = 1
+              OnDrawCell = StringGrid2DrawCell
+            end
+          end
+          object Panel10: TPanel
+            Left = 732
+            Top = 56
+            Width = 827
+            Height = 763
+            Align = alClient
+            TabOrder = 2
+            object StringGrid3: TStringGrid
+              Left = 1
+              Top = 35
+              Width = 825
+              Height = 727
+              Align = alClient
+              FixedCols = 0
+              TabOrder = 0
+              OnDrawCell = StringGrid3DrawCell
+            end
+            object Panel12: TPanel
+              Left = 1
+              Top = 1
+              Width = 825
+              Height = 34
+              Align = alTop
+              TabOrder = 1
+              object SpeedButton16: TSpeedButton
+                Left = 2
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object SpeedButton17: TSpeedButton
+                Left = 167
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton20: TSpeedButton
+                Left = 196
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton21: TSpeedButton
+                Left = 225
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton22: TSpeedButton
+                Left = 254
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton23: TSpeedButton
+                Left = 283
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton24: TSpeedButton
+                Left = 312
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton25: TSpeedButton
+                Left = 341
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton17Click
+              end
+              object SpeedButton26: TSpeedButton
+                Left = 370
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton26Click
+              end
+              object Label3: TLabel
+                Left = 414
+                Top = 9
+                Width = 34
+                Height = 15
+                Caption = 'Label1'
+              end
+              object BitBtn2: TBitBtn
+                Left = 31
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = BitBtn2Click
+              end
+            end
+          end
         end
-        object TabSheet2: TTabSheet
-          Caption = 'TabSheet2'
+        object tsCompareFolder: TTabSheet
+          Caption = 'tsCompareFolder'
           ImageIndex = 1
+          object Splitter2: TSplitter
+            Left = 729
+            Top = 27
+            Height = 792
+            OnMoved = Splitter2Moved
+            ExplicitLeft = 724
+            ExplicitTop = 29
+          end
+          object Panel13: TPanel
+            Left = 0
+            Top = 0
+            Width = 1559
+            Height = 27
+            Align = alTop
+            TabOrder = 0
+            DesignSize = (
+              1559
+              27)
+            object SpeedButton3: TSpeedButton
+              Left = 0
+              Top = 0
+              Width = 23
+              Height = 22
+              ImageIndex = 0
+            end
+            object sbCompareFolderSearch: TSpeedButton
+              Left = 29
+              Top = 0
+              Width = 23
+              Height = 22
+              ImageIndex = 1
+              OnClick = sbCompareFolderSearchClick
+            end
+            object SpeedButton5: TSpeedButton
+              Left = 1378
+              Top = 0
+              Width = 23
+              Height = 22
+              Anchors = [akTop, akRight]
+              ImageIndex = 3
+            end
+            object ComboBox3: TComboBox
+              Left = 58
+              Top = 0
+              Width = 1314
+              Height = 23
+              Anchors = [akLeft, akTop, akRight]
+              TabOrder = 0
+            end
+            object CheckBox5: TCheckBox
+              Left = 1407
+              Top = 2
+              Width = 97
+              Height = 17
+              Caption = 'CheckBox2'
+              TabOrder = 1
+            end
+          end
+          object Panel14: TPanel
+            Left = 732
+            Top = 27
+            Width = 827
+            Height = 792
+            Align = alClient
+            TabOrder = 1
+            object StringGrid4: TStringGrid
+              Left = 1
+              Top = 35
+              Width = 825
+              Height = 756
+              Align = alClient
+              FixedCols = 0
+              TabOrder = 0
+              OnDrawCell = StringGrid5DrawCell
+            end
+            object Panel17: TPanel
+              Left = 1
+              Top = 1
+              Width = 825
+              Height = 34
+              Align = alTop
+              TabOrder = 1
+              object SpeedButton33: TSpeedButton
+                Left = 2
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object SpeedButton34: TSpeedButton
+                Left = 167
+                Top = 6
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object Label5: TLabel
+                Left = 212
+                Top = 10
+                Width = 34
+                Height = 15
+                Caption = 'Label4'
+              end
+              object BitBtn6: TBitBtn
+                Left = 31
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = BitBtn6Click
+              end
+            end
+          end
+          object Panel16: TPanel
+            Left = 0
+            Top = 27
+            Width = 729
+            Height = 792
+            Align = alLeft
+            TabOrder = 2
+            object StringGrid5: TStringGrid
+              Left = 1
+              Top = 35
+              Width = 727
+              Height = 756
+              Align = alClient
+              FixedCols = 0
+              TabOrder = 0
+              OnDrawCell = StringGrid5DrawCell
+            end
+            object Panel15: TPanel
+              Left = 1
+              Top = 1
+              Width = 727
+              Height = 34
+              Align = alTop
+              TabOrder = 1
+              object SpeedButton31: TSpeedButton
+                Left = 2
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object SpeedButton32: TSpeedButton
+                Left = 167
+                Top = 6
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+              end
+              object Label4: TLabel
+                Left = 212
+                Top = 10
+                Width = 34
+                Height = 15
+                Caption = 'Label4'
+              end
+              object BitBtn5: TBitBtn
+                Left = 31
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = BitBtn5Click
+              end
+            end
+          end
         end
-        object TabSheet6: TTabSheet
-          Caption = 'TabSheet6'
+        object tsCompareTree: TTabSheet
+          Caption = 'tsCompareTree'
           ImageIndex = 2
+          object Splitter3: TSplitter
+            Left = 729
+            Top = 27
+            Height = 792
+            ExplicitLeft = 734
+            ExplicitTop = 33
+          end
+          object Panel18: TPanel
+            Left = 0
+            Top = 0
+            Width = 1559
+            Height = 27
+            Align = alTop
+            TabOrder = 0
+            object sbCompareTree: TSpeedButton
+              Left = 0
+              Top = 0
+              Width = 23
+              Height = 22
+              ImageIndex = 0
+              OnClick = sbCompareTreeClick
+            end
+          end
+          object Panel19: TPanel
+            Left = 732
+            Top = 27
+            Width = 827
+            Height = 792
+            Align = alClient
+            TabOrder = 1
+            object Panel20: TPanel
+              Left = 1
+              Top = 1
+              Width = 825
+              Height = 34
+              Align = alTop
+              TabOrder = 0
+              object SpeedButton29: TSpeedButton
+                Left = 170
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton29Click
+              end
+              object SpeedButton6: TSpeedButton
+                Left = 5
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = ShowCalendar
+              end
+              object bCompareTreeRight: TBitBtn
+                Left = 34
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = bCompareTreeRightClick
+              end
+            end
+            object TreeView2: TTreeView
+              Left = 1
+              Top = 35
+              Width = 825
+              Height = 756
+              Align = alClient
+              Indent = 19
+              TabOrder = 1
+              OnExpanding = TreeView2Expanding
+            end
+          end
+          object Panel21: TPanel
+            Left = 0
+            Top = 27
+            Width = 729
+            Height = 792
+            Align = alLeft
+            TabOrder = 2
+            object Panel22: TPanel
+              Left = 1
+              Top = 1
+              Width = 727
+              Height = 34
+              Align = alTop
+              TabOrder = 0
+              object SpeedButton28: TSpeedButton
+                Left = 167
+                Top = 6
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = SpeedButton28Click
+              end
+              object SpeedButton27: TSpeedButton
+                Left = 2
+                Top = 7
+                Width = 23
+                Height = 22
+                ImageIndex = 0
+                OnClick = ShowCalendar
+              end
+              object bCompareTreeLeft: TBitBtn
+                Left = 31
+                Top = 5
+                Width = 130
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 0
+                OnClick = bCompareTreeLeftClick
+              end
+            end
+            object TreeView1: TTreeView
+              Left = 1
+              Top = 35
+              Width = 727
+              Height = 756
+              Align = alClient
+              Indent = 19
+              TabOrder = 1
+              OnExpanding = TreeView1Expanding
+            end
+          end
         end
       end
     end
   end
   object puFHQuickSearch: TPopupMenu
-    Left = 1313
-    Top = 40
+    Left = 497
+    Top = 8
   end
   object puFHCompareSave: TPopupMenu
     OnPopup = puFHCompareSavePopup
-    Left = 1033
-    Top = 24
+    Left = 601
+    Top = 8
     object miFHCSSaveAll: TMenuItem
       Caption = '.'
       ImageIndex = 49
@@ -506,8 +1119,8 @@ object FrameFolderHistory: TFrameFolderHistory
   end
   object puGenericTable: TPopupMenu
     OnPopup = puGenericTablePopup
-    Left = 1081
-    Top = 88
+    Left = 833
+    Top = 8
     object miGenericExport: TMenuItem
       Caption = '.'
       ImageIndex = 49
@@ -526,8 +1139,8 @@ object FrameFolderHistory: TFrameFolderHistory
   object ilToggle: TImageList
     Height = 9
     Width = 9
-    Left = 1099
-    Top = 1
+    Left = 699
+    Top = 9
     Bitmap = {
       494C010102000400040009000900FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000240000000900000001002000000000001005
@@ -581,8 +1194,8 @@ object FrameFolderHistory: TFrameFolderHistory
   object ilTabs: TImageList
     DrawingStyle = dsTransparent
     ShareImages = True
-    Left = 1152
-    Top = 2
+    Left = 768
+    Top = 10
     Bitmap = {
       494C01011300A402040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005000000001002000000000000050
@@ -1252,8 +1865,8 @@ object FrameFolderHistory: TFrameFolderHistory
       000000000000}
   end
   object puCharts: TPopupMenu
-    Left = 1199
-    Top = 88
+    Left = 935
+    Top = 8
     object miChartOptions: TMenuItem
       Caption = '.'
       Enabled = False
@@ -1278,7 +1891,7 @@ object FrameFolderHistory: TFrameFolderHistory
     end
   end
   object puFHSelectDate: TPopupMenu
-    Left = 1401
-    Top = 44
+    Left = 385
+    Top = 4
   end
 end
