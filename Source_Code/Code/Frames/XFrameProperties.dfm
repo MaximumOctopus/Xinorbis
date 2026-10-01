@@ -20,7 +20,7 @@ object FrameProperties: TFrameProperties
     Top = 0
     Width = 1514
     Height = 726
-    ActivePage = tsCategories
+    ActivePage = tsTemporary
     Align = alClient
     Images = ilTabs
     TabOrder = 0
@@ -297,8 +297,6 @@ object FrameProperties: TFrameProperties
         Align = alClient
         PopupMenu = puCharts
         TabOrder = 1
-        ExplicitLeft = 268
-        ExplicitWidth = 1238
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
         object Series2: TPieSeries
@@ -353,7 +351,6 @@ object FrameProperties: TFrameProperties
           PopupMenu = puType
           TabOrder = 0
           OnClick = tvTypesClick
-          ExplicitWidth = 263
         end
         object sgTypes: TStringGrid
           Left = 1
@@ -366,7 +363,6 @@ object FrameProperties: TFrameProperties
           ScrollBars = ssNone
           TabOrder = 1
           OnDrawCell = sgCategoriesDrawCell
-          ExplicitWidth = 263
         end
       end
     end
@@ -1533,13 +1529,12 @@ object FrameProperties: TFrameProperties
     object tsTemporary: TTabSheet
       ImageIndex = 10
       object splitTemporary: TSplitter
-        Left = 777
+        Left = 718
         Top = 27
         Height = 669
         OnMoved = splitTemporaryMoved
-        ExplicitLeft = 944
-        ExplicitTop = 208
-        ExplicitHeight = 100
+        ExplicitLeft = 727
+        ExplicitTop = 33
       end
       object Panel11: TPanel
         Left = 0
@@ -1609,29 +1604,9 @@ object FrameProperties: TFrameProperties
           OnClick = rbTempBySizeClick
         end
       end
-      object sgTemporary: TStringGrid
-        Left = 0
-        Top = 27
-        Width = 777
-        Height = 669
-        Align = alLeft
-        ColCount = 2
-        DefaultDrawing = False
-        FixedCols = 0
-        RowCount = 2
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWhite
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        PopupMenu = puSearch
-        TabOrder = 1
-        OnDrawCell = sgTemporaryDrawCell
-      end
       object vtcTemporary: TChart
-        Left = 780
-        Top = 27
+        Left = 844
+        Top = 91
         Width = 726
         Height = 669
         Title.Text.Strings = (
@@ -1640,9 +1615,8 @@ object FrameProperties: TFrameProperties
         View3DOptions.Orthogonal = False
         View3DOptions.Perspective = 0
         View3DOptions.Rotation = 360
-        Align = alClient
         PopupMenu = puCharts
-        TabOrder = 2
+        TabOrder = 1
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
         object Series8: TPieSeries
@@ -1668,6 +1642,59 @@ object FrameProperties: TFrameProperties
           Frame.OuterBrush.Gradient.Visible = True
           Frame.Width = 4
           OtherSlice.Legend.Visible = False
+        end
+      end
+      object Panel17: TPanel
+        Left = 0
+        Top = 27
+        Width = 718
+        Height = 669
+        Align = alLeft
+        Caption = 'Panel17'
+        TabOrder = 2
+        ExplicitLeft = 3
+        object sgTemporary: TStringGrid
+          Left = 1
+          Top = 1
+          Width = 716
+          Height = 634
+          Align = alClient
+          ColCount = 2
+          DefaultDrawing = False
+          FixedCols = 0
+          RowCount = 2
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          PopupMenu = puSearch
+          TabOrder = 0
+          OnDrawCell = sgTemporaryDrawCell
+          ExplicitLeft = 206
+          ExplicitTop = -135
+          ExplicitWidth = 992
+          ExplicitHeight = 669
+        end
+        object pTempFilesWarning: TPanel
+          Left = 1
+          Top = 635
+          Width = 716
+          Height = 33
+          Align = alBottom
+          TabOrder = 1
+          Visible = False
+          ExplicitLeft = -327
+          ExplicitTop = 579
+          object lTempWarning: TLabel
+            Left = 8
+            Top = 8
+            Width = 6
+            Height = 15
+            Caption = '..'
+            OnClick = lTempWarningClick
+          end
         end
       end
     end

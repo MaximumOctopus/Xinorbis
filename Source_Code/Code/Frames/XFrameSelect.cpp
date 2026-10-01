@@ -101,7 +101,9 @@ void TFrameSelect::Init()
 			index--;
 		}
 
-        cbScanPath->ItemIndex = 0;
+		cbScanPath->ItemIndex = 0;
+
+		dlbSelect->Directory = cbScanPath->Text;
 	}
 	else
 	{
@@ -401,6 +403,63 @@ void __fastcall TFrameSelect::tsScanHistoryResize(TObject *Sender)
 	sgScanHistory->ColWidths[kScanHistoryDate] = HistoryWidths[kScanHistoryDate];
 	sgScanHistory->ColWidths[kScanHistoryTime] = HistoryWidths[kScanHistoryTime];
 	sgScanHistory->ColWidths[kScanHistoryPath] = sgScanHistory->Width - (__WidthOfScrollbar + HistoryWidths[kScanHistoryDate] + HistoryWidths[kScanHistoryTime]);
+}
+
+
+void __fastcall TFrameSelect::sgScanHistoryDblClick(TObject *Sender)
+{
+	std::wstring s = sgScanHistory->Cells[2][sgScanHistory->Selection.Top].c_str();
+
+	if (DirectoryExists(s.c_str()))
+	{
+		cbScanPath->Text = s.c_str();
+
+		if (sgScanHistory->Cells[3][sgScanHistory->Selection.Top] != L"" ||
+			sgScanHistory->Cells[4][sgScanHistory->Selection.Top] != L"")
+		{
+			std::wstring message = GLanguageHandler->Text[kContainsExclusions];
+
+			std::wstring exclude_files   = sgScanHistory->Cells[3][sgScanHistory->Selection.Top].c_str();
+			std::wstring exclude_folders = sgScanHistory->Cells[4][sgScanHistory->Selection.Top].c_str();
+
+			auto ret = MessageDlg((message + L"\n\n" +
+								   exclude_files + L"\n" +
+								   exclude_folders).c_str(),
+								   mtWarning,
+								   mbYesNoCancel, 0);
+
+			if (ret == mrYes)
+			{
+				Utility::StringToVector(sgScanHistory->Cells[3][sgScanHistory->Selection.Top].c_str(),
+										GScanEngine->Data[DataSource].ExcludedFiles);
+				Utility::StringToVector(sgScanHistory->Cells[4][sgScanHistory->Selection.Top].c_str(),
+										GScanEngine->Data[DataSource].ExcludedFolders);
+			}
+			else if (ret == mrNo)
+			{
+				GScanEngine->Data[DataSource].ExcludedFiles.clear();
+				GScanEngine->Data[DataSource].ExcludedFolders.clear();
+			}
+
+			if (ret != mrCancel)
+			{
+				if (OnNewScan)
+				{
+					OnNewScan(s, DataSource, false);
+				}
+			}
+
+			return;
+		}
+
+		OnNewScan(s, DataSource, false);
+	}
+	else
+	{
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kFolderDoesNotExist],
+					XDialogTypeWarning);
+	}
 }
 
 

@@ -1901,6 +1901,15 @@ void TFrameProperties::InitTempTab()
 }
 
 
+void __fastcall TFrameProperties::lTempWarningClick(TObject *Sender)
+{
+	if (OnOpenSettingsTab)
+	{
+		OnOpenSettingsTab(2);
+	}
+}
+
+
 void __fastcall TFrameProperties::splitTemporaryMoved(TObject *Sender)
 {
 	sgTemporary->ColWidths[0] = TempWidths[1];
@@ -3363,3 +3372,4 @@ void __fastcall TFrameProperties::miDeleteAllClick(TObject *Sender)
 		}
 	}
 }
+

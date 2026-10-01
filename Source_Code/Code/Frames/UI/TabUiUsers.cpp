@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -76,9 +78,6 @@ void TabUiUsers::Table(TStringGrid* grid, int DataSource, int display_mode)
 		return;
 	}
 
-
-	int count = 0;
-	unsigned __int64 size = 0;
 	int Row = 1;
 
 	grid->BeginUpdate();
@@ -87,13 +86,11 @@ void TabUiUsers::Table(TStringGrid* grid, int DataSource, int display_mode)
 
 	for (UserData *user : GScanEngine->Data[DataSource].Users)
 	{
+		grid->Cells[1][Row] = user->Name.c_str();
+
 		switch (display_mode)
 		{
 		case kDisplayModeShowAll:
-			count = user->Count;
-			size  = user->Size;
-
-			grid->Cells[1][Row] = user->Name.c_str();
 			grid->Cells[2][Row] = user->Count;
 			grid->Cells[3][Row] = user->PercentCountString.c_str();
 
@@ -108,9 +105,18 @@ void TabUiUsers::Table(TStringGrid* grid, int DataSource, int display_mode)
 			break;
 
 		default:
-			count = user->CategoryDataQty[display_mode];
-			size  = user->CategoryDataSize[display_mode];
-			// to do
+			grid->Cells[2][Row] = user->CategoryDataQty[display_mode];
+			grid->Cells[3][Row] = Convert::DoubleToPercent((double)user->CategoryDataQty[display_mode] / (double)GScanEngine->Data[DataSource].FileCount).c_str();
+
+			grid->Cells[5][Row] = Convert::ConvertToUsefulUnit(user->CategoryDataSize[display_mode]).c_str();
+			grid->Cells[6][Row] = Convert::DoubleToPercent((double)user->CategoryDataSize[display_mode] / (double)GScanEngine->Data[DataSource].TotalSize).c_str();
+
+			grid->Cells[7][Row] = TColor(kSpectrumColours[(Row - 1) % kSpectrumMod]);
+			grid->Cells[8][Row] = user->CategoryDataSize[display_mode];
+
+			grid->Cells[9][Row] = (int)(user->CategoryDataQty[display_mode] * 50);
+			grid->Cells[10][Row] = (int)(user->CategoryDataSize[display_mode] * 50);
+			break;
 		}
 
 		Row++;

@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -37,6 +39,8 @@ bool SplashHandler::ProcessWindowsVisible()
 
 void SplashHandler::ShowProcessWindow()
 {
+	FormProgress->ClearIcons();
+
 	FormProgress->Visible = true;
 }
 

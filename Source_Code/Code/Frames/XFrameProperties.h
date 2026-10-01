@@ -226,7 +226,6 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbUsersBar;
 	TRadioButton *rbUsersSize;
 	TRadioButton *rbUsersQuantity;
-	TStringGrid *sgTemporary;
 	TSplitter *splitTemporary;
 	TChart *vtcTemporary;
 	TSpeedButton *SpeedButton6;
@@ -319,6 +318,10 @@ __published:	// IDE-managed Components
 	TPieSeries *Series8;
 	TPieSeries *Series9;
 	TLabel *lTempStatus;
+	TPanel *Panel17;
+	TStringGrid *sgTemporary;
+	TPanel *pTempFilesWarning;
+	TLabel *lTempWarning;
 	void __fastcall sbCategoriesPieClick(TObject *Sender);
 	void __fastcall sbCategoriesBarClick(TObject *Sender);
 	void __fastcall miOA1Click(TObject *Sender);
@@ -431,6 +434,7 @@ __published:	// IDE-managed Components
 	void __fastcall cbExtensionsColourCodeClick(TObject *Sender);
 	void __fastcall sgExtensionsDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
+	void __fastcall lTempWarningClick(TObject *Sender);
 private:	// User declarations
 
 	static constexpr int CategoryWidths[11] = { 10, 100, 50, 52, 4, 62, 52, -1, -1, -1, -1 };
@@ -547,6 +551,7 @@ public:		// User declarations
 
 	std::function<void(int)> OnChartsChanged;
 	std::function<void(const std::wstring, int)> OnNewSearch;
+	std::function<void(int)> OnOpenSettingsTab;
 	std::function<void(const std::wstring, int, bool)> OnScanWithNewPath;
 	std::function<void(const std::wstring)> OnStatusBarText;
 };

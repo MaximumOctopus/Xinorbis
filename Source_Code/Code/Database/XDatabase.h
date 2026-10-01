@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -16,17 +18,26 @@
 #include <Vcl.Grids.hpp>
 #include <vector>
 
+#include "DatabaseODBC.h"
+#include "DatabaseSqlite.h"
+
+#include "ConstantsSystem.h"
 #include "SizeOfFolder.h"
 
 
 class XDatabase
 {
-public:
+	DBMode dbMode = DBMode::None;
+
+	DatabaseODBC* dbODBC;
+	DatabaseSqlite* dbSQlite;
 
 	bool InitSqlite(const std::wstring);
 
 	bool InitODBC(const std::wstring);
 	void CloseODBC();
+
+public:
 
 	bool GetAllAvailableTables(std::vector<std::wstring> &);
 	bool TableExists(const std::wstring);

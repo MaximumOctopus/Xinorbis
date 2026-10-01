@@ -72,6 +72,7 @@ __published:	// IDE-managed Components
 	void __fastcall miExploreFromScanHistoryClick(TObject *Sender);
 	void __fastcall miShowInFolderHistoryClick(TObject *Sender);
 	void __fastcall miSaveAsClick(TObject *Sender);
+	void __fastcall sgScanHistoryDblClick(TObject *Sender);
 private:
 
 	const int kScanHistoryDate = 0;

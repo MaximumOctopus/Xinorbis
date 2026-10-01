@@ -207,6 +207,9 @@ void TFrameSummary::BuildSummaryLabels()
 		lSAFFX->Caption = L"-";
 	}
 
+	lSEFX->Caption = GScanEngine->Data[DataSource].NullFiles.size();
+	lSEDX->Caption = GScanEngine->Data[DataSource].NullFolders.size();
+
 	Statistics stats = GScanEngine->Data[DataSource].Stats;
 
 	lSLFX->Caption = (stats.LargestFileName + L" (" + Convert::ConvertToUsefulUnit(stats.LargestFileSize) + L")").c_str();

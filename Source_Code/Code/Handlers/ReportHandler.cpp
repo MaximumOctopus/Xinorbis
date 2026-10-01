@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -55,7 +57,7 @@ bool ReportHandler::CopyReportToClipboard(std::vector<std::wstring>*)
 
 bool ReportHandler::CopyReportToClipboard(const std::wstring file_name)
 {
-	//
+	return false;
 }
 
 
@@ -64,6 +66,8 @@ bool ReportHandler::CopyReportToClipboard(const std::wstring file_name)
 
 bool ReportHandler::SaveCSV(CSVReportOptions &report, int DataSource, bool copy_to_clipboard, bool auto_open)
 {
+	bool success = true;
+
 	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	if (report.FullList)
@@ -77,7 +81,7 @@ bool ReportHandler::SaveCSV(CSVReportOptions &report, int DataSource, bool copy_
 
 	if (!report.FileName.empty())
 	{
-		SaveReport(report.FileName, data);
+		success = SaveReport(report.FileName, data);
 	}
 
 	if (copy_to_clipboard)
@@ -86,6 +90,8 @@ bool ReportHandler::SaveCSV(CSVReportOptions &report, int DataSource, bool copy_
 	}
 
 	delete data;
+
+	return success;
 }
 
 
@@ -97,13 +103,15 @@ bool ReportHandler::SaveDate(DateReportOptions &report, int DataSource, bool cop
 
 bool ReportHandler::SaveHTML(HTMLReportOptions &report, int DataSource, bool copy_to_clipboard, bool auto_open)
 {
+	bool success = true;
+
 	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	ReportHTML::Generate(report, data, DataSource);
 
 	if (!report.FileName.empty())
 	{
-		SaveReport(report.FileName, data);
+		success = SaveReport(report.FileName, data);
 	}
 
 	if (copy_to_clipboard)
@@ -112,6 +120,8 @@ bool ReportHandler::SaveHTML(HTMLReportOptions &report, int DataSource, bool cop
 	}
 
 	delete data;
+
+	return success;
 }
 
 
@@ -121,9 +131,11 @@ bool ReportHandler::SaveHTMLFileList(int DataSource, const std::wstring file_nam
 
 	ReportHTML::FileReport(data, DataSource, file_name, title);
 
-	SaveReport(file_name, data);
+	bool success = SaveReport(file_name, data);
 
 	delete data;
+
+	return success;
 }
 
 
@@ -135,13 +147,15 @@ bool ReportHandler::SaveJSON(JSONReportOptions &report, int DataSource, bool cop
 
 bool ReportHandler::SaveText(TextReportOptions &report, int DataSource, bool copy_to_clipboard, bool auto_open)
 {
+	bool success = true;
+
 	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	ReportText::Generate(report, data, DataSource);
 
 	if (!report.FileName.empty())
 	{
-		SaveReport(report.FileName, data);
+		success = SaveReport(report.FileName, data);
 	}
 
 	if (copy_to_clipboard)
@@ -150,6 +164,8 @@ bool ReportHandler::SaveText(TextReportOptions &report, int DataSource, bool cop
 	}
 
 	delete data;
+
+    return success;
 }
 
 
@@ -159,21 +175,25 @@ bool ReportHandler::SaveTextSearch(const std::wstring file_name, const std::wstr
 
 	ReportText::SearchResults(data, DataSource, path);
 
-	SaveReport(file_name, data);
+	bool success = SaveReport(file_name, data);
 
 	delete data;
+
+	return success;
 }
 
 
 bool ReportHandler::SaveTree(TreeReportOptions &report, int DataSource, bool copy_to_clipboard, bool auto_open)
 {
+	bool success = true;
+
 	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	ReportTree::Generate(report, data, DataSource);
 
 	if (!report.FileName.empty())
 	{
-		SaveReport(report.FileName, data);
+		success = SaveReport(report.FileName, data);
 	}
 
 	if (copy_to_clipboard)
@@ -182,6 +202,8 @@ bool ReportHandler::SaveTree(TreeReportOptions &report, int DataSource, bool cop
 	}
 
 	delete data;
+
+	return success;
 }
 
 
@@ -194,6 +216,8 @@ bool ReportHandler::SaveXinorbis(XinorbisReportOptions &report, int DataSource, 
 
 bool ReportHandler::SaveXML(XMLReportOptions &report, int DataSource, bool copy_to_clipboard, bool auto_open)
 {
+	bool success = true;
+
 	std::vector<std::wstring> *data = new std::vector<std::wstring>;
 
 	if (report.Data == kDataSummary)
@@ -207,7 +231,7 @@ bool ReportHandler::SaveXML(XMLReportOptions &report, int DataSource, bool copy_
 
 	if (!report.FileName.empty())
 	{
-		SaveReport(report.FileName, data);
+		success = SaveReport(report.FileName, data);
 	}
 
 	if (copy_to_clipboard)
@@ -216,6 +240,8 @@ bool ReportHandler::SaveXML(XMLReportOptions &report, int DataSource, bool copy_
 	}
 
 	delete data;
+
+	return success;
 }
 
 

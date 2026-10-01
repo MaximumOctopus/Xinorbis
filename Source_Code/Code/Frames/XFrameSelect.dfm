@@ -467,7 +467,9 @@ object FrameSelect: TFrameSelect
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         PopupMenu = puScanHistory
         TabOrder = 1
+        OnDblClick = sgScanHistoryDblClick
         OnDrawCell = sgScanHistoryDrawCell
+        ExplicitTop = 2
       end
     end
   end

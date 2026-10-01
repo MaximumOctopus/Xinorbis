@@ -57,10 +57,10 @@ __published:	// IDE-managed Components
 	TTabSheet *tsTable;
 	TTabSheet *tsTimeLine;
 	TPanel *Panel2;
-	TChart *Chart1;
-	TPanel *Panel3;
+	TChart *vtcFolderHistory;
+	TPanel *pStatsChartFiles;
 	TLabel *lMagnitude;
-	TPanel *Panel4;
+	TPanel *pStatsChartCategory;
 	TSpeedButton *sbFHCF1;
 	TSpeedButton *sbFHCF2;
 	TSpeedButton *sbFHCF3;
@@ -92,8 +92,8 @@ __published:	// IDE-managed Components
 	TLabel *lTotalSizeValue;
 	TCheckListBox *clbFolderHistory;
 	TPanel *Panel6;
-	TRadioButton *RadioButton1;
-	TRadioButton *RadioButton2;
+	TRadioButton *rbStatsTableToday;
+	TRadioButton *rbStatsTablePrevious;
 	TStringGrid *StringGrid1;
 	TPanel *Panel7;
 	TSpeedButton *SpeedButton18;
@@ -183,6 +183,9 @@ __published:	// IDE-managed Components
 	TSpeedButton *SpeedButton6;
 	TSpeedButton *SpeedButton27;
 	TSpeedButton *SpeedButton2;
+	TSpeedButton *sbStatsInfo;
+	TSpeedButton *sbShowManual;
+	TSpeedButton *SpeedButton30;
 	void __fastcall miFHCSSaveAllClick(TObject *Sender);
 	void __fastcall miFHCSSaveDoClick(TObject *Sender);
 	void __fastcall miFHCSSaveDontClick(TObject *Sender);
@@ -198,7 +201,6 @@ __published:	// IDE-managed Components
 	void __fastcall bCompareTreeLeftClick(TObject *Sender);
 	void __fastcall bCompareTreeRightClick(TObject *Sender);
 	void __fastcall SpeedButton28Click(TObject *Sender);
-	void __fastcall SpeedButton29Click(TObject *Sender);
 	void __fastcall sbCompareTreeClick(TObject *Sender);
 	void __fastcall ShowCalendar(TObject *Sender);
 	void __fastcall Splitter2Moved(TObject *Sender);
@@ -233,6 +235,19 @@ __published:	// IDE-managed Components
 	void __fastcall eSearchKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall sbGoSearchClick(TObject *Sender);
 	void __fastcall sbCompareFolderSearchClick(TObject *Sender);
+	void __fastcall ComboBox3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall sbQuickSearchClick(TObject *Sender);
+	void __fastcall cbChartFilesClick(TObject *Sender);
+	void __fastcall cbChartCategoryClick(TObject *Sender);
+	void __fastcall sbStatsInfoClick(TObject *Sender);
+	void __fastcall SpeedButton32Click(TObject *Sender);
+	void __fastcall SpeedButton9Click(TObject *Sender);
+	void __fastcall SpeedButton20Click(TObject *Sender);
+	void __fastcall rbChartCountClick(TObject *Sender);
+	void __fastcall rbStatsTableTodayClick(TObject *Sender);
+	void __fastcall sbShowManualClick(TObject *Sender);
+	void __fastcall sbSearchSyntaxClick(TObject *Sender);
+
 
 
 private:
@@ -264,10 +279,17 @@ private:
 	void LoadSettings();
 	void SaveSettings();
 
+    int FindFolderHistoryItem(const std::wstring);
+
+	void BuildInformationTabs();
+
 	// tab stats
 	void InitTable();
     void BuildFolderHistoryTable();
 	void BuildFolderHistorySelectDataMenu();
+	void BuildFolderHistory(const std::wstring, const std::wstring);
+	void RepairFile(const std::wstring, const std::wstring);
+	void FileHistoryControlStatus(bool);
 
 	// tab compare
     void InitCompare();
@@ -292,6 +314,8 @@ public:
 	std::wstring GetFolderHistoryItemSelected();
 
 	bool GetAvailablePathContains(const std::wstring);
+
+	void SetSelectedPathWithoutExecute(const std::wstring);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameFolderHistory *FrameFolderHistory;

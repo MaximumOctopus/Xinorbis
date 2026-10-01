@@ -1,13 +1,13 @@
 object FrameFolderHistory: TFrameFolderHistory
   Left = 0
   Top = 0
-  Width = 1575
+  Width = 1569
   Height = 879
   TabOrder = 0
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 1575
+    Width = 1569
     Height = 879
     ActivePage = tsStats
     Align = alClient
@@ -17,13 +17,13 @@ object FrameFolderHistory: TFrameFolderHistory
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1567
+        Width = 1561
         Height = 105
         Align = alTop
         TabOrder = 0
         object SpeedButton1: TSpeedButton
           Left = 8
-          Top = 4
+          Top = 5
           Width = 97
           Height = 53
           OnClick = SpeedButton1Click
@@ -56,6 +56,13 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 22
           OnClick = SpeedButton2Click
         end
+        object sbStatsInfo: TSpeedButton
+          Left = 838
+          Top = 34
+          Width = 23
+          Height = 22
+          OnClick = sbStatsInfoClick
+        end
         object cbFHAvailablePath: TEdit
           Left = 343
           Top = 33
@@ -86,9 +93,9 @@ object FrameFolderHistory: TFrameFolderHistory
       object pcStats: TPageControl
         Left = 0
         Top = 105
-        Width = 1567
+        Width = 1561
         Height = 744
-        ActivePage = tsTable
+        ActivePage = tsChart
         Align = alClient
         TabOrder = 1
         OnChange = pcStatsChange
@@ -101,7 +108,7 @@ object FrameFolderHistory: TFrameFolderHistory
             Height = 714
             Align = alLeft
             TabOrder = 0
-            object Panel3: TPanel
+            object pStatsChartFiles: TPanel
               Left = 1
               Top = 1
               Width = 247
@@ -122,6 +129,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'cbChartFiles'
                 TabOrder = 0
+                OnClick = cbChartFilesClick
               end
               object rbChartCount: TRadioButton
                 Left = 31
@@ -130,6 +138,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'rbCount'
                 TabOrder = 1
+                OnClick = rbChartCountClick
               end
               object rbChartSize: TRadioButton
                 Left = 129
@@ -138,6 +147,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'RadioButton3'
                 TabOrder = 2
+                OnClick = rbChartCountClick
               end
               object rbMagnitudeCount: TRadioButton
                 Left = 31
@@ -146,6 +156,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'RadioButton3'
                 TabOrder = 3
+                OnClick = rbChartCountClick
               end
               object rbMagnitudeSize: TRadioButton
                 Left = 129
@@ -154,9 +165,10 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'RadioButton3'
                 TabOrder = 4
+                OnClick = rbChartCountClick
               end
             end
-            object Panel4: TPanel
+            object pStatsChartCategory: TPanel
               Left = 1
               Top = 103
               Width = 247
@@ -310,6 +322,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 17
                 Caption = 'CheckBox6'
                 TabOrder = 0
+                OnClick = cbChartCategoryClick
               end
             end
             object Panel5: TPanel
@@ -371,10 +384,10 @@ object FrameFolderHistory: TFrameFolderHistory
               end
             end
           end
-          object Chart1: TChart
+          object vtcFolderHistory: TChart
             Left = 249
             Top = 0
-            Width = 1310
+            Width = 1304
             Height = 714
             Title.Text.Strings = (
               'TChart')
@@ -390,31 +403,33 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel6: TPanel
             Left = 0
             Top = 0
-            Width = 1559
+            Width = 1553
             Height = 30
             Align = alTop
             TabOrder = 0
-            object RadioButton1: TRadioButton
+            object rbStatsTableToday: TRadioButton
               Left = 4
               Top = 6
               Width = 113
               Height = 17
-              Caption = 'RadioButton1'
+              Caption = 'rbStatsTableToday'
               TabOrder = 0
+              OnClick = rbStatsTableTodayClick
             end
-            object RadioButton2: TRadioButton
-              Left = 204
+            object rbStatsTablePrevious: TRadioButton
+              Left = 188
               Top = 6
               Width = 113
               Height = 17
               Caption = 'RadioButton1'
               TabOrder = 1
+              OnClick = rbStatsTableTodayClick
             end
           end
           object StringGrid1: TStringGrid
             Left = 0
             Top = 30
-            Width = 1559
+            Width = 1553
             Height = 684
             Align = alClient
             FixedCols = 0
@@ -428,7 +443,7 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel7: TPanel
             Left = 0
             Top = 0
-            Width = 1559
+            Width = 1553
             Height = 30
             Align = alTop
             TabOrder = 0
@@ -468,9 +483,9 @@ object FrameFolderHistory: TFrameFolderHistory
       object PageControl3: TPageControl
         Left = 0
         Top = 0
-        Width = 1567
+        Width = 1561
         Height = 849
-        ActivePage = tsCompareFolder
+        ActivePage = tsCompareGrid
         Align = alClient
         TabOrder = 0
         object tsCompareGrid: TTabSheet
@@ -486,19 +501,20 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel8: TPanel
             Left = 0
             Top = 0
-            Width = 1559
+            Width = 1553
             Height = 56
             Align = alTop
             TabOrder = 0
             DesignSize = (
-              1559
+              1553
               56)
             object sbQuickSearch: TSpeedButton
               Left = 0
-              Top = 0
+              Top = 2
               Width = 23
               Height = 22
               ImageIndex = 0
+              OnClick = sbQuickSearchClick
             end
             object sbGoSearch: TSpeedButton
               Left = 29
@@ -509,13 +525,14 @@ object FrameFolderHistory: TFrameFolderHistory
               OnClick = sbGoSearchClick
             end
             object sbSearchSyntax: TSpeedButton
-              Left = 1534
+              Left = 1483
               Top = 0
               Width = 23
               Height = 22
               Anchors = [akTop, akRight]
               ImageIndex = 3
-              ExplicitLeft = 1559
+              OnClick = sbSearchSyntaxClick
+              ExplicitLeft = 1503
             end
             object lSearchDetails: TLabel
               Left = 1
@@ -524,10 +541,20 @@ object FrameFolderHistory: TFrameFolderHistory
               Height = 15
               Caption = 'N/A'
             end
+            object sbShowManual: TSpeedButton
+              Left = 1512
+              Top = 2
+              Width = 23
+              Height = 22
+              Anchors = [akTop, akRight]
+              ImageIndex = 3
+              OnClick = sbShowManualClick
+              ExplicitLeft = 1532
+            end
             object eSearch: TComboBox
               Left = 58
               Top = 0
-              Width = 1470
+              Width = 1419
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
@@ -582,24 +609,24 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
               end
               object SpeedButton8: TSpeedButton
-                Left = 167
-                Top = 7
+                Left = 196
+                Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
                 OnClick = SpeedButton8Click
               end
               object SpeedButton9: TSpeedButton
-                Left = 196
-                Top = 7
+                Left = 167
+                Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = SpeedButton9Click
               end
               object SpeedButton10: TSpeedButton
                 Left = 225
-                Top = 7
+                Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
@@ -654,7 +681,7 @@ object FrameFolderHistory: TFrameFolderHistory
               end
               object BitBtn1: TBitBtn
                 Left = 31
-                Top = 5
+                Top = 3
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
@@ -676,14 +703,14 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel10: TPanel
             Left = 732
             Top = 56
-            Width = 827
+            Width = 821
             Height = 763
             Align = alClient
             TabOrder = 2
             object StringGrid3: TStringGrid
               Left = 1
               Top = 35
-              Width = 825
+              Width = 819
               Height = 727
               Align = alClient
               FixedCols = 0
@@ -693,7 +720,7 @@ object FrameFolderHistory: TFrameFolderHistory
             object Panel12: TPanel
               Left = 1
               Top = 1
-              Width = 825
+              Width = 819
               Height = 34
               Align = alTop
               TabOrder = 1
@@ -705,20 +732,20 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
               end
               object SpeedButton17: TSpeedButton
-                Left = 167
-                Top = 7
+                Left = 196
+                Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
                 OnClick = SpeedButton17Click
               end
               object SpeedButton20: TSpeedButton
-                Left = 196
-                Top = 7
+                Left = 167
+                Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = SpeedButton20Click
               end
               object SpeedButton21: TSpeedButton
                 Left = 225
@@ -801,12 +828,12 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel13: TPanel
             Left = 0
             Top = 0
-            Width = 1559
+            Width = 1553
             Height = 27
             Align = alTop
             TabOrder = 0
             DesignSize = (
-              1559
+              1553
               27)
             object SpeedButton3: TSpeedButton
               Left = 0
@@ -824,26 +851,39 @@ object FrameFolderHistory: TFrameFolderHistory
               OnClick = sbCompareFolderSearchClick
             end
             object SpeedButton5: TSpeedButton
-              Left = 1378
+              Left = 1372
               Top = 0
               Width = 23
               Height = 22
               Anchors = [akTop, akRight]
               ImageIndex = 3
+              OnClick = sbSearchSyntaxClick
+              ExplicitLeft = 1378
+            end
+            object SpeedButton30: TSpeedButton
+              Left = 1401
+              Top = -1
+              Width = 23
+              Height = 22
+              Anchors = [akTop, akRight]
+              ImageIndex = 3
+              OnClick = sbShowManualClick
             end
             object ComboBox3: TComboBox
               Left = 58
               Top = 0
-              Width = 1314
+              Width = 1308
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
+              OnKeyDown = ComboBox3KeyDown
             end
             object CheckBox5: TCheckBox
-              Left = 1407
-              Top = 2
+              Left = 1430
+              Top = 5
               Width = 97
               Height = 17
+              Anchors = [akTop, akRight]
               Caption = 'CheckBox2'
               TabOrder = 1
             end
@@ -851,14 +891,14 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel14: TPanel
             Left = 732
             Top = 27
-            Width = 827
+            Width = 821
             Height = 792
             Align = alClient
             TabOrder = 1
             object StringGrid4: TStringGrid
               Left = 1
               Top = 35
-              Width = 825
+              Width = 819
               Height = 756
               Align = alClient
               FixedCols = 0
@@ -868,7 +908,7 @@ object FrameFolderHistory: TFrameFolderHistory
             object Panel17: TPanel
               Left = 1
               Top = 1
-              Width = 825
+              Width = 819
               Height = 34
               Align = alTop
               TabOrder = 1
@@ -885,6 +925,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Width = 23
                 Height = 22
                 ImageIndex = 0
+                OnClick = SpeedButton32Click
               end
               object Label5: TLabel
                 Left = 212
@@ -941,6 +982,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Width = 23
                 Height = 22
                 ImageIndex = 0
+                OnClick = SpeedButton32Click
               end
               object Label4: TLabel
                 Left = 212
@@ -974,7 +1016,7 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel18: TPanel
             Left = 0
             Top = 0
-            Width = 1559
+            Width = 1553
             Height = 27
             Align = alTop
             TabOrder = 0
@@ -990,14 +1032,14 @@ object FrameFolderHistory: TFrameFolderHistory
           object Panel19: TPanel
             Left = 732
             Top = 27
-            Width = 827
+            Width = 821
             Height = 792
             Align = alClient
             TabOrder = 1
             object Panel20: TPanel
               Left = 1
               Top = 1
-              Width = 825
+              Width = 819
               Height = 34
               Align = alTop
               TabOrder = 0
@@ -1007,7 +1049,7 @@ object FrameFolderHistory: TFrameFolderHistory
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton29Click
+                OnClick = SpeedButton28Click
               end
               object SpeedButton6: TSpeedButton
                 Left = 5
@@ -1030,7 +1072,7 @@ object FrameFolderHistory: TFrameFolderHistory
             object TreeView2: TTreeView
               Left = 1
               Top = 35
-              Width = 825
+              Width = 819
               Height = 756
               Align = alClient
               Indent = 19

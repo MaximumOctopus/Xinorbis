@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -204,6 +206,8 @@ struct SystemSettings
 	bool Tutorial = false;
 
     int RunX = 0;
+
+	bool UserEnabledFolderHistory = false;
 
 	bool Debug = false;
 };
