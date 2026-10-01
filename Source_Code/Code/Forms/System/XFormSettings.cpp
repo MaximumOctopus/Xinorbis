@@ -39,7 +39,7 @@ __fastcall TFormSettings::TFormSettings(TComponent* Owner)
 
 int OpenSettings(int OpenTab)
 {
-	TFormSettings *FormSettings = new TFormSettings(Application);
+	FormSettings = new TFormSettings(Application);
 
 	FormSettings->OpenTabAtStart = OpenTab;
 

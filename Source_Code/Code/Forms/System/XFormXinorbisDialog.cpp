@@ -25,7 +25,7 @@ __fastcall TFormXDialog::TFormXDialog(TComponent* Owner)
 
 void ShowXDialog(const std::wstring title, const std::wstring body, int dialog_type)
 {
-	TFormXDialog *FormXDialog = new TFormXDialog(Application);
+	FormXDialog = new TFormXDialog(Application);
 
 	FormXDialog->lTitle->Caption = title.c_str();
 	FormXDialog->lBody->Caption = body.c_str();

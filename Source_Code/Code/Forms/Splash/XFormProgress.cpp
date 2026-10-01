@@ -33,6 +33,16 @@ void __fastcall TFormProgress::FormClose(TObject *Sender, TCloseAction &Action)
 }
 
 
+void TFormProgress::ClearIcons()
+{
+	iProgress1->Visible = false;
+	iProgress2->Visible = false;
+	iProgress3->Visible = false;
+	iProgress4->Visible = false;
+	iProgress5->Visible = false;
+}
+
+
 void TFormProgress::SetProcessText(const std::wstring s)
 {
 	lStatus->Caption = s.c_str();

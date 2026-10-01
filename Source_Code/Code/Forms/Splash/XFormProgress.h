@@ -33,6 +33,8 @@ private:
 public:
 	__fastcall TFormProgress(TComponent* Owner);
 
+    void ClearIcons();
+
 	void SetProcessBar(int);
 
     void SetAbort();

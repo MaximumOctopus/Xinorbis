@@ -1,15 +1,16 @@
-// ===================================================================
+// =====================================================================
 //
-//   (c) Paul Alan Freshney 2012-2026
-//   www.freshney.org :: paul@freshney.org :: maximumoctopus.com
+//   Xinorbis 10.0
 //
-//   https://github.com/MaximumOctopus/LEDMatrixStudio
+// (c) Paul Alan Freshney 2002-2026
 //
-//   https://maximumoctopus.hashnode.dev/
+// paul@freshney.org
 //
-//   C++ Rewrite October 11th 2023
+// https://maximumoctopus.hashnode.dev/
 //
-// ===================================================================
+// https://github.com/MaximumOctopus/Xinorbis
+//
+// =====================================================================
 
 #include <vcl.h>
 #pragma hdrstop

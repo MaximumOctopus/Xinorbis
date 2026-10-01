@@ -220,7 +220,7 @@ void __fastcall TForm19::sbDeleteTableClick(TObject *Sender)
 {                                        /*  folder history
 	if (sgDatabase->Selection.Top > 0)
 	{
-		if (MessageDlg(GLanguageHandler->Text[kDeleteFHAreYouSure].c_str(), mtWarning, mbYesNo], 0) == mrYes)
+		if (MessageDlg(GLanguageHandler->Text[kDeleteFHAreYouSure].c_str(), mtWarning, mbYesNo, 0) == mrYes)
 		{
 			bExportCSV->Enabled = false;
 			bExportXML->Enabled = false;
