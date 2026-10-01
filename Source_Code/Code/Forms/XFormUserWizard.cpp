@@ -43,9 +43,12 @@ std::wstring OpenUserWizard()
 
 void __fastcall TForm12::FormCreate(TObject *Sender)
 {
-	pTitle->BringToFront();
-
 	Caption = (GLanguageHandler->Text[kSearch] + L" " + GLanguageHandler->Text[kWizard]).c_str();
+
+	sbOK->Caption = GLanguageHandler->Text[kSearch].c_str();
+	sbCancel->Caption = GLanguageHandler->Text[kCancel].c_str();
+
+	pTitle->BringToFront();
 }
 
 
@@ -252,8 +255,6 @@ void __fastcall TForm12::sbNextClick(TObject *Sender)
 	if (panel != nullptr)
 	{
 		panel->BringToFront();
-
-		sbNext->Enabled = false;
 
 		CurrentPage++;
 

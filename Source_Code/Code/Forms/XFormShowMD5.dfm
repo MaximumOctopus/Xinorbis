@@ -2,7 +2,7 @@ object Form22: TForm22
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Form22'
+  Caption = 'MD5'
   ClientHeight = 123
   ClientWidth = 434
   Color = clBtnFace

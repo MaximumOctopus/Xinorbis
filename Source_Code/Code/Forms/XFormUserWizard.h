@@ -34,10 +34,9 @@ __published:	// IDE-managed Components
 	TLabel *Label8;
 	TPanel *pTitle;
 	TLabel *Label1;
-	TPanel *Panel1;
 	TPanel *Panel2;
 	TSpeedButton *sbOK;
-	TSpeedButton *SpeedButton9;
+	TSpeedButton *sbCancel;
 	TSpeedButton *sbPrevious;
 	TSpeedButton *sbNext;
 	TSpeedButton *sbSearch;

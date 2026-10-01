@@ -2,7 +2,7 @@ object Form12: TForm12
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  ClientHeight = 456
+  ClientHeight = 416
   ClientWidth = 618
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,461 +14,9 @@ object Form12: TForm12
   OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 15
-  object pProductivity: TPanel
-    Left = 8
-    Top = 44
-    Width = 603
-    Height = 371
-    TabOrder = 3
-    object Label2: TLabel
-      Left = 24
-      Top = 24
-      Width = 60
-      Height = 19
-      Caption = 'Include'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object rbOffice: TRadioButton
-      Left = 128
-      Top = 120
-      Width = 113
-      Height = 17
-      Caption = 'Office'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbProgramming: TRadioButton
-      Left = 128
-      Top = 146
-      Width = 123
-      Height = 17
-      Caption = 'Programming'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object rbCompressed: TRadioButton
-      Left = 128
-      Top = 174
-      Width = 153
-      Height = 17
-      Caption = 'Compressed files'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-  end
-  object pMultimedia: TPanel
-    Left = 8
-    Top = 45
-    Width = 603
-    Height = 371
-    TabOrder = 4
-    object Label3: TLabel
-      Left = 24
-      Top = 24
-      Width = 60
-      Height = 19
-      Caption = 'Include'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object cbMultimedia1: TCheckBox
-      Left = 136
-      Top = 128
-      Width = 97
-      Height = 21
-      Caption = 'Images'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-    end
-    object cbMultimedia2: TCheckBox
-      Left = 136
-      Top = 161
-      Width = 97
-      Height = 21
-      Caption = 'Videos'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object cbMultimedia3: TCheckBox
-      Left = 136
-      Top = 192
-      Width = 97
-      Height = 21
-      Caption = 'Audio'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-  end
-  object pPopular: TPanel
-    Left = 7
-    Top = 45
-    Width = 603
-    Height = 371
-    TabOrder = 1
-    object Label6: TLabel
-      Left = 24
-      Top = 24
-      Width = 60
-      Height = 19
-      Caption = 'Include'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object rbToday: TRadioButton
-      Tag = 1
-      Left = 241
-      Top = 132
-      Width = 113
-      Height = 21
-      Caption = 'Today'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      TabStop = True
-      OnClick = rbTodayClick
-    end
-    object rbYesterday: TRadioButton
-      Tag = 2
-      Left = 240
-      Top = 159
-      Width = 113
-      Height = 21
-      Caption = 'Yesterday'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-      OnClick = rbTodayClick
-    end
-    object rbThisWeek: TRadioButton
-      Tag = 3
-      Left = 240
-      Top = 186
-      Width = 113
-      Height = 21
-      Caption = 'This Week'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      OnClick = rbTodayClick
-    end
-    object rbThisMonth: TRadioButton
-      Tag = 4
-      Left = 240
-      Top = 213
-      Width = 113
-      Height = 21
-      Caption = 'This Month'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      OnClick = rbTodayClick
-    end
-    object GroupBox1: TGroupBox
-      Left = 106
-      Top = 91
-      Width = 116
-      Height = 110
-      Caption = 'Date'
-      TabOrder = 4
-      object rbCreated: TRadioButton
-        Tag = 1
-        Left = 16
-        Top = 32
-        Width = 113
-        Height = 21
-        Caption = 'Created'
-        Checked = True
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        TabStop = True
-        OnClick = rbTodayClick
-      end
-      object rbAccessed: TRadioButton
-        Tag = 2
-        Left = 16
-        Top = 53
-        Width = 113
-        Height = 21
-        Caption = 'Accessed'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-        OnClick = rbTodayClick
-      end
-      object rbModified: TRadioButton
-        Tag = 3
-        Left = 16
-        Top = 74
-        Width = 113
-        Height = 21
-        Caption = 'Modified'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 2
-        OnClick = rbTodayClick
-      end
-    end
-  end
-  object pSystem: TPanel
-    Left = 8
-    Top = 44
-    Width = 603
-    Height = 371
-    TabOrder = 6
-    object Label8: TLabel
-      Left = 24
-      Top = 24
-      Width = 60
-      Height = 19
-      Caption = 'Include'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object rbPrograms: TRadioButton
-      Left = 120
-      Top = 120
-      Width = 113
-      Height = 21
-      Caption = 'Programs'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbSystem: TRadioButton
-      Left = 120
-      Top = 151
-      Width = 113
-      Height = 21
-      Caption = 'System files'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object rbAllSystem: TRadioButton
-      Left = 120
-      Top = 181
-      Width = 113
-      Height = 21
-      Caption = 'All system files'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-  end
-  object pSize: TPanel
-    Left = 8
-    Top = 45
-    Width = 603
-    Height = 371
-    TabOrder = 0
-    object Label5: TLabel
-      Left = 24
-      Top = 24
-      Width = 60
-      Height = 19
-      Caption = 'Include'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object rbSize1: TRadioButton
-      Tag = 1
-      Left = 170
-      Top = 107
-      Width = 140
-      Height = 21
-      Caption = '0 to 1MB'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-      TabStop = True
-      OnClick = rbSize1Click
-    end
-    object rbSize2: TRadioButton
-      Tag = 2
-      Left = 170
-      Top = 134
-      Width = 140
-      Height = 21
-      Caption = '1MB to 10MB'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-      OnClick = rbSize1Click
-    end
-    object rbSize3: TRadioButton
-      Tag = 43
-      Left = 170
-      Top = 165
-      Width = 140
-      Height = 21
-      Caption = '10MB to 50MB'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-      OnClick = rbSize1Click
-    end
-    object rbSize4: TRadioButton
-      Tag = 4
-      Left = 170
-      Top = 196
-      Width = 140
-      Height = 21
-      Caption = '50MB to 100MB'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-      OnClick = rbSize1Click
-    end
-    object rbSize5: TRadioButton
-      Tag = 5
-      Left = 170
-      Top = 226
-      Width = 140
-      Height = 21
-      Caption = '100MB to 1GB'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 4
-      OnClick = rbSize1Click
-    end
-    object rbSize6: TRadioButton
-      Tag = 6
-      Left = 170
-      Top = 253
-      Width = 140
-      Height = 21
-      Caption = '1GB and above'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-      OnClick = rbSize1Click
-    end
-  end
   object pEnd: TPanel
-    Left = 8
-    Top = 44
+    Left = 7
+    Top = 8
     Width = 603
     Height = 371
     TabOrder = 2
@@ -656,8 +204,8 @@ object Form12: TForm12
     end
   end
   object pCompressed: TPanel
-    Left = 8
-    Top = 44
+    Left = 7
+    Top = 8
     Width = 603
     Height = 371
     TabOrder = 5
@@ -675,8 +223,8 @@ object Form12: TForm12
       ParentFont = False
     end
     object rbAllCompressed: TRadioButton
-      Left = 128
-      Top = 120
+      Left = 168
+      Top = 108
       Width = 113
       Height = 21
       Caption = 'Compressed'
@@ -692,8 +240,8 @@ object Form12: TForm12
     end
   end
   object pTitle: TPanel
-    Left = 8
-    Top = 44
+    Left = 7
+    Top = 8
     Width = 603
     Height = 371
     TabOrder = 7
@@ -746,8 +294,8 @@ object Form12: TForm12
     end
     object rbSelectCompressed: TRadioButton
       Tag = 3
-      Left = 168
-      Top = 166
+      Left = 169
+      Top = 162
       Width = 113
       Height = 21
       Caption = 'Compressed'
@@ -763,7 +311,7 @@ object Form12: TForm12
     object rbSelectSystem: TRadioButton
       Tag = 4
       Left = 170
-      Top = 198
+      Top = 189
       Width = 113
       Height = 21
       Caption = 'System'
@@ -779,7 +327,7 @@ object Form12: TForm12
     object rbSelectPopular: TRadioButton
       Tag = 10
       Left = 170
-      Top = 245
+      Top = 241
       Width = 113
       Height = 21
       Caption = 'Popular'
@@ -795,7 +343,7 @@ object Form12: TForm12
     object rbSelectFileSizes: TRadioButton
       Tag = 20
       Left = 170
-      Top = 272
+      Top = 268
       Width = 113
       Height = 21
       Caption = 'Files by Size'
@@ -809,28 +357,471 @@ object Form12: TForm12
       OnClick = rbSelectMultimediaClick
     end
   end
-  object Panel1: TPanel
-    Left = 0
-    Top = 0
-    Width = 618
-    Height = 35
-    Align = alTop
-    Color = clWhite
-    ParentBackground = False
-    TabOrder = 8
+  object pProductivity: TPanel
+    Left = 7
+    Top = 8
+    Width = 603
+    Height = 371
+    TabOrder = 3
+    object Label2: TLabel
+      Left = 24
+      Top = 24
+      Width = 60
+      Height = 19
+      Caption = 'Include'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object rbOffice: TRadioButton
+      Left = 168
+      Top = 108
+      Width = 113
+      Height = 17
+      Caption = 'Office'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      TabStop = True
+    end
+    object rbProgramming: TRadioButton
+      Left = 167
+      Top = 135
+      Width = 123
+      Height = 17
+      Caption = 'Programming'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object rbCompressed: TRadioButton
+      Left = 167
+      Top = 162
+      Width = 153
+      Height = 17
+      Caption = 'Compressed files'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+    end
+  end
+  object pMultimedia: TPanel
+    Left = 7
+    Top = 8
+    Width = 603
+    Height = 371
+    TabOrder = 4
+    object Label3: TLabel
+      Left = 24
+      Top = 24
+      Width = 60
+      Height = 19
+      Caption = 'Include'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object cbMultimedia1: TCheckBox
+      Left = 168
+      Top = 108
+      Width = 97
+      Height = 21
+      Caption = 'Images'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+    object cbMultimedia2: TCheckBox
+      Left = 168
+      Top = 135
+      Width = 97
+      Height = 21
+      Caption = 'Videos'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object cbMultimedia3: TCheckBox
+      Left = 167
+      Top = 162
+      Width = 97
+      Height = 21
+      Caption = 'Audio'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+    end
+  end
+  object pPopular: TPanel
+    Left = 6
+    Top = 9
+    Width = 603
+    Height = 371
+    TabOrder = 1
+    object Label6: TLabel
+      Left = 24
+      Top = 24
+      Width = 60
+      Height = 19
+      Caption = 'Include'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object rbToday: TRadioButton
+      Tag = 1
+      Left = 303
+      Top = 159
+      Width = 113
+      Height = 21
+      Caption = 'Today'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      TabStop = True
+      OnClick = rbTodayClick
+    end
+    object rbYesterday: TRadioButton
+      Tag = 2
+      Left = 303
+      Top = 186
+      Width = 113
+      Height = 21
+      Caption = 'Yesterday'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = rbTodayClick
+    end
+    object rbThisWeek: TRadioButton
+      Tag = 3
+      Left = 303
+      Top = 213
+      Width = 113
+      Height = 21
+      Caption = 'This Week'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = rbTodayClick
+    end
+    object rbThisMonth: TRadioButton
+      Tag = 4
+      Left = 303
+      Top = 240
+      Width = 113
+      Height = 21
+      Caption = 'This Month'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      OnClick = rbTodayClick
+    end
+    object GroupBox1: TGroupBox
+      Left = 168
+      Top = 108
+      Width = 116
+      Height = 110
+      Caption = 'Date'
+      TabOrder = 4
+      object rbCreated: TRadioButton
+        Tag = 1
+        Left = 16
+        Top = 32
+        Width = 113
+        Height = 21
+        Caption = 'Created'
+        Checked = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        TabStop = True
+        OnClick = rbTodayClick
+      end
+      object rbAccessed: TRadioButton
+        Tag = 2
+        Left = 16
+        Top = 53
+        Width = 113
+        Height = 21
+        Caption = 'Accessed'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+        OnClick = rbTodayClick
+      end
+      object rbModified: TRadioButton
+        Tag = 3
+        Left = 16
+        Top = 74
+        Width = 113
+        Height = 21
+        Caption = 'Modified'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 2
+        OnClick = rbTodayClick
+      end
+    end
+  end
+  object pSystem: TPanel
+    Left = 8
+    Top = 8
+    Width = 603
+    Height = 371
+    TabOrder = 6
+    object Label8: TLabel
+      Left = 24
+      Top = 24
+      Width = 60
+      Height = 19
+      Caption = 'Include'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object rbPrograms: TRadioButton
+      Left = 168
+      Top = 108
+      Width = 113
+      Height = 21
+      Caption = 'Programs'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      TabStop = True
+    end
+    object rbSystem: TRadioButton
+      Left = 168
+      Top = 135
+      Width = 113
+      Height = 21
+      Caption = 'System files'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object rbAllSystem: TRadioButton
+      Left = 168
+      Top = 162
+      Width = 113
+      Height = 21
+      Caption = 'All system files'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+    end
+  end
+  object pSize: TPanel
+    Left = 7
+    Top = 9
+    Width = 603
+    Height = 371
+    TabOrder = 0
+    object Label5: TLabel
+      Left = 24
+      Top = 24
+      Width = 60
+      Height = 19
+      Caption = 'Include'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object rbSize1: TRadioButton
+      Tag = 1
+      Left = 168
+      Top = 108
+      Width = 140
+      Height = 21
+      Caption = '0 to 1MB'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      TabStop = True
+      OnClick = rbSize1Click
+    end
+    object rbSize2: TRadioButton
+      Tag = 2
+      Left = 168
+      Top = 135
+      Width = 140
+      Height = 21
+      Caption = '1MB to 10MB'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = rbSize1Click
+    end
+    object rbSize3: TRadioButton
+      Tag = 43
+      Left = 168
+      Top = 162
+      Width = 140
+      Height = 21
+      Caption = '10MB to 50MB'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = rbSize1Click
+    end
+    object rbSize4: TRadioButton
+      Tag = 4
+      Left = 168
+      Top = 189
+      Width = 140
+      Height = 21
+      Caption = '50MB to 100MB'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      OnClick = rbSize1Click
+    end
+    object rbSize5: TRadioButton
+      Tag = 5
+      Left = 168
+      Top = 216
+      Width = 140
+      Height = 21
+      Caption = '100MB to 1GB'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      OnClick = rbSize1Click
+    end
+    object rbSize6: TRadioButton
+      Tag = 6
+      Left = 168
+      Top = 243
+      Width = 140
+      Height = 21
+      Caption = '1GB and above'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+      OnClick = rbSize1Click
+    end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 422
+    Top = 385
     Width = 618
-    Height = 34
+    Height = 31
     Align = alBottom
     Color = clWhite
     ParentBackground = False
-    TabOrder = 9
+    TabOrder = 8
+    ExplicitTop = 425
     DesignSize = (
       618
-      34)
+      31)
     object sbOK: TSpeedButton
       Left = 452
       Top = 5
@@ -838,120 +829,17 @@ object Form12: TForm12
       Height = 25
       Anchors = [akTop, akRight]
       Enabled = False
-      Glyph.Data = {
-        36060000424D3606000000000000360000002800000020000000100000000100
-        18000000000000060000C21E0000C21E00000000000000000000FF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
-        00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FF3B8D3F257A292577293B853FFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF7F7F7F6A
-        6A6A686868787878FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FF318F3542A05287CA9A9BD3AB9BD2AB83C7963D974C307C34FF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF7F7F7F8F8F8FBEBEBEC9
-        C9C9C8C8C8BABABA8686866F6F6FFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FF258F2A6DBE83A8DBB587CC9866BC7D64BA7C86CB98A5D9B466B77D2472
-        27FF00FFFF00FFFF00FFFF00FFFF00FFFF00FF7D7D7DAFAFAFD1D1D1BFBFBFAD
-        ADADABABABBEBEBECFCFCFA9A9A9656565FF00FFFF00FFFF00FFFF00FFFF00FF
-        33A14472C287A8DBB260BC775CBA7359B87059B56F58B56F5BB774A5D9B369B8
-        7F317F35FF00FFFF00FFFF00FFFF00FF909090B3B3B3D0D0D0ABABABA9A9A9A7
-        A7A7A4A4A4A4A4A4A7A7A7CFCFCFAAAAAA727272FF00FFFF00FFFF00FFFF00FF
-        4CB064AADDB464C1795FBE7175C585D4ECD98ACD9956B66C58B56E5CB774A6DA
-        B4419B4EFF00FFFF00FFFF00FFFF00FF9F9F9FD2D2D2B0B0B0ACACACB5B5B5E7
-        E7E7C0C0C0A5A5A5A4A4A4A7A7A7D0D0D08A8A8AFF00FFFF00FFFF00FF3FB55D
-        91D29F8DD49A64C37479C987F2FAF4FFFFFFFDFEFD86CB9657B76D5BB97285CC
-        9787C79A3B8B3FFF00FFFF00FFA3A3A3C5C5C5C6C6C6B1B1B1B9B9B9F9F9F9FF
-        FFFFFEFEFEBEBEBEA6A6A6A8A8A8BFBFBFBBBBBB7D7D7DFF00FFFF00FF27B049
-        A6DCAF70CA7F73CA80F0F9F1FFFFFFEBF7EDFFFFFFFBFDFC88CD965BB97167BE
-        7DA0D7AF237F26FF00FFFF00FF9C9C9CD1D1D1B8B8B8B8B8B8F7F7F7FFFFFFF5
-        F5F5FFFFFFFDFDFDBFBFBFA8A8A8AEAEAECDCDCD6E6E6EFF00FFFF00FF2EB751
-        A7DDB172CC8066C773B0E1B7D2EED663C170B8E3BFFFFFFFFBFDFC8CD09969C1
-        7EA1D7AE238426FF00FFFF00FFA2A2A2D2D2D2BABABAB4B4B4D6D6D6E7E7E7AF
-        AFAFDADADAFFFFFFFDFDFDC2C2C2B1B1B1CCCCCC737373FF00FFFF00FF4BC56C
-        95D7A191D79B69C97664C66F61C46E61C36F61C26FB9E4C0FFFFFFE3F4E68BD1
-        998BCE9D3C993FFF00FFFF00FFB2B2B2C9C9C9C8C8C8B6B6B6B3B3B3B1B1B1B0
-        B0B0AFAFAFDBDBDBFFFFFFF0F0F0C3C3C3C2C2C2898989FF00FFFF00FFFF00FF
-        57BF70AFE1B76DCC7A68C87265C77063C56E62C46E63C471B6E3BE6FC77EACDF
-        B548A95EFF00FFFF00FFFF00FFFF00FFADADADD6D6D6B9B9B9B5B5B5B4B4B4B2
-        B2B2B1B1B1B1B1B1D9D9D9B6B6B6D4D4D4989898FF00FFFF00FFFF00FFFF00FF
-        49C5667FCE90AEE1B56DCC7A6ACA7668C87268C87468C8756BC979ACDFB476C4
-        8933A142FF00FFFF00FFFF00FFFF00FFB1B1B1BFBFBFD6D6D6B9B9B9B7B7B7B5
-        B5B5B5B5B5B5B5B5B7B7B7D4D4D4B5B5B58F8F8FFF00FFFF00FFFF00FFFF00FF
-        FF00FF3DC35C7FCE90AFE1B792D89D77CE8377CE8392D89DAEE1B578C88B27A1
-        3BFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFAEAEAEBFBFBFD6D6D6CACACABC
-        BCBCBCBCBCCACACAD6D6D6B9B9B98E8E8EFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FF4AC86959C27496D7A3A5DCAEA5DCAE95D6A150B96A35B355FF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFB4B4B4B0B0B0CACACAD0
-        D0D0D0D0D0C9C9C9A6A6A6A0A0A0FF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FF55CB723BC05C37BE5A49C36AFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFB8B8B8AB
-        ABABA9A9A9B0B0B0FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
-        00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       NumGlyphs = 2
       OnClick = sbOKClick
       ExplicitLeft = 676
     end
-    object SpeedButton9: TSpeedButton
+    object sbCancel: TSpeedButton
       Left = 538
       Top = 5
-      Width = 76
+      Width = 80
       Height = 25
       Anchors = [akTop, akRight]
-      Glyph.Data = {
-        36060000424D3606000000000000360000002800000020000000100000000100
-        18000000000000060000C21E0000C21E00000000000000000000FF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
-        00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FF546BC73F59C03A53BF4C67C2FF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF8888887B
-        7B7B777777848484FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FF5566CC3C52CC757AE88F92EE8F92EE7178E4334DC1405CBEFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF8787877B7B7B9C9C9CAD
-        ADADADADAD9999997373737C7C7CFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FF5160CD5C65E0A1A6F57E86EF5B63E9595DE77D84EE9EA0F4515DD73452
-        BAFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF8484848D8D8DBBBBBBA5A5A590
-        90908C8C8CA4A4A4B7B7B7858585747474FF00FFFF00FFFF00FFFF00FFFF00FF
-        6571D4616BE3A1ACF5545FEC505CEA4D59E94E59E64C56E65056E69EA2F45460
-        D6405CBFFF00FFFF00FFFF00FFFF00FF919191919191BFBFBF8F8F8F8D8D8D8B
-        8B8B8A8A8A888888888888B8B8B88686867D7D7DFF00FFFF00FFFF00FFFF00FF
-        4B56DBA2ABF65664F05266EE4D59E94D59E94D59E94D59E94C58E6525AE69FA3
-        F53450C4FF00FFFF00FFFF00FFFF00FF838383BFBFBF9393939393938B8B8B8B
-        8B8B8B8B8B8B8B8B8989898A8A8AB9B9B9767676FF00FFFF00FFFF00FF7378DD
-        818CEE7E91F75D73F34D59E94D59E94D59E94D59E94D59E94D59E94F5BE97B83
-        F0757BE24C64C4FF00FFFF00FF999999A8A8A8AEAEAE9B9B9B8B8B8B8B8B8B8B
-        8B8B8B8B8B8B8B8B8B8B8B8C8C8CA4A4A49A9A9A848484FF00FFFF00FF6569DB
-        A1ABF77086F86882F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4D59E95C66
-        EA969CF13956BEFF00FFFF00FF8E8E8EBFBFBFA8A8A8A5A5A5FFFFFFFFFFFFFF
-        FFFFFFFFFFFFFFFFFFFFFF8B8B8B919191B3B3B3787878FF00FFFF00FF696EDC
-        AFB9F97F93FA7085F0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF4D59E95E6A
-        EE969DF13D55C0FF00FFFF00FF919191CACACAB0B0B0A4A4A4FFFFFFFFFFFFFF
-        FFFFFFFFFFFFFFFFFFFFFF8B8B8B959595B4B4B4787878FF00FFFF00FF7C7FE3
-        A5AFF59DABFA778CF0545FEC545FEC545FEC545FEC545FEC545FEC6377F2818E
-        F4787FE9566BC9FF00FFFF00FF9F9F9FC2C2C2C0C0C0A8A8A88F8F8F8F8F8F8F
-        8F8F8F8F8F8F8F8F8F8F8F9D9D9DACACAC9F9F9F898989FF00FFFF00FFFF00FF
-        7D83EACDD4FC8B9DFA7E93F7758AEE6C84F66C84F66C84F66C84F66379F3A4AF
-        F83E4FD0FF00FFFF00FFFF00FFFF00FFA2A2A2DEDEDEB7B7B7AFAFAFA6A6A6A6
-        A6A6A6A6A6A6A6A6A6A6A69F9F9FC2C2C27B7B7BFF00FFFF00FFFF00FFFF00FF
-        7978E3A3A7F3D4DBFD879AFA7F91F07A8EF17F94F87E92F9768CF8A8B6F8636E
-        E35868CDFF00FFFF00FFFF00FFFF00FF9B9B9BBBBBBBE3E3E3B5B5B5ACACACAA
-        AAAAB0B0B0AFAFAFABABABC7C7C7939393888888FF00FFFF00FFFF00FFFF00FF
-        FF00FF706FE1AAADF2D8DCFDAEBAFA91A3FA8B9DFA9CA9FBBAC7FC707BE95462
-        CEFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF959595BFBFBFE4E4E4CACACABB
-        BBBBB7B7B7BFBFBFD4D4D49C9C9C858585FF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FF7979E28E93EDBEC3F8CCD3F9C4CBF9AAB4F46670E2646ED6FF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF9B9B9BADADADD0D0D0DC
-        DCDCD7D7D7C5C5C59393938F8F8FFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FF7D7FE26A6BDE686BDC7479DEFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF9F9F9F90
-        90909090909A9A9AFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF
-        FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00
-        FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF
-        00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF}
       NumGlyphs = 2
-      ExplicitLeft = 762
     end
     object sbPrevious: TSpeedButton
       Left = 197
