@@ -6,6 +6,4 @@ FolderScanUltra uses the same layout, but the old versions of Xinorbis had this 
 
 But all of the files and databases use exactly the same format so you'll be able to use any versions that you're still using.
 
-I'll post executables and zips once we have a version ready for general release.
-
 - PAF, August 19th 2026.
