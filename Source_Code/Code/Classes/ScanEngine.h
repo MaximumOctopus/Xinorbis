@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -86,7 +88,8 @@ private:
 	bool Analyse();
 	bool AnalyseFast();
 	void AnalyseRootFolders();
-	void AnalysePostExtensionSpread();
+
+	void PostProcess();
 
 	int FindUser(std::wstring);
 

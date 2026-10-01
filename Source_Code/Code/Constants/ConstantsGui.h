@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -71,11 +73,7 @@ static const int kTabIndexTop101        = 7;
 static const int kTabIndexNull          = 8;
 static const int kTabIndexUsers         = 9;
 static const int kTabIndexTemp          = 10;
-static const int kTabNavigation         = 12;
-static const int kTabIndexDatesCreated  = 13;
-static const int kTabIndexDatesAccessed = 14;
-static const int kTabIndexDatesModified = 15;
-static const int kTabIndexNameLength    = 16;
+static const int kTabIndexNameLength    = 11;
 
 static const int kTabFHMainStats        = 0;
 static const int kTabFHMainSearch       = 1;

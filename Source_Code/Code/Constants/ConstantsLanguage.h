@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -835,6 +837,7 @@ const static int kUnableToConnectToMaximumOctopusCom = 802;
 const static int kUpdateCheck                      = 803;
 const static int kHighlight                        = 804;
 const static int kFastAnalysis                     = 805;
+const static int kFastAnalysisWarningHint          = 806;
 
-const static int kLanguageConstantsCount = 806;
+const static int kLanguageConstantsCount = 807;
 

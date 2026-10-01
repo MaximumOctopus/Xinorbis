@@ -6,12 +6,13 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
 
 #include <cmath>
-#include <fstream>
 #include <string>
 #include <Windows.h>
 
@@ -399,9 +400,9 @@ namespace ReportXML
 		{
 			data->push_back(L"<tempfiles>\n");
 
-			for (std::wstring file : GScanEngine->Data[DataSource].TemporaryFiles)
+			for (TempFileObject *file : GScanEngine->Data[DataSource].TemporaryFiles)
 			{
-				data->push_back(L"  <tempfile name=\"" + Formatting::ReplaceEntitiesForXML(file) + L"\" />\n");
+				data->push_back(L"  <tempfile name=\"" + Formatting::ReplaceEntitiesForXML(file->FullPath) + L"\" />\n");
 			}
 
 			data->push_back(L"</tempfiles>\n");

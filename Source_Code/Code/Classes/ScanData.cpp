@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -14,12 +16,14 @@
 #include <fstream>
 
 #include "ConstantsReports.h"
+#include "FileExtensionHandler.h"
 #include "Formatting.h"
 #include "LanguageHandler.h"
 #include "ScanData.h"
 #include "SettingsHandler.h"
 #include "Utility.h"
 
+extern FileExtensionHandler *GFileExtensionHandler;
 extern LanguageHandler *GLanguageHandler;
 extern SettingsHandler *GSettingsHandler;
 
@@ -424,6 +428,77 @@ int ScanData::GetFolderIndex(const std::wstring folder_name)
 	}
 
 	return -1;
+}
+
+
+void ScanData::ProcessExtensionSpread()
+{
+	for (FileObject *file_object : Files)
+	{
+		std::wstring ext = Utility::GetFileExtension(file_object->Name);
+
+		ExtensionSearch exi = GFileExtensionHandler->GetExtensionCategoryID(ext);
+
+		if (exi.Category == kFileCategoriesOther)  // "other" extension
+		{
+			file_object->Category = kFileCategoriesOther;
+
+			ExtensionSpread[kFileCategoriesOther].Count++;
+			ExtensionSpread[kFileCategoriesOther].Size += file_object->Size;
+
+			//FileExtension *tfx = new FileExtension(ext, kCategory_Other);
+
+			//tfx->Count = 1;
+			//tfx->Size = file_object->Size;
+
+			//GFileExtensionHandler->Extensions.push_back(tfx);
+		}
+		else
+		{
+			file_object->Category = exi.Category;
+
+			ExtensionSpread[exi.Category].Count++;
+			ExtensionSpread[exi.Category].Size += file_object->Size;
+
+			//GFileExtensionHandler->Extensions[exi.Extension]->Count++;
+			//GFileExtensionHandler->Extensions[exi.Extension]->Size += file_object->Size;
+		}
+	}
+}
+
+
+// not necessary to execute this manually unless you populate the Files/Folders manually
+void ScanData::PostProcess()
+{
+	for (ConsolidatedData &data : ExtensionSpread)
+	{
+		data.PostProcess(FileCount, TotalSize);
+	}
+
+	for (ConsolidatedData &data : Lengths)
+	{
+		data.PostProcess(FileCount, TotalSize);
+	}
+
+	for (ConsolidatedData &data : Magnitude)
+	{
+		data.PostProcess(FileCount, TotalSize);
+	}
+
+	for (RootFolder *folder : RootFolders)
+	{
+		folder->PostProcess(FileCount, TotalSize);
+	}
+
+	for (UserData *user : Users)
+	{
+		user->PostProcess(FileCount, TotalSize);
+	}
+
+	for (ConsolidatedData &data : FileAttributes)
+	{
+		data.PostProcess(FileCount, TotalSize);
+	}
 }
 
 

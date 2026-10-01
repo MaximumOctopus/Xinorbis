@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -488,7 +490,7 @@ namespace ReportHTML
 					data->push_back(L"<tr class=\"C4G\" bgcolor=\"#" + Convert::WebColour(options.Colours.Colour[10]) + L"\">\n");
 				}
 
-				data->push_back(L"<td height=\"13\">" + GScanEngine->Data[DataSource].TemporaryFiles[t] + L"</td>\n");
+				data->push_back(L"<td height=\"13\">" + GScanEngine->Data[DataSource].TemporaryFiles[t]->FullPath + L"</td>\n");
 
 				data->push_back(L"</tr>\n");
 

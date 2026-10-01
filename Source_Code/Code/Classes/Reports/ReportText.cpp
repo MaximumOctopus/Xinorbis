@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -630,7 +632,7 @@ void ReportText::ReportTemporaryFiles(std::vector<std::wstring> *data, int DataS
 		{
 			for (int t = 0; t < GScanEngine->Data[DataSource].TemporaryFiles.size(); t++)
 			{
-				data->push_back(GScanEngine->Data[DataSource].TemporaryFiles[t] + L"\n");
+				data->push_back(GScanEngine->Data[DataSource].TemporaryFiles[t]->FullPath + L"\n");
 			}
 		}
 		else

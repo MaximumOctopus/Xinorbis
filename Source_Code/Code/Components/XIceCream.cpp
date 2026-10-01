@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -161,7 +163,7 @@ void __fastcall XIceCream::PaintBoxUpdate(TObject *Sender)
 		PaintBox->Canvas->Brush->Color = PaintBox->Color;
 		PaintBox->Canvas->Pen->Color = clNone;
 		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY, s->DisplayName.c_str());
-		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY + TextH, FloatToStrF(s->Value, ffFixed, 7, 2) + L"%");
+		PaintBox->Canvas->TextOut(text_x, IdCubeY + TextY + TextH, FloatToStrF(s->Value, ffFixed, 7, 1) + L"%");
 
 		text_x += s->DisplayNameWidth + 10;
 	}

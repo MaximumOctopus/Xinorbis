@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -33,7 +35,6 @@ extern SettingsHandler *GSettingsHandler;
 void ReportSummary::Generate(const std::wstring file_name, int DataSource,
 	TStringGrid *gridNullFiles, TStringGrid *gridNullFolders, TStringGrid *gridFolderList, TStringGrid *gridTop101Big, TStringGrid *gridUsers)
 {
-//  Assert((aDataIndex >= 0) and (aDataIndex <= 1), "SaveSummary :: invalid dataindex :: " + inttostr(aDataIndex));
 	std::ofstream file(file_name);
 
 	if (file)

@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -170,6 +172,9 @@ public:
 
 	std::vector<TempFileObject*> TemporaryFiles;
 
+	std::vector<std::wstring> ExcludedFiles;
+	std::vector<std::wstring> ExcludedFolders;
+
 	std::vector<std::wstring> NullFiles;
 	std::vector<std::wstring> NullFolders;
 
@@ -185,7 +190,7 @@ public:
 	std::vector<FileObject*> RootFiles;
 	std::vector<RootFolder*> RootFolders;
 
-    Statistics Stats;
+	Statistics Stats;
 
 	ScanData();
 
@@ -206,6 +211,8 @@ public:
 	void BuildTop100SizeLists();
 	void BuildTop100DateLists();
 
+	void PostProcess();
+	void ProcessExtensionSpread();
 	void UpdateStatistics();
 
 	int RootIndex();

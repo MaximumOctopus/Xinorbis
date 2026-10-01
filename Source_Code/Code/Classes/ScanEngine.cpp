@@ -6,6 +6,8 @@
 //
 // paul@freshney.org
 //
+// https://maximumoctopus.hashnode.dev/
+//
 // https://github.com/MaximumOctopus/Xinorbis
 //
 // =====================================================================
@@ -213,7 +215,7 @@ bool ScanEngine::Scan(bool process_data, bool process_top_100_size, bool process
 
 		AnalyseRootFolders();
 
-		AnalysePostExtensionSpread();
+		PostProcess();
 
 		Data[DataSource].UpdateStatistics();
 
@@ -273,7 +275,7 @@ bool ScanEngine::Import(bool process_data, bool process_top_100_size, bool proce
 
 		AnalyseRootFolders();
 
-		AnalysePostExtensionSpread();
+		PostProcess();
 
 		if (process_file_dates)
 		{
@@ -315,7 +317,7 @@ bool ScanEngine::ImportFromCSVCustom(const std::wstring file_name, int data_sour
 
 		AnalyseRootFolders();
 
-		AnalysePostExtensionSpread();
+		PostProcess();
 
 		if (process_file_dates)
 		{
@@ -851,37 +853,9 @@ void ScanEngine::AnalyseRootFolders()
 }
 
 
-void ScanEngine::AnalysePostExtensionSpread()
+void ScanEngine::PostProcess()
 {
-	for (ConsolidatedData &data : Data[DataSource].ExtensionSpread)
-	{
-		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
-
-	for (ConsolidatedData &data : Data[DataSource].Lengths)
-	{
-		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
-
-	for (ConsolidatedData &data : Data[DataSource].Magnitude)
-	{
-		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
-
-	for (RootFolder *folder : Data[DataSource].RootFolders)
-	{
-		folder->PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
-
-	for (UserData *user : Data[DataSource].Users)
-	{
-		user->PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
-
-	for (ConsolidatedData &data : Data[DataSource].FileAttributes)
-	{
-		data.PostProcess(Data[DataSource].FileCount, Data[DataSource].TotalSize);
-	}
+    Data[DataSource].PostProcess();
 
 	for (FileExtension *fe : GFileExtensionHandler->Extensions)
 	{
