@@ -1,10 +1,16 @@
-A C++ rewrite of Xinorbis is currently in progress. Beta version due September/October 2026.
+A C++ rewrite of Xinorbis is currently in progress. 
 
 I'll be uploading the code regularly (at least once a week) as I work through the rewrite/remaster.
 
 I don't expect a feature-complete version until the end of 2026. There won't be a stable release until around September/October, but as of late August some functionality is available (though it's going to be buggy and missing major functions for a while...).
 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
+
+2026/10/01
+
+The first beta is now available in the \downloads\ folder. It's mostly functional, but it will be buggy. I haven't tested everything, but I'll spend the next week or two ironing out any issues.
+
+Database (Folder History) functionality will be available Nov/Dec 2026.
 
 2026/09/05
 
