@@ -27,28 +27,6 @@ class TFormMain : public TForm
 __published:	// IDE-managed Components
 	TPanel *Panel1;
 	TPanel *pViews;
-	TImage *Image15;
-	TImage *Image16;
-	TImage *Image17;
-	TImage *Image25;
-	TImage *Image8;
-	TLabel *lAdvID3;
-	TLabel *lAdvID2;
-	TLabel *lTaskID7;
-	TLabel *lTaskID6;
-	TLabel *lAdvID1;
-	TImage *Image12;
-	TLabel *lTaskID1;
-	TLabel *lTaskID2;
-	TImage *Image13;
-	TImage *Image14;
-	TLabel *lTaskID3;
-	TImage *Image2;
-	TImage *Image24;
-	TLabel *lTaskID4;
-	TLabel *lTaskID5;
-	TImage *Image1;
-	TLabel *lTaskID8;
 	TPanel *pNavigation;
 	TImage *Image9;
 	TImage *Image11;
@@ -216,6 +194,29 @@ __published:	// IDE-managed Components
 	TMenuItem *Search2;
 	TMenuItem *Search3;
 	TMenuItem *Structure1;
+	TLabel *lTaskID1;
+	TLabel *lTaskID3;
+	TLabel *lTaskID2;
+	TLabel *lTaskID5;
+	TLabel *lTaskID8;
+	TLabel *lTaskID4;
+	TLabel *lTaskID6;
+	TLabel *lTaskID7;
+	TLabel *lAdvID1;
+	TLabel *lAdvID2;
+	TLabel *lAdvID3;
+	TImage *Image12;
+	TImage *Image13;
+	TImage *Image14;
+	TImage *Image2;
+	TImage *Image1;
+	TImage *Image24;
+	TImage *Image16;
+	TImage *Image17;
+	TImage *Image15;
+	TImage *Image25;
+	TImage *Image8;
+	TImage *iFastScanWarning;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall lTaskID1Click(TObject *Sender);
@@ -358,7 +359,7 @@ private:
 	void PostScan();
 
 	// Frame_Events
-	void __fastcall OnNewScan(const std::wstring);
+	void __fastcall OnNewScan(const std::wstring, int, bool);
     void __fastcall OnStatusBarText(const std::wstring);
 
 	// GUI_Navigation

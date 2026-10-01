@@ -89,6 +89,7 @@
 #include "XFormMoreDetail.h"
 #include "XFormQuickMenuBuilder.h"
 #include "XFormReference.h"
+#include "XFormReportSave.h"
 #include "XFormSearchWizard.h"
 #include "XFormSettings.h"
 #include "XFormUserWizard.h"
@@ -207,7 +208,7 @@ void TFormMain::CreateFrames()
 	FrameSelect = new TFrameSelect(this);
 	FrameSelect->Parent = pMainCanvas;
 	FrameSelect->Align = alClient;
-	FrameSelect->OnNewScan = std::bind(OnNewScan, std::placeholders::_1);
+	FrameSelect->OnNewScan = std::bind(OnNewScan, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 //  FrameSelect.OnChangeFHPath   := RequestNewFHPath;
 	FrameSelect->OnScanWithMultiple = std::bind(RequestNewCombineScan, std::placeholders::_1);
 
@@ -238,7 +239,7 @@ void TFormMain::CreateFrames()
 //  FrameProperties->OnNewSummary = RequestNewSummary;
 //  FrameProperties->OnProcessWindowStatusChange = OnProcessWindowStatusChange;
 	FrameProperties->OnStatusBarText = std::bind(OnStatusBarText, std::placeholders::_1);
-//  FrameProperties->OnSettingsTab = OnOpenSettingsTab;
+	FrameProperties->OnOpenSettingsTab = std::bind(OnOpenSettingsTab, std::placeholders::_1);
 //  FrameProperties->OnSetTutorialBarText = OnTutorialBarChange;
 
 	FrameSearch = new TFrameSearch(this);
@@ -326,6 +327,7 @@ void TFormMain::SetLanguageText()
 	lWelcomeFolderHistory->Caption = GLanguageHandler->Text[kFolderHistory].c_str();
 
 	cbFastAnalysis->Caption = GLanguageHandler->Text[kFastAnalysis].c_str();
+	iFastScanWarning->Hint = GLanguageHandler->Text[kFastAnalysisWarningHint].c_str();
 
 	lDataSource->Caption = GLanguageHandler->Text[kDataSource].c_str();
 
@@ -424,7 +426,6 @@ void TFormMain::SetMenuLanguageText()
 
 	// == Help =================================================================================
 	miHTutorial->Caption        = GLanguageHandler->Text[kTutorial].c_str();
-	//  miDonate->Caption           = GLanguageHandler->Text[kPurchaseXinorbis].c_str();
 	miHHelpCats->Caption        = GLanguageHandler->Text[kHelpCats].c_str();
 	miHHelp->Caption            = GLanguageHandler->Text[kHelp].c_str();
 	miHContextHelp->Caption     = GLanguageHandler->Text[kContextHelp].c_str();
@@ -609,48 +610,45 @@ void TFormMain::UpdateMainMenu()
 #pragma region Application_Hooks
 void TFormMain::OnOpenSettingsTab(int tab)
 {
-	if (OpenSettings(tab) == 1)
+	if (OpenSettings(tab))
 	{
 		DoPreferenceChanges();
 
 		FrameSelect->UpdateQuickFolders();
 
-		FrameSearch->BuildSearchCharts();
+		//FrameSearch.RebuildCharts; empty in original code! to do ?
 
 		//FrameFolderHistory.InitUpdate;
 		//FrameReports[dataLatestScan].InitUpdate;
-
-		//if Assigned(FrameReports[dataFolderHistory])                      TO DO TO DO
-		//{
+		//if Assigned(FrameReports[dataFolderHistory])
+	   //	{
 		//	FrameReports[ dataFolderHistory].InitUpdate;
 		//}
-
-		//FrameSelect->BuildScanHistoryTable(0);
 
 		// =====================================================================
 
 		GSettingsHandler->ProgressPercentage = ProgressUpdates[GSettingsHandler->Optimisations.ProgressUpdate][0];
-		GSettingsHandler->ProgressFileCount  = ProgressUpdates[GSettingsHandler->Optimisations.ProgressUpdate][1];
+		GSettingsHandler->ProgressFileCount  = ProgressUpdates[GSettingsHandler->Optimisations.ProgressUpdate][0];
 
 		// =====================================================================
 
 		if (GSettingsHandler->History.Enabled)
 		{
-			//tbToggleFH.Enabled    := True;
-			//tbToggleFH.ImageIndex := 6;
+			sbToggleFolderHistory->Enabled    = true;
+			sbToggleFolderHistory->ImageIndex = 6;
 
-			//lWelcomeFolderHistory.Enabled  := True;
+			lWelcomeFolderHistory->Enabled  = true;
 
-			//XSettings.System.UserEnabledFH := True;
+			GSettingsHandler->System.UserEnabledFolderHistory = true;
 		}
 		else
 		{
-			//tbToggleFH.Enabled    := False;
-			//tbToggleFH.ImageIndex := 5;
+			sbToggleFolderHistory->Enabled    = false;
+			sbToggleFolderHistory->ImageIndex = 5;
 
-			//lWelcomeFolderHistory.Enabled  := False;
+			lWelcomeFolderHistory->Enabled  = false;
 
-			//XSettings.System.UserEnabledFH := False;
+			GSettingsHandler->System.UserEnabledFolderHistory = false;
 		}
 	}
 }
@@ -884,7 +882,7 @@ void TFormMain::RequestNewScan(const std::wstring path, int data_source, bool fr
 
 void TFormMain::RequestNewCombineScan(int status)
 {
- // TO Do	CombineScan();
+	CombineScan();
 }
 
 
@@ -907,10 +905,11 @@ void TFormMain::RequestNewFHPath(const std::wstring path)
 
 void TFormMain::RequestNewSearch(const std::wstring search, int data_source)
 {
-	//SetSidePanelDisplay(kNullEntry, 4, kNullEntry, 1);
-	// make sure to set menu and show search frame ^ ?
+	SetSidePanelDisplay(kNullEntry, kTaskSearch, kNullEntry, 1);
 
-	//FrameSearch.DoSearch(aNewSearch);
+    FrameSearch->DataSource = data_source;
+
+	FrameSearch->ExecuteSearch(search);
 }
 
 
@@ -1141,7 +1140,7 @@ void TFormMain::DeactivateSource(int source)
 
 
 #pragma region Frame_Select
-void __fastcall TFormMain::OnNewScan(const std::wstring folder)
+void __fastcall TFormMain::OnNewScan(const std::wstring folder, int data_source, bool from_file)
 {
     GScanHistoryHandler->Add(folder, L"", L"");
 
@@ -1765,7 +1764,9 @@ void __fastcall TFormMain::lWelcomeFolderHistoryMouseDown(TObject *Sender, TMous
 
 void __fastcall TFormMain::cbFastAnalysisClick(TObject *Sender)
 {
-    GSettingsHandler->Optimisations.UseFastAnalysis = cbFastAnalysis->Checked;
+	GSettingsHandler->Optimisations.UseFastAnalysis = cbFastAnalysis->Checked;
+
+	iFastScanWarning->Visible = cbFastAnalysis->Checked;
 }
 #pragma end_region
 
@@ -2120,25 +2121,10 @@ void TFormMain::HandleResizing(int NewPanelInFront)
 #pragma region Menu_File
 void __fastcall TFormMain::miFSaveReportsClick(TObject *Sender)
 {
-	TextReportOptions tro;
-	CSVReportOptions csvro;
-	HTMLReportOptions htmlro;
-	XinorbisReportOptions xinro;
-	XMLReportOptions xmlro;
-	TreeReportOptions tero;
-
-//  tbSave.ImageIndex := CToolbarSaveOn;
-
-//	if (OpenReportSave(tro, csvro, htmlro, xinro, xmlro, tero))
-//	{
-		// TO DO , need to create then save .... GReportHandler->SaveReport(tro, csvro, htmlro, xinro, xmlro, tero);
-	//}
-
-	//dataFolderHistory : if DoReportSave(FSource, TextOptions, CSVOptions, HTMLOptions, XinOptions, XMLOptions, TreeOptions) then
-//						  FrameFolderHistory.SaveReports(TextOptions, CSVOptions, HTMLOptions, XinOptions, XMLOptions, TreeOptions)
-//}
-
-  //tbSave.ImageIndex := CToolbarSaveOff;
+	if (OpenReportSave(DataSource))
+	{
+        // user has saved some reports
+	}
 }
 
 
@@ -2815,13 +2801,13 @@ begin
     tbToggleFH.Enabled    := True;
     tbToggleFH.ImageIndex := 6;
 
-    XSettings.System.UserEnabledFH := True;
+	XSettings.System.UserEnabledFH := True;
   end
   else begin
     tbToggleFH.Enabled    := False;
     tbToggleFH.ImageIndex := 5;
 
-    XSettings.System.UserEnabledFH := False;
+	XSettings.System.UserEnabledFH := False;
   end;
 
   XSettings.System.UserEnabledVirtual := False;

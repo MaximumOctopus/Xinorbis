@@ -6,7 +6,7 @@
         <AppType>Application</AppType>
         <MainSource>X10.cpp</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>2</TargetedPlatforms>
         <ProjectName Condition="'$(ProjectName)'==''">X10</ProjectName>
@@ -188,6 +188,7 @@
         <DynamicRTL>false</DynamicRTL>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <LinkPackageStatics>rtl.lib;vcl.lib;vclx.lib;vclimg.lib;Tee.lib;IndySystem.lib;IndyProtocols.lib;IndyCore.lib;vclwinx.lib;bindengine.lib;vclie.lib;vcledge.lib;VclSmp.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64x)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -429,13 +430,13 @@
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>
             <BuildOrder>60</BuildOrder>
         </None>
-        <None Include="Code\Classes\Setting.h">
-            <VirtualFolder>{1E408722-812D-4646-A385-30B7C93D18AE}</VirtualFolder>
-            <BuildOrder>124</BuildOrder>
-        </None>
         <None Include="Code\Classes\Settings\ChartOptions.h">
             <VirtualFolder>{1E408722-812D-4646-A385-30B7C93D18AE}</VirtualFolder>
             <BuildOrder>125</BuildOrder>
+        </None>
+        <None Include="Code\Classes\Settings\Setting.h">
+            <VirtualFolder>{1E408722-812D-4646-A385-30B7C93D18AE}</VirtualFolder>
+            <BuildOrder>241</BuildOrder>
         </None>
         <None Include="Code\Classes\SizeOfFolder.h">
             <VirtualFolder>{C5D7F8AF-55DE-4A6D-BE03-D058123F8C0C}</VirtualFolder>

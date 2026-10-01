@@ -32,375 +32,13 @@ object FormMain: TFormMain
     object pViews: TPanel
       Tag = 1
       Left = 0
-      Top = 169
+      Top = 185
       Width = 216
-      Height = 616
+      Height = 600
       Align = alClient
       Color = 3355443
       ParentBackground = False
       TabOrder = 0
-      object Image15: TImage
-        Left = 12
-        Top = 203
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image16: TImage
-        Left = 12
-        Top = 161
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image17: TImage
-        Left = 12
-        Top = 177
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image25: TImage
-        Tag = 3
-        Left = 12
-        Top = 219
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image8: TImage
-        Left = 12
-        Top = 235
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object lAdvID3: TLabel
-        Tag = 4
-        Left = 22
-        Top = 233
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = miDFileAgeClick
-      end
-      object lAdvID2: TLabel
-        Tag = 3
-        Left = 22
-        Top = 217
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = miDFolderDetailClick
-      end
-      object lTaskID7: TLabel
-        Tag = 6
-        Left = 22
-        Top = 175
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object lTaskID6: TLabel
-        Tag = 5
-        Left = 22
-        Top = 159
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object lAdvID1: TLabel
-        Left = 22
-        Top = 201
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = miDFileSizeSpreadClick
-      end
-      object Image12: TImage
-        Left = 12
-        Top = 55
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object lTaskID1: TLabel
-        Left = 22
-        Top = 52
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object lTaskID2: TLabel
-        Tag = 1
-        Left = 22
-        Top = 69
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object Image13: TImage
-        Left = 12
-        Top = 71
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image14: TImage
-        Left = 12
-        Top = 87
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object lTaskID3: TLabel
-        Tag = 2
-        Left = 22
-        Top = 84
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object Image2: TImage
-        Left = 12
-        Top = 103
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object Image24: TImage
-        Left = 12
-        Top = 136
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object lTaskID4: TLabel
-        Tag = 3
-        Left = 22
-        Top = 134
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object lTaskID5: TLabel
-        Tag = 4
-        Left = 22
-        Top = 101
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
-      object Image1: TImage
-        Left = 12
-        Top = 120
-        Width = 6
-        Height = 10
-        AutoSize = True
-        Picture.Data = {
-          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
-          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
-          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
-          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
-          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
-          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
-          F2FF234B0000000049454E44AE426082}
-        Transparent = True
-      end
-      object lTaskID8: TLabel
-        Tag = 7
-        Left = 22
-        Top = 118
-        Width = 3
-        Height = 13
-        Cursor = crHandPoint
-        Caption = '.'
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-        OnClick = lTaskID1Click
-      end
       object lReportsTitle: TLabel
         Left = 11
         Top = 6
@@ -423,19 +61,403 @@ object FormMain: TFormMain
         Height = 2
         Pen.Color = clWhite
       end
+      object lTaskID1: TLabel
+        Left = 22
+        Top = 71
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID3: TLabel
+        Tag = 2
+        Left = 22
+        Top = 115
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID2: TLabel
+        Tag = 1
+        Left = 22
+        Top = 93
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID5: TLabel
+        Tag = 4
+        Left = 22
+        Top = 137
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID8: TLabel
+        Tag = 7
+        Left = 22
+        Top = 159
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID4: TLabel
+        Tag = 3
+        Left = 22
+        Top = 181
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID6: TLabel
+        Tag = 5
+        Left = 22
+        Top = 212
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lTaskID7: TLabel
+        Tag = 6
+        Left = 22
+        Top = 234
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = lTaskID1Click
+      end
+      object lAdvID1: TLabel
+        Left = 22
+        Top = 265
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = miDFileSizeSpreadClick
+      end
+      object lAdvID2: TLabel
+        Tag = 3
+        Left = 22
+        Top = 287
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = miDFolderDetailClick
+      end
+      object lAdvID3: TLabel
+        Tag = 4
+        Left = 22
+        Top = 309
+        Width = 16
+        Height = 16
+        Cursor = crHandPoint
+        Caption = 'XX'
+        Color = 3355443
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -13
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        OnClick = miDFileAgeClick
+      end
+      object Image12: TImage
+        Left = 10
+        Top = 74
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image13: TImage
+        Left = 10
+        Top = 96
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image14: TImage
+        Left = 10
+        Top = 118
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image2: TImage
+        Left = 10
+        Top = 140
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image1: TImage
+        Left = 10
+        Top = 162
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image24: TImage
+        Left = 10
+        Top = 184
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image16: TImage
+        Left = 10
+        Top = 215
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image17: TImage
+        Left = 10
+        Top = 237
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image15: TImage
+        Left = 10
+        Top = 268
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image25: TImage
+        Tag = 3
+        Left = 10
+        Top = 290
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
+      object Image8: TImage
+        Left = 10
+        Top = 312
+        Width = 6
+        Height = 10
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000060000
+          000A0802000000186CB864000000097048597300000B1300000B1301009A9C18
+          000000784944415478DA8D8E210A45211444FF35888B30998C82884D93A02B56
+          8C2EC166B1B906410CEFFEF8E18737F1CC7018D05A7F7E03FF11A5943106007B
+          EF730E586B85104A29EC7BEF734EF0DE8710524AB8CA39D75AC1398734C688AB
+          524A6B0D8C319C732925A231C65AEBAB2784A01E11BAEFBDF0EAD70345202A6B
+          F2FF234B0000000049454E44AE426082}
+        Transparent = True
+      end
     end
     object pNavigation: TPanel
       Left = 0
       Top = 0
       Width = 216
-      Height = 169
+      Height = 185
       Align = alTop
       Color = 3355443
       ParentBackground = False
       TabOrder = 1
       object Image9: TImage
-        Left = 12
-        Top = 58
+        Left = 10
+        Top = 59
         Width = 6
         Height = 10
         AutoSize = True
@@ -450,8 +472,8 @@ object FormMain: TFormMain
         Transparent = True
       end
       object Image11: TImage
-        Left = 12
-        Top = 75
+        Left = 10
+        Top = 81
         Width = 6
         Height = 10
         AutoSize = True
@@ -469,13 +491,13 @@ object FormMain: TFormMain
         Tag = 1
         Left = 22
         Top = 56
-        Width = 5
-        Height = 13
+        Width = 19
+        Height = 16
         Cursor = crHandPoint
-        Caption = '.'
+        Caption = 'XX'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
         ParentFont = False
@@ -483,15 +505,15 @@ object FormMain: TFormMain
       end
       object lWelcomeFolderHistory: TLabel
         Tag = 2
-        Left = 24
-        Top = 74
-        Width = 3
-        Height = 13
+        Left = 22
+        Top = 78
+        Width = 16
+        Height = 16
         Cursor = crHandPoint
-        Caption = '.'
+        Caption = 'XX'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
-        Font.Height = -11
+        Font.Height = -13
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         ParentFont = False
@@ -499,7 +521,7 @@ object FormMain: TFormMain
       end
       object lDataSource: TLabel
         Left = 12
-        Top = 118
+        Top = 137
         Width = 192
         Height = 13
         Cursor = crHandPoint
@@ -537,7 +559,7 @@ object FormMain: TFormMain
       end
       object sbSourceLive: TSpeedButton
         Left = 10
-        Top = 138
+        Top = 157
         Width = 96
         Height = 22
         Enabled = False
@@ -545,7 +567,7 @@ object FormMain: TFormMain
       end
       object sbSourceFolderHistory: TSpeedButton
         Left = 114
-        Top = 138
+        Top = 157
         Width = 96
         Height = 22
         Enabled = False
@@ -553,7 +575,7 @@ object FormMain: TFormMain
       end
       object iScanWarning: TImage
         Left = 178
-        Top = 82
+        Top = 38
         Width = 32
         Height = 30
         AutoSize = True
@@ -613,9 +635,69 @@ object FormMain: TFormMain
           7705050589FF0524F386469A8909CA0000000049454E44AE426082}
         Visible = False
       end
+      object iFastScanWarning: TImage
+        Left = 178
+        Top = 78
+        Width = 32
+        Height = 30
+        AutoSize = True
+        Picture.Data = {
+          0954506E67496D61676589504E470D0A1A0A0000000D49484452000000200000
+          001E08060000004D0A1C29000000097048597300000B1300000B1301009A9C18
+          000005FB4944415478DAB5570B4C935714FEFED242A150509840784C85610846
+          87C0828B754E9C0487133729A8203A0953B705E5315858B21962E2D00132331F
+          138932111545B21805A93A986C83E8A280A043110DA0208F1668CBFADA698BF2
+          2AB46CE324A4EDFDCF7FEF77CEF9CE772E8C46A3C154ACA8A8080D0D0D82F2F2
+          F2FD8D8D8D0B140A057C7C7C1EA7A4A4A43A3A3A96CC9933070E0E0E26EFC74C
+          15404E4E4E545252523E18361430D7ADB1D94AA86452E4E6E66E5BBD7AF59169
+          03D0D2D2B280A2BDA3021B81F60338B952093607D8266270A5950F855482DADA
+          DAC5E4F3FBB400888E8E16159D3DBB7CFE6B1AD4C42A00E9D0036B60559E19AE
+          B59B232424B82E2F2F6F21ADAA4D02505F5F6FD2E1F7EEDD5B1B1E1E7E01E6B6
+          E8DC2286037FF4F3C141807BD8168C428CCB97AFAC0F0E0E2E340980582C36C5
+          CF3C2C2CEC6EE51FD5F33EF51840F61AED89633D80DD65C09E3B7CCCF7F1E8BC
+          74E9923BADCAFF97121C3B766C575C5C5CA68663034DBC6462473660F61DA546
+          D98F43870E7DB371E3C6DD4601F4F4F418F3B10B0808E87CDCD6C9CE5C24C6E7
+          EFD0CADF2FDF1EFA7C19031132BF1AD87CD30EB65C66F0D1A3474E5C2EB7F73F
+          65202121E1DBEF730E7C61C1B5427F42FF7052295AF95019B896234059018E07
+          78E8EE932163DFFEBC1D3B767C3C2900AD904C6472B97C2EF5F4C3410D17A521
+          62ACF4A64595F64420BC8844E981ADCE4FE829C61921F4E058C0CD6660C9452D
+          21252092CFA52C344F08A0BBBBDBE003B55A8D8C8C8CF35959991FBE61CF41FD
+          27B2E1B6E3015E3F58A25DCAD2FD74B556A361E473CAC2925C0E6A3A80AD5B63
+          AF2526260671389CA995E0D9B3672B9C9D9DAF6ADBAE718318F3668DA835A53C
+          F03881EAD52BE1727B394A36A94671FE2951CBFD041192B270FFFEFDF7BCBCBC
+          CA0D02207533B81E1F1FFFA0B4B4D4F30377390A859AD10D4525589B6F86F217
+          5CCA1410F1FA008EAFC3681F0B20F60270EA310F41EF2E6BA64EF284017132D8
+          055555551B4243434F69D836507C2621AD1FE34000B612070A5B78BA1DE33D07
+          B0770DC6773DE166B2F960547D282E2EDEEEEDED7DD8680988344C6464644F53
+          F353DB042F31F6BC8FF1A24300D24A80CC261EE44A339C7C5B82688101009485
+          BD5781AFEB6CE1326BA6E4FAF5EB766E6E6E9A4901141414A44745457DA58D5E
+          9322197FF8D0C6E77E23F657F27551FE1C2241A80FAD2B0DFB327BF559A0BDB3
+          844261C228005D5D5D237FDBB8B9B9F7CA546CD64F4BC5D810402B86BAD40C10
+          35012B4AF403A12A5C82C56E303C7EA87C45B5D4B665B6E068A46A12A719B4FA
+          4A4E99E7CF9FBFF2A52976222D2D6D931DCF122F7692E8C860D84801EFB6030B
+          0BF5009AA225F0B0C7C4465DE37A90870E891C29A95FE66F221B57029AE3737D
+          7D7DFF5299F158156B2510CCC6A403B5BB0FB03FAE2F4177AC0433AC27014072
+          71EB29E05FA41327F593274F7C5D5D5DEFEA00747474E87C5253537F397DFAD4
+          D2B71C55B811A5345CFB91A66578965E0935BBC4C373612223E2AEA2D6BDD6C1
+          46C4BA885FD3D3D3053A008406F4B74620105CD4B0F968DB2C86B31D8C1BF1A0
+          F5855E9B5CB5373095F157BA0600871F8990CA3ED09D52E8E2E2728E696B6B43
+          44444453CDADDB1ED1B30770F4239830C5F500C01AFAAE360D80360BDB8B896B
+          0F79F05FF4E643EA0A4FA6ACAC2C996E2F19BAB6D3CE7A63A9D4E58DA2215787
+          133630A3C35BB7F4C1918F61A936F22E93A5CF02296D12131414D47EA3AADA69
+          BF5F1F768E9CF59319CD95337F0291227D17142C9360BD3F0CB7EC58A3F19153
+          01ECAAB641F0F2257D8CB5B5B5AC7F90C59593E45AB04DD8E0A591EF968BA43D
+          14757E98892518321971DCEA201F7C4BC8182B2B2BA954C1B6D4244AA6B489CE
+          2C863E8D75CC5823FE307475B3E2A8640C3151DEDA39605123EC85BFEBD422F9
+          574699BB4D9AE077D60EEE4EFC41263939F9487676569C850517E783FB217036
+          8D4B53352DB7D5B4F1553A3C466403E9A00CB1B1B14799BABA3AA79898983B64
+          B3942CDE34874F4008098B6ECD7E7E7E1DF9F9F90BB40020128966565656EEAB
+          A8A85849F74007B5F63E360DC662B1B4FFB8F653DB97040606A6D24810FF039A
+          10692B7EBB7FA80000000049454E44AE426082}
+        Visible = False
+      end
       object cbFastAnalysis: TCheckBox
-        Left = 10
-        Top = 98
+        Left = 12
+        Top = 114
         Width = 173
         Height = 17
         Caption = '.'
