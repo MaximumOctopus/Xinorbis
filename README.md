@@ -6,6 +6,14 @@ I don't expect a feature-complete version until the end of 2026. There won't be 
 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
 
+2026/10/04
+
+I'm working on adding Folder History (database) support and looking at a few bugs and issues.
+
+But I've hit some kind of project size limit in the Community Edition of C++ Builder. I must now click OK on an EULA popup dialog **EVERY TIME** I compile. Thanks Embarcadero... really nice.
+
+This is going to slow down development. I can't really justify £1000 for a commercial licence.
+
 2026/10/01
 
 The first beta is now available in the \downloads\ folder. It's mostly functional, but it will be buggy. I haven't tested everything, but I'll spend the next week or two ironing out any issues.
