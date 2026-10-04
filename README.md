@@ -12,7 +12,7 @@ I'm working on adding Folder History (database) support and looking at a few bug
 
 But I've hit some kind of project size limit in the Community Edition of C++ Builder. I must now click OK on an EULA popup dialog **EVERY TIME** I compile. Thanks Embarcadero... really nice.
 
-This is going to slow down development. I can't really justify £1000 for a commercial licence.
+This is going to slow down development. I can't really justify £2000 for a commercial licence.
 
 2026/10/01
 
