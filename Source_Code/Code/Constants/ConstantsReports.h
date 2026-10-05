@@ -230,3 +230,8 @@ static const int kScanSourceLiveShare        = 4;
 static const int kScanSourceFolderHistory    = 5;
 static const int kScanSourceSearchResults    = 6;
 static const int kScanSourceFileXin2Detailed = 7;
+
+
+static const int kFHModeSaveAll     = 0;
+static const int kFHModeSaveDo      = 1;
+static const int kFHModeSaveDont    = 2;

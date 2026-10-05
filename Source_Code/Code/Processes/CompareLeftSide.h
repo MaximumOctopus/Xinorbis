@@ -16,6 +16,8 @@
 
 #include <Vcl.Grids.hpp>
 
+#include "CompareData.h"
+
 
 class CompareLeftSide
 {
@@ -33,6 +35,8 @@ class CompareLeftSide
 	void CloseODBC();
 
 public:
+
+	FolderHistoryCompareData Data;
 
 	void Execute();
 

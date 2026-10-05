@@ -19,6 +19,9 @@ static const int __WidthOfScrollbar = 26; // (pixels)
 
 static const int kNullEntry = -1;
 
+static const int kOptionLeft = 0;
+static const int kOptionRight = 1;
+
 static const int kMainPanelIndex            = 0;
 static const int kScanSelectionPanelIndex   = 1;
 static const int kMainSummaryPanelIndex     = 2;
@@ -134,3 +137,19 @@ static const int kGridColourOn = 0x00666666;
 static const int kGridColourOff = 0x00444444;
 static const int kGridColourSelected = 0x00664422;
 static const int kGridHeader = 0x00444444;
+
+
+static const int kFHColumnFilename       = 0;
+static const int kFHColumnSize           = 1;
+static const int kFHColumnSizeOnDisk     = 2;
+static const int kFHColumnCreated        = 3;
+static const int kFHColumnAccessed       = 4;
+static const int kFHColumnModified       = 5;
+static const int kFHColumnOwner          = 6;
+static const int kFHColumnStatus         = 7;
+static const int kFHColumnCategory       = 8;
+static const int kFHColumnSortSize       = 9;
+static const int kFHColumnSortSizeOnDisk = 10;
+static const int kFHColumnSortCreated    = 11;
+static const int kFHColumnSortAccessed   = 12;
+static const int kFHColumnSortModified   = 13;
