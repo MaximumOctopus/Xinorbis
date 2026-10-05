@@ -9,7 +9,7 @@ object FrameFolderHistory: TFrameFolderHistory
     Top = 0
     Width = 1569
     Height = 879
-    ActivePage = tsStats
+    ActivePage = tsSearch
     Align = alClient
     TabOrder = 0
     object tsStats: TTabSheet
@@ -42,12 +42,12 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 15
           Caption = '...'
         end
-        object bFHISelect: TSpeedButton
+        object bSelectDate: TSpeedButton
           Left = 39
           Top = 76
           Width = 122
           Height = 22
-          OnClick = bFHISelectClick
+          OnClick = bSelectDateClick
         end
         object SpeedButton2: TSpeedButton
           Left = 10
@@ -63,21 +63,13 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 22
           OnClick = sbStatsInfoClick
         end
-        object cbFHAvailablePath: TEdit
-          Left = 343
-          Top = 33
-          Width = 489
-          Height = 23
-          TabOrder = 0
-          OnChange = cbFHAvailablePathChange
-        end
         object cbFHAvailableFilter: TComboBox
           Left = 264
           Top = 33
           Width = 73
           Height = 23
           Style = csDropDownList
-          TabOrder = 1
+          TabOrder = 0
           OnChange = cbFHAvailableFilterChange
         end
         object cbFHAvailableComputer: TComboBox
@@ -86,8 +78,16 @@ object FrameFolderHistory: TFrameFolderHistory
           Width = 249
           Height = 23
           Style = csDropDownList
-          TabOrder = 2
+          TabOrder = 1
           OnChange = cbFHAvailableComputerChange
+        end
+        object cbFHAvailablePath: TComboBox
+          Left = 343
+          Top = 33
+          Width = 489
+          Height = 23
+          Style = csDropDownList
+          TabOrder = 2
         end
       end
       object pcStats: TPageControl
@@ -99,6 +99,7 @@ object FrameFolderHistory: TFrameFolderHistory
         Align = alClient
         TabOrder = 1
         OnChange = pcStatsChange
+        OnResize = pcStatsResize
         object tsChart: TTabSheet
           Caption = 'tsChart'
           object Panel2: TPanel
@@ -426,7 +427,7 @@ object FrameFolderHistory: TFrameFolderHistory
               OnClick = rbStatsTableTodayClick
             end
           end
-          object StringGrid1: TStringGrid
+          object sgStatsTable: TStringGrid
             Left = 0
             Top = 30
             Width = 1553
@@ -434,7 +435,7 @@ object FrameFolderHistory: TFrameFolderHistory
             Align = alClient
             FixedCols = 0
             TabOrder = 1
-            OnDrawCell = StringGrid1DrawCell
+            OnDrawCell = sgStatsTableDrawCell
           end
         end
         object tsTimeLine: TTabSheet
@@ -485,7 +486,7 @@ object FrameFolderHistory: TFrameFolderHistory
         Top = 0
         Width = 1561
         Height = 849
-        ActivePage = tsCompareGrid
+        ActivePage = tsCompareTree
         Align = alClient
         TabOrder = 0
         object tsCompareGrid: TTabSheet
@@ -551,17 +552,17 @@ object FrameFolderHistory: TFrameFolderHistory
               OnClick = sbShowManualClick
               ExplicitLeft = 1532
             end
-            object eSearch: TComboBox
+            object eCompareSearch: TComboBox
               Left = 58
               Top = 0
               Width = 1419
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
-              OnChange = eSearchChange
-              OnKeyPress = eSearchKeyPress
+              OnChange = eCompareSearchChange
+              OnKeyPress = eCompareSearchKeyPress
             end
-            object ComboBox2: TComboBox
+            object cbCompareUnits: TComboBox
               Left = 58
               Top = 29
               Width = 136
@@ -616,13 +617,13 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton8Click
               end
-              object SpeedButton9: TSpeedButton
+              object sbCompareFolderLeftSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton9Click
+                OnClick = sbCompareFolderLeftSaveClick
               end
               object SpeedButton10: TSpeedButton
                 Left = 225
@@ -664,40 +665,83 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton8Click
               end
-              object SpeedButton15: TSpeedButton
+              object sbCompareLeftShow: TSpeedButton
                 Left = 370
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton15Click
+                OnClick = sbCompareLeftShowClick
               end
-              object Label1: TLabel
+              object lCompareLeftResults: TLabel
                 Left = 414
                 Top = 9
-                Width = 34
+                Width = 109
                 Height = 15
-                Caption = 'Label1'
+                Caption = 'lCompareLeftResults'
               end
-              object BitBtn1: TBitBtn
+              object bCompareLeftDate: TBitBtn
                 Left = 31
                 Top = 3
                 Width = 130
                 Height = 25
-                Caption = 'BitBtn1'
+                Caption = 'bCompareLeftDate'
                 TabOrder = 0
-                OnClick = BitBtn1Click
+                OnClick = bCompareLeftDateClick
               end
             end
-            object StringGrid2: TStringGrid
+            object sgCompareLeft: TStringGrid
               Left = 1
               Top = 35
               Width = 727
-              Height = 727
+              Height = 689
               Align = alClient
+              ColCount = 14
               FixedCols = 0
               TabOrder = 1
-              OnDrawCell = StringGrid2DrawCell
+              OnDrawCell = sgCompareLeftDrawCell
+            end
+            object Panel3: TPanel
+              Left = 1
+              Top = 724
+              Width = 727
+              Height = 38
+              Align = alBottom
+              TabOrder = 2
+              Visible = False
+              object lCLShowing: TLabel
+                Left = 97
+                Top = 11
+                Width = 122
+                Height = 15
+                Alignment = taCenter
+                AutoSize = False
+                Caption = '...'
+              end
+              object lCLPageNumber: TLabel
+                Left = 306
+                Top = 11
+                Width = 6
+                Height = 15
+                Caption = '1'
+              end
+              object lCLPagePrevious: TBitBtn
+                Tag = 1
+                Left = 16
+                Top = 6
+                Width = 75
+                Height = 25
+                Caption = 'lCLPagePrevious'
+                TabOrder = 0
+              end
+              object lCLPageNext: TBitBtn
+                Left = 225
+                Top = 6
+                Width = 75
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 1
+              end
             end
           end
           object Panel10: TPanel
@@ -707,15 +751,16 @@ object FrameFolderHistory: TFrameFolderHistory
             Height = 763
             Align = alClient
             TabOrder = 2
-            object StringGrid3: TStringGrid
+            object sgCompareRight: TStringGrid
               Left = 1
               Top = 35
               Width = 819
-              Height = 727
+              Height = 689
               Align = alClient
+              ColCount = 14
               FixedCols = 0
               TabOrder = 0
-              OnDrawCell = StringGrid3DrawCell
+              OnDrawCell = sgCompareRightDrawCell
             end
             object Panel12: TPanel
               Left = 1
@@ -739,13 +784,13 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton17Click
               end
-              object SpeedButton20: TSpeedButton
+              object sbCompareFolderRightSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton20Click
+                OnClick = sbCompareFolderRightSaveClick
               end
               object SpeedButton21: TSpeedButton
                 Left = 225
@@ -787,29 +832,71 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton17Click
               end
-              object SpeedButton26: TSpeedButton
+              object sbCompareRightShow: TSpeedButton
                 Left = 370
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton26Click
+                OnClick = sbCompareRightShowClick
               end
-              object Label3: TLabel
+              object lCompareRightResults: TLabel
                 Left = 414
                 Top = 9
                 Width = 34
                 Height = 15
                 Caption = 'Label1'
               end
-              object BitBtn2: TBitBtn
+              object bCompareRightDate: TBitBtn
                 Left = 31
                 Top = 5
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
                 TabOrder = 0
-                OnClick = BitBtn2Click
+                OnClick = bCompareRightDateClick
+              end
+            end
+            object Panel4: TPanel
+              Left = 1
+              Top = 724
+              Width = 819
+              Height = 38
+              Align = alBottom
+              TabOrder = 2
+              Visible = False
+              object lCRShowing: TLabel
+                Left = 97
+                Top = 11
+                Width = 122
+                Height = 15
+                Alignment = taCenter
+                AutoSize = False
+                Caption = '...'
+              end
+              object lCRPageNumber: TLabel
+                Left = 306
+                Top = 11
+                Width = 6
+                Height = 15
+                Caption = '1'
+              end
+              object lCRPagePrevious: TBitBtn
+                Tag = 1
+                Left = 16
+                Top = 6
+                Width = 75
+                Height = 25
+                Caption = 'lCLPagePrevious'
+                TabOrder = 0
+              end
+              object lCRPageNext: TBitBtn
+                Left = 225
+                Top = 6
+                Width = 75
+                Height = 25
+                Caption = 'BitBtn1'
+                TabOrder = 1
               end
             end
           end
@@ -869,14 +956,14 @@ object FrameFolderHistory: TFrameFolderHistory
               ImageIndex = 3
               OnClick = sbShowManualClick
             end
-            object ComboBox3: TComboBox
+            object eCompareFolderSearch: TComboBox
               Left = 58
               Top = 0
               Width = 1308
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
-              OnKeyDown = ComboBox3KeyDown
+              OnKeyDown = eCompareFolderSearchKeyDown
             end
             object CheckBox5: TCheckBox
               Left = 1430
@@ -895,15 +982,16 @@ object FrameFolderHistory: TFrameFolderHistory
             Height = 792
             Align = alClient
             TabOrder = 1
-            object StringGrid4: TStringGrid
+            object sgCompareFolderRight: TStringGrid
               Left = 1
               Top = 35
               Width = 819
               Height = 756
               Align = alClient
+              ColCount = 14
               FixedCols = 0
               TabOrder = 0
-              OnDrawCell = StringGrid5DrawCell
+              OnDrawCell = sgCompareFolderLeftDrawCell
             end
             object Panel17: TPanel
               Left = 1
@@ -927,21 +1015,21 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton32Click
               end
-              object Label5: TLabel
+              object lCompareFolderRightResults: TLabel
                 Left = 212
                 Top = 10
                 Width = 34
                 Height = 15
                 Caption = 'Label4'
               end
-              object BitBtn6: TBitBtn
+              object bCompareFolderRightDate: TBitBtn
                 Left = 31
                 Top = 5
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
                 TabOrder = 0
-                OnClick = BitBtn6Click
+                OnClick = bCompareFolderRightDateClick
               end
             end
           end
@@ -952,15 +1040,16 @@ object FrameFolderHistory: TFrameFolderHistory
             Height = 792
             Align = alLeft
             TabOrder = 2
-            object StringGrid5: TStringGrid
+            object sgCompareFolderLeft: TStringGrid
               Left = 1
               Top = 35
               Width = 727
               Height = 756
               Align = alClient
+              ColCount = 14
               FixedCols = 0
               TabOrder = 0
-              OnDrawCell = StringGrid5DrawCell
+              OnDrawCell = sgCompareFolderLeftDrawCell
             end
             object Panel15: TPanel
               Left = 1
@@ -984,21 +1073,21 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = SpeedButton32Click
               end
-              object Label4: TLabel
+              object lCompareFolderLeftResults: TLabel
                 Left = 212
                 Top = 10
-                Width = 34
+                Width = 142
                 Height = 15
-                Caption = 'Label4'
+                Caption = 'lCompareFolderLeftResults'
               end
-              object BitBtn5: TBitBtn
+              object bCompareFolderLeftDate: TBitBtn
                 Left = 31
                 Top = 5
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
                 TabOrder = 0
-                OnClick = BitBtn5Click
+                OnClick = bCompareFolderLeftDateClick
               end
             end
           end
@@ -1059,17 +1148,17 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = ShowCalendar
               end
-              object bCompareTreeRight: TBitBtn
+              object bCompareTreeRightDate: TBitBtn
                 Left = 34
                 Top = 5
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
                 TabOrder = 0
-                OnClick = bCompareTreeRightClick
+                OnClick = bCompareTreeRightDateClick
               end
             end
-            object TreeView2: TTreeView
+            object tvCompareRight: TTreeView
               Left = 1
               Top = 35
               Width = 819
@@ -1077,7 +1166,7 @@ object FrameFolderHistory: TFrameFolderHistory
               Align = alClient
               Indent = 19
               TabOrder = 1
-              OnExpanding = TreeView2Expanding
+              OnExpanding = tvCompareRightExpanding
             end
           end
           object Panel21: TPanel
@@ -1110,17 +1199,17 @@ object FrameFolderHistory: TFrameFolderHistory
                 ImageIndex = 0
                 OnClick = ShowCalendar
               end
-              object bCompareTreeLeft: TBitBtn
+              object bCompareTreeLeftDate: TBitBtn
                 Left = 31
                 Top = 5
                 Width = 130
                 Height = 25
                 Caption = 'BitBtn1'
                 TabOrder = 0
-                OnClick = bCompareTreeLeftClick
+                OnClick = bCompareTreeLeftDateClick
               end
             end
-            object TreeView1: TTreeView
+            object tvCompareLeft: TTreeView
               Left = 1
               Top = 35
               Width = 727
@@ -1128,7 +1217,7 @@ object FrameFolderHistory: TFrameFolderHistory
               Align = alClient
               Indent = 19
               TabOrder = 1
-              OnExpanding = TreeView1Expanding
+              OnExpanding = tvCompareLeftExpanding
             end
           end
         end

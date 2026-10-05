@@ -19,6 +19,13 @@
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
 #include <Vcl.Grids.hpp>
+#include <vector>
+
+#include "CompareLeftSide.h"
+#include "CompareRightSide.h"
+#include "CompareFolderLeftSide.h"
+#include "CompareFolderRightSide.h"
+
 //---------------------------------------------------------------------------
 class TFrameFolderHistory : public TFrame
 {
@@ -44,13 +51,12 @@ __published:	// IDE-managed Components
 	TPageControl *PageControl1;
 	TTabSheet *tsStats;
 	TPanel *Panel1;
-	TEdit *cbFHAvailablePath;
 	TComboBox *cbFHAvailableFilter;
 	TComboBox *cbFHAvailableComputer;
 	TSpeedButton *SpeedButton1;
 	TLabel *lFHAvailableComputer;
 	TLabel *Label2;
-	TSpeedButton *bFHISelect;
+	TSpeedButton *bSelectDate;
 	TTabSheet *tsSearch;
 	TPageControl *pcStats;
 	TTabSheet *tsChart;
@@ -94,7 +100,7 @@ __published:	// IDE-managed Components
 	TPanel *Panel6;
 	TRadioButton *rbStatsTableToday;
 	TRadioButton *rbStatsTablePrevious;
-	TStringGrid *StringGrid1;
+	TStringGrid *sgStatsTable;
 	TPanel *Panel7;
 	TSpeedButton *SpeedButton18;
 	TSpeedButton *SpeedButton19;
@@ -113,27 +119,27 @@ __published:	// IDE-managed Components
 	TSpeedButton *sbGoSearch;
 	TSpeedButton *sbSearchSyntax;
 	TLabel *lSearchDetails;
-	TComboBox *eSearch;
+	TComboBox *eCompareSearch;
 	TPanel *Panel9;
 	TPanel *Panel10;
 	TSplitter *Splitter1;
 	TPanel *Panel11;
-	TStringGrid *StringGrid2;
-	TStringGrid *StringGrid3;
-	TComboBox *ComboBox2;
+	TStringGrid *sgCompareLeft;
+	TStringGrid *sgCompareRight;
+	TComboBox *cbCompareUnits;
 	TCheckBox *cbCompareShowFullPath;
 	TCheckBox *cbCompareColourCode;
 	TPanel *Panel13;
 	TSpeedButton *SpeedButton3;
 	TSpeedButton *sbCompareFolderSearch;
 	TSpeedButton *SpeedButton5;
-	TComboBox *ComboBox3;
+	TComboBox *eCompareFolderSearch;
 	TCheckBox *CheckBox5;
 	TPanel *Panel14;
-	TStringGrid *StringGrid4;
+	TStringGrid *sgCompareFolderRight;
 	TSplitter *Splitter2;
 	TPanel *Panel16;
-	TStringGrid *StringGrid5;
+	TStringGrid *sgCompareFolderLeft;
 	TPanel *Panel18;
 	TSpeedButton *sbCompareTree;
 	TPanel *Panel19;
@@ -142,50 +148,61 @@ __published:	// IDE-managed Components
 	TPanel *Panel22;
 	TSplitter *Splitter3;
 	TSpeedButton *SpeedButton7;
-	TBitBtn *BitBtn1;
+	TBitBtn *bCompareLeftDate;
 	TSpeedButton *SpeedButton8;
-	TSpeedButton *SpeedButton9;
+	TSpeedButton *sbCompareFolderLeftSave;
 	TSpeedButton *SpeedButton10;
 	TSpeedButton *SpeedButton11;
 	TSpeedButton *SpeedButton12;
 	TSpeedButton *SpeedButton13;
 	TSpeedButton *SpeedButton14;
-	TSpeedButton *SpeedButton15;
-	TLabel *Label1;
+	TSpeedButton *sbCompareLeftShow;
+	TLabel *lCompareLeftResults;
 	TPanel *Panel12;
 	TSpeedButton *SpeedButton16;
 	TSpeedButton *SpeedButton17;
-	TSpeedButton *SpeedButton20;
+	TSpeedButton *sbCompareFolderRightSave;
 	TSpeedButton *SpeedButton21;
 	TSpeedButton *SpeedButton22;
 	TSpeedButton *SpeedButton23;
 	TSpeedButton *SpeedButton24;
 	TSpeedButton *SpeedButton25;
-	TSpeedButton *SpeedButton26;
-	TLabel *Label3;
-	TBitBtn *BitBtn2;
-	TBitBtn *bCompareTreeLeft;
+	TSpeedButton *sbCompareRightShow;
+	TLabel *lCompareRightResults;
+	TBitBtn *bCompareRightDate;
+	TBitBtn *bCompareTreeLeftDate;
 	TSpeedButton *SpeedButton28;
 	TSpeedButton *SpeedButton29;
-	TBitBtn *bCompareTreeRight;
+	TBitBtn *bCompareTreeRightDate;
 	TPanel *Panel15;
 	TSpeedButton *SpeedButton31;
 	TSpeedButton *SpeedButton32;
-	TBitBtn *BitBtn5;
+	TBitBtn *bCompareFolderLeftDate;
 	TPanel *Panel17;
 	TSpeedButton *SpeedButton33;
 	TSpeedButton *SpeedButton34;
-	TBitBtn *BitBtn6;
-	TLabel *Label4;
-	TLabel *Label5;
-	TTreeView *TreeView1;
-	TTreeView *TreeView2;
+	TBitBtn *bCompareFolderRightDate;
+	TLabel *lCompareFolderLeftResults;
+	TLabel *lCompareFolderRightResults;
+	TTreeView *tvCompareLeft;
+	TTreeView *tvCompareRight;
 	TSpeedButton *SpeedButton6;
 	TSpeedButton *SpeedButton27;
 	TSpeedButton *SpeedButton2;
 	TSpeedButton *sbStatsInfo;
 	TSpeedButton *sbShowManual;
 	TSpeedButton *SpeedButton30;
+	TComboBox *cbFHAvailablePath;
+	TPanel *Panel3;
+	TBitBtn *lCLPagePrevious;
+	TBitBtn *lCLPageNext;
+	TLabel *lCLShowing;
+	TLabel *lCLPageNumber;
+	TPanel *Panel4;
+	TLabel *lCRShowing;
+	TLabel *lCRPageNumber;
+	TBitBtn *lCRPagePrevious;
+	TBitBtn *lCRPageNext;
 	void __fastcall miFHCSSaveAllClick(TObject *Sender);
 	void __fastcall miFHCSSaveDoClick(TObject *Sender);
 	void __fastcall miFHCSSaveDontClick(TObject *Sender);
@@ -198,57 +215,56 @@ __published:	// IDE-managed Components
 	void __fastcall puGenericTablePopup(TObject *Sender);
 	void __fastcall puFHCompareSavePopup(TObject *Sender);
 	void __fastcall sbFHCF1Click(TObject *Sender);
-	void __fastcall bCompareTreeLeftClick(TObject *Sender);
-	void __fastcall bCompareTreeRightClick(TObject *Sender);
+	void __fastcall bCompareTreeLeftDateClick(TObject *Sender);
+	void __fastcall bCompareTreeRightDateClick(TObject *Sender);
 	void __fastcall SpeedButton28Click(TObject *Sender);
 	void __fastcall sbCompareTreeClick(TObject *Sender);
 	void __fastcall ShowCalendar(TObject *Sender);
 	void __fastcall Splitter2Moved(TObject *Sender);
 	void __fastcall Splitter1Moved(TObject *Sender);
-	void __fastcall BitBtn5Click(TObject *Sender);
-	void __fastcall BitBtn6Click(TObject *Sender);
-	void __fastcall BitBtn1Click(TObject *Sender);
-	void __fastcall BitBtn2Click(TObject *Sender);
+	void __fastcall bCompareFolderLeftDateClick(TObject *Sender);
+	void __fastcall bCompareFolderRightDateClick(TObject *Sender);
+	void __fastcall bCompareLeftDateClick(TObject *Sender);
+	void __fastcall bCompareRightDateClick(TObject *Sender);
 	void __fastcall cbFHAvailableComputerChange(TObject *Sender);
 	void __fastcall cbFHAvailableFilterChange(TObject *Sender);
 	void __fastcall cbFHAvailablePathChange(TObject *Sender);
-	void __fastcall bFHISelectClick(TObject *Sender);
+	void __fastcall bSelectDateClick(TObject *Sender);
 	void __fastcall cbCompareColourCodeClick(TObject *Sender);
 	void __fastcall pcStatsChange(TObject *Sender);
-	void __fastcall StringGrid2DrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+	void __fastcall sgCompareLeftDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
-	void __fastcall StringGrid3DrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+	void __fastcall sgCompareRightDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
-	void __fastcall StringGrid1DrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+	void __fastcall sgStatsTableDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
-	void __fastcall StringGrid5DrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
+	void __fastcall sgCompareFolderLeftDrawCell(TObject *Sender, System::LongInt ACol, System::LongInt ARow,
           TRect &Rect, TGridDrawState State);
-	void __fastcall TreeView1Expanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
-	void __fastcall TreeView2Expanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
+	void __fastcall tvCompareLeftExpanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
+	void __fastcall tvCompareRightExpanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
 	void __fastcall SpeedButton2Click(TObject *Sender);
 	void __fastcall SpeedButton1Click(TObject *Sender);
 	void __fastcall SpeedButton8Click(TObject *Sender);
 	void __fastcall SpeedButton17Click(TObject *Sender);
-	void __fastcall SpeedButton15Click(TObject *Sender);
-	void __fastcall SpeedButton26Click(TObject *Sender);
-	void __fastcall eSearchChange(TObject *Sender);
-	void __fastcall eSearchKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall sbCompareLeftShowClick(TObject *Sender);
+	void __fastcall sbCompareRightShowClick(TObject *Sender);
+	void __fastcall eCompareSearchChange(TObject *Sender);
+	void __fastcall eCompareSearchKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall sbGoSearchClick(TObject *Sender);
 	void __fastcall sbCompareFolderSearchClick(TObject *Sender);
-	void __fastcall ComboBox3KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall eCompareFolderSearchKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall sbQuickSearchClick(TObject *Sender);
 	void __fastcall cbChartFilesClick(TObject *Sender);
 	void __fastcall cbChartCategoryClick(TObject *Sender);
 	void __fastcall sbStatsInfoClick(TObject *Sender);
 	void __fastcall SpeedButton32Click(TObject *Sender);
-	void __fastcall SpeedButton9Click(TObject *Sender);
-	void __fastcall SpeedButton20Click(TObject *Sender);
+	void __fastcall sbCompareFolderLeftSaveClick(TObject *Sender);
+	void __fastcall sbCompareFolderRightSaveClick(TObject *Sender);
 	void __fastcall rbChartCountClick(TObject *Sender);
 	void __fastcall rbStatsTableTodayClick(TObject *Sender);
 	void __fastcall sbShowManualClick(TObject *Sender);
 	void __fastcall sbSearchSyntaxClick(TObject *Sender);
-
-
+	void __fastcall pcStatsResize(TObject *Sender);
 
 private:
 
@@ -267,24 +283,36 @@ private:
 	constexpr static int kCompareTreeLeft    = 4;
 	constexpr static int kCompareTreeRight   = 5;
 
+	static constexpr int CompareWidths[14] = { 100, 70, 70, 70, 70, 70, 100, 55, -1, -1, -1, -1, -1, -1 };
+
 	constexpr static int kCompareColoursX[2] = { 0x00FFFFFF, 0x0070b7fe };
 
 	constexpr static int kImageBase[20] = {  5,  7,  9, 11, 13, 15, 17, 19, 21, 23,
 										    25, 27, 29, 31, 33, 35, 37, 39, 41, 43 };
 
+	CompareLeftSide *CLS = nullptr;
+	CompareRightSide *CRS = nullptr;
+	CompareFolderLeftSide *CFLS = nullptr;
+	CompareFolderRightSide *CFRS = nullptr;
+
+	std::vector<std::wstring> QuickCompareA;
+    std::vector<std::wstring> QuickCompareB;
+
+    // init
 	void Init();
+	void SetTableRowHeights();
 
 	void ResetDisplay(bool, bool);
 
 	void LoadSettings();
 	void SaveSettings();
 
-    int FindFolderHistoryItem(const std::wstring);
+	int FindFolderHistoryItem(const std::wstring);
 
 	void BuildInformationTabs();
 
 	// tab stats
-	void InitTable();
+	void InitTableStats();
     void BuildFolderHistoryTable();
 	void BuildFolderHistorySelectDataMenu();
 	void BuildFolderHistory(const std::wstring, const std::wstring);
@@ -292,7 +320,18 @@ private:
 	void FileHistoryControlStatus(bool);
 
 	// tab compare
-    void InitCompare();
+	void InitCompare();
+	void CompareBuildLeft();
+	void CompareBuildRight();
+    void PostCompareLeft();
+	void PostCompareRight();
+
+	// tab compare folder
+	void CompareFolderBuildLeft();
+	void CompareFolderBuildRight();
+
+	// timeline
+    void BuildTimeLine();
 
 public:
 	__fastcall TFrameFolderHistory(TComponent* Owner);
@@ -307,7 +346,6 @@ public:
 	void SetActivePage(int);
 
 	std::wstring GetSelectedPath();
-	void SetSelectedPath(const std::wstring);
 
 	std::wstring GetSelectedComputer();
 	std::wstring GetFolderHistoryItem(int);
@@ -315,7 +353,7 @@ public:
 
 	bool GetAvailablePathContains(const std::wstring);
 
-	void SetSelectedPathWithoutExecute(const std::wstring);
+	std::function<void(int)> OnChartsHaveChanged;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameFolderHistory *FrameFolderHistory;

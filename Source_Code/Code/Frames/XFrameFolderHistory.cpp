@@ -3,17 +3,35 @@
 #include <vcl.h>
 #pragma hdrstop
 
+#include <algorithm>
+
 #include "XFrameFolderHistory.h"
 
+#include "XFormCalendar.h"
+#include "XFormChartOptions.h"
+#include "XFormDatabaseInfo.h"
+#include "XFormXinorbisDialog.h"
+
 #include "ChartUtility.h"
+#include "ConstantsGui.h"
+#include "Convert.h"
+#include "FolderHistoryHandler.h"
 #include "GridUtility.h"
 #include "LanguageHandler.h"
 #include "SaveDialogs.h"
+#include "ScanEngine.h"
 #include "SettingsHandler.h"
+#include "SqlUtility.h"
+#include "SystemGlobal.h"
 #include "Utility.h"
+#include "XDatabase.h"
 
+extern FolderHistoryHandler *GFolderHistoryHandler;
 extern LanguageHandler *GLanguageHandler;
+extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
+extern SystemGlobal *GSystemGlobal;
+extern XDatabase *GXDatabase;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -30,9 +48,12 @@ __fastcall TFrameFolderHistory::TFrameFolderHistory(TComponent* Owner)
 #pragma region Init
 void TFrameFolderHistory::Init()
 {
-	//sgFHCompareLeft->DefaultRowHeight  = GSettingsHandler->Appearance.RowHeight;
-//	sgFHCompareRight->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
-//	sgFHTable->DefaultRowHeight        = GSettingsHandler->Appearance.RowHeight;
+	CLS = new CompareLeftSide();
+	CRS = new CompareRightSide();
+	CFLS = new CompareFolderLeftSide();
+	CFRS = new CompareFolderRightSide();
+
+	SetTableRowHeights();
 
   /*	sbFHCLHideCreated->Hint    = GLanguageHandler->Text[kHint1];
 	sbFHCRHideAccessed->Hint   = GLanguageHandler->Text[kHint1];
@@ -46,7 +67,7 @@ void TFrameFolderHistory::Init()
 	sbFHCRHideAttributes->Hint = GLanguageHandler->Text[kHint5];
 	sbFHCLHideSOD->Hint        = GLanguageHandler->Text[kHint6];
 	sbFHCRHideSOD->Hint        = GLanguageHandler->Text[kHint6];
-	sbFHCShowLeft->Hint        = GLanguageHandler->Text[kHint8];
+	sbCompareLeftShow->Hint        = GLanguageHandler->Text[kHint8];
 	sbFHCShowRight->Hint       = GLanguageHandler->Text[kHint8];
 
 
@@ -146,9 +167,6 @@ void TFrameFolderHistory::Init()
   cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kKilobytes]);
   cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kMegabytes]);
 
-  FQuickCompareA = THashedStringList.Create;
-  FQuickCompareB = THashedStringList.Create;
-
   tsFHTimeLine->Caption = GLanguageHandler->Text[kTimeLine] + "        ";
 
   tsFHMainSearch.TabVisible = False;
@@ -167,7 +185,7 @@ void TFrameFolderHistory::Init()
   GXGuiUtil.SetButtonOffImage(sbFHCRHideAttributes, CImageAttributes);
   GXGuiUtil.SetButtonOffImage(sbFHCRHideSOD,        CImageSizeOnDisk);
 
-  GXGuiUtil.SetButtonOffImage(sbFHCShowLeft, 8);
+  GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, 8);
   GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
 
   InitDisplayDoOnce;
@@ -206,17 +224,12 @@ void TFrameFolderHistory::Init()
 
 
 /*
-procedure TFrameFolderHistory.InitUpdate;
-var
-  i : integer;
-
+void TFrameFolderHistory::InitUpdate()
 {
-  SetTableRowHeights;
+	SetTableRowHeights();
 
-  for i = 1 to __ChartCount do {
-	ChartUtility::SetAdvancedOptions(FCharts[i], GSettingsHandler->Charts.Options);
-  };
-};
+	ChartUtility::SetAdvancedOptions(vtcFolderHistory, GSettingsHandler->Charts.Options);
+}
 
 
 procedure TFrameFolderHistory.InitDisplayDoOnce ;
@@ -226,7 +239,17 @@ procedure TFrameFolderHistory.InitDisplayDoOnce ;
 
   LoadSettings;
 }*/
-#pragma }_region
+
+
+void TFrameFolderHistory::SetTableRowHeights()
+{
+	sgCompareLeft->DefaultRowHeight        = GSettingsHandler->Appearance.RowHeight;
+	sgCompareRight->DefaultRowHeight       = GSettingsHandler->Appearance.RowHeight;
+	sgCompareFolderLeft->DefaultRowHeight  = GSettingsHandler->Appearance.RowHeight;
+	sgCompareFolderRight->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
+	sgStatsTable->DefaultRowHeight         = GSettingsHandler->Appearance.RowHeight;
+}
+#pragma end_region
 
 
 #pragma region Application_Control
@@ -242,18 +265,7 @@ void TFrameFolderHistory::ResetDisplay(bool aDisableBuildInformationTabs, bool a
 
   // ===========================================================================
 
-    sgFHTable.ClearRows(1, sgFHTable->RowCount - 1);
-    sgFHTable->RowCount = 2;
-
-    sgFHTable->Cells[ 0, 0] = GLanguageHandler->Text[kDate];
-    sgFHTable->Cells[ 1, 0] = GLanguageHandler->Text[kFiles];
-    sgFHTable->Cells[ 2, 0] = GLanguageHandler->Text[kDelta];
-    sgFHTable->Cells[ 4, 0] = GLanguageHandler->Text[kFolders];
-    sgFHTable->Cells[ 5, 0] = GLanguageHandler->Text[kDelta];
-    sgFHTable->Cells[ 7, 0] = GLanguageHandler->Text[kTotalSize];
-    sgFHTable->Cells[ 8, 0] = GLanguageHandler->Text[kDelta];
-    sgFHTable->Cells[10, 0] = GLanguageHandler->Text[kUsedSpace];
-    sgFHTable->Cells[11, 0] = GLanguageHandler->Text[kDelta];
+	ConfigureTableStats();
 
   // ===========================================================================
 
@@ -300,7 +312,7 @@ void TFrameFolderHistory::ResetDisplay(bool aDisableBuildInformationTabs, bool a
   if Assigned(FOnResetDisplay) then
 	FOnResetDisplay(dataFolderHistory);*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Application_Settings
@@ -334,7 +346,7 @@ void TFrameFolderHistory::LoadSettings()
 
       t = 0;
       While lReg.ValueExists("Term" + IntToStr(t)) do {
-     //   eFHSearch->Items->Add(lReg.ReadString("Term" + IntToStr(t)));
+	 //   eFHSearch->Items->Add(lReg.ReadString("Term" + IntToStr(t)));
         inc(t);
       };
     finally
@@ -442,11 +454,11 @@ void TFrameFolderHistory::SaveSettings()
 
   GSettingsHandler->CloseSettings; */
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Application_Hooks
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Public_Stuff
@@ -464,51 +476,22 @@ void TFrameFolderHistory::SetActivePage(int page)
 
 std::wstring TFrameFolderHistory::GetSelectedPath()
 {
-	return L"";//Result = cbFHAvailablePath->Text;
-}
-
-
-void TFrameFolderHistory::SetSelectedPath(const std::wstring path)
-{
-/*var
-  t, xfound : integer;
-
-	if aPath != L""
-	{
-		xfound = -1;
-
-		cbFHAvailableComputerChange(Nil);
-
-		for t = 0 to cbFHAvailablePath->Items->Count - 1
-		{
-			if UpperCase(cbFHAvailablePath->Items[t]) = UpperCase(aPath)
-			{
-				xfound = t;
-			}
-		}
-
-		if xfound != -1
-		{
-			cbFHAvailablePath->ItemIndex = xfound;
-
-			sbFHOpenFolderClick(Nil);
-		}
-	} */
+	return cbFHAvailablePath->Text.c_str();
 }
 
 
 std::wstring TFrameFolderHistory::GetSelectedComputer()
 {
-	return L"";//  Result = cbFHAvailableComputer->Text;
+	return cbFHAvailableComputer->Text.c_str();
 }
 
 
 std::wstring TFrameFolderHistory::GetFolderHistoryItem(int index)
 {
-/*	if (index < clbFolderHistory.Count)
+	if (index < clbFolderHistory->Items->Count)
 	{
-		Result = clbFolderHistory->Items[Index];
-	}      */
+		return clbFolderHistory->Items->Strings[index].c_str();
+	}
 
 	return L"";
 }
@@ -516,7 +499,7 @@ std::wstring TFrameFolderHistory::GetFolderHistoryItem(int index)
 
 std::wstring TFrameFolderHistory::GetFolderHistoryItemSelected()
 {
-	return L"";// Result = clbFolderHistory->Items[bFHISelect->Tag];
+	return clbFolderHistory->Items->Strings[bSelectDate->Tag].c_str();
 }
 
 
@@ -527,148 +510,128 @@ void TFrameFolderHistory::DoFHSearch(const std::wstring search_term)
 
 void TFrameFolderHistory::DoCompareSearch(const std::wstring search_term)
 {
-/*	if aSearchTerm != L"")
+	if (!search_term.empty())
 	{
-		eFHCompareSearch->Text = aSearchTerm;
+		eCompareSearch->Text = search_term.c_str();
 
-		sbFHCompareSearchClick(Nil);
-	}*/
+		sbGoSearchClick(NULL);
+	}
 }
 
 
 void TFrameFolderHistory::DoCompareDriveSearch(const std::wstring search_term)
 {
-/*	if aSearchTerm != L"")
+	if (!search_term.empty())
 	{
-		eFHCompareDriveFolder->Text = aSearchTerm;
+		eCompareFolderSearch->Text = search_term.c_str();
 
-		sbFHCompareFolderSearchClick(Nil);
-	}*/
+		sbCompareFolderSearchClick(NULL);
+	}
 }
 
 
 bool TFrameFolderHistory::GetAvailablePathContains(const std::wstring path)
 {
-/*	if cbFHAvailablePath->Items->IndexOf(aPath) = -1)
+	if (cbFHAvailablePath->Items->IndexOf(path.c_str()) == -1)
 	{
-		Result = True
+		return true;
 	}
-	else
-	{
-		Result = False;
-	}*/
+
+    return false;
 }
-
-
-void TFrameFolderHistory::SetSelectedPathWithoutExecute(const std::wstring path)
-{
-/*	if aPath != L"")
-	{
-		xfound = -1;
-
-		cbFHAvailableComputerChange(Nil);
-
-		for t = 0 to cbFHAvailablePath->Items->Count - 1)
-		{
-			if cbFHAvailablePath->Items[t] = UpperCase(aPath)
-			{
-				xfound = t;
-			}
-		}
-
-		if xfound != -1)
-		{
-			cbFHAvailablePath->ItemIndex = xfound;
-		}
-	}*/
-}
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Stats
+void __fastcall TFrameFolderHistory::pcStatsResize(TObject *Sender)
+{
+	sgStatsTable->ColWidths[0]  = sgStatsTable->Width - 603;
+	sgStatsTable->ColWidths[1]  = 70;
+	sgStatsTable->ColWidths[2]  = 70;
+	sgStatsTable->ColWidths[3]  = 6;
+	sgStatsTable->ColWidths[4]  = 70;
+	sgStatsTable->ColWidths[5]  = 70;
+	sgStatsTable->ColWidths[6]  = 6;
+	sgStatsTable->ColWidths[7]  = 70;
+	sgStatsTable->ColWidths[8]  = 70;
+	sgStatsTable->ColWidths[9]  = 6;
+	sgStatsTable->ColWidths[10] = 70;
+	sgStatsTable->ColWidths[11] = 70;
+}
+
+
 void __fastcall TFrameFolderHistory::SpeedButton1Click(TObject *Sender)
 {
-/*  if not(GSettingsHandler->ProcessWindowsVisible)
+	bool dbExists = true;
+
+	if (!GSettingsHandler->Database.UseODBC)
 	{
-		lDBExists = True;
+		std::wstring db_file_name = GSystemGlobal->AppDataPath + L"Database\\Xinorbis.db";
 
-		if not(GSettingsHandler->Database.UseODBC)
+		if (FileExists(db_file_name.c_str()))
 		{
-			if not(FileExists(GSystemGlobal.AppDataPath + "FolderHistory\Database\Xinorbis.db"))
-			{
-				lDBExists = False;
-			}
+			dbExists = false;
 		}
+	}
 
-		if lDBExists
+	if (dbExists)
+	{
+		if (cbFHAvailablePath->Text != L"")
 		{
-			if cbFHAvailablePath->Text != L""
-			{
-				GScanDetails[dataFolderHistory].ScanPath = cbFHAvailablePath->Text;
+			GScanEngine->Data[kDataFolderHistory].Path.String = cbFHAvailablePath->Text.c_str();
 
-				tpFHStats.Visible  = True;         // to do make sure new layout
-				tsFHMainSearch.TabVisible = True;
+			pcStats->Visible = true;         // to do make sure new layout
+			tsSearch->TabVisible = true;
 
-				ResetDisplay(True, False);
+			ResetDisplay(true, false);
 
-				BuildFolderHistory(cbFHAvailableComputer->Text, cbFHAvailablePath->Text);
+			BuildFolderHistory(cbFHAvailableComputer->Text.c_str(),
+			                   cbFHAvailablePath->Text.c_str());
 
-				BuildTimeLine;
-			}
-		}
-		else
-		{
-			ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kNoFHFSelected], XDialogTypeWarning);
+			BuildTimeLine();
 		}
 	}
 	else
 	{
-		ShowXDialog(GLanguageHandler->Text[kError] + " " + GLanguageHandler->Text[kFolderHistory],
-				   TLanguageHandler.FillParameter(rsCannotFindFileParam, GSystemGlobal.AppDataPath + "FolderHistory\Database\Xinorbis.db"),
-				   XDialogTypeWarning);
-	}*/
+		ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kNoFHFSelected], XDialogTypeWarning);
+	}
 }
 
 
 void __fastcall TFrameFolderHistory::cbFHAvailableComputerChange(TObject *Sender)
 {
-/*  fha : TFolderHistoryInfo;
-  t : integer;
-  s : string;
+	cbFHAvailableFilter->Items->Clear();
+	cbFHAvailableFilter->Items->Add(L"*");
+	cbFHAvailableFilter->Sorted = true;
+	cbFHAvailablePath->Items->Clear();
 
- {
-	cbFHAvailableFilter->Items->Clear;
-	cbFHAvailableFilter->Items->Add("*");
-	cbFHAvailableFilter.Sorted = True;
-	cbFHAvailablePath->Items->Clear;
-
-	for t = 0 to FolderHistoryAvailable.Count - 1 do
+	for (FolderHistoryInfo *fhi : GFolderHistoryHandler->FolderHistoryAvailable)
 	{
-		fha = FolderHistoryAvailable[t];
-
-		if fha.ComputerName = cbFHAvailableComputer->Items[cbFHAvailableComputer->ItemIndex]
+		if (fhi->ComputerName == cbFHAvailableComputer->Items->Strings[cbFHAvailableComputer->ItemIndex].c_str())
 		{
-			if (AnsiStartsStr("\\", fha.ScanPath))
+			std::wstring s = L"";
+
+			if (fhi->ScanPath[0] == L'\\') // looks for \\ at beginning of path
 			{
-				s = "\\"
+				s = L"\\";
 			}
 			else
 			{
-				s = Copy(fha.ScanPath, 1, 3);
+				s = fhi->ScanPath.substr(0, 3);
 			}
 
-			if (cbFHAvailableFilter->Items->IndexOf(s) = -1)
+			if (cbFHAvailableFilter->Items->IndexOf(s.c_str()) == -1)
 			{
-				cbFHAvailableFilter->Items->Add(s);
+				cbFHAvailableFilter->Items->Add(s.c_str());
 			}
 
-			cbFHAvailablePath->Items->Add(fha.ScanPath);
+			cbFHAvailablePath->Items->Add(fhi->ScanPath.c_str());
 		}
 	}
 
-	if (cbFHAvailablePath->Tag < cbFHAvailablePath->Items->Count) and (cbFHAvailablePath->Tag != -1)
+	if (cbFHAvailablePath->Tag < cbFHAvailablePath->Items->Count && cbFHAvailablePath->Tag != -1)
 	{
-		cbFHAvailablePath->ItemIndex = cbFHAvailablePath->Tag
+		cbFHAvailablePath->ItemIndex = cbFHAvailablePath->Tag;
 	}
 	else
 	{
@@ -676,144 +639,139 @@ void __fastcall TFrameFolderHistory::cbFHAvailableComputerChange(TObject *Sender
 		cbFHAvailablePath->ItemIndex   = 0;
 	}
 
-	cbFHAvailablePath.Refresh;*/
+	cbFHAvailablePath->Refresh();
 }
 
 
 void __fastcall TFrameFolderHistory::cbFHAvailableFilterChange(TObject *Sender)
 {
-/*  fha : TFolderHistoryInfo;
-  t : integer;
-  lAll : boolean;
+	bool include_all = false;
 
-	cbFHAvailablePath->Items->Clear;
+	cbFHAvailablePath->Items->Clear();
 
-	if cbFHAvailableFilter->Text = "*")
+	if (cbFHAvailableFilter->Text == L"*")
 	{
-		lAll = true
-	}
-	else
-	{
-		lAll = false;
+		include_all = true;
 	}
 
-	for t = 0 to FolderHistoryAvailable.Count - 1 do
+	for (FolderHistoryInfo *fhi : GFolderHistoryHandler->FolderHistoryAvailable)
 	{
-		fha = FolderHistoryAvailable[t];
-
-		if fha.ComputerName = cbFHAvailableComputer->Items[cbFHAvailableComputer->ItemIndex]
+		if (fhi->ComputerName == cbFHAvailableComputer->Items->Strings[cbFHAvailableComputer->ItemIndex].c_str())
 		{
-			if lAll)
+			if (include_all)
 			{
-				cbFHAvailablePath->Items->Add(fha.ScanPath)
+				cbFHAvailablePath->Items->Add(fhi->ScanPath.c_str());
 			}
 			else
 			{
-				if AnsiStartsStr(cbFHAvailableFilter->Text, fha.ScanPath)
+				if (fhi->ScanPath.rfind(cbFHAvailableFilter->Text.c_str(), 0) == 0)
 				{
-					cbFHAvailablePath->Items->Add(fha.ScanPath)
+					cbFHAvailablePath->Items->Add(fhi->ScanPath.c_str());
 				}
 			}
 		}
 	}
 
-	if (cbFHAvailablePath->Tag < cbFHAvailablePath->Items->Count) and (cbFHAvailablePath->Tag != -1)
+	if (cbFHAvailablePath->Tag < cbFHAvailablePath->Items->Count && cbFHAvailablePath->Tag != -1)
 	{
-		cbFHAvailablePath->ItemIndex = cbFHAvailablePath->Tag
+		cbFHAvailablePath->ItemIndex = cbFHAvailablePath->Tag;
 	}
 	else
 	{
 		cbFHAvailablePath->ItemIndex   = 0;
 	}
 
-	cbFHAvailablePath.Refresh;*/
+	cbFHAvailablePath->Refresh();
 }
 
 
 void __fastcall TFrameFolderHistory::cbFHAvailablePathChange(TObject *Sender)
 {
-/*  ResetDisplay(False, False);
+	ResetDisplay(false, false);
 
-	cbFHAvailablePath->Tag   = cbFHAvailablePath->ItemIndex;
+	cbFHAvailablePath->Tag = cbFHAvailablePath->ItemIndex;
 
-	bFHISelect->Caption      = GLanguageHandler->Text[kSelectDateTime];
-	bFHISelect->Enabled      = False;
-	bFHISelect->Tag          = -1;
+	bSelectDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bSelectDate->Enabled = false;
+	bSelectDate->Tag     = -1;
 
 	// ===========================================================================
 
-	bFHCompareLeft->Caption  = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareRight->Caption = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareLeft->Tag      = -1;
-	bFHCompareRight->Tag     = -1;
+	bCompareLeftDate->Caption  = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareRightDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareLeftDate->Tag      = -1;
+	bCompareRightDate->Tag     = -1;
 
-	bFHCompareLeft->Caption  = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareRight->Caption = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareLeft->Tag      = -1;
-	bFHCompareRight->Tag     = -1;
+	bCompareFolderLeftDate->Caption  = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareFolderRightDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareFolderLeftDate->Tag      = -1;
+	bCompareFolderRightDate->Tag     = -1;
 
-	bFHCompareFolderLeft->Caption  = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareFolderRight->Caption = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareFolderLeft->Tag      = -1;
-	bFHCompareFolderRight->Tag     = -1;
+	bCompareTreeLeftDate->Caption  = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareTreeRightDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareTreeLeftDate->Tag      = -1;
+	bCompareTreeRightDate->Tag     = -1;
 
-	bFHCompareTreeLeft->Caption  = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareTreeRight->Caption = GLanguageHandler->Text[kSelectDateTime];
-	bFHCompareTreeLeft->Tag      = -1;
-	bFHCompareTreeRight->Tag     = -1;
-
-	tvFHTLeft->Items->Clear;
-	tvFHTRight->Items->Clear;
+	tvCompareLeft->Items->Clear();
+	tvCompareRight->Items->Clear();
 
 	// =========================================================================
 
-	if Assigned(FOnUpdateLeftStatusPanel)
-	{
-		FOnUpdateLeftStatusPanel(0);
-	}*/
+	//if Assigned(FOnUpdateLeftStatusPanel)
+	//{
+   //		FOnUpdateLeftStatusPanel(0);
+	//}*/
 }
 
 
 void __fastcall TFrameFolderHistory::sbStatsInfoClick(TObject *Sender)
 {
-	//DoDBSelectedFolder(cbFHAvailableComputer->Text, UpperCase(cbFHAvailablePath->Text));
+	std::wstring path = cbFHAvailablePath->Text.c_str();
+
+	std::transform(path.begin(), path.end(), path.begin(), ::toupper);
+
+	OpenDatabaseInformation(cbFHAvailableComputer->Text.c_str(), path);
 }
 
 
 void __fastcall TFrameFolderHistory::SpeedButton2Click(TObject *Sender)
 {
-/*  s = DoShowCal}ar(clbFolderHistory->Items);
+	std::vector<std::wstring> data;
 
-	if s != L"" then
+	for (int t = 0; t < clbFolderHistory->Items->Count; t++) data.push_back(clbFolderHistory->Items->Strings[t].c_str());
+
+	std::wstring s = OpenCalendar(data);
+
+	if (!s.empty())
 	{
-		dx = Convert::IntDateToString(StrToInt(Copy(s, 1, 8))) + " " +
-								   s[9] + s[10] + ":" + s[11] + s[12] + ":" + s[13] + s[14];
+		int date = stoi(s.substr(0, 8));
 
-		i = FindFolderHistoryItem(dx);
+		std::wstring dx = Convert::IntDateToString(date) + L" " +
+						  s.substr(8, 2) + L":" + s.substr(10, 2) + L":" + s.substr(12, 2);
 
-		if i != -1
+		int i = FindFolderHistoryItem(dx);
+
+		if (i != -1)
 		{
-			bFHISelect->Tag     = i;
-			bFHISelect->Caption = dx;
+			bSelectDate->Tag     = i;
+			bSelectDate->Caption = dx.c_str();
 
-			if bFHISelect->Tag != -1)
+			if (bSelectDate->Tag != -1)
 			{
-				sbFHBuildInformationTabsClick(nil);
+				BuildInformationTabs();
 			}
 		}
-	}*/
+	}
 }
 
 
-void __fastcall TFrameFolderHistory::bFHISelectClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::bSelectDateClick(TObject *Sender)
 {
-/*  if not(GSettingsHandler->ProcessWindowsVisible)
-	{
-		puFHSelectDate->Tag = 1;
+	puFHSelectDate->Tag = 1;
 
-		puFHSelectDate->Popup(FGetLeftOffset + bFHISelect.Left + 20,
-						 FGetTopOffset + 227);
-	};*/
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
@@ -833,70 +791,71 @@ void __fastcall TFrameFolderHistory::pcStatsChange(TObject *Sender)
 
 
 void TFrameFolderHistory::BuildFolderHistorySelectDataMenu()
-{ /*
-  mi : TMenuItem;
-  LastYearNode, LastMonthNode, LastDayNode : TMenuItem;
-  lyy, lmm, ldd, t : integer;
-  cyy, cmm, cdd : integer;
-  xdate : string;
+{
+	bSelectDate->Tag = -1;
+	TMenuItem *LastYearNode   = nullptr;
+	TMenuItem *LastMonthNode  = nullptr;
+	TMenuItem *LastDayNode    = nullptr;
 
- {
-  bFHISelect->Tag = -1;
-  LastYearNode   = Nil;
-  LastMonthNode  = Nil;
-  LastDayNode    = Nil;
-  lyy            = -1;
-  lmm            = -1;
-  ldd            = -1;
+	int lyy = -1;
+	int lmm = -1;
+	int ldd = -1;
 
-  puFHSelectDate->Items->Clear;
+	puFHSelectDate->Items->Clear();
 
-  for t = 0 to clbFolderHistory.Count - 1 do {
-    xdate = Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items[t]);
+	for (int t = 0; t < clbFolderHistory->Count; t++)
+	{
+		std::wstring list_item = clbFolderHistory->Items->Strings[t].c_str();
 
-    if xdate != L"" then {
-	  cyy = StrToInt(Copy(xdate, 1, 4));
-      cmm = StrToInt(Copy(xdate, 5, 2));
-      cdd = StrToInt(Copy(xdate, 7, 2));
+		std::wstring date = Convert::DateTimeFToYYYYMMDD(list_item);
 
-      if cyy != lyy then {
-        mi = TMenuItem.Create(puFHSelectDate);
-        mi->Caption = IntToStr(cyy);
+		if (!date.empty())
+		{
+			int cyy = stoi(date.substr(0, 4));
+			int cmm = stoi(date.substr(4, 2));
+			int cdd = stoi(date.substr(6, 2));
 
-        puFHSelectDate->Items->Add(mi);
-        LastYearNode = mi;
+			if (cyy != lyy)
+			{
+				TMenuItem *mi = new TMenuItem(puFHSelectDate);
+				mi->Caption = cyy;
 
-        lyy = cyy;
-      };
+				puFHSelectDate->Items->Add(mi);
+				LastYearNode = mi;
 
-      if cmm != lmm then {
-        mi = TMenuItem.Create(puFHSelectDate);
-        mi->Caption = months[cmm];
+				lyy = cyy;
+			}
 
-        LastYearNode.Add(mi);
-        LastMonthNode = mi;
+			if (cmm != lmm)
+			{
+				TMenuItem *mi = new TMenuItem(puFHSelectDate);
+				mi->Caption = GLanguageHandler->Months[cmm].c_str();
 
-        lmm = cmm;
-      };
+				LastYearNode->Add(mi);
+				LastMonthNode = mi;
 
-      if cdd != ldd then {
-        mi = TMenuItem.Create(puFHSelectDate);
-		mi->Caption = IntToStr(cdd);
+				lmm = cmm;
+			}
 
-		LastMonthNode.Add(mi);
-		LastDayNode = mi;
+			if (cdd != ldd)
+			{
+				TMenuItem *mi = new TMenuItem(puFHSelectDate);
+				mi->Caption = IntToStr(cdd);
 
-		ldd = cdd;
-	  };
+				LastMonthNode->Add(mi);
+				LastDayNode = mi;
 
-	  mi = TMenuItem.Create(puFHSelectDate);
-	  mi.OnClick = miSelectDateTimeClick;
-	  mi->Caption = Copy(clbFolderHistory->Items[t], 12, 8);
-	  mi->Tag     = t;
+				ldd = cdd;
+			}
 
-	  LastDayNode.Add(mi);
-	};
-  }; */
+			TMenuItem *mi = new TMenuItem(puFHSelectDate);
+			mi->OnClick = miSelectDateTimeClick;
+			mi->Caption = list_item.substr(11, 8).c_str();
+			mi->Tag     = t;
+
+			LastDayNode->Add(mi);
+		}
+	}
 }
 
 
@@ -1039,7 +998,7 @@ void TFrameFolderHistory::BuildFolderHistory(const std::wstring computer_name, c
 
       // ===========================================================================
 
-      TDisplayUtility.BuildFolderHistoryGraph(FrameSelect.ePath->Text, vtcFolderHistory, clbFolderHistory, rbFHCount.Checked, rbFHSize.Checked, rbFHMagCount.Checked, rbFHMagSize.Checked);
+	  TDisplayUtility.BuildFolderHistoryGraph(FrameSelect.ePath->Text, vtcFolderHistory, clbFolderHistory, rbFHCount.Checked, rbFHSize.Checked, rbFHMagCount.Checked, rbFHMagSize.Checked);
 
       if clbFolderHistory.Count != 0 then {
         clbFolderHistory.Checked[0]     = True;
@@ -1118,7 +1077,7 @@ void TFrameFolderHistory::FileHistoryControlStatus(bool newstatus)
 	sbFHCompareFolderLeftSave->Enabled  = newstatus;
 	sbFHCompareFolderRightSave->Enabled = newstatus; */
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Stats_Chart
@@ -1137,19 +1096,21 @@ void __fastcall TFrameFolderHistory::cbChartFilesClick(TObject *Sender)
 
 void __fastcall TFrameFolderHistory::rbChartCountClick(TObject *Sender)
 {
-/*	if clbFolderHistory->ItemIndex != -1)
+	if (clbFolderHistory->ItemIndex != -1)
 	{
-		int fhidx = (FolderHistory.Count - clbFolderHistory->ItemIndex) - 1;
+		int fhidx = (GFolderHistoryHandler->FolderHistory.size() - clbFolderHistory->ItemIndex) - 1;
 
-		lFHFileCount->Caption = IntToStr(FolderHistory[fhidx].FileCount);
-		lFHFileSize->Caption  = Convert::ConvertToUsefulUnit(FolderHistory[fhidx].FileSize);
-		lFHFolders->Caption   = IntToStr(FolderHistory[fhidx].FolderCount);
+		lFileCountValue->Caption   = GFolderHistoryHandler->FolderHistory[fhidx]->FileCount;
+		lTotalSizeValue->Caption   = Convert::ConvertToUsefulUnit(GFolderHistoryHandler->FolderHistory[fhidx]->FileSize).c_str();
+		lFolderCountValue->Caption = IntToStr(GFolderHistoryHandler->FolderHistory[fhidx]->FolderCount);
 	}
 
-	TDisplayUtility.BuildFolderHistoryGraph(GScanDetails[dataFolderHistory].ScanPath,
-											vtcFolderHistory,
-											clbFolderHistory,
-											rbFHCount.Checked, rbFHSize.Checked, rbFHMagCount.Checked, rbFHMagSize.Checked);*/
+	std::vector<std::wstring> selection_list; // copy from clbfolderhistory selected.
+
+	ChartUtility::BuildFolderHistoryGraph(GScanEngine->Data[kDataFolderHistory].Path.String,
+										  vtcFolderHistory,
+										  selection_list,
+										  rbChartCount->Checked, rbChartSize->Checked, rbMagnitudeCount->Checked, rbMagnitudeSize->Checked);
 }
 
 
@@ -1168,39 +1129,41 @@ void __fastcall TFrameFolderHistory::cbChartCategoryClick(TObject *Sender)
 
 void __fastcall TFrameFolderHistory::sbFHCF1Click(TObject *Sender)
 {
-/*  FHCCStatus[TSpeedbutton(Sender)->Tag] = not FHCCStatus[TSpeedbutton(Sender)->Tag];
+	TSpeedButton *sb = (TSpeedButton*)Sender;
 
-	if FHCCStatus[TSpeedbutton(Sender)->Tag])
+/*  FHCCStatus[sb->Tag] = not FHCCStatus[sb->Tag];
+
+	if FHCCStatus[sb->Tag])
 	{
-		idx = FHCCImageBase[TSpeedbutton(Sender)->Tag]
+		idx = FHCCImageBase[sb->Tag]
 	}
 	else
 	{
-		idx = FHCCImageBase[TSpeedbutton(Sender)->Tag] + 1;
+		idx = FHCCImageBase[sb->Tag] + 1;
 	}
 
-	GXGuiUtil.SetFolderHistoryButtonImage(TSpeedbutton(Sender), idx);
+	GXGuiUtil.SetFolderHistoryButtonImage(sb, idx);
 
 	rbFHCountClick(Nil);*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Stats_Table
-void TFrameFolderHistory::InitTable()
+void TFrameFolderHistory::InitTableStats()
 {
-/*	sgFHTable->ColWidths[0]  = sgFHTable->Width - 603;
-	sgFHTable->ColWidths[1]  = 70;
-	sgFHTable->ColWidths[2]  = 70;
-	sgFHTable->ColWidths[3]  = 6;
-	sgFHTable->ColWidths[4]  = 70;
-	sgFHTable->ColWidths[5]  = 70;
-	sgFHTable->ColWidths[6]  = 6;
-	sgFHTable->ColWidths[7]  = 70;
-	sgFHTable->ColWidths[8]  = 70;
-	sgFHTable->ColWidths[9]  = 6;
-	sgFHTable->ColWidths[10] = 70;
-	sgFHTable->ColWidths[11] = 70;*/
+	//sgStatsTable.ClearRows(1, sgStatsTable->RowCount - 1);
+	sgStatsTable->RowCount = 2;
+
+	sgStatsTable->Cells[ 0][0] = GLanguageHandler->Text[kDate].c_str();
+	sgStatsTable->Cells[ 1][0] = GLanguageHandler->Text[kFiles].c_str();
+	sgStatsTable->Cells[ 2][0] = GLanguageHandler->Text[kDelta].c_str();
+	sgStatsTable->Cells[ 4][0] = GLanguageHandler->Text[kFolders].c_str();
+	sgStatsTable->Cells[ 5][0] = GLanguageHandler->Text[kDelta].c_str();
+	sgStatsTable->Cells[ 7][0] = GLanguageHandler->Text[kTotalSize].c_str();
+	sgStatsTable->Cells[ 8][0] = GLanguageHandler->Text[kDelta].c_str();
+	sgStatsTable->Cells[10][0] = GLanguageHandler->Text[kUsedSpace].c_str();
+	sgStatsTable->Cells[11][0] = GLanguageHandler->Text[kDelta].c_str();
 }
 
 
@@ -1210,31 +1173,31 @@ void __fastcall TFrameFolderHistory::rbStatsTableTodayClick(TObject *Sender)
 }
 
 
-void __fastcall TFrameFolderHistory::StringGrid1DrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFrameFolderHistory::sgStatsTableDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-/*  if (ACol > 0) and (ARow > 0)
+/*  if (ACol > 0 && ARow > 0)
 	{
-		if sgFHTable->Cells[ACol, ARow] != L""
+		if sgStatsTable->Cells[ACol][ARow] != L""
 		{
 			if gdSelected in State
 			{
-				sgFHTable->Canvas->Brush->Color = sgFHTable.SelectionColor;
+				sgStatsTable->Canvas->Brush->Color = sgStatsTable.SelectionColor;
 			}
 			else
 			{
 				if odd(ARow)
 				{
-					sgFHTable->Canvas->Brush->Color = sgFHTable.Bands.PrimaryColor
+					sgStatsTable->Canvas->Brush->Color = sgStatsTable.Bands.PrimaryColor
 				}
 				else
 				{
-					sgFHTable->Canvas->Brush->Color = $00FFFFFF;
+					sgStatsTable->Canvas->Brush->Color = $00FFFFFF;
 				}
 			}
 
-			//sgFHTAble->Canvas.FillRect(Rect);
-			//sgFHTable->Canvas->TextRect(Rect, Rect.Left + sgFHTable->ColWidths[ACol] - sgFHTable->Canvas->TextWidth(sgFHTable->Cells[ACol, ARow]) - 5, Rect.Top + 1, sgFHTable->Cells[ACol, ARow]);
+			//sgStatsTable->Canvas.FillRect(Rect);
+			//sgStatsTable->Canvas->TextRect(Rect, Rect.Left + sgStatsTable->ColWidths[ACol] - sgStatsTable->Canvas->TextWidth(sgStatsTable->Cells[ACol, ARow]) - 5, Rect.Top + 1, sgStatsTable->Cells[ACol, ARow]);
 		}
 	}*/
 }
@@ -1242,90 +1205,98 @@ void __fastcall TFrameFolderHistory::StringGrid1DrawCell(TObject *Sender, System
 
 void TFrameFolderHistory::BuildFolderHistoryTable()
 {
-/*TGridUtility.ClearStringGird(sgFHTable, False);
+/*	TGridUtility.ClearStringGird(sgStatsTable, False);
 
-  // now build table ===========================================================
+	// now build table ===========================================================
 
-  sgFHTable.{Update;
+	sgStatsTable->StartUpdate();
 
-  sgFHTable->RowCount = 1 + clbFolderHistory->Items->Count;
+	sgStatsTable->RowCount = 1 + clbFolderHistory->Items->Count;
 
-  i = clbFolderHistory->Items->Count;
+	i = clbFolderHistory->Items->Count;
 
-  if rbFJTRPrevious.Checked then {
-    for t = 0 to clbFolderHistory->Items->Count - 1 do {
-      sgFHTable->Cells[ 0, i] = FolderHistory[t].ScanDateStr;
+	if rbFJTRPrevious.Checked)
+	{
+		for t = 0 to clbFolderHistory->Items->Count - 1 do
+		{
+			sgStatsTable->Cells[ 0][i] = FolderHistory[t].ScanDateStr;
 
-      sgFHTable->Cells[ 1, i] = IntToStr(FolderHistory[t].FileCount);
-      sgFHTable->Cells[ 4, i] = IntToStr(FolderHistory[t].FolderCount);
-      sgFHTable->Cells[ 7, i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
-      sgFHTable->Cells[10, i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
+			sgStatsTable->Cells[ 1][i] = IntToStr(FolderHistory[t].FileCount);
+			sgStatsTable->Cells[ 4][i] = IntToStr(FolderHistory[t].FolderCount);
+			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
+			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
 
-      if t = 0 then {
-        sgFHTable->Cells[ 2, i] = L"";
-        sgFHTable->Cells[ 5, i] = L"";
-        sgFHTable->Cells[ 8, i] = L"";
-        sgFHTable->Cells[11, i] = L"";
-      }
-      else {
-        sgFHTable->Cells[ 2, i] = Convert::GetDelta(FolderHistory[t].FileCount -
-                                                    FolderHistory[t - 1].FileCount);
+			if t = 0
+			{
+				sgStatsTable->Cells[ 2][i] = L"";
+				sgStatsTable->Cells[ 5][i] = L"";
+				sgStatsTable->Cells[ 8][i] = L"";
+				sgStatsTable->Cells[11][i] = L"";
+			}
+			else
+			{
+				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(FolderHistory[t].FileCount -
+															FolderHistory[t - 1].FileCount);
 
-        sgFHTable->Cells[ 5, i] = Convert::GetDelta(FolderHistory[t].FolderCount -
-                                                    FolderHistory[t - 1].FolderCount);
+				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(FolderHistory[t].FolderCount -
+															FolderHistory[t - 1].FolderCount);
 
-        sgFHTable->Cells[ 8, i] = Convert::GetDeltaSize(FolderHistory[t].FileSize-
-                                                        FolderHistory[t - 1].FileSize);
+				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(FolderHistory[t].FileSize-
+																FolderHistory[t - 1].FileSize);
 
-        sgFHTable->Cells[11, i] = Convert::GetDeltaSize(FolderHistory[t].FileSizeOnDisk-
-                                                        FolderHistory[t - 1].FileSizeOnDisk);
-      };
+				sgStatsTable->Cells[11][i] = Convert::GetDeltaSize(FolderHistory[t].FileSizeOnDisk-
+																FolderHistory[t - 1].FileSizeOnDisk);
+			}
 
-      dec(i);
-    };
-  }
-  else {
-    for t = 0 to clbFolderHistory->Items->Count - 1 do {
-      sgFHTable->Cells[ 0, i] = FolderHistory[t].ScanDateStr;
+			i++;
+		}
+	}
+	else
+	{
+		for t = 0 to clbFolderHistory->Items->Count - 1 do
+		{
+			sgStatsTable->Cells[ 0][i] = FolderHistory[t].ScanDateStr;
 
-      sgFHTable->Cells[ 1, i] = IntToStr(FolderHistory[t].FileCount);
-      sgFHTable->Cells[ 4, i] = IntToStr(FolderHistory[t].FolderCount);
-      sgFHTable->Cells[ 7, i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
-      sgFHTable->Cells[10, i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
+			sgStatsTable->Cells[ 1][i] = IntToStr(FolderHistory[t].FileCount);
+			sgStatsTable->Cells[ 4][i] = IntToStr(FolderHistory[t].FolderCount);
+			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
+			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
 
-      if t = clbFolderHistory->Items->Count - 1 then {
-        sgFHTable->Cells[ 2, i] = L"";
-        sgFHTable->Cells[ 5, i] = L"";
-        sgFHTable->Cells[ 8, i] = L"";
-        sgFHTable->Cells[11, i] = L"";
-      }
-      else {
-        sgFHTable->Cells[ 2, i] = Convert::GetDelta(FolderHistory[t].FileCount -
-                                           FolderHistory[clbFolderHistory->Items->Count - 1].FileCount);
+			if t = clbFolderHistory->Items->Count - 1
+			{
+				sgStatsTable->Cells[ 2][i] = L"";
+				sgStatsTable->Cells[ 5][i] = L"";
+				sgStatsTable->Cells[ 8][i] = L"";
+				sgStatsTable->Cells[11][i] = L"";
+			}
+			else
+			{
+				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(FolderHistory[t].FileCount -
+												   FolderHistory[clbFolderHistory->Items->Count - 1].FileCount);
 
-        sgFHTable->Cells[ 5, i] = Convert::GetDelta(FolderHistory[t].FolderCount -
-                                           FolderHistory[clbFolderHistory->Items->Count - 1].FolderCount);
+				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(FolderHistory[t].FolderCount -
+												   FolderHistory[clbFolderHistory->Items->Count - 1].FolderCount);
 
-        sgFHTable->Cells[ 8, i] = Convert::GetDeltaSize(FolderHistory[t].FileSize -
-                                           FolderHistory[clbFolderHistory->Items->Count - 1].FileSize);
+				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(FolderHistory[t].FileSize -
+												   FolderHistory[clbFolderHistory->Items->Count - 1].FileSize);
 
-        sgFHTable->Cells[11, i] = Convert::GetDelta(FolderHistory[t].FileSizeOnDisk -
-                                           FolderHistory[clbFolderHistory->Items->Count - 1].FileSizeOnDisk);
-      };
+				sgStatsTable->Cells[11][i] = Convert::GetDelta(FolderHistory[t].FileSizeOnDisk -
+												   FolderHistory[clbFolderHistory->Items->Count - 1].FileSizeOnDisk);
+			}
 
-      dec(i);
-    };
-  };
+			i++;
+		}
+	}
 
-  sgFHTable.}Update; */
+	sgStatsTable->EndUpdate();*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Stats_TimeLine
 /*procedure TFrameFolderHistory.atlFolderHistoryDblClick(Sender: TObject);
 {
-  sbTLResetClick(Nil);
+	sbTLResetClick(Nil);
 }
 
 
@@ -1376,58 +1347,63 @@ var
         ShowXDialog(GLanguageHandler->Text[kWarning],
                     GLanguageHandler->Text[kErrorSaving] + " L"" + lFileName + L"". " + e.ClassName + " / " + e.Message,
                     XDialogTypeWarning);
-      };
+	  };
     };
   };*/
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Generic
 void __fastcall TFrameFolderHistory::ShowCalendar(TObject *Sender)
 {
-/* var
-  s,dx : string;
-  i : integer;
+	std::vector<std::wstring> data;
 
-	s = DoShowCal}ar(clbFolderHistory->Items);
+	for (int t = 0; t < clbFolderHistory->Items->Count; t++) data.push_back(clbFolderHistory->Items->Strings[t].c_str());
 
-	if s != L""
+	std::wstring s = OpenCalendar(data);
+
+	if (!s.empty())
 	{
-		dx = Convert::IntDateToString(StrToInt(Copy(s, 1, 8))) + " " +
-									   s[9] + s[10] + ":" + s[11] + s[12] + ":" + s[13] + s[14];
+		int date = stoi(s.substr(0, 8));
 
-		i = FindFolderHistoryItem(dx);
+		std::wstring dx = Convert::IntDateToString(date) + L" " +
+						  s.substr(8, 2) + L":" + s.substr(10, 2) + L":" + s.substr(12, 2);
 
-		if i != -1
+		int i = FindFolderHistoryItem(dx);
+
+		if (i != -1)
 		{
-			switch TSpeedButton(Sender)->Tag of
-			CCompareLeft        : {
-									bFHCompareLeft->Tag     = i;
-									bFHCompareLeft->Caption = dx;
-								  };
-			CCompareRight       : {
-									bFHCompareRight->Tag     = i;
-									bFHCompareRight->Caption = dx;
-								  };
-			CCompareFolderLeft  : {
-									bFHCompareFolderLeft->Tag     = i;
-									bFHCompareFolderLeft->Caption = dx;
-								  };
-			CCompareFolderRight : {
-									bFHCompareFolderRight->Tag     = i;
-									bFHCompareFolderRight->Caption = dx;
-								  };
-			CCompareTreeLeft    : {
-									bFHCompareTreeLeft->Tag     = i;
-									bFHCompareTreeLeft->Caption = dx;
-								  };
-			CCompareTreeRight   : {
-									bFHCompareTreeRight->Tag     = i;
-									bFHCompareTreeRight->Caption = dx;
-								  };
+			TSpeedButton *sb = (TSpeedButton*)Sender;
+
+			switch (sb->Tag)
+			{
+			case kCompareLeft:
+				bCompareLeftDate->Tag     = i;
+				bCompareLeftDate->Caption = dx.c_str();
+				break;
+			case kCompareRight:
+				bCompareRightDate->Tag     = i;
+				bCompareRightDate->Caption = dx.c_str();
+				break;
+			case kCompareFolderLeft:
+				bCompareFolderLeftDate->Tag     = i;
+				bCompareFolderLeftDate->Caption = dx.c_str();
+				break;
+			case kCompareFolderRight:
+				bCompareFolderRightDate->Tag     = i;
+				bCompareFolderRightDate->Caption = dx.c_str();
+				break;
+			case kCompareTreeLeft:
+				bCompareTreeLeftDate->Tag     = i;
+				bCompareTreeLeftDate->Caption = dx.c_str();
+				break;
+			case kCompareTreeRight:
+				bCompareTreeRightDate->Tag     = i;
+				bCompareTreeRightDate->Caption = dx.c_str();
+				break;
 			}
 		}
-	} */
+	}
 }
 
 
@@ -1445,530 +1421,615 @@ void __fastcall TFrameFolderHistory::sbSearchSyntaxClick(TObject *Sender)
 
 int TFrameFolderHistory::FindFolderHistoryItem(const std::wstring item)
 {
-/*  Result = -1;
-
-	for t = 0 to clbFolderHistory->Items->Count - 1)
+	for (int t = 0; t < clbFolderHistory->Items->Count; t++)
 	{
-		if clbFolderHistory->Items[t] = xItem)
+		if (clbFolderHistory->Items->Strings[t] == item.c_str())
 		{
-			Result = t;
-
-			Break;
+			return t;
 		}
-	}*/
+	}
+
+	return -1;
 }
 
 
 void TFrameFolderHistory::BuildInformationTabs()
 {
-/*  if (bFHISelect->Tag != -1) then {
+	if (bSelectDate->Tag != -1)
+	{
+/*		std::wstring dt = Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items->Strings[bSelectDate->Tag].c_str());
 
-	std::wstring dt = Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHISelect->Tag]);
+		// ===========================================================================
 
-	// ===========================================================================
+		if (GXDatabase->TableExists(TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text)
+		{
+	//      if Assigned(FOnProcessWindowStatus)
+//			{
+	//        FOnProcessWindowStatus(CWindowAnalysisProgress, 1);
+//			}
 
-	if TableExists(TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text) then {
+			TPreScan.PurgeAllData(dataFolderHistory, Nil, Nil, Nil); //sgNullFiles, sgSearchResults);
 
-//      if Assigned(FOnProcessWindowStatus) then
-//        FOnProcessWindowStatus(CWindowAnalysisProgress, 1);
+			Screen.Cursor          = crSQLWait;
+			llFHPleaseWait.Visible = True;
 
-	  TPreScan.PurgeAllData(dataFolderHistory, Nil, Nil, Nil); //sgNullFiles, sgSearchResults);
+			if Assigned(FScanFromFolderHistory)
+			{
+				FScanFromFolderHistory(cbFHAvailablePath->Text,
+								   TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text,
+								   Convert::YYYYMMDDHHMMSSToString(DT));
+			}
 
-	  Screen.Cursor          = crSQLWait;
-	  llFHPleaseWait.Visible = True;
+			if assigned(FOnUpdateHistoryFinished)
+			{
+				FOnUpdateHistoryFinished;
+			}
 
-	  if Assigned(FScanFromFolderHistory) then
-		FScanFromFolderHistory(cbFHAvailablePath->Text,
-							   TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text,
-							   Convert::YYYYMMDDHHMMSSToString(DT));
+			llFHPleaseWait.Visible = False;
+		}
+		else
+		{
+			std::wstring date_caption = bSelectDate->Caption.c_str();
 
-	  if assigned(FOnUpdateHistoryFinished) then
-		FOnUpdateHistoryFinished;
-
-	  llFHPleaseWait.Visible = False;
+			ShowXDialog(GLanguageHandler->Text[kWarning],
+						GLanguageHandler->Text[kNoFileData] + L": " +
+						date_caption,
+						XDialogTypeWarning);
+		}                */
 	}
-	else {
-	  ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kNoFileData] + ": " + bFHISelect->Caption, XDialogTypeWarning);
-	};
-	}*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Search_Compare
 void TFrameFolderHistory::InitCompare()
 {
-   /*	sgFHCompareLeft.HideColumns(8, 13);
+	int total = 0;
 
-	sgFHCompareLeft->ColWidths[0] = sgFHCompareLeft->Width - 530;
-	sgFHCompareLeft->ColWidths[1] = 70;
-	sgFHCompareLeft->ColWidths[2] = 70;
-	sgFHCompareLeft->ColWidths[3] = 70;
-	sgFHCompareLeft->ColWidths[4] = 70;
-	sgFHCompareLeft->ColWidths[5] = 70;
-	sgFHCompareLeft->ColWidths[6] = 100;
-	sgFHCompareLeft->ColWidths[7] = 55;
+	for (int t = 1; t < 14; t++)
+	{
+		sgCompareLeft->ColWidths[t] = CompareWidths[t];
+		sgCompareRight->ColWidths[t] = CompareWidths[t];
 
-	// ===========================================================================
+		total += CompareWidths[t];
+	}
 
-	sgFHCompareRight.HideColumns(8, 13);
-
-	sgFHCompareRight->ColWidths[0] = sgFHCompareRight->Width - 530;
-	sgFHCompareRight->ColWidths[1] = 70;
-	sgFHCompareRight->ColWidths[2] = 70;
-	sgFHCompareRight->ColWidths[3] = 70;
-	sgFHCompareRight->ColWidths[4] = 70;
-	sgFHCompareRight->ColWidths[5] = 70;
-	sgFHCompareRight->ColWidths[6] = 100;
-	sgFHCompareRight->ColWidths[7] = 55;*/
+	sgCompareLeft->ColWidths[0] = sgCompareLeft->Width - (total + __WidthOfScrollbar);
+	sgCompareRight->ColWidths[0] = sgCompareRight->Width - (total + __WidthOfScrollbar);
 }
 
 
 void __fastcall TFrameFolderHistory::sbQuickSearchClick(TObject *Sender)
 {
-//  puFHQuickSearch->Tag = TSpeedbutton(Sender)->Tag;
+	TSpeedButton *sb = (TSpeedButton*)Sender;
 
-//  puFHQuickSearch->Popup(FGetLeftOffset + 38, FGetTopOffset + 205);
+	puFHQuickSearch->Tag = sb->Tag;
+
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHQuickSearch->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
 void __fastcall TFrameFolderHistory::sbGoSearchClick(TObject *Sender)
 {
-/*  if not(GSettingsHandler->ProcessWindowsVisible)
+	if (bCompareLeftDate->Tag != -1 && bCompareRightDate->Tag != -1)
 	{
-		if not(GSettingsHandler->ProcessWindowsVisible)
+		if (eCompareSearch->Text != L"")
 		{
-			if (bFHCompareLeft->Tag != -1) and (bFHCompareRight->Tag != -1)
-			{
-				if eFHCompareSearch->Text != L"")
-				{
-					FHCompareBuildLeft(Nil);
-					FHCompareBuildRight(Nil);
+			CompareBuildLeft();
+			CompareBuildRight();
 
-					if eFHCompareSearch->Items->IndexOf(eFHCompareSearch->Text) = -1)
-					{
-						if eFHCompareSearch->Text != L"")
-						{
-							eFHCompareSearch->Items->Insert(0, eFHCompareSearch->Text);
-						}
-					}
+			if (eCompareSearch->Items->IndexOf(eCompareSearch->Text) == -1)
+			{
+				if (eCompareSearch->Text != L"")
+				{
+					eCompareSearch->Items->Insert(0, eCompareSearch->Text);
 				}
 			}
-			else
-			{
-				ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kPleaseSelectADate], XDialogTypeWarning);
-			}
 		}
-	}*/
+	}
+	else
+	{
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kPleaseSelectADate],
+					XDialogTypeWarning);
+	}
 }
 
 
-void __fastcall TFrameFolderHistory::eSearchChange(TObject *Sender)
+void __fastcall TFrameFolderHistory::eCompareSearchChange(TObject *Sender)
 {
-/*  lCLPagePrevious->Tag     = 0;
-	lCRPagePrevious->Tag     = 0;
+	lCLPagePrevious->Tag = 0;
+	lCRPagePrevious->Tag = 0;
 
-	lCLPagePrevious->Enabled = False;
-	lCLPageNext->Enabled     = False;
-	lCLPageNumber->Caption   = "1";
-	lCLShowing->Caption      = "n/a";
+	lCLPagePrevious->Enabled = false;
+	lCLPageNext->Enabled     = false;
+	lCLPageNumber->Caption   = L"1";
+	lCLShowing->Caption      = L"n/a";
 
-	lCRPagePrevious->Enabled = False;
-	lCRPageNext->Enabled     = False;
-	lCRPageNumber->Caption   = "1";
-	lCRShowing->Caption      = "n/a";*/
+	lCRPagePrevious->Enabled = false;
+	lCRPageNext->Enabled     = false;
+	lCRPageNumber->Caption   = L"1";
+	lCRShowing->Caption      = L"n/a";
 }
 
 
-void __fastcall TFrameFolderHistory::eSearchKeyPress(TObject *Sender, System::WideChar &Key)
+void __fastcall TFrameFolderHistory::eCompareSearchKeyPress(TObject *Sender, System::WideChar &Key)
 {
-/*  if key = #13 then
-  {
-	sbFHCompareSearchClick(sbFHCompareSearch);
-  }*/
+	if (Key == VK_RETURN)
+	{
+		sbGoSearchClick(sbGoSearch);
+	}
 }
 
 
-void __fastcall TFrameFolderHistory::BitBtn1Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::bCompareLeftDateClick(TObject *Sender)
 {
-/*  puFHSelectDate->Tag = 2;
+	puFHSelectDate->Tag = 2;
 
-	puFHSelectDate->Popup(FGetLeftOffset + bFHCompareLeft.Left + 20,
-					   FGetTopOffset + Panel46.Height + Panel32.Height + pFHCompare.Height + 80);*/
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
-void __fastcall TFrameFolderHistory::BitBtn2Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::bCompareRightDateClick(TObject *Sender)
 {
-/*  puFHSelectDate->Tag = 3;
+	puFHSelectDate->Tag = 3;
 
-  puFHSelectDate->Popup(FGetLeftOffset + bFHCompareRight.Left + Panel15.Left ,
-					   FGetTopOffset + Panel46.Height + Panel32.Height + pFHCompare.Height + 80);*/
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
 void __fastcall TFrameFolderHistory::cbCompareColourCodeClick(TObject *Sender)
 {
-/*  if sgFHCompareLeft->Cells[0,1] != L"")
+	if (sgCompareLeft->Cells[0][1] != L"")
 	{
-		sgFHCompareLeft.Refresh;
+		sgCompareLeft->Refresh();
 	}
 
-	if sgFHCompareRight->Cells[0,1] != L"")
+	if (sgCompareRight->Cells[0][1] != L"")
 	{
-		sgFHCompareRight.Refresh;
-	}*/
+		sgCompareRight->Refresh();
+	}
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton9Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareFolderLeftSaveClick(TObject *Sender)
 {
-//	TGridUtility.SaveFHStringGridData(sgFHCompareLeft, eFHCompareSearch->Text, fhscModeSaveAll);
+	GridUtility::SaveFolderHistoryData(sgCompareLeft, eCompareSearch->Text.c_str(), kFHModeSaveAll);
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton20Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareFolderRightSaveClick(TObject *Sender)
 {
-//  TGridUtility.SaveFHStringGridData(sgFHCompareRight, eFHCompareSearch->Text, fhscModeSaveAll);
+	GridUtility::SaveFolderHistoryData(sgCompareRight, eCompareSearch->Text.c_str(), kFHModeSaveAll);
 }
 
 
 void __fastcall TFrameFolderHistory::SpeedButton8Click(TObject *Sender)
 {
-/*  TGridUtility.ToggleColumn(sgFHCompareLeft,
-							TSpeedbutton(Sender),
-							TableColumnLookup[(TSpeedbutton(Sender)->Tag * 2) + 1],
-							TableColumnLookup[TSpeedbutton(Sender)->Tag * 2]);
+	TSpeedButton *sb = (TSpeedButton*)Sender;
 
-  Splitter2Moved(Nil);*/
+	int column = sb->Tag * 2 + 1;
+
+	GridUtility::ToggleColumn(sgCompareLeft, sb,
+							  column,
+							  CompareWidths[column],
+							  TableColumnLookup[sb->Tag * 2]);
+
+	Splitter1Moved(NULL);
 }
 
 
 void __fastcall TFrameFolderHistory::SpeedButton17Click(TObject *Sender)
 {
-/*  TGridUtility.ToggleColumn(sgFHCompareRight, TSpeedbutton(Sender), TableColumnLookup[(TSpeedbutton(Sender)->Tag * 2) + 1], TableColumnLookup[TSpeedbutton(Sender)->Tag * 2]);
+	TSpeedButton *sb = (TSpeedButton*)Sender;
 
-  Splitter2Moved(Nil);*/
+	int column = sb->Tag * 2 + 1;
+
+	GridUtility::ToggleColumn(sgCompareRight, sb,
+							  column,
+							  CompareWidths[column],
+							  TableColumnLookup[sb->Tag * 2]);
+
+	Splitter1Moved(NULL);
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton15Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareLeftShowClick(TObject *Sender)
 {
-/*  if sbFHCShowLeft->Tag = 0 then {
-	GXGuiUtil.SetButtonOffImage(sbFHCShowLeft, CImageShow);
-	Screen.Cursor = crHourGlass;
+	if (sbCompareLeftShow->Tag == 0)
+	{
+		//GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, CImageShow);
+		Screen->Cursor = crHourGlass;
 
-	sbFHCShowLeft->Tag = 1;
-	cbFHCompareColour.Checked = False;
-	i = 0;
+		sbCompareLeftShow->Tag = 1;
+		cbCompareColourCode->Checked = false;
+		int i = 0;
 
-	FQuickCompareB.Clear;
+		QuickCompareB.clear();
 
-	for t = 1 to sgFHCompareRight->RowCount - 1 do {
-	  FQuickCompareB.Add(sgFHCompareRight->Cells[0, t]);
-	};
+		for (int t = 1; t < sgCompareRight->RowCount; t++)
+		{
+			QuickCompareB.push_back(sgCompareRight->Cells[0][t].c_str());
+		}
 
-	FQuickCompareB.Sort;
+	// to do std::sort(		FQuickCompareB.Sort;
 
-	// ===========================================================================
+		// =====================================================================
 
-	for t = 1 to sgFHCompareLeft->RowCount - 1 do {
-	  if FQuickCompareB.IndexOf(sgFHCompareLeft->Cells[0, t]) != -1 then
-		sgFHCompareLeft->Cells[FHschCategory, t] = "1"
-	  else {
-		sgFHCompareLeft->Cells[FHschCategory, t] = "2";
+		for (int t = 1; t < sgCompareLeft->RowCount; t++)
+		{
+			if (std::find(QuickCompareB.begin(), QuickCompareB.end(), sgCompareLeft->Cells[0][t].c_str()) != QuickCompareB.end())
+			{
+				sgCompareLeft->Cells[kFHColumnCategory][t] = L"1";
+			}
+			else
+			{
+				sgCompareLeft->Cells[kFHColumnCategory][t] = L"2";
 
-		inc(i);
-	  };
-	};
+				i++;
+			}
+		}
 
-	lFHCompareLeft->Caption = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(i) + "</b> " + GLanguageHandler->Text[kFiles] + ".";
-	Screen.Cursor = crDefault;
-  }
-  else {
-	sbFHCShowLeft->Tag = 0;
-	GImageHandler->SetButtonOnImage(sbFHCShowLeft, kImageShow);
-  };
-
-  sgFHCompareLeft.Refresh;*/
-}
-
-
-void __fastcall TFrameFolderHistory::SpeedButton26Click(TObject *Sender)
-{
-/*  if sbFHCShowRight->Tag = 0 then {
-	GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
-
-	Screen.Cursor = crHourGlass;
-
-	sbFHCShowRight->Tag        = 1;
-	cbFHCompareColour.Checked = False;
-	i = 0;
-
-	FQuickCompareA.Clear;
-
-	for t = 1 to sgFHCompareLeft->RowCount - 1 do {
-	  FQuickCompareA.Add(sgFHCompareLeft->Cells[0, t]);
-	};
-
-	FQuickCompareA.Sort;
-
-	// ===========================================================================
-
-	for t = 1 to sgFHCompareRight->RowCount - 1 do {
-	  if FQuickCompareA.IndexOf(sgFHCompareRight->Cells[0, t]) != -1 then
-		sgFHCompareRight->Cells[FHschCategory, t] = "1"
-	  else {
-		sgFHCompareRight->Cells[FHschCategory, t] = "2";
-
-		inc(i);
-	  };
-	};
-
-	lFHCompareRight->Caption = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(i) + "</b> " + GLanguageHandler->Text[kFiles] + ".";;
-
-	Screen.Cursor = crDefault;
-  }
-  else {
-	GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
-	sbFHCShowRight->Tag = 0;
-  };
-
-  sgFHCompareRight.Refresh;*/
-}
-
-
-/*procedure TFrameFolderHistory.FHCompareBuildLeft(Sender : TObject);
- var
-  SQL : string;
-
- {
-  if Pos("SELECT ", eFHCompareSearch->Text) != 0 then {
-    if GSettingsHandler->HistorySettings.SQLinSearch then {
-	  SQL = StringReplace(eFHCompareSearch->Text, "*", " FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ", [rfReplaceAll]);
-
-      SQL = StringReplace(SQL, "$x$", L""" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareLeft->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text) + L""", [rfReplaceAll]);
-    }
-    else {
-      SQL = L"";
-
-      ShowXDialog(GLanguageHandler->Text[kWarning],
-                  GLanguageHandler->Text[kDialog10],
-                  XDialogTypeWarning);
-    };
-  }
-  else {
-    SQL = TSearchUtility.XinorbisSearchToSQL(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareLeft->Tag]),
-                                              cbFHAvailablePath->Text,
-                                              cbFHAvailableComputer->Text,
-                                              eFHCompareSearch->Text,
-                                              lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults,
-                                              GSettingsHandler->General.MaxSearchResults,
-                                              False)
-  };
-
-  if TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareLeft->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text)) then {
-    if SQL != L"" then {
-      sbFHCShowLeft->Tag = 0;
-      GXGuiUtil.SetButtonOffImage(sbFHCShowLeft, 8);
-      Screen.Cursor = crSQLWait;
-
-      LastSQL[2] = SQL;
-
-      GCompareLeftThread = TCompareLeftThread.Create(True);
-	  GCompareLeftThread.SetData(SQL, cbFHCompareUnits->ItemIndex, cbFHComparePath.Checked, sgFHCompareLeft);
-      GCompareLeftThread.OnTerminate = CompareLeftThreadOnTerminate;
-	  GCompareLeftThread.Priority    = tpTimeCritical;        //tpTimeCritical
-	  GCompareLeftThread.Start;
-	};
-  }
-  else {
-	ShowXDialog(GLanguageHandler->Text[kWarning],
-				GLanguageHandler->Text[kNoFileData] + ": " +bFHCompareLeft->Caption,
-				XDialogTypeWarning);
-  };
-};
-
-
-procedure TFrameFolderHistory.FHCompareBuildRight(Sender : TObject);
- var
-  SQL : string;
-
- {
-  if Pos("SELECT ", eFHCompareSearch->Text) != 0 then {
-	if GSettingsHandler->HistorySettings.SQLinSearch then {
-	  SQL = StringReplace(eFHCompareSearch->Text, "*", " FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ", [rfReplaceAll]);
-
-	  SQL = StringReplace(SQL, "$x$", L""" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text) + L""", [rfReplaceAll]);
-    }
-    else {
-	  SQL = L"";
-
-      ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kDialog10], XDialogTypeWarning);
-    };
-  }
-  else {
-	SQL = TSearchUtility.XinorbisSearchToSQL(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text, eFHCompareSearch->Text, lCRPagePrevious->Tag*GSettingsHandler->General.MaxSearchResults, GSettingsHandler->General.MaxSearchResults, False)
-  };
-
-  if TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text)) then {
-	if SQL != L"" then {
-	  sbFHCShowRight->Tag = 0;
-	  GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
-	  Screen.Cursor = crSQLWait;
-
-	  LastSQL[3] = SQL;
-
-	  GCompareRightThread = TCompareRightThread.Create(True);
-	  GCompareRightThread.SetData(SQL, cbFHCompareUnits->ItemIndex, cbFHComparePath.Checked, sgFHCompareRight);
-	  GCompareRightThread.OnTerminate = CompareRightThreadOnTerminate;
-      GCompareRightThread.Priority    = tpTimeCritical;
-      GCompareRightThread.Start;
-	};
-  }
-  else {
-	ShowXDialog(GLanguageHandler->Text[kWarning],
-				GLanguageHandler->Text[kNoFileData] + ": " + bFHCompareRight->Caption,
-				XDialogTypeWarning);
-  };
-};      */
-
-
-/*void procedure TFrameFolderHistory.CompareLeftThreadOnTerminate(Sender : TObject);
- {
-  if sgFHCompareLeft->Cells[0, 1] != L"" then {
-    if CompareData[XLeftSide].Data[XFileCount] = 0 then
-      lFHCompareLeft->Caption = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(CompareData[XLeftSide].Data[XFolderCount]) + "</b> " + GLanguageHandler->Text[kFolders] + "."
-    else if CompareData[XRightSide].Data[XFolderCount] = 0 then
-      lFHCompareLeft->Caption = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(CompareData[XLeftSide].Data[XFileCount]) + "</b> " + GLanguageHandler->Text[kFiles] + " (<b>" + Convert::ConvertToUsefulUnit(CompareData[XLeftSide].Data[XFileSize]) + "</b>)."
-    else
-      lFHCompareLeft->Caption = GLanguageHandler->Text[kFound] + " <b>" + IntToStr(CompareData[XLeftSide].Data[XFileCount]) + "</b> " + GLanguageHandler->Text[kFiles] + " (<b>" + Convert::ConvertToUsefulUnit(CompareData[XLeftSide].Data[XFileSize]) + "</b>) + <b>" + IntToStr(CompareData[XLeftSide].Data[XFolderCount]) + "</b> " + GLanguageHandler->Text[kFolders] + ".";
-  }
-  else
-    lFHCompareLeft->Caption = GLanguageHandler->Text[kNoFilesFound];
-
-  // == navigation logic ===================================================
-
-  lCLPageNumber->Caption = IntToStr(lCLPagePrevious->Tag + 1);
-  lCLShowing->Caption    = IntToStr(lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults + 1) + rsEllipsis +
-                                    IntToStr((lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults);
-
-  if lCLPagePrevious->Tag = 0 then
-	lCLPagePrevious->Enabled = False
-  else
-    lCLPagePrevious->Enabled = True;
-
-  if CompareData[XLeftSide].Data[XFileCount] + CompareData[XLeftSide].Data[XFolderCount] < GSettingsHandler->General.MaxSearchResults then {
-    if lCLPagePrevious->Tag = 0 then
-      lCLPagePrevious->Enabled = False
-    else
-      lCLPagePrevious->Enabled = True;
-
-    lCLPageNext->Enabled = False;
-  }
-  else {
-    lCLPagePrevious->Enabled = True;
-    lCLPageNext->Enabled     = False;
-  };
-
-  // =======================================================================
-
-  sgFHCompareLeft.}Update;
-
-  TGridUtility.SortTable(sgFHCompareLeft, sgFHCompareLeft.SortSettings.Column);
-
-  Screen.Cursor = crDefault;
-};
-
-
-procedure TFrameFolderHistory.CompareRightThreadOnTerminate(Sender : TObject);
- {
-  if sgFHCompareRight->Cells[0,1] != L"" then {
-    if CompareData[XRightSide].Data[XFileCount] = 0 then
-      lFHCompareRight->Caption = GLanguageHandler->Text[kFound] +
-                                     " <b>" + IntToStr(CompareData[XRightSide].Data[XFolderCount]) + "</b> " +
-                                     GLanguageHandler->Text[kFolders] + "."
-    else if CompareData[XRightSide].Data[XFolderCount] = 0 then
-      lFHCompareRight->Caption = GLanguageHandler->Text[kFound] +
-                                     " <b>" + IntToStr(CompareData[XRightSide].Data[XFileCount]) + "</b> " +
-                                     GLanguageHandler->Text[kFiles] +
-                                     " (<b>" + Convert::ConvertToUsefulUnit(CompareData[XRightSide].Data[XFileSize]) + "</b>)."
+		lCompareLeftResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(i) + L" " + GLanguageHandler->Text[kFiles] + L".").c_str();
+		Screen->Cursor = crDefault;
+	}
 	else
-      lFHCompareRight->Caption = GLanguageHandler->Text[kFound] +
-                                     " <b>" + IntToStr(CompareData[XRightSide].Data[XFileCount]) + "</b> " +
-                                     GLanguageHandler->Text[kFiles] +
-                                     " (<b>" + Convert::ConvertToUsefulUnit(CompareData[XRightSide].Data[XFileSize]) + "</b>) + <b>" +
-                                     IntToStr(CompareData[XRightSide].Data[XFolderCount]) + "</b> " + GLanguageHandler->Text[kFolders] + ".";
-  }
-  else
-    lFHCompareRight->Caption = GLanguageHandler->Text[kNoFilesFound];
+	{
+		sbCompareLeftShow->Tag = 0;
+		//GImageHandler->SetButtonOnImage(sbCompareLeftShow, kImageShow);
+	}
 
-  // == navigation logic ===================================================
+	sgCompareLeft->Refresh();
+}
 
-  lCRPageNumber->Caption = IntToStr(lCRPagePrevious->Tag + 1);
-  lCRShowing->Caption    = IntToStr(lCRPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults + 1) + rsEllipsis + IntToStr((lCRPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults);
 
-  if lCRPagePrevious->Tag = 0 then
-    lCRPagePrevious->Enabled = False
-  else
-    lCRPagePrevious->Enabled = True;
+void __fastcall TFrameFolderHistory::sbCompareRightShowClick(TObject *Sender)
+{
+	if (sbCompareRightShow->Tag == 0)
+	{
+		//GXGuiUtil.SetButtonOffImage(sbCompareRightShow, 8);
 
-  if CompareData[XRightSide].Data[XFileCount] + CompareData[XRightSide].Data[XFolderCount] < GSettingsHandler->General.MaxSearchResults then {
-    if lCRPagePrevious->Tag = 0 then
-      lCRPagePrevious->Enabled = False
-    else
-      lCRPagePrevious->Enabled = True;
+		Screen->Cursor = crHourGlass;
 
-    lCRPageNext->Enabled = False;
-  }
-  else {
-    lCRPagePrevious->Enabled = True;
-    lCRPageNext->Enabled     = False;
-  };
+		sbCompareRightShow->Tag        = 1;
+		cbCompareColourCode->Checked = false;
+		int i = 0;
 
-  // =======================================================================
+		QuickCompareA.clear();
 
-  sgFHCompareRight.}Update;
+		for (int t = 1; t < sgCompareLeft->RowCount; t++)
+		{
+			QuickCompareA.push_back(sgCompareLeft->Cells[0][t].c_str());
+		}
 
-  TGridUtility.SortTable(sgFHCompareRight, sgFHCompareLeft.SortSettings.Column);
+//		std::sort(to do QuickCompareA.Sort;
 
-  Screen.Cursor = crDefault;
-} */
+		// =====================================================================
+
+		for (int t = 1; t < sgCompareRight->RowCount; t++)
+		{
+			if (std::find(QuickCompareA.begin(), QuickCompareA.end(), sgCompareRight->Cells[0][t].c_str()) != QuickCompareA.end())
+			{
+				sgCompareRight->Cells[kFHColumnCategory][t] = L"1";
+			}
+			else
+			{
+				sgCompareRight->Cells[kFHColumnCategory][t] = L"2";
+
+				i++;
+			}
+		}
+
+		lCompareRightResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(i) + L" " + GLanguageHandler->Text[kFiles] + L".").c_str();
+
+		Screen->Cursor = crDefault;
+	}
+	else
+	{
+		//GXGuiUtil.SetButtonOffImage(sbCompareRightShow, 8);
+		sbCompareRightShow->Tag = 0;
+	}
+
+	sgCompareRight->Refresh();
+}
+
+
+void TFrameFolderHistory::CompareBuildLeft()
+{
+	std::wstring search_text = eCompareSearch->Text.c_str();
+	std::wstring sql = L"";
+
+	if (search_text.find(L"SELECT ") != std::wstring::npos)
+	{
+		if (GSettingsHandler->History.SQLinSearch)
+		{
+			sql = Utility::ReplaceString(search_text,
+										 L"*",
+										 L" FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ");
+
+			sql = Utility::ReplaceString(sql,
+										 L"$x$",
+										 L"\"" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareLeftDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()) + L"\"");
+		}
+		else
+		{
+			sql = L"";
+
+			ShowXDialog(GLanguageHandler->Text[kWarning],
+						GLanguageHandler->Text[kDialog10],
+						XDialogTypeWarning);
+		}
+	}
+	else
+	{
+		sql = SqlUtility::XinorbisSearchToSQL(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareLeftDate->Tag].c_str()),
+											  cbFHAvailablePath->Text.c_str(),
+											  cbFHAvailableComputer->Text.c_str(),
+											  eCompareSearch->Text.c_str(),
+											  lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults,
+											  GSettingsHandler->General.MaxSearchResults,
+											  false);
+	}
+
+	if (GXDatabase->TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareLeftDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str())))
+	{
+		if (sql != L"")
+		{
+			sbCompareLeftShow->Tag = 0;
+		   //	GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, 8);
+			Screen->Cursor = crSQLWait;
+
+			//LastSQL[2] = sql;
+
+			CLS->SetData(sql, cbCompareUnits->ItemIndex, cbCompareShowFullPath->Checked, sgCompareLeft);
+
+			CLS->Execute();
+
+			PostCompareLeft();
+		}
+	}
+	else
+	{
+		std::wstring compare_date = bCompareLeftDate->Caption.c_str();
+
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kNoFileData] + L": " + compare_date,
+					XDialogTypeWarning);
+	}
+}
+
+
+void TFrameFolderHistory::CompareBuildRight()
+{
+	std::wstring search_text = eCompareSearch->Text.c_str();
+	std::wstring sql = L"";
+
+	if (search_text.find(L"SELECT ") != std::wstring::npos)
+	{
+		if (GSettingsHandler->History.SQLinSearch)
+		{
+			sql = Utility::ReplaceString(search_text,
+										 L"*",
+										 L" FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ");
+
+			sql = Utility::ReplaceString(sql,
+										 L"$x$",
+										 L"\"" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareRightDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()) + L"\"");
+		}
+		else
+		{
+			sql = L"";
+
+			ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kDialog10], XDialogTypeWarning);
+		}
+	}
+	else
+	{
+		sql = SqlUtility::XinorbisSearchToSQL(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareRightDate->Tag].c_str()),
+											  cbFHAvailablePath->Text.c_str(),
+											  cbFHAvailableComputer->Text.c_str(),
+											  eCompareSearch->Text.c_str(),
+											  lCRPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults,
+											  GSettingsHandler->General.MaxSearchResults,
+											  false);
+	}
+
+	if (GXDatabase->TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareRightDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str())))
+	{
+		if (!sql.empty())
+		{
+			//sbFHCShowRight->Tag = 0;
+			//GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
+			Screen->Cursor = crSQLWait;
+
+			//LastSQL[3] = sql;
+
+			CRS->SetData(sql, cbCompareUnits->ItemIndex, cbCompareShowFullPath->Checked, sgCompareRight);
+
+			CRS->Execute();
+
+			PostCompareRight();
+		}
+	}
+	else
+	{
+		std::wstring compare_date = bCompareRightDate->Caption.c_str();
+
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kNoFileData] + L": " + compare_date,
+					XDialogTypeWarning);
+	}
+}
+
+
+void TFrameFolderHistory::PostCompareLeft()
+{
+	if (sgCompareLeft->Cells[0][1] != L"")
+	{
+		if (CLS->Data.Files == 0)
+		{
+			lCompareLeftResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(CLS->Data.Folders) + L" " + GLanguageHandler->Text[kFolders] + L".").c_str();
+		}
+		else if (CLS->Data.Folders == 0)
+		{
+			lCompareLeftResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(CLS->Data.Files) + L" " + GLanguageHandler->Text[kFiles] + L" (" + Convert::ConvertToUsefulUnit(CLS->Data.Size) + L".").c_str();
+		}
+		else
+		{
+			lCompareLeftResults->Caption = (GLanguageHandler->Text[kFound] + L" " + std::to_wstring(CLS->Data.Files) + L" " + GLanguageHandler->Text[kFiles] + L" (" + Convert::ConvertToUsefulUnit(CLS->Data.Size) + L") + " + std::to_wstring(CLS->Data.Folders) + L" " + GLanguageHandler->Text[kFolders] + L".").c_str();
+		}
+	}
+	else
+	{
+		lCompareLeftResults->Caption = GLanguageHandler->Text[kNoFilesFound].c_str();
+	}
+
+	// == navigation logic ===================================================
+
+	lCLPageNumber->Caption = lCLPagePrevious->Tag + 1;
+	lCLShowing->Caption    = (std::to_wstring(lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults + 1) + L"..." +
+							  std::to_wstring((lCLPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults)).c_str();
+
+	if (lCLPagePrevious->Tag == 0)
+	{
+		lCLPagePrevious->Enabled = false;
+	}
+	else
+	{
+		lCLPagePrevious->Enabled = true;
+	}
+
+	if (CLS->Data.Files + CLS->Data.Folders < GSettingsHandler->General.MaxSearchResults)
+	{
+		if (lCLPagePrevious->Tag == 0)
+		{
+			lCLPagePrevious->Enabled = false;
+		}
+		else
+		{
+			lCLPagePrevious->Enabled = true;
+		}
+
+		lCLPageNext->Enabled = false;
+	}
+	else
+	{
+		lCLPagePrevious->Enabled = true;
+		lCLPageNext->Enabled     = false;
+	}
+
+	// =======================================================================
+
+	sgCompareLeft->EndUpdate();
+
+	// TGridUtility.SortTable(sgFHCompareLeft, sgFHCompareLeft.SortSettings.Column);
+
+	Screen->Cursor = crDefault;
+}
+
+
+void TFrameFolderHistory::PostCompareRight()
+{
+	if (sgCompareRight->Cells[0][1] != L"")
+	{
+		if (CRS->Data.Files == 0)
+		{
+			lCompareRightResults->Caption = (GLanguageHandler->Text[kFound] +
+											 L" " + std::to_wstring(CRS->Data.Folders) + L" " +
+											 GLanguageHandler->Text[kFolders] + L".").c_str();
+		}
+		else if (CRS->Data.Folders == 0)
+		{
+			lCompareRightResults->Caption = (GLanguageHandler->Text[kFound] +
+										L" " + std::to_wstring(CRS->Data.Files) + L" " +
+										GLanguageHandler->Text[kFiles] +
+										L" " + Convert::ConvertToUsefulUnit(CRS->Data.Size) + L").").c_str();
+		}
+		else
+		{
+			lCompareRightResults->Caption = (GLanguageHandler->Text[kFound] +
+											 L" " + std::to_wstring(CRS->Data.Files) + L" " +
+											 GLanguageHandler->Text[kFiles] +
+											 L" (" + Convert::ConvertToUsefulUnit(CRS->Data.Size) + L") + " +
+											 std::to_wstring(CRS->Data.Folders) + L" " + GLanguageHandler->Text[kFolders] + L".").c_str();
+		}
+	}
+	else
+	{
+		lCompareRightResults->Caption = GLanguageHandler->Text[kNoFilesFound].c_str();
+	}
+
+	// == navigation logic =====================================================
+
+	lCRPageNumber->Caption = lCRPagePrevious->Tag + 1;
+	lCRShowing->Caption    = (std::to_wstring(lCRPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults + 1) + L"..." +
+	                          std::to_wstring((lCRPagePrevious->Tag * GSettingsHandler->General.MaxSearchResults) + GSettingsHandler->General.MaxSearchResults)).c_str();
+
+	if (lCRPagePrevious->Tag == 0)
+	{
+		lCRPagePrevious->Enabled = false;
+	}
+	else
+	{
+		lCRPagePrevious->Enabled = true;
+	}
+
+	if (CRS->Data.Files + CRS->Data.Folders < GSettingsHandler->General.MaxSearchResults)
+	{
+		if (lCRPagePrevious->Tag == 0)
+		{
+			 lCRPagePrevious->Enabled = false;
+		}
+		else
+		{
+			lCRPagePrevious->Enabled = true;
+		}
+
+		lCRPageNext->Enabled = false;
+	}
+	else
+	{
+		lCRPagePrevious->Enabled = true;
+		lCRPageNext->Enabled     = false;
+	}
+
+	// =======================================================================
+
+	sgCompareRight->EndUpdate();
+
+///	TGridUtility.SortTable(sgFHCompareRight, sgFHCompareLeft.SortSettings.Column);
+
+	Screen->Cursor = crDefault;
+}
 
 
 void __fastcall TFrameFolderHistory::Splitter1Moved(TObject *Sender)
 {
-/*  i = 530;
+	int total = 0;
 
-	if sgFHCompareLeft.IsHiddenColumn(2) then dec(i, 70);
-	if sgFHCompareLeft.IsHiddenColumn(3) then dec(i, 70);
-	if sgFHCompareLeft.IsHiddenColumn(4) then dec(i, 70);
-	if sgFHCompareLeft.IsHiddenColumn(5) then dec(i, 70);
-	if sgFHCompareLeft.IsHiddenColumn(6) then dec(i, 100);
-	if sgFHCompareLeft.IsHiddenColumn(7) then dec(i, 55);
+	for (int t = 1; t < 14; t++)
+	{
+		sgCompareLeft->ColWidths[t] = CompareWidths[t];
+		sgCompareRight->ColWidths[t] = CompareWidths[t];
 
-	sgFHCompareLeft->ColWidths[0]  = sgFHCompareLeft->Width - i;
+		total += CompareWidths[t];
+	}
 
-	i = 530;
-
-	if sgFHCompareRight.IsHiddenColumn(2) then dec(i, 70);
-	if sgFHCompareRight.IsHiddenColumn(3) then dec(i, 70);
-	if sgFHCompareRight.IsHiddenColumn(4) then dec(i, 70);
-	if sgFHCompareRight.IsHiddenColumn(5) then dec(i, 70);
-	if sgFHCompareRight.IsHiddenColumn(6) then dec(i, 100);
-	if sgFHCompareRight.IsHiddenColumn(7) then dec(i, 55);
-
-	sgFHCompareRight->ColWidths[0] = sgFHCompareRight->Width - i; */
+	sgCompareLeft->ColWidths[0] = sgCompareLeft->Width - (total + __WidthOfScrollbar);
+	sgCompareRight->ColWidths[0] = sgCompareRight->Width - (total + __WidthOfScrollbar);
 }
 
 
-void __fastcall TFrameFolderHistory::StringGrid2DrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFrameFolderHistory::sgCompareLeftDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-/*procedure TFrameFolderHistory.sgFHCompareLeftDrawCell(Sender: TObject; ACol,
-  ARow: Integer; Rect: TRect; State: TGridDrawState);
- var
-  l,w : integer;
+/*  l,w : integer;
 
  {
   if (cbFHCompareColour.Checked) then {
@@ -1978,7 +2039,7 @@ void __fastcall TFrameFolderHistory::StringGrid2DrawCell(TObject *Sender, System
 	  TAdvStringGrid(Sender)->Canvas->TextRect(Rect, Rect.Left + 2, Rect.Top + 2, TAdvStringGrid(Sender)->Cells[ACol, ARow]);
 	};
   }
-  else if (sbFHCShowLeft->Tag = 1) then {
+  else if (sbCompareLeftShow->Tag = 1) then {
 	if ARow != 0 then {
 	  TAdvStringGrid(Sender)->Canvas->Brush->Color = CompareColoursX[StrToInt(TAdvStringGrid(Sender)->Cells[FHschCategory, ARow])];
 	  TAdvStringGrid(Sender)->Canvas->TextRect(Rect, Rect.Left + 2, Rect.Top + 2, TAdvStringGrid(Sender)->Cells[ACol, ARow]);
@@ -1999,11 +2060,11 @@ void __fastcall TFrameFolderHistory::StringGrid2DrawCell(TObject *Sender, System
 }
 
 
-void __fastcall TFrameFolderHistory::StringGrid3DrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFrameFolderHistory::sgCompareRightDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-/*
-	if (cbFHCompareColour.Checked) then {
+/*  if (cbFHCompareColour.Checked)
+	{
 		if ARow != 0 then {
 			TAdvStringGrid(Sender)->Canvas->Brush->Color = GSystemGlobal.FileCategoryColors[StrToInt(TAdvStringGrid(Sender)->Cells[FHschCategory, ARow])];
 			  TAdvStringGrid(Sender)->Canvas->TextRect(Rect, Rect.Left + 2, Rect.Top + 2, TAdvStringGrid(Sender)->Cells[ACol, ARow]);
@@ -2018,183 +2079,217 @@ void __fastcall TFrameFolderHistory::StringGrid3DrawCell(TObject *Sender, System
 		}
 	}*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Search_CompareFolder
-void __fastcall TFrameFolderHistory::ComboBox3KeyDown(TObject *Sender, WORD &Key,
+void __fastcall TFrameFolderHistory::eCompareFolderSearchKeyDown(TObject *Sender, WORD &Key,
 		  TShiftState Shift)
 {
 	if (Key == VK_RETURN)
 	{
-		//sbFHCompareFolderSearchClick(Nil);
+		sbCompareFolderSearchClick(NULL);
 	}
 }
 
 
 void __fastcall TFrameFolderHistory::sbCompareFolderSearchClick(TObject *Sender)
 {
-/*  if not(GSettingsHandler->ProcessWindowsVisible)
+	if (bCompareFolderLeftDate->Tag != -1 && bCompareFolderRightDate->Tag != -1)
 	{
-		if (bFHCompareFolderLeft->Tag != -1) and (bFHCompareFolderRight->Tag != -1)
+		if (eCompareFolderSearch->Text != L"")
 		{
-			if eFHCompareDriveFolder->Text != L""
-			{
-				FHCompareFolderBuildLeft(Nil);
-				FHCompareFolderBuildRight(Nil);
-			}
+			CompareFolderBuildLeft();
+			CompareFolderBuildRight();
+		}
+	}
+	else
+	{
+		ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kPleaseSelectADate], XDialogTypeWarning);
+	}
+}
+
+
+void __fastcall TFrameFolderHistory::bCompareFolderLeftDateClick(TObject *Sender)
+{
+	puFHSelectDate->Tag = 5;
+
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
+}
+
+
+void __fastcall TFrameFolderHistory::bCompareFolderRightDateClick(TObject *Sender)
+{
+	puFHSelectDate->Tag = 6;
+
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
+}
+
+
+void TFrameFolderHistory::CompareFolderBuildLeft()
+{
+	std::wstring search_text = eCompareFolderSearch->Text.c_str();
+	std::wstring sql = L"";
+
+	if (search_text.find(L"SELECT ") != std::wstring::npos)
+	{
+		if (GSettingsHandler->History.SQLinSearch)
+		{
+			sql = Utility::ReplaceString(search_text,
+										 L"*",
+										 L" FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ");
+
+			sql = Utility::ReplaceString(sql,
+										 L"$x$",
+										 L"\"" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderLeftDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()) + L"\"");
 		}
 		else
 		{
-			ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kPleaseSelectADate], XDialogTypeWarning);
+			sql = L"";
+			ShowXDialog(GLanguageHandler->Text[kWarning],
+			GLanguageHandler->Text[kDialog10],
+			XDialogTypeWarning);
 		}
-	}*/
+	}
+	else
+	{
+		sql = SqlUtility::XinorbisSearchAllToSQL(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderLeftDate->Tag].c_str()),
+												 cbFHAvailablePath->Text.c_str(),
+												 cbFHAvailableComputer->Text.c_str(),
+												 false);
+	}
+
+	if (GXDatabase->TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderLeftDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str())))
+	{
+		if (sql != L"")
+		{
+			//LastSQL[2] = sql;
+
+			CFLS->SetData(sql,
+						  search_text,
+						  lCompareFolderLeftResults,
+						  sgCompareFolderLeft);
+
+			CFLS->Execute();
+
+			CompareFolderBuildLeft();
+		}
+	}
+	else
+	{
+		std::wstring compare_date = bCompareFolderLeftDate->Caption.c_str();
+
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kNoFileData] + L": " + compare_date,
+					XDialogTypeWarning);
+	}
 }
 
 
-void __fastcall TFrameFolderHistory::BitBtn5Click(TObject *Sender)
+void TFrameFolderHistory::CompareFolderBuildRight()
 {
-/*  puFHSelectDate->Tag = 5;
+	std::wstring search_text = eCompareFolderSearch->Text.c_str();
+	std::wstring sql = L"";
 
-	puFHSelectDate->Popup(FGetLeftOffset + bFHCompareLeft.Left + 20,
-							FGetTopOffset + Panel46.Height + Panel4.Height + Panel45.Height + 80);*/
-}
+	if (search_text.find(L"SELECT ") != std::wstring::npos)
+	{
+		if (GSettingsHandler->History.SQLinSearch)
+		{
+			sql = Utility::ReplaceString(search_text,
+										 L"*",
+										 L" FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ");
 
+			sql = Utility::ReplaceString(sql,
+										 L"$x$",
+										 L"\"" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderRightDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()) + L"\"");
+		}
+		else
+		{
+			sql = L"";
 
-void __fastcall TFrameFolderHistory::BitBtn6Click(TObject *Sender)
-{
-/*  puFHSelectDate->Tag = 6;
+			ShowXDialog(GLanguageHandler->Text[kWarning],
+						GLanguageHandler->Text[kDialog10],
+						XDialogTypeWarning);
+		}
+	}
+	else
+	{
+		sql = SqlUtility::XinorbisSearchAllToSQL(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderRightDate->Tag].c_str()),
+												 cbFHAvailablePath->Text.c_str(),
+												 cbFHAvailableComputer->Text.c_str(),
+												 false);
+	}
 
-  puFHSelectDate->Popup(FGetLeftOffset + bFHCompareLeft.Left + Panel49.Left + 20,
-					   FGetTopOffset + Panel46.Height + Panel4.Height + Panel45.Height + 80);*/
-}
+	if (GXDatabase->TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareFolderRightDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str())))
+	{
+		if (sql != L"")
+		{
+//			LastSQL[2] = sql;
 
+			CFRS->SetData(sql, search_text, lCompareFolderRightResults, sgCompareFolderRight);
 
-/*procedure TFrameFolderHistory.FHCompareFolderBuildLeft(Sender : TObject);
-var
-  SQL : string;
+			CFRS->Execute();
 
-{
-  if Pos("SELECT ", eFHCompareDriveFolder->Text) != 0 then {
-    if GSettingsHandler->HistorySettings.SQLinSearch then {
-      SQL = StringReplace(eFHCompareDriveFolder->Text, "*", " FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ", [rfReplaceAll]);
+			CompareFolderBuildRight();
+		}
+	}
+	else
+	{
+		std::wstring compare_date = bCompareFolderRightDate->Caption.c_str();
 
-      SQL = StringReplace(SQL, "$x$", L""" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderLeft->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text) + L""", [rfReplaceAll]);
+		ShowXDialog(GLanguageHandler->Text[kWarning],
+					GLanguageHandler->Text[kNoFileData] + L": " + compare_date,
+					XDialogTypeWarning);
     }
-    else {
-      SQL = L"";
-      ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kDialog10], XDialogTypeWarning);
-    };
-  }
-  else {
-    SQL = TSearchUtility.XinorbisSearchAllToSQL(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderLeft->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text, False)
-  };
-
-  if TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderLeft->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text)) then {
-    if SQL != L"" then {
-      LastSQL[2] = SQL;
-
-      GCompareFolderLeftThread = TCompareFolderLeftThread.Create(True);
-      GCompareFolderLeftThread.SetData(SQL, eFHCompareDriveFolder->Text, lFHCDLeft, sgFHCDLeft);
-      GCompareFolderLeftThread.OnTerminate = CompareFolderLeftThreadOnTerminate;
-      GCompareFolderLeftThread.Priority    = tpTimeCritical;        //tpTimeCritical
-      GCompareFolderLeftThread.Start;
-    };
-  }
-  else {
-    ShowXDialog(GLanguageHandler->Text[kWarning],
-                GLanguageHandler->Text[kNoFileData] + ": " + bFHCompareLeft->Caption,
-                XDialogTypeWarning);
-  };
-};
-
-
-procedure TFrameFolderHistory.FHCompareFolderBuildRight(Sender : TObject);
- var
-  SQL : string;
-
- {
-  if Pos("SELECT ", eFHCompareDriveFolder->Text) != 0 then {
-    if GSettingsHandler->HistorySettings.SQLinSearch then {
-	  SQL = StringReplace(eFHCompareDriveFolder->Text, "*", " FilePath, FileName, FileSize, FileSizeDisk, FileDateC, FileDateA, FileDateM, Category, Directory, Readonly, Hidden, System, Archive, Temp, Owner ", [rfReplaceAll]);
-
-      SQL = StringReplace(SQL, "$x$", L""" + Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text) + L""", [rfReplaceAll]);
-    }
-    else {
-      SQL = L"";
-
-      ShowXDialog(GLanguageHandler->Text[kWarning], GLanguageHandler->Text[kDialog10], XDialogTypeWarning);
-    };
-  }
-  else {
-    SQL = TSearchUtility.XinorbisSearchAllToSQL(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text, False)
-  };
-
-  if TableExists(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareFolderRight->Tag]), cbFHAvailablePath->Text, cbFHAvailableComputer->Text)) then {
-    if SQL != L"" then {
-      LastSQL[2] = SQL;
-
-      GCompareFolderRightThread = TCompareFolderRightThread.Create(True);
-	  GCompareFolderRightThread.SetData(SQL, eFHCompareDriveFolder->Text, lFHCDRight, sgFHCDRight);
-      GCompareFolderRightThread.OnTerminate = CompareFolderRightThreadOnTerminate;
-      GCompareFolderRightThread.Priority    = tpTimeCritical;        //tpTimeCritical
-      GCompareFolderRightThread.Start;
-    };
-  }
-  else {
-    ShowXDialog(GLanguageHandler->Text[kWarning],
-                GLanguageHandler->Text[kNoFileData] + ": " + bFHCompareLeft->Caption,
-                XDialogTypeWarning);
-  };
-};               */
+}
 
 
 void __fastcall TFrameFolderHistory::SpeedButton32Click(TObject *Sender)
 {
-/*  sgrid : TAdvStringGrid;
-  lFileName : string;
+	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kFileHistoryCompare] + L"_" + GLanguageHandler->Text[kLeft]));
 
-	lFileName = SaveDialogs::ExecuteReports(TUtility.GetDefaultFileName(".csv", GLanguageHandler->Text[kFileHistoryCompare] + "_" + GLanguageHandler->Text[kLeft]));
-
-	if lFileName != L""
+	if (!file_name.empty())
 	{
-		switch TSpeedbutton(Sender)->Tag)
+		TSpeedButton *sb = (TSpeedButton*)Sender;
+
+		switch (sb->Tag)
 		{
-		CLeft  : sgrid = sgFHCDLeft;
-		CRight : sgrid = sgFHCDRight;
-
-		default:
-			sgrid = sgFHCDLeft;
+		case kOptionLeft:
+			GridUtility::Save(sgCompareFolderLeft, file_name);
+			break;
+		case kOptionRight:
+			GridUtility::Save(sgCompareFolderRight, file_name);
+			break;
 		}
-
-		TGridUtility.SaveGrid(sgrid, lFileName);
-	}*/
+	}
 }
 
 
 void __fastcall TFrameFolderHistory::Splitter2Moved(TObject *Sender)
 {
-/*	sgFHCDLeft->ColWidths[0]  = 10;
-	sgFHCDLeft->ColWidths[2]  = 50;
-	sgFHCDLeft->ColWidths[3]  = 52;
-	sgFHCDLeft->ColWidths[4]  = 4;
-	sgFHCDLeft->ColWidths[5]  = 60;
-	sgFHCDLeft->ColWidths[6]  = 52;
+	int total = 0;
 
-	sgFHCDLeft->ColWidths[1]  = sgFHCDLeft->Width - (230 + 23);
+	for (int t = 1; t < 14; t++)
+	{
+		sgCompareFolderLeft->ColWidths[t] = CompareWidths[t];
+		sgCompareFolderRight->ColWidths[t] = CompareWidths[t];
 
-	sgFHCDRight->ColWidths[0] = 10;
-	sgFHCDRight->ColWidths[2] = 50;
-	sgFHCDRight->ColWidths[3] = 52;
-	sgFHCDRight->ColWidths[4] = 4;
-	sgFHCDRight->ColWidths[5] = 60;
-	sgFHCDRight->ColWidths[6] = 52;
+		if (CompareWidths[t] != -1)
+		{
+			total += CompareWidths[t];
+        }
+	}
 
-	sgFHCDRight->ColWidths[1] = sgFHCDRight->Width - (230 + 23); */
+	sgCompareFolderLeft->ColWidths[0] = sgCompareFolderLeft->Width - (total + __WidthOfScrollbar);
+	sgCompareFolderRight->ColWidths[0] = sgCompareFolderRight->Width - (total + __WidthOfScrollbar);
 }
 
 
-void __fastcall TFrameFolderHistory::StringGrid5DrawCell(TObject *Sender, System::LongInt ACol,
+void __fastcall TFrameFolderHistory::sgCompareFolderLeftDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
 /*  if ARow != 0 then {
@@ -2250,84 +2345,73 @@ void __fastcall TFrameFolderHistory::StringGrid5DrawCell(TObject *Sender, System
   };*/
 }
 
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Tab_Search_CompareFolderTree
 void __fastcall TFrameFolderHistory::sbCompareTreeClick(TObject *Sender)
 {
-/*	if not(GSettingsHandler->ProcessWindowsVisible)
+	if (bCompareTreeLeftDate->Tag != -1)
 	{
-		if bFHCompareTreeLeft->Tag != -1
-		{
-			InitialiseTreeWithFolders(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeLeft->Tag]),
-								cbFHAvailablePath->Text, cbFHAvailableComputer->Text), tvFHTLeft);
-		}
+		GXDatabase->InitialiseTreeWithFolders(tvCompareLeft,
+			Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareTreeLeftDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()));
+	}
 
-		if bFHCompareTreeRight->Tag != -1)
-		{
-			InitialiseTreeWithFolders(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeRight->Tag]),
-								cbFHAvailablePath->Text, cbFHAvailableComputer->Text), tvFHTRight);
-		}
+	if (bCompareTreeRightDate->Tag != -1)
+	{
+		GXDatabase->InitialiseTreeWithFolders(tvCompareRight,
+			Convert::CreateTableName(Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bCompareTreeRightDate->Tag].c_str()), cbFHAvailablePath->Text.c_str(), cbFHAvailableComputer->Text.c_str()));
+	}
 
-		sbFHCompareFolder2LeftSaveClick->Enabled  = True;
-		sbFHCompareFolder2RightSaveClick->Enabled = True;
-	}  */
+	sbCompareFolderLeftSave->Enabled  = true;
+	sbCompareFolderRightSave->Enabled = true;
 }
 
 
-void __fastcall TFrameFolderHistory::bCompareTreeLeftClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::bCompareTreeLeftDateClick(TObject *Sender)
 {
-//  puFHSelectDate->Tag = 7;
+	puFHSelectDate->Tag = 7;
 
-//  puFHSelectDate->Popup(FGetLeftOffset + bFHCompareTreeLeft.Left + 20,
-//					   FGetTopOffset + Panel46.Height + Panel48.Height + Panel55.Height + 80);
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
-void __fastcall TFrameFolderHistory::bCompareTreeRightClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::bCompareTreeRightDateClick(TObject *Sender)
 {
-//  puFHSelectDate->Tag = 8;
+	puFHSelectDate->Tag = 8;
 
-//  puFHSelectDate->Popup(FGetLeftOffset + bFHCompareTreeRight.Left + Panel56.Left + 20,
-//					   FGetTopOffset + Panel46.Height + Panel48.Height + Panel55.Height + 80);
+	TPoint mouse_pos = Mouse->CursorPos;
+
+	puFHSelectDate->Popup(mouse_pos.X, mouse_pos.Y);
 }
 
 
 void __fastcall TFrameFolderHistory::SpeedButton28Click(TObject *Sender)
 {
-/*  stree : THTMLTreeView;
-  lFileName : string;
+	std::wstring file_name = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + L" (*.txt)|*.txt",
+												  L".txt",
+                                                  L"",
+												  Utility::GetDefaultFileName(L".txt", GLanguageHandler->Text[kFileHistoryCompare] + L"_" + GLanguageHandler->Text[kLeft]));
 
-{
-	lFileName = SaveDialogs::Execute(GLanguageHandler->Text[kTextFiles] + " (*.txt)|*.txt",
-										".txt",
-										TUtility.GetDefaultFileName(".txt", GLanguageHandler->Text[kFileHistoryCompare] + "_" + GLanguageHandler->Text[kLeft]));
-
-	if lFileName != L""
+	if (!file_name.empty())
 	{
-		switch TSpeedbutton(Sender)->Tag)
+		TSpeedButton* sb = (TSpeedButton*)Sender;
+
+		switch (sb->Tag)
 		{
-		CLeft  : stree = tvFHTLeft;
-		CRight : stree = tvFHTRight;
-		default:
-		  stree = tvFHTLeft;
+		case kOptionLeft:
+			tvCompareLeft->SaveToFile(file_name.c_str());
+			break;
+		case kOptionRight:
+			tvCompareRight->SaveToFile(file_name.c_str());
+			break;
 		}
-	};
-
-	try
-	{
-	  stree.SaveToFile(lFileName);
 	}
-	except
-	{
-	  on e : exception do {
-		TMSLogger.Error("Error saving tree L"" + e.ClassName + " / " + e.Message);
-	  }
-	}*/
 }
 
-void __fastcall TFrameFolderHistory::TreeView1Expanding(TObject *Sender, TTreeNode *Node,
+void __fastcall TFrameFolderHistory::tvCompareLeftExpanding(TObject *Sender, TTreeNode *Node,
 		  bool &AllowExpansion)
 {
 /*  if PNodeData(Node.Data)^.FolderID != -2 then {
@@ -2341,7 +2425,7 @@ void __fastcall TFrameFolderHistory::TreeView1Expanding(TObject *Sender, TTreeNo
 }
 
 
-void __fastcall TFrameFolderHistory::TreeView2Expanding(TObject *Sender, TTreeNode *Node,
+void __fastcall TFrameFolderHistory::tvCompareRightExpanding(TObject *Sender, TTreeNode *Node,
 		  bool &AllowExpansion)
 {
 /*  if PNodeData(Node.Data)^.FolderID != -2 then {
@@ -2353,24 +2437,22 @@ void __fastcall TFrameFolderHistory::TreeView2Expanding(TObject *Sender, TTreeNo
 	PNodeData(Node.Data)^.FolderID = -2;
   };*/
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Popup_Charts
 void __fastcall TFrameFolderHistory::miCOSaveClick(TObject *Sender)
 {
-/*	std::wstring file_name = SaveDialogs::ExecuteImages(TUtility.GetDefaultFileName(".png", GLanguageHandler->Text[kChart]));
+	std::wstring file_name = SaveDialogs::ExecuteImages(Utility::GetDefaultFileName(L".png", GLanguageHandler->Text[kChart]));
 
-	if lFileName != L"")
+	if (!file_name.empty())
 	{
 		TMenuItem* mi = (TMenuItem*)Sender;
 		TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 		TChart* chart = (TChart*)pum->PopupComponent;
 
-		mychart = TChart(Tpopupmenu(TMenuItem(Sender).GetParentMenu)->PopupComponent);
-
-		ChartUtility::SaveChartToPNG(mychart, lFileName);
-	}*/
+		ChartUtility::SaveChartToPNG(chart, file_name);
+	}
 }
 
 
@@ -2385,150 +2467,187 @@ void __fastcall TFrameFolderHistory::miCOCopyClick(TObject *Sender)
 
 
 void __fastcall TFrameFolderHistory::miCOAdvancedClick(TObject *Sender)
-{ /*
-  mychart : TChart;
-  tceo    : TChartOptions;
+{
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TChart* chart = (TChart*)pum->PopupComponent;
 
-  mychart = TChart(Tpopupmenu(TMenuItem(Sender).GetParentMenu)->PopupComponent);
+	ChartOptions co = GSettingsHandler->Chart;
 
-  tceo = GSettingsHandler->Charts.Options;
+	co.Type = ChartUtility::GetChartType(chart);
 
-  tceo.ChartType = ChartUtility::GetChartType(mychart);
+	// =========================================================================
 
-  // ===========================================================================
+	co = ShowChartOptions(co);
 
-  tceo = DoAdvancedChartOptions(tceo);
+	// =========================================================================
 
-  // ===========================================================================
+	if (co.Result == 1)
+	{
+		ChartUtility::SetAdvancedOptions(chart, co);
 
-  if tceo.Result = 1 then {
-	ChartUtility::SetAdvancedOptions(mychart, tceo);
-
-	if Assigned(FChartsHaveChanged) then
-	  FChartsHaveChanged;
-  };                          */
+		if (OnChartsHaveChanged)
+		{
+			OnChartsHaveChanged(0);
+		}
+    }
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Popup_CompareSave
 void __fastcall TFrameFolderHistory::puFHCompareSavePopup(TObject *Sender)
 {
-/*  status : boolean;
+	auto DoExist = [](TStringGrid *sg) -> int
+	{
+		int count = 0;
 
-  function DoExist(sg : TAdvStringGrid): integer;
-   var
-	t : integer;
+		for (int t = 1; t < sg->RowCount; t++)
+		{
+			if (sg->Cells[kFHColumnCategory][t] == L"1")
+			{
+				count++;
+			}
+		}
 
-   {
-	Result = 0;
+		return count;
+	};
 
-	for t = 1 to sg->RowCount - 1 do {
-	  if sg->Cells[FHschCategory, t] = "1" then inc(Result);
+	auto DontExist = [](TStringGrid *sg) -> int
+	{
+		int count = 0;
+
+		for (int t = 1; t < sg->RowCount; t++)
+		{
+			if (sg->Cells[kFHColumnCategory][t] == L"2")
+			{
+				count++;
+			}
+		}
+
+		return count;
+	};
+
+	bool status = false;
+
+	miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist].c_str();
+	miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist].c_str();
+
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TSpeedButton* sb = (TSpeedButton*)pum->PopupComponent;
+
+	switch (sb->Tag)
+	{
+	case 1:
+		if (sbCompareLeftShow->Tag == 0)
+		{
+			status = false;
+		}
+		else
+		{
+			status = true;
+
+			miFHCSSaveDo->Caption   = (GLanguageHandler->Text[kSaveDoExist] + L" (" + std::to_wstring(DoExist(sgCompareLeft)) + L")").c_str();
+			miFHCSSaveDont->Caption = (GLanguageHandler->Text[kSaveDontExist] + L" (" + std::to_wstring(DontExist(sgCompareLeft)) + L")").c_str();
+		}
+
+		miFHCSSaveDo->Enabled   = status;
+		miFHCSSaveDont->Enabled = status;
+
+		break;
+	case 2:
+		if (sbCompareRightShow->Tag == 0)
+		{
+			status = false;
+		}
+		else
+		{
+			status = true;
+
+			miFHCSSaveDo->Caption   = (GLanguageHandler->Text[kSaveDoExist] + L" (" + std::to_wstring(DoExist(sgCompareRight)) + L")").c_str();
+			miFHCSSaveDont->Caption = (GLanguageHandler->Text[kSaveDontExist] + L" (" + std::to_wstring(DontExist(sgCompareRight)) + L")").c_str();
+		}
+
+		miFHCSSaveDo->Enabled     = status;
+		miFHCSSaveDont->Enabled   = status;
+		break;
 	}
-  };
-
-  function DontExist(sg : TAdvStringGrid): integer;
-   var
-	t : integer;
-
-   {
-	Result = 0;
-
-	for t = 1 to sg->RowCount - 1 do {
-	  if sg->Cells[FHschCategory, t] = "2" then inc(Result);
-	}
-  };
-
- {
-  miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist];
-  miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist];
-
-  switch TSpeedbutton(Tpopupmenu(Sender)->PopupComponent)->Tag of
-	1 : {
-		  if sbFHCShowLeft->Tag = 0 then
-			status = False
-		  else {
-			status = True;
-
-			miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist] + " (" + IntToStr(DoExist(sgFHCompareLeft)) + ")";
-			miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist] + " (" + IntToStr(DontExist(sgFHCompareLeft)) + ")";
-		  };
-
-          miFHCSSaveDo->Enabled   = status;
-		  miFHCSSaveDont->Enabled = status;
-		};
-	2 : {
-          if sbFHCShowRight->Tag = 0 then
-			status = False
-          else {
-			status = True;
-
-			miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist] + " (" + IntToStr(DoExist(sgFHCompareRight)) + ")";
-			miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist] + " (" + IntToStr(DontExist(sgFHCompareRight)) + ")";
-          };
-
-		  miFHCSSaveDo->Enabled     = status;
-          miFHCSSaveDont->Enabled   = status;
-		};
-  };        */
 }
 
 
 void __fastcall TFrameFolderHistory::miFHCSSaveAllClick(TObject *Sender)
-{    /*
-	switch TSpeedbutton(Tpopupmenu(Sender)->PopupComponent)->Tag of
-	1 : TGridUtility.SaveFHStringGridData(sgFHCompareLeft,  eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	2 : TGridUtility.SaveFHStringGridData(sgFHCompareRight, eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	}  */
+{
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TSpeedButton* sb = (TSpeedButton*)pum->PopupComponent;
+
+	switch (sb->Tag)
+	{
+	case 1:
+		GridUtility::SaveFolderHistoryData(sgCompareLeft,  eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	case 2:
+		GridUtility::SaveFolderHistoryData(sgCompareRight, eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	}
 }
 
 
 void __fastcall TFrameFolderHistory::miFHCSSaveDoClick(TObject *Sender)
-{       /*
-	switch TSpeedbutton(Tpopupmenu(Sender)->PopupComponent)->Tag of
-	1 : TGridUtility.SaveFHStringGridData(sgFHCompareLeft,  eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	2 : TGridUtility.SaveFHStringGridData(sgFHCompareRight, eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	} */
+{
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TSpeedButton* sb = (TSpeedButton*)pum->PopupComponent;
+
+	switch (sb->Tag)
+	{
+	case 1:
+		GridUtility::SaveFolderHistoryData(sgCompareLeft,  eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	case 2:
+		GridUtility::SaveFolderHistoryData(sgCompareRight, eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	}
 }
 
 
 void __fastcall TFrameFolderHistory::miFHCSSaveDontClick(TObject *Sender)
-{          /*
-	switch TSpeedbutton(Tpopupmenu(Sender)->PopupComponent)->Tag)
+{
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TSpeedButton* sb = (TSpeedButton*)pum->PopupComponent;
+
+	switch (sb->Tag)
 	{
-	1:
-		TGridUtility.SaveFHStringGridData(sgFHCompareLeft,  eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	2:
-		TGridUtility.SaveFHStringGridData(sgFHCompareRight, eFHCompareSearch->Text, TMenuItem(Sender)->Tag);
-	} */
+	case 1:
+		GridUtility::SaveFolderHistoryData(sgCompareLeft,  eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	case 2:
+		GridUtility::SaveFolderHistoryData(sgCompareRight, eCompareSearch->Text.c_str(), mi->Tag);
+		break;
+	}
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Popup_GenericTable
 void __fastcall TFrameFolderHistory::puGenericTablePopup(TObject *Sender)
 {
-/*  lTable : TAdvStringGrid;
-  lStatus : boolean;
+	TMenuItem* mi = (TMenuItem*)Sender;
+	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
+	TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
 
-	if not(GSettingsHandler->ProcessWindowsVisible)
+	bool status = true;
+
+	if (grid->Cells[0][1] == L"" && grid->Cells[1][1] == L"")
 	{
-		lTable = TAdvStringGrid(Tpopupmenu(Sender)->PopupComponent);
+		status = false;
+	}
 
-		if (lTable->Cells[0, 1] = L"") and (lTable->Cells[1, 1] = L"")
-		{
-			lStatus = False;
-		}
-		else
-		{
-			lStatus = True;
-		}
-
-		miGenericExport->Enabled        = lStatus;
-		miGenericClipboard->Enabled     = lStatus;
-		miGenericClipboardHTML->Enabled = lStatus;
-	}*/
+	miGenericExport->Enabled        = status;
+	miGenericClipboard->Enabled     = status;
+	miGenericClipboardHTML->Enabled = status;
 }
 
 
@@ -2543,7 +2662,7 @@ void __fastcall TFrameFolderHistory::miGenericExportClick(TObject *Sender)
 
 	if (!file_name.empty())
 	{
-		GridUtility::SaveGrid(grid, file_name);
+		GridUtility::Save(grid, file_name);
 	}
 }
 
@@ -2554,7 +2673,7 @@ void __fastcall TFrameFolderHistory::miGenericClipboardClick(TObject *Sender)
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 	TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
 
-	/*  grid.CopyToClipBoard; */
+	GridUtility::CopyToClipboard(grid, 0);
 }
 
 
@@ -2564,9 +2683,9 @@ void __fastcall TFrameFolderHistory::miGenericClipboardHTMLClick(TObject *Sender
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 	TStringGrid* grid = (TStringGrid*)pum->PopupComponent;
 
-	/* grid.CopyToClipBoardAsHTML; */
+	GridUtility::CopyToClipboardAsHTML(grid, 0);
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Popup_QuickSearch
@@ -2603,7 +2722,7 @@ void __fastcall TFrameFolderHistory::miGenericClipboardHTMLClick(TObject *Sender
 				eFHCompareSearch->Text = ss;
 				eFHCompareSearchChange(Nil);
 
-				sbFHCompareSearchClick(sbFHCompareSearch);
+				sbGoSearch(sbGoSearch);
 			  };
 		  4 : {
 				eFHCompareDriveFolder->Text = ss;
@@ -2613,7 +2732,7 @@ void __fastcall TFrameFolderHistory::miGenericClipboardHTMLClick(TObject *Sender
 	};
   };
 }     */
-#pragma }_region
+#pragma end_region
 
 
 #pragma region Popup_SelectDate
@@ -2622,58 +2741,61 @@ void __fastcall TFrameFolderHistory::miSelectDateTimeClick(TObject *Sender)
 	TMenuItem* mi = (TMenuItem*)Sender;
 	TPopupMenu* pum = (TPopupMenu*)mi->GetParentMenu();
 
-/*	switch (pum->Tag)
+	switch (pum->Tag)
 	{
 	case 1:
 	{
-		int lOldID = bFHISelect->Tag;
+		int old_id = bSelectDate->Tag;
 
-		  bFHISelect->Tag     = TMenuItem(Sender)->Tag;
-		  bFHISelect->Caption = clbFolderHistory->Items[bFHISelect->Tag];
+		bSelectDate->Tag     = mi->Tag;
+		bSelectDate->Caption = clbFolderHistory->Items->Strings[bSelectDate->Tag];
 
-		  if bFHISelect->Tag != lOldID then
-			sbFHBuildInformationTabsClick(nil);
+		if (bSelectDate->Tag != old_id)
+		{
+			BuildInformationTabs();
+		}
 		break;
 	}
-	2:
-		bFHCompareLeft->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareLeft->Caption = clbFolderHistory->Items[bFHCompareLeft->Tag];
+	case 2:
+		bCompareLeftDate->Tag     = mi->Tag;
+		bCompareLeftDate->Caption = clbFolderHistory->Items->Strings[bCompareLeftDate->Tag];
 		break;
-	3:
-		bFHCompareRight->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareRight->Caption = clbFolderHistory->Items[bFHCompareRight->Tag];
+	case 3:
+		bCompareRightDate->Tag     = mi->Tag;
+		bCompareRightDate->Caption = clbFolderHistory->Items->Strings[bCompareRightDate->Tag];
 		break;
-//    4 :{
+	case 4:
 		break;
-	5:
-		bFHCompareFolderLeft->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareFolderLeft->Caption = clbFolderHistory->Items[bFHCompareFolderLeft->Tag];
+	case 5:
+		bCompareFolderLeftDate->Tag     = mi->Tag;
+		bCompareFolderLeftDate->Caption = clbFolderHistory->Items->Strings[bCompareFolderLeftDate->Tag];
 		break;
-	6:
-		bFHCompareFolderRight->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareFolderRight->Caption = clbFolderHistory->Items[bFHCompareFolderRight->Tag];
+	case 6:
+		bCompareFolderRightDate->Tag     = mi->Tag;
+		bCompareFolderRightDate->Caption = clbFolderHistory->Items->Strings[bCompareFolderRightDate->Tag];
 		break;
-	7:
-		bFHCompareTreeLeft->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareTreeLeft->Caption = clbFolderHistory->Items[bFHCompareTreeLeft->Tag];
+	case 7:
+		bCompareTreeLeftDate->Tag     = mi->Tag;
+		bCompareTreeLeftDate->Caption = clbFolderHistory->Items->Strings[bCompareTreeLeftDate->Tag];
 		break;
-	8:
-		bFHCompareTreeRight->Tag     = TMenuItem(Sender)->Tag;
-		bFHCompareTreeRight->Caption = clbFolderHistory->Items[bFHCompareTreeRight->Tag];
+	case 8:
+		bCompareTreeRightDate->Tag     = mi->Tag;
+		bCompareTreeRightDate->Caption = clbFolderHistory->Items->Strings[bCompareTreeRightDate->Tag];
 		break;
-	}*/
+	}
 }
-#pragma }_region
+#pragma end_region
 
 
 #pragma region TimeLine
-/*void TFrameFolderHistory::BuildTimeLine;
+void TFrameFolderHistory::BuildTimeLine()
+{/*
 var
   t : integer;
   lRangeFrom, lRangeTo : TDateTime;
 
 {
-  if FolderHistory.Count != 0 then {
+  if GFolderHistoryHandler->FolderHistory.size() != 0 then {
     lRangeFrom = Now;
     lRangeTo   = EncodeDate(1975, 01, 01);
 
@@ -2725,9 +2847,9 @@ var
 	oldTLTo   = lRangeTo;
 
 	sbTLResetClick(nil);
-  };
-};             */
-#pragma }_region
+  }; */
+}
+#pragma end_region
 
 
 #pragma region Reports
@@ -2815,4 +2937,4 @@ var
   if Assigned(FSetStatusBarText) then
     FSetStatusBarText("");
 }2719*/
-#pragma }_region
+#pragma end_region
