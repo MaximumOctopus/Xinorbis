@@ -9,7 +9,7 @@ object FrameFolderHistory: TFrameFolderHistory
     Top = 0
     Width = 1569
     Height = 879
-    ActivePage = tsSearch
+    ActivePage = tsStats
     Align = alClient
     TabOrder = 0
     object tsStats: TTabSheet
@@ -21,12 +21,12 @@ object FrameFolderHistory: TFrameFolderHistory
         Height = 105
         Align = alTop
         TabOrder = 0
-        object SpeedButton1: TSpeedButton
+        object sbOpenFolder: TSpeedButton
           Left = 8
           Top = 5
           Width = 97
           Height = 53
-          OnClick = SpeedButton1Click
+          OnClick = sbOpenFolderClick
         end
         object lFHAvailableComputer: TLabel
           Left = 111
@@ -35,7 +35,7 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 15
           Caption = '...'
         end
-        object Label2: TLabel
+        object lFHAvailablePath: TLabel
           Left = 111
           Top = 36
           Width = 9
@@ -49,12 +49,12 @@ object FrameFolderHistory: TFrameFolderHistory
           Height = 22
           OnClick = bSelectDateClick
         end
-        object SpeedButton2: TSpeedButton
+        object sbGetDate: TSpeedButton
           Left = 10
           Top = 77
           Width = 23
           Height = 22
-          OnClick = SpeedButton2Click
+          OnClick = sbGetDateClick
         end
         object sbStatsInfo: TSpeedButton
           Left = 838
@@ -62,6 +62,20 @@ object FrameFolderHistory: TFrameFolderHistory
           Width = 23
           Height = 22
           OnClick = sbStatsInfoClick
+        end
+        object llFHPleaseWait: TLabel
+          Left = 343
+          Top = 80
+          Width = 102
+          Height = 21
+          Caption = 'llFHPleaseWait'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
         end
         object cbFHAvailableFilter: TComboBox
           Left = 264
@@ -486,7 +500,7 @@ object FrameFolderHistory: TFrameFolderHistory
         Top = 0
         Width = 1561
         Height = 849
-        ActivePage = tsCompareTree
+        ActivePage = tsCompareGrid
         Align = alClient
         TabOrder = 0
         object tsCompareGrid: TTabSheet
@@ -509,13 +523,13 @@ object FrameFolderHistory: TFrameFolderHistory
             DesignSize = (
               1553
               56)
-            object sbQuickSearch: TSpeedButton
+            object sbCompareFavourites: TSpeedButton
               Left = 0
               Top = 2
               Width = 23
               Height = 22
               ImageIndex = 0
-              OnClick = sbQuickSearchClick
+              OnClick = sbCompareFavouritesClick
             end
             object sbGoSearch: TSpeedButton
               Left = 29
@@ -579,7 +593,7 @@ object FrameFolderHistory: TFrameFolderHistory
               TabOrder = 2
             end
             object cbCompareColourCode: TCheckBox
-              Left = 319
+              Left = 335
               Top = 33
               Width = 130
               Height = 17
@@ -609,61 +623,61 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 22
                 ImageIndex = 0
               end
-              object SpeedButton8: TSpeedButton
+              object sbFHCLHideCreated: TSpeedButton
                 Left = 196
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
-              object sbCompareFolderLeftSave: TSpeedButton
+              object sbCompareLeftSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = sbCompareFolderLeftSaveClick
+                OnClick = sbCompareLeftSaveClick
               end
-              object SpeedButton10: TSpeedButton
+              object sbFHCLHideAccessed: TSpeedButton
                 Left = 225
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
-              object SpeedButton11: TSpeedButton
+              object sbFHCLHideModified: TSpeedButton
                 Left = 254
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
-              object SpeedButton12: TSpeedButton
+              object sbFHCLHideOwner: TSpeedButton
                 Left = 283
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
-              object SpeedButton13: TSpeedButton
+              object sbFHCLHideAttributes: TSpeedButton
                 Left = 312
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
-              object SpeedButton14: TSpeedButton
+              object sbFHCLHideSOD: TSpeedButton
                 Left = 341
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton8Click
+                OnClick = sbFHCLHideCreatedClick
               end
               object sbCompareLeftShow: TSpeedButton
                 Left = 370
@@ -776,61 +790,61 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 22
                 ImageIndex = 0
               end
-              object SpeedButton17: TSpeedButton
+              object sbFHCRHideCreated: TSpeedButton
                 Left = 196
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
-              object sbCompareFolderRightSave: TSpeedButton
+              object sbCompareRightSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = sbCompareFolderRightSaveClick
+                OnClick = sbCompareRightSaveClick
               end
-              object SpeedButton21: TSpeedButton
+              object sbFHCRHideAccessed: TSpeedButton
                 Left = 225
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
-              object SpeedButton22: TSpeedButton
+              object sbFHCRHideModified: TSpeedButton
                 Left = 254
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
-              object SpeedButton23: TSpeedButton
+              object sbFHCRHideOwner: TSpeedButton
                 Left = 283
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
-              object SpeedButton24: TSpeedButton
+              object sbFHCRHideAttributes: TSpeedButton
                 Left = 312
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
-              object SpeedButton25: TSpeedButton
+              object sbFHCRHideSOD: TSpeedButton
                 Left = 341
                 Top = 7
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton17Click
+                OnClick = sbFHCRHideCreatedClick
               end
               object sbCompareRightShow: TSpeedButton
                 Left = 370
@@ -922,7 +936,7 @@ object FrameFolderHistory: TFrameFolderHistory
             DesignSize = (
               1553
               27)
-            object SpeedButton3: TSpeedButton
+            object sbCompareFolderFavourites: TSpeedButton
               Left = 0
               Top = 0
               Width = 23
@@ -958,14 +972,14 @@ object FrameFolderHistory: TFrameFolderHistory
             end
             object eCompareFolderSearch: TComboBox
               Left = 58
-              Top = 0
+              Top = -2
               Width = 1308
               Height = 23
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 0
               OnKeyDown = eCompareFolderSearchKeyDown
             end
-            object CheckBox5: TCheckBox
+            object cbCompareFolderInclude: TCheckBox
               Left = 1430
               Top = 5
               Width = 97
@@ -1007,13 +1021,13 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 22
                 ImageIndex = 0
               end
-              object SpeedButton34: TSpeedButton
+              object sbCompareFolderRightSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton32Click
+                OnClick = sbCompareFolderLeftSaveClick
               end
               object lCompareFolderRightResults: TLabel
                 Left = 212
@@ -1065,13 +1079,13 @@ object FrameFolderHistory: TFrameFolderHistory
                 Height = 22
                 ImageIndex = 0
               end
-              object SpeedButton32: TSpeedButton
+              object sbCompareFolderLeftSave: TSpeedButton
                 Left = 167
                 Top = 6
                 Width = 23
                 Height = 22
                 ImageIndex = 0
-                OnClick = SpeedButton32Click
+                OnClick = sbCompareFolderLeftSaveClick
               end
               object lCompareFolderLeftResults: TLabel
                 Left = 212
@@ -1225,13 +1239,13 @@ object FrameFolderHistory: TFrameFolderHistory
     end
   end
   object puFHQuickSearch: TPopupMenu
-    Left = 497
-    Top = 8
+    Left = 1129
+    Top = 40
   end
   object puFHCompareSave: TPopupMenu
     OnPopup = puFHCompareSavePopup
-    Left = 601
-    Top = 8
+    Left = 1201
+    Top = 32
     object miFHCSSaveAll: TMenuItem
       Caption = '.'
       ImageIndex = 49
@@ -2022,7 +2036,7 @@ object FrameFolderHistory: TFrameFolderHistory
     end
   end
   object puFHSelectDate: TPopupMenu
-    Left = 385
-    Top = 4
+    Left = 1049
+    Top = 20
   end
 end

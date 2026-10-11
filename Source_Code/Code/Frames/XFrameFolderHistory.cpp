@@ -14,9 +14,12 @@
 
 #include "ChartUtility.h"
 #include "ConstantsGui.h"
+#include "ConstantsImages.h"
 #include "Convert.h"
 #include "FolderHistoryHandler.h"
 #include "GridUtility.h"
+#include "HelpHandler.h"
+#include "ImageHandler.h"
 #include "LanguageHandler.h"
 #include "SaveDialogs.h"
 #include "ScanEngine.h"
@@ -27,6 +30,7 @@
 #include "XDatabase.h"
 
 extern FolderHistoryHandler *GFolderHistoryHandler;
+extern ImageHandler *GImageHandler;
 extern LanguageHandler *GLanguageHandler;
 extern ScanEngine *GScanEngine;
 extern SettingsHandler *GSettingsHandler;
@@ -48,6 +52,8 @@ __fastcall TFrameFolderHistory::TFrameFolderHistory(TComponent* Owner)
 #pragma region Init
 void TFrameFolderHistory::Init()
 {
+	std::wstring LFA[3];
+
 	CLS = new CompareLeftSide();
 	CRS = new CompareRightSide();
 	CFLS = new CompareFolderLeftSide();
@@ -55,190 +61,158 @@ void TFrameFolderHistory::Init()
 
 	SetTableRowHeights();
 
-  /*	sbFHCLHideCreated->Hint    = GLanguageHandler->Text[kHint1];
-	sbFHCRHideAccessed->Hint   = GLanguageHandler->Text[kHint1];
-	sbFHCLHideAccessed->Hint   = GLanguageHandler->Text[kHint2];
-	sbFHCRHideAccessed->Hint   = GLanguageHandler->Text[kHint2];
-	sbFHCLHideModified->Hint   = GLanguageHandler->Text[kHint3];
-	sbFHCRHideModified->Hint   = GLanguageHandler->Text[kHint3];
-	sbFHCLHideOwner->Hint      = GLanguageHandler->Text[kHint4];
-	sbFHCRHideOwner->Hint      = GLanguageHandler->Text[kHint4];
-	sbFHCLHideAttributes->Hint = GLanguageHandler->Text[kHint5];
-	sbFHCRHideAttributes->Hint = GLanguageHandler->Text[kHint5];
-	sbFHCLHideSOD->Hint        = GLanguageHandler->Text[kHint6];
-	sbFHCRHideSOD->Hint        = GLanguageHandler->Text[kHint6];
-	sbCompareLeftShow->Hint        = GLanguageHandler->Text[kHint8];
-	sbFHCShowRight->Hint       = GLanguageHandler->Text[kHint8];
+	SetHints();
 
+	ChartUtility::SetAdvancedOptions(vtcFolderHistory, GSettingsHandler->Chart);
 
-  t, lWidth : integer;
-  lFA : array[0..2] of string;
+	LFA[0] = GLanguageHandler->Text[kCreated];
+	LFA[1] = GLanguageHandler->Text[kAccessed];
+	LFA[2] = GLanguageHandler->Text[kModified];
 
-{
-  lFA[0] = GLanguageHandler->Text[kCreated];
-  lFA[1] = GLanguageHandler->Text[kAccessed];
-  lFA[2] = GLanguageHandler->Text[kModified];
+	// =========================================================================
 
-  FCharts[1] = vtcFolderHistory;
+	miFHCSSaveAll->Caption  = GLanguageHandler->Text[kSaveAll].c_str();
+	miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist].c_str();
+	miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist].c_str();
 
-  // ===========================================================================
+	// =========================================================================
 
-  miFHCSSaveAll->Caption  = GLanguageHandler->Text[kSaveAll];
-  miFHCSSaveDo->Caption   = GLanguageHandler->Text[kSaveDoExist];
-  miFHCSSaveDont->Caption = GLanguageHandler->Text[kSaveDontExist];
+	miGenericExport->Caption        = (GLanguageHandler->Text[kExportContent] + L"...").c_str();
+	miGenericClipboard->Caption     = GLanguageHandler->Text[kCopyTableToClipboard].c_str();
+	miGenericClipboardHTML->Caption = (GLanguageHandler->Text[kSaveAs] + L" HTML").c_str();
 
-  // ===========================================================================
+	// =========================================================================
 
-  miGenericExport->Caption        = GLanguageHandler->Text[kExportContent] + rsEllipsis;
-  miGenericClipboard->Caption     = GLanguageHandler->Text[kCopyTableToClipboard];
-  miGenericClipboardHTML->Caption = GLanguageHandler->Text[kSaveAs] + " HTML";;
+	miChartOptions->Caption         = GLanguageHandler->Text[kChartOptions].c_str();
+	miCOSave->Caption               = GLanguageHandler->Text[kSaveChart].c_str();
+	miCOCopy->Caption               = GLanguageHandler->Text[kCopyChartToClipboard].c_str();
+	miCOAdvanced->Caption           = GLanguageHandler->Text[kAdvancedOptions].c_str();
 
-  // ===========================================================================
+	// =========================================================================
 
-  miChartOptions->Caption         = GLanguageHandler->Text[kChartOptions];
-  miCOSave->Caption               = GLanguageHandler->Text[kSaveChart];
-  miCOCopy->Caption               = GLanguageHandler->Text[kCopyChartToClipboard];
-  miCOAdvanced->Caption           = GLanguageHandler->Text[kAdvancedOptions];
+	cbCompareUnits->Clear();
+	cbCompareUnits->Items->Add(GLanguageHandler->Text[kMostConvenient].c_str());
+	cbCompareUnits->Items->Add(GLanguageHandler->Text[kBytes].c_str());
+	cbCompareUnits->Items->Add(GLanguageHandler->Text[kKilobytes].c_str());
+	cbCompareUnits->Items->Add(GLanguageHandler->Text[kMegabytes].c_str());
+	cbCompareUnits->ItemIndex = 0;
 
-  // ===========================================================================
+	cbCompareFolderInclude->Caption = GLanguageHandler->Text[kIncludeFullPath].c_str();
 
-  cbFHCompareUnits.Clear;
+	tsStats->Caption = L"Stats";
+	tsSearch->Caption = GLanguageHandler->Text[kSearch].c_str();
 
-  cbFHCompareFolderInclude->Caption = GLanguageHandler->Text[kIncludeFullPath];
+	tsChart->Caption = GLanguageHandler->Text[kChart].c_str();
+	tsTable->Caption = GLanguageHandler->Text[kTable].c_str();
 
-  tsFHMainStatus->Caption = "Stats" + "        ";
-  tsFHMainSearch->Caption = GLanguageHandler->Text[kSearch] + "        ";
+	lFolderCount->Caption  = GLanguageHandler->Text[kFolders].c_str();
+	lFileCount->Caption  = GLanguageHandler->Text[kFiles].c_str();
+	lTotalSize->Caption = GLanguageHandler->Text[kTotalSize].c_str();
 
-  tsFHChart->Caption = GLanguageHandler->Text[kChart] + "        ";
-  tsFHTable->Caption = GLanguageHandler->Text[kTable] + "        ";
-  lFHCTotalSize->Caption = GLanguageHandler->Text[kTotalSize] + ":";
+	rbChartSize->Caption      = GLanguageHandler->Text[kBySize].c_str();
+	rbMagnitudeSize->Caption  = GLanguageHandler->Text[kBySize].c_str();
+	rbChartCount->Caption     = GLanguageHandler->Text[kByQuantity].c_str();
+	rbMagnitudeCount->Caption = GLanguageHandler->Text[kByQuantity].c_str();
 
+	lSearchDetails->Caption = GLanguageHandler->Text[kSize].c_str();
 
-  rbFHSize->Caption               = GLanguageHandler->Text[kBySize];
-  rbFHMagSize->Caption            = GLanguageHandler->Text[kBySize];
+	cbCompareShowFullPath->Caption  = GLanguageHandler->Text[kShowFullPath].c_str();
 
-  rbFHCount->Caption                = GLanguageHandler->Text[kByQuantity];
-  rbFHMagCount->Caption             = GLanguageHandler->Text[kByQuantity];
+	lMagnitude->Caption     = GLanguageHandler->Text[kMagnitude].c_str();
 
-  lFHCompareSize->Caption = GLanguageHandler->Text[kSize];
-  lFHCompareSize->Caption   = GLanguageHandler->Text[kSize];
+	sbOpenFolder->Caption = GLanguageHandler->Text[kOpen].c_str();
 
-  cbFHComparePath->Caption  = GLanguageHandler->Text[kShowFullPath];
+	cbCompareColourCode->Caption  = GLanguageHandler->Text[kColourCode].c_str();
+	llFHPleaseWait->Caption = (GLanguageHandler->Text[kLoadingFileHistoryData] + L"...").c_str();
 
-  lFHFolderCount->Caption  = GLanguageHandler->Text[kFolders] + ":";
-  lFHCMagnitude->Caption     = GLanguageHandler->Text[kMagnitude];
+	rbStatsTableToday->Caption= GLanguageHandler->Text[kRelativeToToday].c_str();
+	rbStatsTablePrevious->Caption = GLanguageHandler->Text[kRelativeToPrevious].c_str();
+	tsSearch->Caption = GLanguageHandler->Text[kFileHistoryCompare].c_str();
 
-  sbFHOpenFolder->Caption= GLanguageHandler->Text[kOpen];
+	lFHAvailableComputer->Caption  = GLanguageHandler->Text[kFolderHistoryComputer].c_str();
+	lFHAvailablePath->Caption      = GLanguageHandler->Text[kFolderHistoryFolder].c_str();
 
-  cbFHCompareColour->Caption       = GLanguageHandler->Text[kColourCode];
-  llFHPleaseWait->Caption = GLanguageHandler->Text[kLoadingFileHistoryData] + rsEllipsis;
+	int lWidth = std::max(lFHAvailableComputer->Width, lFHAvailablePath->Width);
 
-  rbFJTRToday->Caption= GLanguageHandler->Text[kRelativeToToday];
-  rbFJTRPrevious->Caption = GLanguageHandler->Text[kRelativeToPrevious];
-  tsFHCompare->Caption = GLanguageHandler->Text[kFileHistoryCompare] + "        ";
+	cbFHAvailableComputer->Left    = lFHAvailableComputer->Left + lWidth + 8;
+	cbFHAvailableFilter->Left      = lFHAvailablePath->Left + lWidth + 8;
+	cbFHAvailablePath->Left        = cbFHAvailableFilter->Left + 58;
+	sbStatsInfo->Left           = cbFHAvailablePath->Left + cbFHAvailablePath->Width + 8;
 
-  lFHAvailableComputer->Caption  = GLanguageHandler->Text[kFolderHistoryComputer];
-  lFHAvailablePath->Caption      = GLanguageHandler->Text[kFolderHistoryFolder];
+	bSelectDate->Caption             = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareLeftDate->Caption        = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareRightDate->Caption       = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareFolderLeftDate->Caption  = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareFolderRightDate->Caption = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareTreeLeftDate->Caption    = GLanguageHandler->Text[kSelectScanDateTime].c_str();
+	bCompareTreeRightDate->Caption   = GLanguageHandler->Text[kSelectScanDateTime].c_str();
 
-  lWidth = Max(lFHAvailableComputer->Width, lFHAvailablePath->Width);
+	tsCompareFolder->Caption  = GLanguageHandler->Text[kCompareFolder].c_str();
+	tsCompareTree->Caption = GLanguageHandler->Text[kCompareFolderTree].c_str();
 
-  cbFHAvailableComputer.Left    = lFHAvailableComputer.Left + lWidth + 8;
-  cbFHAvailableFilter.Left      = lFHAvailablePath.Left + lWidth + 8;
-  cbFHAvailablePath.Left        = cbFHAvailableFilter.Left + 58;
-  sbFHFolderInfo.Left           = cbFHAvailablePath.Left + cbFHAvailablePath->Width + 8;
+	tsTimeLine->Caption = GLanguageHandler->Text[kTimeLine].c_str();
 
-  bFHISelect->Caption            = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareLeft->Caption        = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareRight->Caption       = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareFolderLeft->Caption  = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareFolderRight->Caption = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareTreeLeft->Caption    = GLanguageHandler->Text[kSelectScanDateTime];
-  bFHCompareTreeRight->Caption   = GLanguageHandler->Text[kSelectScanDateTime];
+	tsSearch->TabVisible = false;
 
-  tsFHCompareFolder->Caption  = GLanguageHandler->Text[kCompareFolder] + "        ";
-  tsFHCompareFolder2->Caption = GLanguageHandler->Text[kCompareFolderTree] + "        ";
+	GImageHandler->SetButtonOffImage(sbFHCLHideCreated,    kImageCreated);
+	GImageHandler->SetButtonOffImage(sbFHCLHideAccessed,   kImageAccessed);
+	GImageHandler->SetButtonOffImage(sbFHCLHideModified,   kImageModified);
+	GImageHandler->SetButtonOffImage(sbFHCLHideOwner,      kImageOwner);
+	GImageHandler->SetButtonOffImage(sbFHCLHideAttributes, kImageAttributes);
+	GImageHandler->SetButtonOffImage(sbFHCLHideSOD,        kImageSizeOnDisk);
 
-  lFHCFiles->Caption      = GLanguageHandler->Text[kFiles] + ":";
-  lFHCCategory->Caption   = GLanguageHandler->Text[kCategory] + ":";
-  lFHCFilesCount->Caption = GLanguageHandler->Text[kFiles] + ":";
+	GImageHandler->SetButtonOffImage(sbFHCRHideCreated,    kImageCreated);
+	GImageHandler->SetButtonOffImage(sbFHCRHideAccessed,   kImageAccessed);
+	GImageHandler->SetButtonOffImage(sbFHCRHideModified,   kImageModified);
+	GImageHandler->SetButtonOffImage(sbFHCRHideOwner,      kImageOwner);
+	GImageHandler->SetButtonOffImage(sbFHCRHideAttributes, kImageAttributes);
+	GImageHandler->SetButtonOffImage(sbFHCRHideSOD,        kImageSizeOnDisk);
 
-  cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kMostConvenient]);
-  cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kBytes]);
-  cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kKilobytes]);
-  cbFHCompareUnits->Items->Add(GLanguageHandler->Text[kMegabytes]);
+	GImageHandler->SetButtonOffImage(sbCompareLeftShow, 8);
+	GImageHandler->SetButtonOffImage(sbCompareRightShow, 8);
 
-  tsFHTimeLine->Caption = GLanguageHandler->Text[kTimeLine] + "        ";
+	InitDisplayDoOnce();
 
-  tsFHMainSearch.TabVisible = False;
+	if (GSettingsHandler->FolderHistory.Compare[0][0]) sbFHCLHideCreatedClick(sbFHCLHideCreated);
+	if (GSettingsHandler->FolderHistory.Compare[0][1]) sbFHCLHideCreatedClick(sbFHCLHideAccessed);
+	if (GSettingsHandler->FolderHistory.Compare[0][2]) sbFHCLHideCreatedClick(sbFHCLHideModified);
+	if (GSettingsHandler->FolderHistory.Compare[0][3]) sbFHCLHideCreatedClick(sbFHCLHideOwner);
+	if (GSettingsHandler->FolderHistory.Compare[0][4]) sbFHCLHideCreatedClick(sbFHCLHideAttributes);
+	if (GSettingsHandler->FolderHistory.Compare[0][5]) sbFHCLHideCreatedClick(sbFHCLHideSOD);
 
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideCreated,    CImageCreated);
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideAccessed,   CImageAccessed);
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideModified,   CImageModified);
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideOwner,      CImageOwner);
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideAttributes, CImageAttributes);
-  GXGuiUtil.SetButtonOffImage(sbFHCLHideSOD,        CImageSizeOnDisk);
+	if (GSettingsHandler->FolderHistory.Compare[1][0]) sbFHCRHideCreatedClick(sbFHCRHideCreated);
+	if (GSettingsHandler->FolderHistory.Compare[1][1]) sbFHCRHideCreatedClick(sbFHCRHideAccessed);
+	if (GSettingsHandler->FolderHistory.Compare[1][2]) sbFHCRHideCreatedClick(sbFHCRHideModified);
+	if (GSettingsHandler->FolderHistory.Compare[1][3]) sbFHCRHideCreatedClick(sbFHCRHideOwner);
+	if (GSettingsHandler->FolderHistory.Compare[1][4]) sbFHCRHideCreatedClick(sbFHCRHideAttributes);
+	if (GSettingsHandler->FolderHistory.Compare[1][5]) sbFHCRHideCreatedClick(sbFHCRHideSOD);
 
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideCreated,    CImageCreated);
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideAccessed,   CImageAccessed);
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideModified,   CImageModified);
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideOwner,      CImageOwner);
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideAttributes, CImageAttributes);
-  GXGuiUtil.SetButtonOffImage(sbFHCRHideSOD,        CImageSizeOnDisk);
+	FHCatButtons[0]  = sbFHCF1;  FHCatButtons[1]  = sbFHCF2;  FHCatButtons[2]  = sbFHCF3;  FHCatButtons[3]  = sbFHCF4;
+	FHCatButtons[4]  = sbFHCF5;  FHCatButtons[5]  = sbFHCF6;  FHCatButtons[6]  = sbFHCF7;  FHCatButtons[7]  = sbFHCF8;
+	FHCatButtons[8]  = sbFHCF9;  FHCatButtons[9]  = sbFHCF10; FHCatButtons[10] = sbFHCF11; FHCatButtons[11] = sbFHCF12;
+	FHCatButtons[12] = sbFHCF13; FHCatButtons[13] = sbFHCF14; FHCatButtons[14] = sbFHCF15; FHCatButtons[15] = sbFHCF16;
+	FHCatButtons[16] = sbFHCF17; FHCatButtons[17] = sbFHCF18; FHCatButtons[18] = sbFHCF19; FHCatButtons[19] = sbFHCF20;
 
-  GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, 8);
-  GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
+	for (int t = 0; t < kFileCategoriesCount; t++)
+	{
+		GImageHandler->SetFolderHistoryButtonImage(FHCatButtons[t], kImageBase[t]);
 
-  InitDisplayDoOnce;
+		std::wstring hint = FHCatButtons[t]->Hint.c_str();
 
-  if GSettingsHandler->FHCompare[1, 1] then sbFHCLHideCreatedClick(sbFHCLHideCreated);
-  if GSettingsHandler->FHCompare[1, 2] then sbFHCLHideCreatedClick(sbFHCLHideAccessed);
-  if GSettingsHandler->FHCompare[1, 3] then sbFHCLHideCreatedClick(sbFHCLHideModified);
-  if GSettingsHandler->FHCompare[1, 4] then sbFHCLHideCreatedClick(sbFHCLHideOwner);
-  if GSettingsHandler->FHCompare[1, 5] then sbFHCLHideCreatedClick(sbFHCLHideAttributes);
-  if GSettingsHandler->FHCompare[1, 6] then sbFHCLHideCreatedClick(sbFHCLHideSOD);
+		hint += L" (" + GLanguageHandler->TypeDescriptionsSmall[t] + L")";
 
-  if GSettingsHandler->FHCompare[2, 1] then sbFHCRHideCreatedClick(sbFHCRHideCreated);
-  if GSettingsHandler->FHCompare[2, 2] then sbFHCRHideCreatedClick(sbFHCRHideAccessed);
-  if GSettingsHandler->FHCompare[2, 3] then sbFHCRHideCreatedClick(sbFHCRHideModified);
-  if GSettingsHandler->FHCompare[2, 4] then sbFHCRHideCreatedClick(sbFHCRHideOwner);
-  if GSettingsHandler->FHCompare[2, 5] then sbFHCRHideCreatedClick(sbFHCRHideAttributes);
-  if GSettingsHandler->FHCompare[2, 6] then sbFHCRHideCreatedClick(sbFHCRHideSOD);
-
-  FHCatButtons[0]=sbFHCF1;   FHCatButtons[1]=sbFHCF2;   FHCatButtons[2]=sbFHCF3;   FHCatButtons[3]=sbFHCF4;   FHCatButtons[4]=sbFHCF5;
-  FHCatButtons[5]=sbFHCF6;   FHCatButtons[6]=sbFHCF7;   FHCatButtons[7]=sbFHCF8;   FHCatButtons[8]=sbFHCF9;   FHCatButtons[9]=sbFHCF10;
-  FHCatButtons[10]=sbFHCF11; FHCatButtons[11]=sbFHCF12; FHCatButtons[12]=sbFHCF13; FHCatButtons[13]=sbFHCF14; FHCatButtons[14]=sbFHCF15;
-  FHCatButtons[15]=sbFHCF16; FHCatButtons[16]=sbFHCF17; FHCatButtons[17]=sbFHCF18; FHCatButtons[18]=sbFHCF19; FHCatButtons[19]=sbFHCF20;
-
-  for t = 0 to __FileCategoriesCount do {
-    GXGuiUtil.SetFolderHistoryButtonImage(FHCatButtons[t], FHCCImageBase[t]);
-
-    FHCatButtons[t]->Hint = FHCatButtons[t]->Hint + " (" + TypeDescriptionsSmall[t] + ")";
-  };
-
-  cbFHCompareUnits->ItemIndex = 0;
-
-  SetTheme;
-
-  InitUpdate;	*/
+		FHCatButtons[t]->Hint = hint.c_str();
+	}
 }
 
 
-/*
-void TFrameFolderHistory::InitUpdate()
+void TFrameFolderHistory::InitDisplayDoOnce()
 {
-	SetTableRowHeights();
+	InitCompare();
+	InitCompareFolder();
 
-	ChartUtility::SetAdvancedOptions(vtcFolderHistory, GSettingsHandler->Charts.Options);
+//	LoadSettings();
 }
-
-
-procedure TFrameFolderHistory.InitDisplayDoOnce ;
-{
-  TGridUtility.ConfigureInfoTable(sgFHCDLeft);
-  TGridUtility.ConfigureInfoTable(sgFHCDRight);
-
-  LoadSettings;
-}*/
 
 
 void TFrameFolderHistory::SetTableRowHeights()
@@ -249,68 +223,55 @@ void TFrameFolderHistory::SetTableRowHeights()
 	sgCompareFolderRight->DefaultRowHeight = GSettingsHandler->Appearance.RowHeight;
 	sgStatsTable->DefaultRowHeight         = GSettingsHandler->Appearance.RowHeight;
 }
+
+
+void TFrameFolderHistory::SetHints()
+{
+	sbFHCLHideCreated->Hint    = GLanguageHandler->Text[kHint1].c_str();
+	sbFHCRHideCreated->Hint    = GLanguageHandler->Text[kHint1].c_str();
+	sbFHCLHideAccessed->Hint   = GLanguageHandler->Text[kHint2].c_str();
+	sbFHCRHideAccessed->Hint   = GLanguageHandler->Text[kHint2].c_str();
+	sbFHCLHideModified->Hint   = GLanguageHandler->Text[kHint3].c_str();
+	sbFHCRHideModified->Hint   = GLanguageHandler->Text[kHint3].c_str();
+	sbFHCLHideOwner->Hint      = GLanguageHandler->Text[kHint4].c_str();
+	sbFHCRHideOwner->Hint      = GLanguageHandler->Text[kHint4].c_str();
+	sbFHCLHideAttributes->Hint = GLanguageHandler->Text[kHint5].c_str();
+	sbFHCRHideAttributes->Hint = GLanguageHandler->Text[kHint5].c_str();
+	sbFHCLHideSOD->Hint        = GLanguageHandler->Text[kHint6].c_str();
+	sbFHCRHideSOD->Hint        = GLanguageHandler->Text[kHint6].c_str();
+	sbCompareLeftShow->Hint    = GLanguageHandler->Text[kHint8].c_str();
+	sbCompareRightShow->Hint   = GLanguageHandler->Text[kHint8].c_str();
+}
 #pragma end_region
 
 
 #pragma region Application_Control
 void TFrameFolderHistory::ResetDisplay(bool aDisableBuildInformationTabs, bool aMode)
 {
-/*  TGridUtility.ConfigureInfoTable(sgFHCDLeft);
-  TGridUtility.ConfigureInfoTable(sgFHCDRight);
+//	TGridUtility.ConfigureInfoTable(sgFHCDLeft);
+//  	TGridUtility.ConfigureInfoTable(sgFHCDRight);
 
-  // ===========================================================================
+	// =========================================================================
 
-  bFHISelect->Enabled  = aDisableBuildInformationTabs;
-  sbFHGetDate->Enabled = aDisableBuildInformationTabs;
+	bSelectDate->Enabled  = aDisableBuildInformationTabs;
+	sbGetDate->Enabled = aDisableBuildInformationTabs;
 
-  // ===========================================================================
+	// =========================================================================
 
-	ConfigureTableStats();
+	sgCompareLeft->RowCount = 2;
+	lCompareLeftResults->Caption = L"...";
 
-  // ===========================================================================
+	sgCompareRight->RowCount = 2;
+	lCompareRightResults->Caption = L"...";
 
-    sgFHCompareLeft.ClearRows(1, sgFHCompareLeft->RowCount - 1);
-    sgFHCompareLeft->RowCount = 2;
+	// =========================================================================
 
-    if aMode = False then {
-      sgFHCompareLeft->Cells[ 0, 0]  = GLanguageHandler->Text[kFilename];
-      sgFHCompareLeft->Cells[ 1, 0]  = GLanguageHandler->Text[kSize];
-      sgFHCompareLeft->Cells[ 2, 0]  = GLanguageHandler->Text[kSizeOD];
-      sgFHCompareLeft->Cells[ 3, 0]  = GLanguageHandler->Text[kCreated];
-      sgFHCompareLeft->Cells[ 4, 0]  = GLanguageHandler->Text[kAccessed];
-      sgFHCompareLeft->Cells[ 5, 0]  = GLanguageHandler->Text[kModified];
-      sgFHCompareLeft->Cells[ 6, 0]  = GLanguageHandler->Text[kOwner];
-      sgFHCompareLeft->Cells[ 7, 0]  = GLanguageHandler->Text[kStatus];
-    };
+	vtcFolderHistory->SeriesList->Clear();
 
-    eFHCompareSearchChange(Nil);
-    lFHCompareRight->Caption = rsEllipsis;
-    lFHCompareLeft->Caption  = rsEllipsis;
+	// =========================================================================
 
-  // ===========================================================================
-
-    sgFHCompareRight.ClearRows(1, sgFHCompareRight->RowCount - 1);
-    sgFHCompareRight->RowCount = 2;
-
-    if aMode=False then {
-	  sgFHCompareRight->Cells[ 0, 0]  = GLanguageHandler->Text[kFilename];
-      sgFHCompareRight->Cells[ 1, 0]  = GLanguageHandler->Text[kSize];
-      sgFHCompareRight->Cells[ 2, 0]  = GLanguageHandler->Text[kSizeOD];
-      sgFHCompareRight->Cells[ 3, 0]  = GLanguageHandler->Text[kCreated];
-      sgFHCompareRight->Cells[ 4, 0]  = GLanguageHandler->Text[kAccessed];
-      sgFHCompareRight->Cells[ 5, 0]  = GLanguageHandler->Text[kModified];
-      sgFHCompareRight->Cells[ 6, 0]  = GLanguageHandler->Text[kOwner];
-      sgFHCompareRight->Cells[ 7, 0]  = GLanguageHandler->Text[kStatus];
-    };
-
-  // ===========================================================================
-
-    vtcFolderHistory.SeriesList.Clear;
-
-  // ============================================================================
-
-  if Assigned(FOnResetDisplay) then
-	FOnResetDisplay(dataFolderHistory);*/
+//	if Assigned(FOnResetDisplay) then
+//	FOnResetDisplay(dataFolderHistory);*/
 }
 #pragma end_region
 
@@ -560,7 +521,7 @@ void __fastcall TFrameFolderHistory::pcStatsResize(TObject *Sender)
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton1Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbOpenFolderClick(TObject *Sender)
 {
 	bool dbExists = true;
 
@@ -717,10 +678,10 @@ void __fastcall TFrameFolderHistory::cbFHAvailablePathChange(TObject *Sender)
 
 	// =========================================================================
 
-	//if Assigned(FOnUpdateLeftStatusPanel)
-	//{
-   //		FOnUpdateLeftStatusPanel(0);
-	//}*/
+	if (OnUpdateLeftStatusPanel)
+	{
+		OnUpdateLeftStatusPanel(0);
+	}
 }
 
 
@@ -734,7 +695,7 @@ void __fastcall TFrameFolderHistory::sbStatsInfoClick(TObject *Sender)
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton2Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbGetDateClick(TObject *Sender)
 {
 	std::vector<std::wstring> data;
 
@@ -777,13 +738,14 @@ void __fastcall TFrameFolderHistory::bSelectDateClick(TObject *Sender)
 
 void __fastcall TFrameFolderHistory::pcStatsChange(TObject *Sender)
 {
-/*  if Assigned(FSetTutorialBarText)
+	if (OnSetTutorialBarText)
 	{
-		FSetTutorialBarText(GSystemGlobal.ExePath + "data\languages\" + TLanguageHandler.GetLanguageSymbol(GSettingsHandler->CurrentLanguage) +
-												"\tutorial\fht" + IntToStr(tpFHStats.ActivePageIndex) + ".dat");  // to do make sure new layout
+		OnSetTutorialBarText(GSystemGlobal->ExePath + L"data\\languages\\" +
+							 GLanguageHandler->GetLanguageSymbol() +
+							 L"\\tutorial\\fht" + std::to_wstring(pcStats->ActivePageIndex) + L".dat");  // to do make sure new layout
 	}
 
-	if tpFHStats.ActivePageIndex = 5)
+/*	if tpFHStats.ActivePageIndex = 5)
 	{
 		atlFolderHistory.VerticalMargin = Round(atlFolderHistory.Height / 2) - 10;
 	}*/
@@ -868,162 +830,156 @@ void TFrameFolderHistory::BuildFolderHistoryAvailable()
   sp, thispc  : string;
   t, tpxidx : integer;
 
- function GetPathFromFHFile(const FileName : string): string;
-  var
-   s : string;
+	auto GetPathFromFHFile = [](const std::wstring file_name) -> std::wstring
+	{
+		if (file)
+		{
+			Readln(tf, s);
 
-  {
-   AssignFile(tf, FileName);
-   {$I-}
-   Reset(tf);
+			CloseFile(tf);
 
-   if IOResult != 0 then {
-	 ShowXDialog(GLanguageHandler->Text[kError] + ": " + GLanguageHandler->Text[kFolderHistory],
-				 GLanguageHandler->Text[kErrorOpening] + " L"" + filename + L"".",
-				 XDialogTypeWarning);
-   }
-   else {
-	 Readln(tf, s);
+			return s;
+		}
 
-	 CloseFile(tf);
-   };
-   {$I+}
+		ShowXDialog(GLanguageHandler->Text[kError] + ": " + GLanguageHandler->Text[kFolderHistory],
+					GLanguageHandler->Text[kErrorOpening] + " L"" + filename + L"".",
+					XDialogTypeWarning);
 
-   Result = s;
- };
-
- function GetComputerNameFromPath(const FileName : string): string;
-  var
-   s : string;
-   i,z : integer;
-
-  {
-   s = L"";
-   z = Pos("FOLDERHISTORY\", UpperCase(FileName));
-
-   i = z + 14;
-   while FileName[i] != "\" do {
-	 s = s + FileName[i];
-
-	 inc(i);
-   };
-
-   Result = s;
- };
-
- {
-  if (GSettingsHandler->HistorySettings->Enabled) and (GSettingsHandler->System.UserEnabledFH) then {
-	cbFHAvailablePath->Items->Clear;
-	cbFHAvailableComputer->Items->Clear;
-	FolderHistoryAvailable.Clear;
-
-	thispc = TXWindows.GetComputerNetName;
-	tpxidx = 0;
-
-	// firstly we need a list of computer names and paths that have been scanned...
-	if FindFirst(GSystemGlobal.AppDataPath + "folderhistory\" + thispc + "\*.xfh", $3F, sr) = 0 then {
-	  repeat
-		sp = GetPathFromFHFile(GSystemGlobal.AppDataPath + "folderhistory\" + thispc + "\" + sr.Name);
-
-		fha = TFolderHistoryInfo.Create;
-		fha.ScanPath     = sp;
-		fha.MD5          = sr.Name;
-		fha.ComputerName = GetComputerNameFromPath(GSystemGlobal.AppDataPath + "folderhistory\" + thispc + "\" + sr.Name);;
-
-		FolderHistoryAvailable.Add(fha);
-
-	  until FindNext(sr) != 0;
-
-	  FindClose(sr);
+		return L"";
 	};
 
-	// now we populate the GUI with the new details
-	for t = 0 to FolderHistoryAvailable.Count - 1 do {
-	  fha = FolderHistoryAvailable[t];
+	auto GetComputerNameFromPath = [](const std::wstring file_name) -> std::wstring
+	{
+		std::wstring s = L"";
+		z = Pos("FOLDERHISTORY\", UpperCase(FileName));
 
-	  if cbFHAvailableComputer->Items->IndexOf(fha.ComputerName) = -1 then
-		cbFHAvailableComputer->Items->Add(fha.ComputerName);
+		i = z + 14;
 
-	  if fha.ComputerName = thispc then
-		tpxidx = cbFHAvailableComputer->Items->Count - 1;
+		while FileName[i] != "\" do
+		{
+			s = s + FileName[i];
 
+			inc(i);
+		}
+
+		return s;
 	};
 
-	FolderHistoryAvailable.Sort(TComparer<TFolderHistoryInfo>.Construct(CompareFHPaths));
 
-	cbFHAvailableComputer->ItemIndex = tpxidx;
+	if (GSettingsHandler->HistorySettings->Enabled) and (GSettingsHandler->System.UserEnabledFH)
+	{
+		cbFHAvailablePath->Items->Clear;
+		cbFHAvailableComputer->Items->Clear;
+		FolderHistoryAvailable.Clear;
 
-	cbFHAvailableComputerChange(Nil);
+		thispc = TXWindows.GetComputerNetName;
+		tpxidx = 0;
 
-	if cbFHAvailableComputer->Items->Count = 0 then {
-	  cbFHAvailableComputer->Items->Add(thispc);
-	  cbFHAvailableComputer->ItemIndex = 0;
-	};
+		if (GFolderHistoryHandler->PopulateAvailable(GSystemGlobal.AppDataPath + "folderhistory\" + thispc + "\"))
+		{
+			// now we populate the GUI with the new details
+			for (FolderHistoryInfo *fhi : GFolderHistoryHandler->FolderHistoryAvailable)
+			{
+				if cbFHAvailableComputer->Items->IndexOf(fhi.ComputerName) = -1)
+				{
+					cbFHAvailableComputer->Items->Add(fhi.ComputerName);
+				}
 
-	cbFHAvailableComputer->Tag = -1;
-	cbFHAvailablePath->Tag     = -1;
-  };*/
+				if fhi.ComputerName = thispc)
+				{
+					tpxidx = cbFHAvailableComputer->Items->Count - 1;
+				}
+			}
+
+			FolderHistoryAvailable.Sort(TComparer<TFolderHistoryInfo>.Construct(CompareFHPaths));
+
+			cbFHAvailableComputer->ItemIndex = tpxidx;
+
+			cbFHAvailableComputerChange(Nil);
+
+			if cbFHAvailableComputer->Items->Count = 0
+			{
+				cbFHAvailableComputer->Items->Add(thispc);
+				cbFHAvailableComputer->ItemIndex = 0;
+			}
+
+			cbFHAvailableComputer->Tag = -1;
+			cbFHAvailablePath->Tag     = -1;
+		}
+	}*/
 }
 
 
 void TFrameFolderHistory::BuildFolderHistory(const std::wstring computer_name, const std::wstring scan_path)
 {
-/*  bFHISelect->Caption            = GLanguageHandler->Text[kSelectDateTime];
-  bFHCompareLeft->Caption        = GLanguageHandler->Text[kSelectDateTime];
-  bFHCompareRight->Caption       = GLanguageHandler->Text[kSelectDateTime];
-  bFHCompareFolderLeft->Caption  = GLanguageHandler->Text[kSelectDateTime];
-  bFHCompareFolderRight->Caption = GLanguageHandler->Text[kSelectDateTime];
+	bSelectDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareLeftDate->Caption  = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareRightDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareFolderLeftDate->Caption  = GLanguageHandler->Text[kSelectDateTime].c_str();
+	bCompareFolderRightDate->Caption = GLanguageHandler->Text[kSelectDateTime].c_str();
 
-  bFHISelect->Tag                = -1;
-  bFHISelect->Enabled            = True;
-  bFHCompareLeft->Tag            = -1;
-  bFHCompareRight->Tag           = -1;
-  bFHCompareFolderLeft->Tag      = -1;
-  bFHCompareFolderRight->Tag     = -1;
+	bSelectDate->Tag             = -1;
+	bSelectDate->Enabled         = true;
+	bCompareRightDate->Tag       = -1;
+	bCompareRightDate->Tag       = -1;
+	bCompareFolderLeftDate->Tag  = -1;
+	bCompareFolderRightDate->Tag = -1;
 
-  FolderHistory.Clear;
+	GFolderHistoryHandler->FolderHistory.clear();
 
-  clbFolderHistory.Clear;
+	clbFolderHistory->Items->Clear();
 
-  sgFHCompareLeft.ClearRows(1, sgFHCompareLeft->RowCount - 1);
-  sgFHCompareRight.ClearRows(1, sgFHCompareRight->RowCount - 1);
-  sgFHCompareLeft->RowCount  = 2;
-  sgFHCompareRight->RowCount = 2;
+//	sgCompareLeft.ClearRows(1, sgFHCompareLeft->RowCount - 1);
+//	sgCompareRight.ClearRows(1, sgFHCompareRight->RowCount - 1);
+	sgCompareLeft->RowCount  = 2;
+	sgCompareRight->RowCount = 2;
 
-  if LoadFolderHistory(ComputerName, ScanPath, clbFolderHistory->Items) then {
+	std::vector<std::wstring> data;
 
-    if FolderHistory.Count > 0 then {
+	if (GFolderHistoryHandler->Load(computer_name, scan_path, data))
+	{
+		BuildFolderHistoryTable();  // "data" goes in here?!
 
-      BuildFolderHistoryTable;
+		// =================================================================
 
-      // ===========================================================================
+		ChartUtility::BuildFolderHistoryGraph(scan_path, vtcFolderHistory, data,
+											  rbChartCount->Checked, rbChartSize->Checked,
+											  rbMagnitudeCount->Checked, rbMagnitudeSize->Checked);
 
-	  TDisplayUtility.BuildFolderHistoryGraph(FrameSelect.ePath->Text, vtcFolderHistory, clbFolderHistory, rbFHCount.Checked, rbFHSize.Checked, rbFHMagCount.Checked, rbFHMagSize.Checked);
+		if (clbFolderHistory->Count != 0)
+		{
+			clbFolderHistory->Checked[0] = true;
+			clbFolderHistory->ItemIndex = 0;
 
-      if clbFolderHistory.Count != 0 then {
-        clbFolderHistory.Checked[0]     = True;
-        clbFolderHistory->ItemIndex      = 0;
-		rbFHCountClick(Nil);
-      };
+			rbChartCountClick(NULL);
+		}
 
-      if clbFolderHistory.Count != 0 then
-		FileHistoryControlStatus(True)
-      else
-        FileHistoryControlStatus(False);
-    }
-    else {
-      ShowXDialog(GLanguageHandler->Text[kError] + " :: " + GLanguageHandler->Text[kFolderHistory], "Error building File History!", XDialogTypeWarning);
-    };
-  }
-  else {
-    if FileExists(GSystemGlobal.AppDataPath + "FolderHistory\" + ComputerName + "\" + TMD5.Generate(UpperCase(ScanPath)) + ".xfh") then {
-      if MessageDlg(GLanguageHandler->Text[kDialog7] + #13#13 + GLanguageHandler->Text[kDialog8], mtInformation, [mbYes, mbNo], 0) = mrYes then {
-		RepairFile(TMD5.Generate(UpperCase(ScanPath)) + ".xfh", GSystemGlobal.AppDataPath + "FolderHistory\" + ComputerName + "\" + TMD5.Generate(ScanPath) + ".xfh");
-	  };
-	};
-  };
+		if (clbFolderHistory->Count != 0)
+		{
+			FileHistoryControlStatus(true);
+		}
+		else
+		{
+			FileHistoryControlStatus(false);
+		}
+	}
+	else
+	{
+		ShowXDialog(GLanguageHandler->Text[kError] + L" :: " + GLanguageHandler->Text[kFolderHistory],
+					L"Error building File History!",
+				XDialogTypeWarning);
 
-  BuildFolderHistorySelectDataMenu; */
+		//std::wstring file_name = GSystemGlobal->AppDataPath + L"FolderHistory\\" + computer_name + L"\\" + Utility::GetMD5(UpperCase(scan_path)) + L"xfh";
+
+	   //	if (FileExists(file_name.c_str()))
+	   //	{
+//			if (MessageDlg(GLanguageHandler->Text[kDialog7] + #13#13 + GLanguageHandler->Text[kDialog8], mtInformation, [mbYes, mbNo], 0) = mrYes then {
+// to do				RepairFile(TMD5.Generate(UpperCase(ScanPath)) + ".xfh", GSystemGlobal.AppDataPath + "FolderHistory\" + ComputerName + "\" + TMD5.Generate(scan_path) + ".xfh");
+//			}
+	  //	}
+	}
+
+	BuildFolderHistorySelectDataMenu();
 }
 
 
@@ -1046,36 +1002,37 @@ void TFrameFolderHistory::RepairFile(const std::wstring scan_path, const std::ws
 
 void TFrameFolderHistory::FileHistoryControlStatus(bool newstatus)
 {
-/*  bFHISelect->Enabled  = newstatus;
-	sbFHGetDate->Enabled = newstatus;
+	bSelectDate->Enabled = newstatus;
+	sbGetDate->Enabled = newstatus;
 
-	rbFHCount->Enabled                = newstatus;
-	rbFHSize->Enabled                 = newstatus;
+	rbChartCount->Enabled = newstatus;
+	rbChartSize->Enabled = newstatus;
+	rbMagnitudeCount->Enabled = newstatus;
+	rbMagnitudeSize->Enabled = newstatus;
 
-	rbFJTRToday->Enabled              = newstatus;
-	rbFJTRPrevious->Enabled           = newstatus;
+	rbStatsTableToday->Enabled = newstatus;
+	rbStatsTablePrevious->Enabled = newstatus;
 
-	for t = 0 to __FileCategoriesCount do
-	FHCatButtons[t]->Enabled = newstatus;
+	for (int t = 0; t < kFileCategoriesCount; t++)
+	{
+		FHCatButtons[t]->Enabled = newstatus;
+	}
 
-	rbFHMagCount->Enabled               = newstatus;
-	rbFHMagSize->Enabled                = newstatus;
+	sbCompareFavourites->Enabled       = newstatus;
+	sbCompareFolderFavourites->Enabled = newstatus;
+	sbGoSearch->Enabled                = newstatus;
+	sbSearchSyntax->Enabled            = newstatus;
+	eCompareSearch->Enabled            = newstatus;
+	cbCompareUnits->Enabled            = newstatus;
+	cbCompareShowFullPath->Enabled     = newstatus;
+	cbCompareColourCode->Enabled       = newstatus;
+	sbCompareFolderLeftSave->Enabled   = newstatus;
+	sbCompareFolderRightSave->Enabled  = newstatus;
 
-	sbFHCompareFavourites->Enabled      = newstatus;
-	sbfhCompareDriveFavourites->Enabled = newstatus;
-	sbFHCompareSearch->Enabled          = newstatus;
-	sbFHCSearchSyntax->Enabled          = newstatus;
-	eFHCompareSearch->Enabled           = newstatus;
-	cbFHCompareUnits->Enabled           = newstatus;
-	cbFHComparePath->Enabled            = newstatus;
-	cbFHCompareColour->Enabled          = newstatus;
-	sbFHCompareLeftSave->Enabled        = newstatus;
-	sbFHCompareRightSave->Enabled       = newstatus;
-
-	sbFHCompareFolderSearch->Enabled    = newstatus;
-	eFHCompareDriveFolder->Enabled      = newstatus;
-	sbFHCompareFolderLeftSave->Enabled  = newstatus;
-	sbFHCompareFolderRightSave->Enabled = newstatus; */
+	sbCompareFolderSearch->Enabled    = newstatus;
+	eCompareFolderSearch->Enabled      = newstatus;
+	sbCompareFolderLeftSave->Enabled  = newstatus;
+	sbCompareFolderRightSave->Enabled = newstatus;
 }
 #pragma end_region
 
@@ -1131,20 +1088,22 @@ void __fastcall TFrameFolderHistory::sbFHCF1Click(TObject *Sender)
 {
 	TSpeedButton *sb = (TSpeedButton*)Sender;
 
-/*  FHCCStatus[sb->Tag] = not FHCCStatus[sb->Tag];
+	GSettingsHandler->FolderHistory.CCStatus[sb->Tag] = !GSettingsHandler->FolderHistory.CCStatus[sb->Tag];
 
-	if FHCCStatus[sb->Tag])
+    int idx = -1;
+
+	if (GSettingsHandler->FolderHistory.CCStatus[sb->Tag])
 	{
-		idx = FHCCImageBase[sb->Tag]
+		idx = kImageBase[sb->Tag];
 	}
 	else
 	{
-		idx = FHCCImageBase[sb->Tag] + 1;
+		idx = kImageBase[sb->Tag] + 1;
 	}
 
-	GXGuiUtil.SetFolderHistoryButtonImage(sb, idx);
+	GImageHandler->SetFolderHistoryButtonImage(sb, idx);
 
-	rbFHCountClick(Nil);*/
+//	rbFHCountClick(Nil);*/
 }
 #pragma end_region
 
@@ -1205,28 +1164,31 @@ void __fastcall TFrameFolderHistory::sgStatsTableDrawCell(TObject *Sender, Syste
 
 void TFrameFolderHistory::BuildFolderHistoryTable()
 {
-/*	TGridUtility.ClearStringGird(sgStatsTable, False);
+	//TGridUtility.ClearStringGird(sgStatsTable, False);
 
 	// now build table ===========================================================
 
-	sgStatsTable->StartUpdate();
+	sgStatsTable->BeginUpdate();
 
 	sgStatsTable->RowCount = 1 + clbFolderHistory->Items->Count;
 
-	i = clbFolderHistory->Items->Count;
+	int i = clbFolderHistory->Items->Count;
 
-	if rbFJTRPrevious.Checked)
+	if (rbStatsTablePrevious->Checked)
 	{
-		for t = 0 to clbFolderHistory->Items->Count - 1 do
+		for (int t = 0; t < clbFolderHistory->Items->Count; t++)
 		{
-			sgStatsTable->Cells[ 0][i] = FolderHistory[t].ScanDateStr;
+			FolderHistoryObject *fho = GFolderHistoryHandler->FolderHistory[t];
+			FolderHistoryObject *fhop = GFolderHistoryHandler->FolderHistory[t - 1];
 
-			sgStatsTable->Cells[ 1][i] = IntToStr(FolderHistory[t].FileCount);
-			sgStatsTable->Cells[ 4][i] = IntToStr(FolderHistory[t].FolderCount);
-			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
-			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
+			sgStatsTable->Cells[ 0][i] = fho->ScanDateStr.c_str();
 
-			if t = 0
+			sgStatsTable->Cells[ 1][i] = fho->FileCount;
+			sgStatsTable->Cells[ 4][i] = fho->FolderCount;
+			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(fho->FileSize).c_str();
+			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(fho->FileSizeOnDisk).c_str();
+
+			if (t == 0)
 			{
 				sgStatsTable->Cells[ 2][i] = L"";
 				sgStatsTable->Cells[ 5][i] = L"";
@@ -1235,17 +1197,13 @@ void TFrameFolderHistory::BuildFolderHistoryTable()
 			}
 			else
 			{
-				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(FolderHistory[t].FileCount -
-															FolderHistory[t - 1].FileCount);
+				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(fho->FileCount - fhop->FileCount).c_str();
 
-				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(FolderHistory[t].FolderCount -
-															FolderHistory[t - 1].FolderCount);
+				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(fho->FolderCount - fhop->FolderCount).c_str();
 
-				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(FolderHistory[t].FileSize-
-																FolderHistory[t - 1].FileSize);
+				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(fho->FileSize - fhop->FileSize).c_str();
 
-				sgStatsTable->Cells[11][i] = Convert::GetDeltaSize(FolderHistory[t].FileSizeOnDisk-
-																FolderHistory[t - 1].FileSizeOnDisk);
+				sgStatsTable->Cells[11][i] = Convert::GetDeltaSize(fho->FileSizeOnDisk - fhop->FileSizeOnDisk).c_str();
 			}
 
 			i++;
@@ -1253,16 +1211,19 @@ void TFrameFolderHistory::BuildFolderHistoryTable()
 	}
 	else
 	{
-		for t = 0 to clbFolderHistory->Items->Count - 1 do
+		for (int t = 0; t < clbFolderHistory->Items->Count; t++)
 		{
-			sgStatsTable->Cells[ 0][i] = FolderHistory[t].ScanDateStr;
+			FolderHistoryObject *fho = GFolderHistoryHandler->FolderHistory[t];
+			FolderHistoryObject *fhol = GFolderHistoryHandler->FolderHistory[clbFolderHistory->Items->Count - 1];
 
-			sgStatsTable->Cells[ 1][i] = IntToStr(FolderHistory[t].FileCount);
-			sgStatsTable->Cells[ 4][i] = IntToStr(FolderHistory[t].FolderCount);
-			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize);
-			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(FolderHistory[t].FileSizeOnDisk);
+			sgStatsTable->Cells[ 0][i] = fho->ScanDateStr.c_str();
 
-			if t = clbFolderHistory->Items->Count - 1
+			sgStatsTable->Cells[ 1][i] = fho->FileCount;
+			sgStatsTable->Cells[ 4][i] = fho->FolderCount;
+			sgStatsTable->Cells[ 7][i] = Convert::ConvertToUsefulUnit(fho->FileSize).c_str();
+			sgStatsTable->Cells[10][i] = Convert::ConvertToUsefulUnit(fho->FileSizeOnDisk).c_str();
+
+			if (t == clbFolderHistory->Items->Count - 1)
 			{
 				sgStatsTable->Cells[ 2][i] = L"";
 				sgStatsTable->Cells[ 5][i] = L"";
@@ -1271,24 +1232,20 @@ void TFrameFolderHistory::BuildFolderHistoryTable()
 			}
 			else
 			{
-				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(FolderHistory[t].FileCount -
-												   FolderHistory[clbFolderHistory->Items->Count - 1].FileCount);
+				sgStatsTable->Cells[ 2][i] = Convert::GetDelta(fho->FileCount - fhol->FileCount).c_str();
 
-				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(FolderHistory[t].FolderCount -
-												   FolderHistory[clbFolderHistory->Items->Count - 1].FolderCount);
+				sgStatsTable->Cells[ 5][i] = Convert::GetDelta(fho->FolderCount - fhol->FolderCount).c_str();
 
-				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(FolderHistory[t].FileSize -
-												   FolderHistory[clbFolderHistory->Items->Count - 1].FileSize);
+				sgStatsTable->Cells[ 8][i] = Convert::GetDeltaSize(fho->FileSize - fhol->FileSize).c_str();
 
-				sgStatsTable->Cells[11][i] = Convert::GetDelta(FolderHistory[t].FileSizeOnDisk -
-												   FolderHistory[clbFolderHistory->Items->Count - 1].FileSizeOnDisk);
+				sgStatsTable->Cells[11][i] = Convert::GetDelta(fho->FileSizeOnDisk - fhol->FileSizeOnDisk).c_str();
 			}
 
 			i++;
 		}
 	}
 
-	sgStatsTable->EndUpdate();*/
+	sgStatsTable->EndUpdate();
 }
 #pragma end_region
 
@@ -1350,6 +1307,69 @@ var
 	  };
     };
   };*/
+
+
+void TFrameFolderHistory::BuildTimeLine()
+{/*
+var
+  t : integer;
+  lRangeFrom, lRangeTo : TDateTime;
+
+{
+  if GFolderHistoryHandler->FolderHistory.size() != 0 then {
+	lRangeFrom = Now;
+	lRangeTo   = EncodeDate(1975, 01, 01);
+
+	atlFolderHistory.{Update;
+
+	atlFolderHistory.RangeAppearance.DivisionFormat = Convert::GetDateFormat + " hh:nn";
+
+	atlFolderHistory.TimeLineIndicators.Clear;
+
+	for t = 0 to FolderHistory.Count - 1 do {
+      with atlFolderHistory.TimeLineIndicators.Add do {
+        Shape           = isDiamond;
+
+        Position        = FolderHistory[t].ScanDate;
+
+        AnnotationColor = spectrumcolours[t mod spectrummod];
+
+        Color           = clWhite;
+        ColorTo         = AnnotationColor;
+
+        Annotation      = IntToStr(FolderHistory[t].FileCount) + " " + GLanguageHandler->Text[kFiles] + " (" + Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize) + ")";
+
+        Fixed           = True;
+
+        Tag             = t;
+
+        if odd(t) then
+          AnnotationPosition = apOnTop
+        else
+          AnnotationPosition = apAtBottom;
+
+        if FolderHistory[t].ScanDate < lRangeFrom then
+          lRangeFrom = FolderHistory[t].ScanDate;
+
+        if FolderHistory[t].ScanDate > lRangeTo then
+          lRangeTo = FolderHistory[t].ScanDate;
+      };
+    };
+
+	atlFolderHistory.}Update;
+
+    atlFolderHistory.Range.MinimumRange = IncDay(lRangeFrom, -7);
+    atlFolderHistory.Range.MaximumRange = IncDay(lRangeTo, 7);
+
+	atlFolderHistory.Range.RangeFrom    = lRangeFrom;
+	atlFolderHistory.Range.RangeTo      = lRangeTo;
+
+	oldTLFrom = lRangeFrom;
+	oldTLTo   = lRangeTo;
+
+	sbTLResetClick(nil);
+  }; */
+}
 #pragma end_region
 
 
@@ -1409,7 +1429,7 @@ void __fastcall TFrameFolderHistory::ShowCalendar(TObject *Sender)
 
 void __fastcall TFrameFolderHistory::sbShowManualClick(TObject *Sender)
 {
-	//THelp.OpenSearchManual;
+	HelpHandler::OpenSearchManual();
 }
 
 
@@ -1437,35 +1457,41 @@ void TFrameFolderHistory::BuildInformationTabs()
 {
 	if (bSelectDate->Tag != -1)
 	{
-/*		std::wstring dt = Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items->Strings[bSelectDate->Tag].c_str());
+		std::wstring dt = Convert::DateTimeFToYYYYMMDD(clbFolderHistory->Items->Strings[bSelectDate->Tag].c_str());
 
 		// ===========================================================================
 
-		if (GXDatabase->TableExists(TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text)
+		std::wstring path = cbFHAvailablePath->Text.c_str();
+
+		std::transform(path.begin(), path.end(), path.begin(), ::toupper);
+
+		path += dt + cbFHAvailableComputer->Text.c_str();
+
+		if (GXDatabase->TableExists(Utility::GetMD5(path)))
 		{
 	//      if Assigned(FOnProcessWindowStatus)
 //			{
 	//        FOnProcessWindowStatus(CWindowAnalysisProgress, 1);
 //			}
 
-			TPreScan.PurgeAllData(dataFolderHistory, Nil, Nil, Nil); //sgNullFiles, sgSearchResults);
+		 //	to do TPreScan.PurgeAllData(dataFolderHistory, Nil, Nil, Nil); //sgNullFiles, sgSearchResults);
 
-			Screen.Cursor          = crSQLWait;
-			llFHPleaseWait.Visible = True;
+			Screen->Cursor          = crSQLWait;
+			llFHPleaseWait->Visible = true;
 
-			if Assigned(FScanFromFolderHistory)
+			if (OnScanFromFolderHistory)
 			{
-				FScanFromFolderHistory(cbFHAvailablePath->Text,
-								   TMD5.Generate(UpperCase(cbFHAvailablePath->Text)) + DT + cbFHAvailableComputer->Text,
-								   Convert::YYYYMMDDHHMMSSToString(DT));
+				OnScanFromFolderHistory(cbFHAvailablePath->Text.c_str(),
+										Utility::GetMD5(path),
+										Convert::YYMMDDHHMMSSToFHString(dt));
 			}
 
-			if assigned(FOnUpdateHistoryFinished)
+			if (OnUpdateHistoryFinished)
 			{
-				FOnUpdateHistoryFinished;
+				OnUpdateHistoryFinished(0);
 			}
 
-			llFHPleaseWait.Visible = False;
+			llFHPleaseWait->Visible = False;
 		}
 		else
 		{
@@ -1475,7 +1501,7 @@ void TFrameFolderHistory::BuildInformationTabs()
 						GLanguageHandler->Text[kNoFileData] + L": " +
 						date_caption,
 						XDialogTypeWarning);
-		}                */
+		}
 	}
 }
 #pragma end_region
@@ -1484,6 +1510,27 @@ void TFrameFolderHistory::BuildInformationTabs()
 #pragma region Tab_Search_Compare
 void TFrameFolderHistory::InitCompare()
 {
+	sgCompareLeft->RowCount = 2;
+	sgCompareRight->RowCount = 2;
+
+	sgCompareLeft->Cells[0][0]  = GLanguageHandler->Text[kFileName].c_str();
+	sgCompareLeft->Cells[1][0]  = GLanguageHandler->Text[kSize].c_str();
+	sgCompareLeft->Cells[2][0]  = GLanguageHandler->Text[kSizeOD].c_str();
+	sgCompareLeft->Cells[3][0]  = GLanguageHandler->Text[kCreated].c_str();
+	sgCompareLeft->Cells[4][0]  = GLanguageHandler->Text[kAccessed].c_str();
+	sgCompareLeft->Cells[5][0]  = GLanguageHandler->Text[kModified].c_str();
+	sgCompareLeft->Cells[6][0]  = GLanguageHandler->Text[kOwner].c_str();
+	sgCompareLeft->Cells[7][0]  = GLanguageHandler->Text[kStatus].c_str();
+
+	sgCompareRight->Cells[0][0]  = GLanguageHandler->Text[kFileName].c_str();
+	sgCompareRight->Cells[1][0]  = GLanguageHandler->Text[kSize].c_str();
+	sgCompareRight->Cells[2][0]  = GLanguageHandler->Text[kSizeOD].c_str();
+	sgCompareRight->Cells[3][0]  = GLanguageHandler->Text[kCreated].c_str();
+	sgCompareRight->Cells[4][0]  = GLanguageHandler->Text[kAccessed].c_str();
+	sgCompareRight->Cells[5][0]  = GLanguageHandler->Text[kModified].c_str();
+	sgCompareRight->Cells[6][0]  = GLanguageHandler->Text[kOwner].c_str();
+	sgCompareRight->Cells[7][0]  = GLanguageHandler->Text[kStatus].c_str();
+
 	int total = 0;
 
 	for (int t = 1; t < 14; t++)
@@ -1499,7 +1546,7 @@ void TFrameFolderHistory::InitCompare()
 }
 
 
-void __fastcall TFrameFolderHistory::sbQuickSearchClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareFavouritesClick(TObject *Sender)
 {
 	TSpeedButton *sb = (TSpeedButton*)Sender;
 
@@ -1598,19 +1645,19 @@ void __fastcall TFrameFolderHistory::cbCompareColourCodeClick(TObject *Sender)
 }
 
 
-void __fastcall TFrameFolderHistory::sbCompareFolderLeftSaveClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareLeftSaveClick(TObject *Sender)
 {
 	GridUtility::SaveFolderHistoryData(sgCompareLeft, eCompareSearch->Text.c_str(), kFHModeSaveAll);
 }
 
 
-void __fastcall TFrameFolderHistory::sbCompareFolderRightSaveClick(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareRightSaveClick(TObject *Sender)
 {
 	GridUtility::SaveFolderHistoryData(sgCompareRight, eCompareSearch->Text.c_str(), kFHModeSaveAll);
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton8Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbFHCLHideCreatedClick(TObject *Sender)
 {
 	TSpeedButton *sb = (TSpeedButton*)Sender;
 
@@ -1625,7 +1672,7 @@ void __fastcall TFrameFolderHistory::SpeedButton8Click(TObject *Sender)
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton17Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbFHCRHideCreatedClick(TObject *Sender)
 {
 	TSpeedButton *sb = (TSpeedButton*)Sender;
 
@@ -1644,7 +1691,7 @@ void __fastcall TFrameFolderHistory::sbCompareLeftShowClick(TObject *Sender)
 {
 	if (sbCompareLeftShow->Tag == 0)
 	{
-		//GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, CImageShow);
+		GImageHandler->SetButtonOffImage(sbCompareLeftShow, kImageShow);
 		Screen->Cursor = crHourGlass;
 
 		sbCompareLeftShow->Tag = 1;
@@ -1682,7 +1729,7 @@ void __fastcall TFrameFolderHistory::sbCompareLeftShowClick(TObject *Sender)
 	else
 	{
 		sbCompareLeftShow->Tag = 0;
-		//GImageHandler->SetButtonOnImage(sbCompareLeftShow, kImageShow);
+		GImageHandler->SetButtonOffImage(sbCompareLeftShow, kImageShow);
 	}
 
 	sgCompareLeft->Refresh();
@@ -1693,7 +1740,7 @@ void __fastcall TFrameFolderHistory::sbCompareRightShowClick(TObject *Sender)
 {
 	if (sbCompareRightShow->Tag == 0)
 	{
-		//GXGuiUtil.SetButtonOffImage(sbCompareRightShow, 8);
+		GImageHandler->SetButtonOffImage(sbCompareRightShow, 8);
 
 		Screen->Cursor = crHourGlass;
 
@@ -1732,7 +1779,7 @@ void __fastcall TFrameFolderHistory::sbCompareRightShowClick(TObject *Sender)
 	}
 	else
 	{
-		//GXGuiUtil.SetButtonOffImage(sbCompareRightShow, 8);
+		GImageHandler->SetButtonOffImage(sbCompareRightShow, 8);
 		sbCompareRightShow->Tag = 0;
 	}
 
@@ -1782,10 +1829,10 @@ void TFrameFolderHistory::CompareBuildLeft()
 		if (sql != L"")
 		{
 			sbCompareLeftShow->Tag = 0;
-		   //	GXGuiUtil.SetButtonOffImage(sbCompareLeftShow, 8);
+			GImageHandler->SetButtonOffImage(sbCompareLeftShow, 8);
 			Screen->Cursor = crSQLWait;
 
-			//LastSQL[2] = sql;
+			LastSql[0] = sql;
 
 			CLS->SetData(sql, cbCompareUnits->ItemIndex, cbCompareShowFullPath->Checked, sgCompareLeft);
 
@@ -1844,11 +1891,11 @@ void TFrameFolderHistory::CompareBuildRight()
 	{
 		if (!sql.empty())
 		{
-			//sbFHCShowRight->Tag = 0;
-			//GXGuiUtil.SetButtonOffImage(sbFHCShowRight, 8);
+			sbCompareRightShow->Tag = 0;
+			GImageHandler->SetButtonOffImage(sbCompareRightShow, 8);
 			Screen->Cursor = crSQLWait;
 
-			//LastSQL[3] = sql;
+			LastSql[1] = sql;
 
 			CRS->SetData(sql, cbCompareUnits->ItemIndex, cbCompareShowFullPath->Checked, sgCompareRight);
 
@@ -2063,9 +2110,10 @@ void __fastcall TFrameFolderHistory::sgCompareLeftDrawCell(TObject *Sender, Syst
 void __fastcall TFrameFolderHistory::sgCompareRightDrawCell(TObject *Sender, System::LongInt ACol,
 		  System::LongInt ARow, TRect &Rect, TGridDrawState State)
 {
-/*  if (cbFHCompareColour.Checked)
+/*  if (cbCompareColourCode->Checked)
 	{
-		if ARow != 0 then {
+		if ARow != 0
+		{
 			TAdvStringGrid(Sender)->Canvas->Brush->Color = GSystemGlobal.FileCategoryColors[StrToInt(TAdvStringGrid(Sender)->Cells[FHschCategory, ARow])];
 			  TAdvStringGrid(Sender)->Canvas->TextRect(Rect, Rect.Left + 2, Rect.Top + 2, TAdvStringGrid(Sender)->Cells[ACol, ARow]);
 		}
@@ -2083,6 +2131,11 @@ void __fastcall TFrameFolderHistory::sgCompareRightDrawCell(TObject *Sender, Sys
 
 
 #pragma region Tab_Search_CompareFolder
+void TFrameFolderHistory::InitCompareFolder()
+{
+}
+
+
 void __fastcall TFrameFolderHistory::eCompareFolderSearchKeyDown(TObject *Sender, WORD &Key,
 		  TShiftState Shift)
 {
@@ -2167,7 +2220,7 @@ void TFrameFolderHistory::CompareFolderBuildLeft()
 	{
 		if (sql != L"")
 		{
-			//LastSQL[2] = sql;
+			LastSql[0] = sql;
 
 			CFLS->SetData(sql,
 						  search_text,
@@ -2228,7 +2281,7 @@ void TFrameFolderHistory::CompareFolderBuildRight()
 	{
 		if (sql != L"")
 		{
-//			LastSQL[2] = sql;
+			LastSql[0] = sql;
 
 			CFRS->SetData(sql, search_text, lCompareFolderRightResults, sgCompareFolderRight);
 
@@ -2248,7 +2301,7 @@ void TFrameFolderHistory::CompareFolderBuildRight()
 }
 
 
-void __fastcall TFrameFolderHistory::SpeedButton32Click(TObject *Sender)
+void __fastcall TFrameFolderHistory::sbCompareFolderLeftSaveClick(TObject *Sender)
 {
 	std::wstring file_name = SaveDialogs::ExecuteReports(Utility::GetDefaultFileName(L".csv", GLanguageHandler->Text[kFileHistoryCompare] + L"_" + GLanguageHandler->Text[kLeft]));
 
@@ -2297,7 +2350,7 @@ void __fastcall TFrameFolderHistory::sgCompareFolderLeftDrawCell(TObject *Sender
       CFieldEmpty           : {
 								Rect.Left   = Rect.Left;
 								Rect.Top    = Rect.Top;
-                                Rect.Right  = Rect.Right;
+								Rect.Right  = Rect.Right;
                                 Rect.Bottom = Rect.Bottom;
 
 								if TAdvStringGrid(Sender)->Cells[7, Arow] != L"" then {
@@ -2414,13 +2467,14 @@ void __fastcall TFrameFolderHistory::SpeedButton28Click(TObject *Sender)
 void __fastcall TFrameFolderHistory::tvCompareLeftExpanding(TObject *Sender, TTreeNode *Node,
 		  bool &AllowExpansion)
 {
-/*  if PNodeData(Node.Data)^.FolderID != -2 then {
-	PopulateTreeFolder(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeLeft->Tag]),
-					   cbFHAvailablePath->Text,
-					   cbFHAvailableComputer->Text),
-					   tvFHTLeft, node, L"", PNodeData(Node.Data)^.FolderID);
+/*  if PNodeData(Node.Data)^.FolderID != -2
+	{
+		GXDatabase->PopulateTreeFolder(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeLeft->Tag]),
+									   cbFHAvailablePath->Text,
+									   cbFHAvailableComputer->Text),
+									   tvFHTLeft, node, L"", PNodeData(Node.Data)^.FolderID);
 
-	PNodeData(Node.Data)^.FolderID = -2;
+		PNodeData(Node.Data)^.FolderID = -2;
 	}*/
 }
 
@@ -2428,14 +2482,15 @@ void __fastcall TFrameFolderHistory::tvCompareLeftExpanding(TObject *Sender, TTr
 void __fastcall TFrameFolderHistory::tvCompareRightExpanding(TObject *Sender, TTreeNode *Node,
 		  bool &AllowExpansion)
 {
-/*  if PNodeData(Node.Data)^.FolderID != -2 then {
-	PopulateTreeFolder(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeRight->Tag]),
-					   cbFHAvailablePath->Text,
-					   cbFHAvailableComputer->Text),
-					   tvFHTLeft, node, L"", PNodeData(Node.Data)^.FolderID);
+/*  if PNodeData(Node.Data)^.FolderID != -2
+	{
+		GXDatabase->PopulateTreeFolder(Convert::CreateTableName(Convert::DateTimeFToYYYYMMDDHHMMSS(clbFolderHistory->Items[bFHCompareTreeRight->Tag]),
+									   cbFHAvailablePath->Text,
+									   cbFHAvailableComputer->Text),
+									   tvFHTLeft, node, L"", PNodeData(Node.Data)^.FolderID);
 
-	PNodeData(Node.Data)^.FolderID = -2;
-  };*/
+		PNodeData(Node.Data)^.FolderID = -2;
+  	};*/
 }
 #pragma end_region
 
@@ -2784,157 +2839,4 @@ void __fastcall TFrameFolderHistory::miSelectDateTimeClick(TObject *Sender)
 		break;
 	}
 }
-#pragma end_region
-
-
-#pragma region TimeLine
-void TFrameFolderHistory::BuildTimeLine()
-{/*
-var
-  t : integer;
-  lRangeFrom, lRangeTo : TDateTime;
-
-{
-  if GFolderHistoryHandler->FolderHistory.size() != 0 then {
-    lRangeFrom = Now;
-    lRangeTo   = EncodeDate(1975, 01, 01);
-
-	atlFolderHistory.{Update;
-
-    atlFolderHistory.RangeAppearance.DivisionFormat = Convert::GetDateFormat + " hh:nn";
-
-    atlFolderHistory.TimeLineIndicators.Clear;
-
-    for t = 0 to FolderHistory.Count - 1 do {
-      with atlFolderHistory.TimeLineIndicators.Add do {
-        Shape           = isDiamond;
-
-        Position        = FolderHistory[t].ScanDate;
-
-        AnnotationColor = spectrumcolours[t mod spectrummod];
-
-        Color           = clWhite;
-        ColorTo         = AnnotationColor;
-
-        Annotation      = IntToStr(FolderHistory[t].FileCount) + " " + GLanguageHandler->Text[kFiles] + " (" + Convert::ConvertToUsefulUnit(FolderHistory[t].FileSize) + ")";
-
-        Fixed           = True;
-
-        Tag             = t;
-
-        if odd(t) then
-          AnnotationPosition = apOnTop
-        else
-          AnnotationPosition = apAtBottom;
-
-        if FolderHistory[t].ScanDate < lRangeFrom then
-          lRangeFrom = FolderHistory[t].ScanDate;
-
-        if FolderHistory[t].ScanDate > lRangeTo then
-          lRangeTo = FolderHistory[t].ScanDate;
-      };
-    };
-
-	atlFolderHistory.}Update;
-
-    atlFolderHistory.Range.MinimumRange = IncDay(lRangeFrom, -7);
-    atlFolderHistory.Range.MaximumRange = IncDay(lRangeTo, 7);
-
-	atlFolderHistory.Range.RangeFrom    = lRangeFrom;
-	atlFolderHistory.Range.RangeTo      = lRangeTo;
-
-    oldTLFrom = lRangeFrom;
-	oldTLTo   = lRangeTo;
-
-	sbTLResetClick(nil);
-  }; */
-}
-#pragma end_region
-
-
-#pragma region Reports
-//par1, caption; par2, text FileName; par3, zsr report, par4; html report, par5; do charts, par6; xml reports
-/*function TFrameFolderHistory.SaveReports(var TextOptions : TTextReportOptions; var CSVOptions  : TCSVReportOptions;
-										 var HTMLOptions : THTMLReportOptions; var XinOptions  : TXinorbisReportOptions;
-										 var XMLOptions  : TXMLReportOptions;  var TreeOptions : TTreeReportOptions): boolean;
-
-var
-  lReportOutput : TStringList;
-
-{
-  if Assigned(FSetStatusBarText) then
-    FSetStatusBarText(GLanguageHandler->Text[kSavingReports] + " " + GLanguageHandler->Text[kPleaseWait]);
-
-  Result = True;
-
-  // =========================================================================
-  // -- save out text version ------------------------------------------------
-  // =========================================================================
-  if TextOptions.FileName != L"" then {
-    lReportOutput = TStringList.Create;
-
-     GReportText.GenerateTextReport(dataFolderHistory, lReportOutput, TextOptions);
-
-    FreeAndNil(lReportOutput);
-  };
-
-  // =========================================================================
-  // -- save out xinorbis report ---------------------------------------------
-  // =========================================================================
-  if XinOptions.FileName != L"" then {
-	GReportXinorbis.GenerateXinorbisReport(dataFolderHistory, XinOptions);
-  };
-
-  // =========================================================================
-  // -- save out HTML version ------------------------------------------------
-  // =========================================================================
-  if HTMLOptions.FileName != L"" then {
-    GReportHTML.GenerateHTMLReport(dataFolderHistory, HTMLOptions, L"");
-  };
-
-  // =========================================================================
-  // -- save out XML version -------------------------------------------------
-  // =========================================================================
-  if XMLOptions.FileName != L"" then {
-    lReportOutput = TStringList.Create;
-
-    if XMLOptions.XMLData = CDataSummary then
-      GReportXML.GenerateXMLOutput(dataFolderHistory, XMLOptions, lReportOutput)
-    else
-      GReportXML.GenerateXMLOutputFileList(XMLOptions.FileName, lReportOutput, dataFolderHistory, LayoutUnknown);
-
-    FreeAndNil(lReportOutput);
-  };
-
-  // =========================================================================
-  // -- save out CSV version -------------------------------------------------
-  // =========================================================================
-  if CSVOptions.FileName != L"" then {
-    lReportOutput = TStringList.Create;
-
-    GReportCSV.GenerateCSVReport(dataFolderHistory, lReportOutput, CSVOptions, LayoutUnknown);
-
-    FreeAndNil(lReportOutput);
-  };
-
-  // =========================================================================
-  // -- save out Tree version ------------------------------------------------
-  // =========================================================================
-  if TreeOptions.FileName != L"" then {
-    if not(FIsFHUpdateThreadRunning) then {
-      lReportOutput = TStringList.Create;
-
-      GReportTree.GenerateTreeReport(dataFolderHistory, lReportOutput, TreeOptions);
-
-      FreeAndNil(lReportOutput);
-	};
-  };
-
-  // =========================================================================
-  // -------------------------------------------------------------------------
-  // =========================================================================
-
-  if Assigned(FSetStatusBarText) then
-    FSetStatusBarText("");
-}2719*/
 #pragma end_region

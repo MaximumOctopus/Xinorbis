@@ -53,9 +53,9 @@ __published:	// IDE-managed Components
 	TPanel *Panel1;
 	TComboBox *cbFHAvailableFilter;
 	TComboBox *cbFHAvailableComputer;
-	TSpeedButton *SpeedButton1;
+	TSpeedButton *sbOpenFolder;
 	TLabel *lFHAvailableComputer;
-	TLabel *Label2;
+	TLabel *lFHAvailablePath;
 	TSpeedButton *bSelectDate;
 	TTabSheet *tsSearch;
 	TPageControl *pcStats;
@@ -115,7 +115,7 @@ __published:	// IDE-managed Components
 	TTabSheet *tsCompareFolder;
 	TTabSheet *tsCompareTree;
 	TPanel *Panel8;
-	TSpeedButton *sbQuickSearch;
+	TSpeedButton *sbCompareFavourites;
 	TSpeedButton *sbGoSearch;
 	TSpeedButton *sbSearchSyntax;
 	TLabel *lSearchDetails;
@@ -130,11 +130,11 @@ __published:	// IDE-managed Components
 	TCheckBox *cbCompareShowFullPath;
 	TCheckBox *cbCompareColourCode;
 	TPanel *Panel13;
-	TSpeedButton *SpeedButton3;
+	TSpeedButton *sbCompareFolderFavourites;
 	TSpeedButton *sbCompareFolderSearch;
 	TSpeedButton *SpeedButton5;
 	TComboBox *eCompareFolderSearch;
-	TCheckBox *CheckBox5;
+	TCheckBox *cbCompareFolderInclude;
 	TPanel *Panel14;
 	TStringGrid *sgCompareFolderRight;
 	TSplitter *Splitter2;
@@ -149,24 +149,24 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter3;
 	TSpeedButton *SpeedButton7;
 	TBitBtn *bCompareLeftDate;
-	TSpeedButton *SpeedButton8;
-	TSpeedButton *sbCompareFolderLeftSave;
-	TSpeedButton *SpeedButton10;
-	TSpeedButton *SpeedButton11;
-	TSpeedButton *SpeedButton12;
-	TSpeedButton *SpeedButton13;
-	TSpeedButton *SpeedButton14;
+	TSpeedButton *sbFHCLHideCreated;
+	TSpeedButton *sbCompareLeftSave;
+	TSpeedButton *sbFHCLHideAccessed;
+	TSpeedButton *sbFHCLHideModified;
+	TSpeedButton *sbFHCLHideOwner;
+	TSpeedButton *sbFHCLHideAttributes;
+	TSpeedButton *sbFHCLHideSOD;
 	TSpeedButton *sbCompareLeftShow;
 	TLabel *lCompareLeftResults;
 	TPanel *Panel12;
 	TSpeedButton *SpeedButton16;
-	TSpeedButton *SpeedButton17;
-	TSpeedButton *sbCompareFolderRightSave;
-	TSpeedButton *SpeedButton21;
-	TSpeedButton *SpeedButton22;
-	TSpeedButton *SpeedButton23;
-	TSpeedButton *SpeedButton24;
-	TSpeedButton *SpeedButton25;
+	TSpeedButton *sbFHCRHideCreated;
+	TSpeedButton *sbCompareRightSave;
+	TSpeedButton *sbFHCRHideAccessed;
+	TSpeedButton *sbFHCRHideModified;
+	TSpeedButton *sbFHCRHideOwner;
+	TSpeedButton *sbFHCRHideAttributes;
+	TSpeedButton *sbFHCRHideSOD;
 	TSpeedButton *sbCompareRightShow;
 	TLabel *lCompareRightResults;
 	TBitBtn *bCompareRightDate;
@@ -176,11 +176,11 @@ __published:	// IDE-managed Components
 	TBitBtn *bCompareTreeRightDate;
 	TPanel *Panel15;
 	TSpeedButton *SpeedButton31;
-	TSpeedButton *SpeedButton32;
+	TSpeedButton *sbCompareFolderLeftSave;
 	TBitBtn *bCompareFolderLeftDate;
 	TPanel *Panel17;
 	TSpeedButton *SpeedButton33;
-	TSpeedButton *SpeedButton34;
+	TSpeedButton *sbCompareFolderRightSave;
 	TBitBtn *bCompareFolderRightDate;
 	TLabel *lCompareFolderLeftResults;
 	TLabel *lCompareFolderRightResults;
@@ -188,7 +188,7 @@ __published:	// IDE-managed Components
 	TTreeView *tvCompareRight;
 	TSpeedButton *SpeedButton6;
 	TSpeedButton *SpeedButton27;
-	TSpeedButton *SpeedButton2;
+	TSpeedButton *sbGetDate;
 	TSpeedButton *sbStatsInfo;
 	TSpeedButton *sbShowManual;
 	TSpeedButton *SpeedButton30;
@@ -203,6 +203,7 @@ __published:	// IDE-managed Components
 	TLabel *lCRPageNumber;
 	TBitBtn *lCRPagePrevious;
 	TBitBtn *lCRPageNext;
+	TLabel *llFHPleaseWait;
 	void __fastcall miFHCSSaveAllClick(TObject *Sender);
 	void __fastcall miFHCSSaveDoClick(TObject *Sender);
 	void __fastcall miFHCSSaveDontClick(TObject *Sender);
@@ -242,10 +243,10 @@ __published:	// IDE-managed Components
           TRect &Rect, TGridDrawState State);
 	void __fastcall tvCompareLeftExpanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
 	void __fastcall tvCompareRightExpanding(TObject *Sender, TTreeNode *Node, bool &AllowExpansion);
-	void __fastcall SpeedButton2Click(TObject *Sender);
-	void __fastcall SpeedButton1Click(TObject *Sender);
-	void __fastcall SpeedButton8Click(TObject *Sender);
-	void __fastcall SpeedButton17Click(TObject *Sender);
+	void __fastcall sbGetDateClick(TObject *Sender);
+	void __fastcall sbOpenFolderClick(TObject *Sender);
+	void __fastcall sbFHCLHideCreatedClick(TObject *Sender);
+	void __fastcall sbFHCRHideCreatedClick(TObject *Sender);
 	void __fastcall sbCompareLeftShowClick(TObject *Sender);
 	void __fastcall sbCompareRightShowClick(TObject *Sender);
 	void __fastcall eCompareSearchChange(TObject *Sender);
@@ -253,13 +254,13 @@ __published:	// IDE-managed Components
 	void __fastcall sbGoSearchClick(TObject *Sender);
 	void __fastcall sbCompareFolderSearchClick(TObject *Sender);
 	void __fastcall eCompareFolderSearchKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall sbQuickSearchClick(TObject *Sender);
+	void __fastcall sbCompareFavouritesClick(TObject *Sender);
 	void __fastcall cbChartFilesClick(TObject *Sender);
 	void __fastcall cbChartCategoryClick(TObject *Sender);
 	void __fastcall sbStatsInfoClick(TObject *Sender);
-	void __fastcall SpeedButton32Click(TObject *Sender);
 	void __fastcall sbCompareFolderLeftSaveClick(TObject *Sender);
-	void __fastcall sbCompareFolderRightSaveClick(TObject *Sender);
+	void __fastcall sbCompareLeftSaveClick(TObject *Sender);
+	void __fastcall sbCompareRightSaveClick(TObject *Sender);
 	void __fastcall rbChartCountClick(TObject *Sender);
 	void __fastcall rbStatsTableTodayClick(TObject *Sender);
 	void __fastcall sbShowManualClick(TObject *Sender);
@@ -290,6 +291,10 @@ private:
 	constexpr static int kImageBase[20] = {  5,  7,  9, 11, 13, 15, 17, 19, 21, 23,
 										    25, 27, 29, 31, 33, 35, 37, 39, 41, 43 };
 
+    std::wstring LastSql[2] = { L"", L"" };
+
+	TSpeedButton *FHCatButtons[20];
+
 	CompareLeftSide *CLS = nullptr;
 	CompareRightSide *CRS = nullptr;
 	CompareFolderLeftSide *CFLS = nullptr;
@@ -300,7 +305,9 @@ private:
 
     // init
 	void Init();
+    void InitDisplayDoOnce();
 	void SetTableRowHeights();
+    void SetHints();
 
 	void ResetDisplay(bool, bool);
 
@@ -327,6 +334,7 @@ private:
 	void PostCompareRight();
 
 	// tab compare folder
+	void InitCompareFolder();
 	void CompareFolderBuildLeft();
 	void CompareFolderBuildRight();
 
@@ -354,6 +362,10 @@ public:
 	bool GetAvailablePathContains(const std::wstring);
 
 	std::function<void(int)> OnChartsHaveChanged;
+	std::function<void(const std::wstring, const std::wstring, const std::wstring)> OnScanFromFolderHistory;
+	std::function<void(int)> OnUpdateHistoryFinished;
+	std::function<void(int)> OnUpdateLeftStatusPanel;
+    std::function<void(const std::wstring)> OnSetTutorialBarText;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFrameFolderHistory *FrameFolderHistory;
