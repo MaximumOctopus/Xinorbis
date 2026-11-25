@@ -6,6 +6,16 @@ I don't expect a feature-complete version until the end of 2026. There won't be 
 
 There's over 45k lines of code to rewrite (and I'm redesigning a lot of the logic), so it'll take some time.
 
+2026/11/25
+
+Received my first bit of feedback since the original upload of the first beta; this Shakespeare-worthy comment:
+
+_"To now have all data saved in the folder documents instead of  in folder users as it was before is  another very stupid idea of another fucking moron among a developers. 
+
+Only morons want to store whatever data in the folder  documents, although that is BULLSHIT,  since the original folder was designed for the USERS' private and personal documents only,  and NOT for all the developershit around their software !! 
+Exactly such a stupid behavior only adds to all that shitty  bloating of Drive C. !! 
+Let the users decide where they wants to have whatever data  instead of so impolitely patronizing them,  you damn asshole !!"_
+
 2026/10/04
 
 I'm working on adding Folder History (database) support and looking at a few bugs and issues.
